@@ -88,10 +88,25 @@ public class ActionButton extends IconButton {
                 displayName = ButtonToolTips.CycleProcessingOutput;
                 displayValue = ButtonToolTips.CycleProcessingOutputTooltip;
             }
-            case S_CYCLE_PROCESSING_OUTPUT -> {
+            case S_CYCLE_PROCESSING_OUTPUT_FORWARD -> {
                 icon = Icon.S_CYCLE;
-                displayName = ButtonToolTips.CycleProcessingOutput;
+                displayName = ButtonToolTips.CycleProcessingOutputForward;
                 displayValue = ButtonToolTips.CycleProcessingOutputTooltip;
+            }
+            case S_CYCLE_PROCESSING_OUTPUT_BACKWARD -> {
+                icon = Icon.S_CYCLE;
+                displayName = ButtonToolTips.CycleProcessingOutputBackward;
+                displayValue = ButtonToolTips.CycleProcessingOutputTooltip;
+            }
+            case S_CYCLE_PROCESSING_INPUT_FORWARD -> {
+                icon = Icon.S_CYCLE;
+                displayName = ButtonToolTips.CycleProcessingInputForward;
+                displayValue = ButtonToolTips.CycleProcessingInputTooltip;
+            }
+            case S_CYCLE_PROCESSING_INPUT_BACKWARD -> {
+                icon = Icon.S_CYCLE;
+                displayName = ButtonToolTips.CycleProcessingInputBackward;
+                displayValue = ButtonToolTips.CycleProcessingInputTooltip;
             }
             case TERMINAL_SETTINGS -> {
                 icon = Icon.COG;

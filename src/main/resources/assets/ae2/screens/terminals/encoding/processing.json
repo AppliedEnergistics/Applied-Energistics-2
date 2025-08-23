@@ -81,13 +81,25 @@
       "bottom": 158,
       "height": 52
     },
-    "processingCycleOutput": {
+    "processingCycleOutputForward": {
       "left": 98,
       "bottom": 159
     },
-    "processingClearPattern": {
+    "processingCycleOutputBackward": {
+      "left": 98,
+      "bottom": 159
+    },
+    "processingCycleInputForward": {
       "left": 79,
       "bottom": 159
+    },
+    "processingCycleInputBackward": {
+      "left": 79,
+      "bottom": 159
+    },
+    "processingClearPattern": {
+      "left": 126,
+      "bottom": 167
     }
   }
 }

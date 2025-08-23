@@ -80,7 +80,10 @@ public class PatternEncodingTermMenu extends MEStorageMenu {
     private static final String ACTION_SET_SUBSTITUTION = "setSubstitution";
     private static final String ACTION_SET_FLUID_SUBSTITUTION = "setFluidSubstitution";
     private static final String ACTION_SET_STONECUTTING_RECIPE_ID = "setStonecuttingRecipeId";
-    private static final String ACTION_CYCLE_PROCESSING_OUTPUT = "cycleProcessingOutput";
+    private static final String ACTION_CYCLE_PROCESSING_INPUT_FORWARD = "cycleProcessingInputForward";
+    private static final String ACTION_CYCLE_PROCESSING_INPUT_BACKWARD = "cycleProcessingInputBackward";
+    private static final String ACTION_CYCLE_PROCESSING_OUTPUT_FORWARD = "cycleProcessingOutputForward";
+    private static final String ACTION_CYCLE_PROCESSING_OUTPUT_BACKWARD = "cycleProcessingOutputBackward";
 
     public static final MenuType<PatternEncodingTermMenu> TYPE = MenuTypeBuilder
             .create(PatternEncodingTermMenu::new, IPatternTerminalMenuHost.class)
@@ -191,7 +194,10 @@ public class PatternEncodingTermMenu extends MEStorageMenu {
         registerClientAction(ACTION_SET_MODE, EncodingMode.class, encodingLogic::setMode);
         registerClientAction(ACTION_SET_SUBSTITUTION, Boolean.class, encodingLogic::setSubstitution);
         registerClientAction(ACTION_SET_FLUID_SUBSTITUTION, Boolean.class, encodingLogic::setFluidSubstitution);
-        registerClientAction(ACTION_CYCLE_PROCESSING_OUTPUT, this::cycleProcessingOutput);
+        registerClientAction(ACTION_CYCLE_PROCESSING_INPUT_FORWARD, this::cycleProcessingInputForward);
+        registerClientAction(ACTION_CYCLE_PROCESSING_INPUT_BACKWARD, this::cycleProcessingInputBackward);
+        registerClientAction(ACTION_CYCLE_PROCESSING_OUTPUT_FORWARD, this::cycleProcessingOutputForward);
+        registerClientAction(ACTION_CYCLE_PROCESSING_OUTPUT_BACKWARD, this::cycleProcessingOutputBackward);
 
         updateStonecuttingRecipes();
     }
@@ -662,9 +668,68 @@ public class PatternEncodingTermMenu extends MEStorageMenu {
      * Cycles the defined processing outputs around in case recipe transfer didn't put what the player considers the
      * primary output into the right slot.
      */
-    public void cycleProcessingOutput() {
+    public void cycleProcessingInputForward() {
         if (isClientSide()) {
-            sendClientAction(ACTION_CYCLE_PROCESSING_OUTPUT);
+            sendClientAction(ACTION_CYCLE_PROCESSING_INPUT_FORWARD);
+        } else {
+            if (mode != EncodingMode.PROCESSING) {
+                return;
+            }
+
+            var newOutputs = new ItemStack[getProcessingInputSlots().length];
+            for (int i = 0; i < processingInputSlots.length; i++) {
+                newOutputs[i] = ItemStack.EMPTY;
+                if (!processingInputSlots[i].getItem().isEmpty()) {
+                    // Search for the next, skipping empty slots
+                    for (int j = 1; j < processingInputSlots.length; j++) {
+                        var nextItem = processingInputSlots[(i + j) % processingInputSlots.length].getItem();
+                        if (!nextItem.isEmpty()) {
+                            newOutputs[i] = nextItem;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            for (int i = 0; i < newOutputs.length; i++) {
+                processingInputSlots[i].set(newOutputs[i]);
+            }
+        }
+    }
+
+    public void cycleProcessingInputBackward() {
+        if (isClientSide()) {
+            sendClientAction(ACTION_CYCLE_PROCESSING_INPUT_BACKWARD);
+        } else {
+            if (mode != EncodingMode.PROCESSING) {
+                return;
+            }
+
+            var newOutputs = new ItemStack[getProcessingInputSlots().length];
+            for (int i = 0; i < processingInputSlots.length; i++) {
+                newOutputs[i] = ItemStack.EMPTY;
+                if (!processingInputSlots[i].getItem().isEmpty()) {
+                    // Search for the next, skipping empty slots
+                    for (int j = 1; j < processingInputSlots.length; j++) {
+                        var nextItem = processingInputSlots[(i - j + processingInputSlots.length)
+                                % processingInputSlots.length].getItem();
+                        if (!nextItem.isEmpty()) {
+                            newOutputs[i] = nextItem;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            for (int i = 0; i < newOutputs.length; i++) {
+                processingInputSlots[i].set(newOutputs[i]);
+            }
+        }
+    }
+
+    public void cycleProcessingOutputForward() {
+        if (isClientSide()) {
+            sendClientAction(ACTION_CYCLE_PROCESSING_OUTPUT_FORWARD);
         } else {
             if (mode != EncodingMode.PROCESSING) {
                 return;
@@ -691,10 +756,51 @@ public class PatternEncodingTermMenu extends MEStorageMenu {
         }
     }
 
+    public void cycleProcessingOutputBackward() {
+        if (isClientSide()) {
+            sendClientAction(ACTION_CYCLE_PROCESSING_OUTPUT_BACKWARD);
+        } else {
+            if (mode != EncodingMode.PROCESSING) {
+                return;
+            }
+
+            var newOutputs = new ItemStack[getProcessingOutputSlots().length];
+            for (int i = 0; i < processingOutputSlots.length; i++) {
+                newOutputs[i] = ItemStack.EMPTY;
+                if (!processingOutputSlots[i].getItem().isEmpty()) {
+                    // Search for the next, skipping empty slots
+                    for (int j = 1; j < processingOutputSlots.length; j++) {
+                        var nextItem = processingOutputSlots[(i - j + processingOutputSlots.length)
+                                % processingOutputSlots.length].getItem();
+                        if (!nextItem.isEmpty()) {
+                            newOutputs[i] = nextItem;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            for (int i = 0; i < newOutputs.length; i++) {
+                processingOutputSlots[i].set(newOutputs[i]);
+            }
+        }
+    }
+
     // Can cycle if there is more than 1 processing output encoded
     public boolean canCycleProcessingOutputs() {
         return mode == EncodingMode.PROCESSING
                 && Arrays.stream(processingOutputSlots).filter(s -> !s.getItem().isEmpty()).count() > 1;
+    }
+
+    public boolean canCycleProcessingInputs() {
+        return mode == EncodingMode.PROCESSING
+                && Arrays.stream(processingInputSlots).filter(s -> !s.getItem().isEmpty()).count() > 1;
+    }
+
+    public boolean canClear() {
+        return mode == EncodingMode.PROCESSING
+                && (Arrays.stream(processingInputSlots).anyMatch(s -> !s.getItem().isEmpty())
+                        || Arrays.stream(processingOutputSlots).anyMatch(s -> !s.getItem().isEmpty()));
     }
 
     public List<RecipeHolder<StonecutterRecipe>> getStonecuttingRecipes() {

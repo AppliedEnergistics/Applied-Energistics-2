@@ -80,7 +80,12 @@ public enum ButtonToolTips implements LocalizationEnum {
     FilterOnExtractEnabled("Filter on insert and extract."),
     TypeFilter("Filter Types"),
     CycleProcessingOutput("Cycle Outputs"),
+    CycleProcessingOutputForward("Forward Cycle Outputs"),
+    CycleProcessingOutputBackward("Backward Cycle Outputs "),
     CycleProcessingOutputTooltip("Change the primary output of this pattern"),
+    CycleProcessingInputForward("Forward Cycle Inputs"),
+    CycleProcessingInputBackward("Backward Cycle Inputs "),
+    CycleProcessingInputTooltip("Change the primary input of this pattern"),
     FluidSubstitutions("Fluid Substitutions"),
     FluidSubstitutionsDescDisabled("Don't use fluids."),
     FluidSubstitutionsDescEnabled(
