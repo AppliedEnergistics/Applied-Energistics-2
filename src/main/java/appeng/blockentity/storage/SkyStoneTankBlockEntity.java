@@ -38,7 +38,7 @@ public class SkyStoneTankBlockEntity extends AEBaseBlockEntity {
         var tankNbt = new CompoundTag();
         tank.writeToNBT(registries, tankNbt);
         if (!tankNbt.isEmpty()) {
-            data.put("content", tankNbt);
+            data.put("tank", tankNbt);
         }
     }
 
