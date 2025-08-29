@@ -137,7 +137,7 @@ public class CraftingCPUMenu extends AEBaseMenu {
             sendClientAction(ACTION_TOGGLE_SCHEDULING);
         } else if (this.cpu != null) {
             var logic = this.cpu.craftingLogic;
-            logic.setSuspended(!logic.isSuspended());
+            logic.setJobSuspended(!logic.isJobSuspended());
         }
     }
 
@@ -156,7 +156,7 @@ public class CraftingCPUMenu extends AEBaseMenu {
             this.cantStoreItems = this.cpu.craftingLogic.isCantStoreItems();
 
             if (this.incrementalUpdateHelper.hasChanges()
-                    || this.cachedSuspend != this.cpu.craftingLogic.isSuspended()) {
+                    || this.cachedSuspend != this.cpu.craftingLogic.isJobSuspended()) {
                 CraftingStatus status = CraftingStatus.create(this.incrementalUpdateHelper, this.cpu.craftingLogic);
                 this.incrementalUpdateHelper.commitChanges();
                 this.cachedSuspend = status.isSuspended();

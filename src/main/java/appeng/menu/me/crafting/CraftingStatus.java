@@ -75,6 +75,12 @@ public class CraftingStatus {
         this.suspended = suspended;
     }
 
+    @Deprecated(forRemoval = true)
+    public CraftingStatus(boolean fullStatus, long elapsedTime, long remainingItemCount, long startItemCount,
+            List<CraftingStatusEntry> entries) {
+        this(fullStatus, elapsedTime, remainingItemCount, startItemCount, entries, false);
+    }
+
     public boolean isFullStatus() {
         return fullStatus;
     }
@@ -151,7 +157,7 @@ public class CraftingStatus {
         long elapsedTime = logic.getElapsedTimeTracker().getElapsedTime();
         long remainingItems = logic.getElapsedTimeTracker().getRemainingItemCount();
         long startItems = logic.getElapsedTimeTracker().getStartItemCount();
-        boolean suspended = logic.isSuspended();
+        boolean suspended = logic.isJobSuspended();
 
         return new CraftingStatus(
                 full,

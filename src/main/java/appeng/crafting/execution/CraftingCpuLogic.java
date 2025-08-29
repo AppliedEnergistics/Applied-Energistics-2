@@ -522,11 +522,11 @@ public class CraftingCpuLogic {
         return cantStoreItems;
     }
 
-    public boolean isSuspended() {
+    public boolean isJobSuspended() {
         return job != null && job.suspended;
     }
 
-    public void setSuspended(boolean suspended) {
+    public void setJobSuspended(boolean suspended) {
         if (job != null && job.suspended != suspended) {
             job.suspended = suspended;
         }
