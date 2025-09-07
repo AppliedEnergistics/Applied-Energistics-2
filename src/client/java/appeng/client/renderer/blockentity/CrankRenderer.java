@@ -13,21 +13,21 @@ import net.minecraft.client.renderer.block.model.SimpleModelWrapper;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.resources.model.ModelManager;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.client.RenderTypeHelper;
 import net.neoforged.neoforge.client.model.standalone.StandaloneModelKey;
 
 import appeng.api.orientation.BlockOrientation;
 import appeng.blockentity.misc.CrankBlockEntity;
 import appeng.core.AppEng;
 
-@OnlyIn(Dist.CLIENT)
 public class CrankRenderer implements BlockEntityRenderer<CrankBlockEntity> {
 
+    public static final ResourceLocation HANDLE_MODEL_ID = AppEng.makeId("block/crank_handle");
     public static final StandaloneModelKey<SimpleModelWrapper> HANDLE_MODEL = new StandaloneModelKey<>(
-            AppEng.makeId("block/crank_handle"));
+            HANDLE_MODEL_ID::toString);
 
     private final BlockRenderDispatcher blockRenderer;
 
@@ -60,7 +60,7 @@ public class CrankRenderer implements BlockEntityRenderer<CrankBlockEntity> {
                 blockState,
                 pos,
                 stack,
-                buffers::getBuffer,
+                layer -> buffers.getBuffer(RenderTypeHelper.getEntityRenderType(layer)),
                 false,
                 packedOverlay);
         stack.popPose();

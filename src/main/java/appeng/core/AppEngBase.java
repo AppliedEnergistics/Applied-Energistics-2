@@ -29,7 +29,6 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -52,7 +51,6 @@ import net.neoforged.neoforge.event.server.ServerAboutToStartEvent;
 import net.neoforged.neoforge.event.server.ServerStoppedEvent;
 import net.neoforged.neoforge.event.server.ServerStoppingEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
-import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.neoforged.neoforge.registries.NewRegistryEvent;
 import net.neoforged.neoforge.registries.RegisterEvent;
 import net.neoforged.neoforge.registries.RegistryBuilder;
@@ -335,13 +333,6 @@ public abstract class AppEngBase implements AppEng {
         if ("true".equals(System.getProperty("appeng.tests"))) {
             GameTestPlotAdapter.registerAll(e::registerTest);
         }
-    }
-
-    @Override
-    public <T extends ClientboundPacket> void handleClientboundPacket(CustomPacketPayload.Type<T> type, T payload,
-            IPayloadContext context) {
-        throw new IllegalStateException(
-                "Trying to handle a clientbound packet while not on the client: " + payload.type());
     }
 
     @Override

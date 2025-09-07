@@ -22,12 +22,9 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.client.particle.TextureSheetParticle;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 // Derived from Vanilla's BreakingParticle, but allows
 // a texture to be specified directly rather than via an itemstack
-@OnlyIn(Dist.CLIENT)
 public class CableBusBreakingParticle extends TextureSheetParticle {
 
     private final float uCoord;

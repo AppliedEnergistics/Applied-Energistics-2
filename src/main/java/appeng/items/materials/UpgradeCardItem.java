@@ -49,8 +49,8 @@ public class UpgradeCardItem extends AEBaseItem {
     @Override
     public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay tooltipDisplay,
             Consumer<Component> lines,
-            TooltipFlag advancedTooltips) {
-        super.appendHoverText(stack, context, tooltipDisplay, lines, advancedTooltips);
+            TooltipFlag tooltipFlags) {
+        super.appendHoverText(stack, context, tooltipDisplay, lines, tooltipFlags);
 
         var supportedBy = Upgrades.getTooltipLinesForCard(this);
         if (!supportedBy.isEmpty()) {
@@ -101,7 +101,7 @@ public class UpgradeCardItem extends AEBaseItem {
                     return InteractionResult.FAIL;
                 }
 
-                if (player.getCommandSenderWorld().isClientSide()) {
+                if (player.level().isClientSide()) {
                     return InteractionResult.PASS;
                 }
 

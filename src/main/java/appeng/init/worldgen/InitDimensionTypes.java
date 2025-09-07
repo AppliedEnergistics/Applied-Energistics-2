@@ -1,5 +1,6 @@
 package appeng.init.worldgen;
 
+import java.util.Optional;
 import java.util.OptionalLong;
 
 import org.jetbrains.annotations.NotNull;
@@ -40,6 +41,7 @@ public final class InitDimensionTypes {
                 BlockTags.INFINIBURN_OVERWORLD, // infiniburn
                 SpatialStorageDimensionIds.SKY_PROPERTIES_ID, // effectsLocation
                 1.0f, // ambientLight
+                Optional.empty(),
                 new DimensionType.MonsterSettings(false, false, ConstantInt.of(0), 0));
     }
 }

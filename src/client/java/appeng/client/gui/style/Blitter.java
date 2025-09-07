@@ -22,15 +22,14 @@ import java.util.Objects;
 import java.util.function.Function;
 
 import com.mojang.blaze3d.pipeline.RenderPipeline;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.Tesselator;
-import com.mojang.blaze3d.vertex.VertexFormat;
 
-import org.joml.Matrix4f;
+import org.joml.Matrix3x2f;
 
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.render.TextureSetup;
+import net.minecraft.client.gui.render.state.BlitRenderState;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.RenderStateShard;
@@ -40,9 +39,6 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
-import net.minecraft.util.TriState;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 import appeng.core.AppEng;
 import appeng.util.Icon;
@@ -50,7 +46,6 @@ import appeng.util.Icon;
 /**
  * Utility class for drawing rectangular textures in the UI.
  */
-@OnlyIn(Dist.CLIENT)
 public final class Blitter {
     public static final RenderPipeline GUI_TEXTURED_OPAQUE = RenderPipelines.GUI_TEXTURED.toBuilder()
             .withLocation(AppEng.makeId("pipeline/gui_textured_opaque"))
@@ -63,7 +58,7 @@ public final class Blitter {
                     1536,
                     GUI_TEXTURED_OPAQUE,
                     RenderType.CompositeState.builder()
-                            .setTextureState(new RenderStateShard.TextureStateShard(textureId, TriState.DEFAULT, false))
+                            .setTextureState(new RenderStateShard.TextureStateShard(textureId, false))
                             .createCompositeState(false)));
 
     // This assumption is obviously bogus, but currently all textures are this size,
@@ -332,28 +327,19 @@ public final class Blitter {
             y2 += srcRect.getHeight();
         }
 
-        Matrix4f matrix = guiGraphics.pose().last().pose();
+        var pipeline = blending ? RenderPipelines.GUI_TEXTURED : GUI_TEXTURED_OPAQUE;
+        var textureView = Minecraft.getInstance().getTextureManager().getTexture(this.texture).getTextureView();
+        guiGraphics.submitGuiElementRenderState(new BlitRenderState(
+                pipeline,
+                TextureSetup.singleTexture(textureView),
+                new Matrix3x2f(guiGraphics.pose()),
+                (int) x1, (int) y1,
+                (int) x2, (int) y2,
+                minU, maxU,
+                minV, maxV,
+                ARGB.color(a, r, g, b),
+                guiGraphics.peekScissorStack()));
 
-        var bufferbuilder = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS,
-                DefaultVertexFormat.POSITION_TEX_COLOR);
-        bufferbuilder.addVertex(matrix, x1, y2, zOffset)
-                .setUv(minU, maxV)
-                .setColor(r, g, b, a);
-        bufferbuilder.addVertex(matrix, x2, y2, zOffset)
-                .setUv(maxU, maxV)
-                .setColor(r, g, b, a);
-        bufferbuilder.addVertex(matrix, x2, y1, zOffset)
-                .setUv(maxU, minV)
-                .setColor(r, g, b, a);
-        bufferbuilder.addVertex(matrix, x1, y1, zOffset)
-                .setUv(minU, minV)
-                .setColor(r, g, b, a);
-
-        if (blending) {
-            RenderType.guiTextured(texture).draw(bufferbuilder.buildOrThrow());
-        } else {
-            GUI_TEXTURED_OPAQUE_TYPE.apply(texture).draw(bufferbuilder.buildOrThrow());
-        }
     }
 
 }

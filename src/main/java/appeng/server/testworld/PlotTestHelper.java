@@ -8,9 +8,9 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.GameTestAssertException;
-import net.minecraft.gametest.framework.GameTestAssertPosException;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.gametest.framework.GameTestInfo;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.entity.BaseContainerBlockEntity;
@@ -177,8 +177,9 @@ public class PlotTestHelper extends GameTestHelper {
         var storage = grid.getStorageService().getInventory().getAvailableStacks();
         var count = storage.get(key);
         if (count <= 0) {
-            throw new GameTestAssertPosException("Network storage does not contain " + key + ". Available keys: "
-                    + storage.keySet(), absolutePos(gridPos), gridPos, getTick());
+            throw assertionException(gridPos,
+                    Component.literal("Network storage does not contain " + key + ". Available keys: "
+                            + storage.keySet()));
         }
     }
 
@@ -186,8 +187,7 @@ public class PlotTestHelper extends GameTestHelper {
         var grid = getGrid(gridPos);
         var count = grid.getStorageService().getInventory().getAvailableStacks().get(key);
         if (count > 0) {
-            throw new GameTestAssertPosException("Network storage contains unexpected " + key + ".",
-                    absolutePos(gridPos), gridPos, getTick());
+            throw assertionException(gridPos, Component.literal("Network storage contains unexpected " + key + "."));
         }
     }
 

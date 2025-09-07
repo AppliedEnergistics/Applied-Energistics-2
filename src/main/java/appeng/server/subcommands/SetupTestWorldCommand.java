@@ -66,7 +66,7 @@ public class SetupTestWorldCommand implements ISubCommand {
                 return;
             }
 
-            var level = player.serverLevel();
+            var level = player.level();
             if (!isSuperflatWorld(level)) {
                 sender.sendFailure(PlayerMessages.TestWorldNotInSuperflat.text());
                 return;

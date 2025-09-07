@@ -24,12 +24,12 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.items.IItemHandler;
 
 import appeng.api.inventories.InternalInventory;
@@ -44,18 +44,15 @@ public abstract class AEBaseInvBlockEntity extends AEBaseBlockEntity implements 
     }
 
     @Override
-    public void loadTag(CompoundTag data, HolderLookup.Provider registries) {
-        super.loadTag(data, registries);
+    public void loadTag(ValueInput data) {
+        super.loadTag(data);
         var inv = this.getInternalInventory();
         if (inv != InternalInventory.empty()) {
-            var opt = data.getCompound("inv").orElse(null);
+            var opt = data.child("inv").orElse(null);
             for (int x = 0; x < inv.size(); x++) {
                 ItemStack item = ItemStack.EMPTY;
                 if (opt != null) {
-                    var itemTag = opt.getCompound("item" + x).orElse(null);
-                    if (itemTag != null && !itemTag.isEmpty()) {
-                        item = ItemStack.parse(registries, itemTag).orElse(ItemStack.EMPTY);
-                    }
+                    item = opt.read("item" + x, ItemStack.OPTIONAL_CODEC).orElse(ItemStack.EMPTY);
                 }
                 inv.setItemDirect(x, item);
             }
@@ -65,18 +62,17 @@ public abstract class AEBaseInvBlockEntity extends AEBaseBlockEntity implements 
     public abstract InternalInventory getInternalInventory();
 
     @Override
-    public void saveAdditional(CompoundTag data, HolderLookup.Provider registries) {
-        super.saveAdditional(data, registries);
+    public void saveAdditional(ValueOutput data) {
+        super.saveAdditional(data);
         var inv = this.getInternalInventory();
         if (inv != InternalInventory.empty()) {
-            final CompoundTag opt = new CompoundTag();
+            var opt = data.child("inv");
             for (int x = 0; x < inv.size(); x++) {
                 var is = inv.getStackInSlot(x);
                 if (!is.isEmpty()) {
-                    opt.put("item" + x, is.save(registries));
+                    opt.store("item" + x, ItemStack.OPTIONAL_CODEC, is);
                 }
             }
-            data.put("inv", opt);
         }
     }
 

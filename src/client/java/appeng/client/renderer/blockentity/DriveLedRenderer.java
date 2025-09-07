@@ -26,8 +26,6 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 import appeng.api.orientation.BlockOrientation;
 import appeng.blockentity.storage.DriveBlockEntity;
@@ -37,7 +35,6 @@ import appeng.client.render.model.DriveModel;
 /**
  * Renders the drive cell status indicators.
  */
-@OnlyIn(Dist.CLIENT)
 public class DriveLedRenderer implements BlockEntityRenderer<DriveBlockEntity> {
 
     public DriveLedRenderer(BlockEntityRendererProvider.Context context) {

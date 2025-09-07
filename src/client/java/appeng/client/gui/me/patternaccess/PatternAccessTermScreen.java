@@ -38,7 +38,7 @@ import org.slf4j.LoggerFactory;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.Rect2i;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
@@ -46,7 +46,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 
 import guideme.color.ConstantColor;
 import guideme.document.LytRect;
@@ -279,7 +279,7 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
             if (hoveredLineIndex != -1) {
                 var row = rows.get(hoveredLineIndex);
                 if (row instanceof GroupHeaderRow headerRow && !headerRow.group.tooltip().isEmpty()) {
-                    guiGraphics.renderTooltip(font, headerRow.group.tooltip(), Optional.empty(), x, y);
+                    guiGraphics.setTooltipForNextFrame(font, headerRow.group.tooltip(), Optional.empty(), x, y);
                     return;
                 }
             }
@@ -343,7 +343,7 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
                 PatternSlot machineSlot = (PatternSlot) slot;
                 final InventoryActionPacket p = new InventoryActionPacket(action, machineSlot.slot,
                         machineSlot.getMachineInv().getServerId());
-                PacketDistributor.sendToServer(p);
+                ClientPacketDistributor.sendToServer(p);
             }
 
             return;
@@ -360,7 +360,7 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
             int clickedSlot = slot.getContainerSlot();
             var packet = new QuickMovePatternPacket(
                     menu.containerId, clickedSlot, List.copyOf(visiblePatternContainers));
-            PacketDistributor.sendToServer(packet);
+            ClientPacketDistributor.sendToServer(packet);
             return;
         }
 
@@ -402,7 +402,7 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
             currentY += ROW_HEIGHT;
         }
 
-        guiGraphics.flush();
+        guiGraphics.nextStratum();
     }
 
     private Rect2i selectRowBackgroundBox(boolean isInvLine, boolean firstLine, boolean lastLine) {
@@ -631,7 +631,7 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
     private void blit(GuiGraphics guiGraphics, int offsetX, int offsetY, Rect2i srcRect) {
         var texture = AppEng.makeId("textures/guis/patternaccessterminal.png");
         guiGraphics.blit(
-                RenderType::guiTextured,
+                RenderPipelines.GUI_TEXTURED,
                 texture,
                 offsetX,
                 offsetY,

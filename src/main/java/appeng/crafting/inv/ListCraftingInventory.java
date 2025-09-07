@@ -22,8 +22,8 @@ import java.util.Map;
 
 import com.google.common.collect.Iterables;
 
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.ListTag;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
@@ -82,35 +82,26 @@ public class ListCraftingInventory implements ICraftingInventory {
         list.removeZeros();
     }
 
-    public void readFromNBT(ListTag data, HolderLookup.Provider registries) {
+    public void deserialize(ValueInput.ValueInputList input) {
         list.clear();
 
-        if (data != null) {
-            for (int i = 0; i < data.size(); ++i) {
-                var compound = data.getCompound(i).orElse(null);
-                if (compound != null) {
-                    var key = AEKey.fromTagGeneric(registries, compound);
-                    if (key != null) {
-                        var amount = compound.getLongOr("#", 0);
-                        insert(key, amount, Actionable.MODULATE);
-                    }
-                }
+        for (var listItem : input) {
+            var key = AEKey.fromTagGeneric(listItem);
+            if (key != null) {
+                var amount = listItem.getLongOr("#", 0);
+                insert(key, amount, Actionable.MODULATE);
             }
         }
     }
 
-    public ListTag writeToNBT(HolderLookup.Provider registries) {
-        ListTag tag = new ListTag();
-
+    public void serialize(ValueOutput.ValueOutputList output) {
         for (var entry : list) {
             var key = entry.getKey();
             var amount = entry.getLongValue();
 
-            var entryTag = key.toTagGeneric(registries);
-            entryTag.putLong("#", amount);
-            tag.add(entryTag);
+            var child = output.addChild();
+            key.toTagGeneric(child);
+            child.putLong("#", amount);
         }
-
-        return tag;
     }
 }

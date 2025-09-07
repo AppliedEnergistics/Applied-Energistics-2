@@ -38,8 +38,6 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.Settings;
@@ -123,11 +121,10 @@ public class WirelessTerminalItem extends PoweredContainerItem implements IMenuI
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
     public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay tooltipDisplay,
             Consumer<Component> lines,
-            TooltipFlag advancedTooltips) {
-        super.appendHoverText(stack, context, tooltipDisplay, lines, advancedTooltips);
+            TooltipFlag tooltipFlags) {
+        super.appendHoverText(stack, context, tooltipDisplay, lines, tooltipFlags);
 
         if (getLinkedPosition(stack) == null) {
             lines.accept(Tooltips.of(GuiText.Unlinked, Tooltips.RED));

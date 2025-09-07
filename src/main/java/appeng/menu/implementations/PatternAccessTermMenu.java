@@ -48,7 +48,6 @@ import appeng.api.networking.IGrid;
 import appeng.api.storage.ILinkStatus;
 import appeng.api.storage.IPatternAccessTermMenuHost;
 import appeng.blockentity.crafting.IMolecularAssemblerSupportedPattern;
-import appeng.client.gui.me.patternaccess.PatternAccessTermScreen;
 import appeng.core.AELog;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.network.clientbound.ClearPatternAccessTerminalPacket;

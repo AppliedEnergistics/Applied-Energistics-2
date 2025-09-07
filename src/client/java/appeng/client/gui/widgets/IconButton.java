@@ -77,7 +77,7 @@ public abstract class IconButton extends Button implements ITooltip {
                     Blitter.icon(Icon.TOOLBAR_BUTTON_BACKGROUND).dest(getX(), getY()).zOffset(10).blit(guiGraphics);
                 }
                 if (item != null) {
-                    guiGraphics.renderItem(new ItemStack(item), getX(), getY(), 0, 20);
+                    guiGraphics.renderItem(new ItemStack(item), getX(), getY());
                 } else if (icon != null) {
                     Blitter blitter = Blitter.icon(icon);
                     if (!this.active) {
@@ -96,7 +96,7 @@ public abstract class IconButton extends Button implements ITooltip {
                             .blit(guiGraphics);
                 }
                 if (item != null) {
-                    guiGraphics.renderItem(new ItemStack(item), getX(), getY() + 1 + yOffset, 0, 3);
+                    guiGraphics.renderItem(new ItemStack(item), getX(), getY() + 1 + yOffset);
                 } else if (icon != null) {
                     Blitter.icon(icon).dest(getX(), getY() + 1 + yOffset).zOffset(3).blit(guiGraphics);
                 }

@@ -10,7 +10,7 @@ import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
-import net.minecraft.data.tags.TagsProvider;
+import net.minecraft.data.tags.KeyTagProvider;
 import net.minecraft.resources.ResourceKey;
 
 import appeng.api.ids.AEComponents;
@@ -19,7 +19,7 @@ import appeng.core.ConventionTags;
 import appeng.datagen.providers.localization.LocalizationProvider;
 import appeng.items.tools.MemoryCardItem;
 
-public class DataComponentTypeTagProvider extends TagsProvider<DataComponentType<?>> {
+public class DataComponentTypeTagProvider extends KeyTagProvider<DataComponentType<?>> {
     private final LocalizationProvider localization;
 
     public DataComponentTypeTagProvider(PackOutput output,

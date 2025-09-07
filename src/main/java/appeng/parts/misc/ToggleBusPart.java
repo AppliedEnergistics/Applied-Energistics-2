@@ -21,11 +21,11 @@ package appeng.parts.misc;
 import java.util.EnumSet;
 
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.model.data.ModelData;
 
 import appeng.api.networking.GridFlags;
@@ -75,15 +75,15 @@ public class ToggleBusPart extends AEBasePart {
     }
 
     @Override
-    public void writeVisualStateToNBT(CompoundTag data) {
-        super.writeVisualStateToNBT(data);
-        data.putBoolean("on", isEnabled());
+    public void writeVisualStateToNBT(ValueOutput output) {
+        super.writeVisualStateToNBT(output);
+        output.putBoolean("on", isEnabled());
     }
 
     @Override
-    public void readVisualStateFromNBT(CompoundTag data) {
-        super.readVisualStateFromNBT(data);
-        this.clientSideEnabled = data.getBooleanOr("on", false);
+    public void readVisualStateFromNBT(ValueInput input) {
+        super.readVisualStateFromNBT(input);
+        this.clientSideEnabled = input.getBooleanOr("on", false);
     }
 
     protected boolean isEnabled() {
@@ -111,15 +111,15 @@ public class ToggleBusPart extends AEBasePart {
     }
 
     @Override
-    public void readFromNBT(CompoundTag extra, HolderLookup.Provider registries) {
-        super.readFromNBT(extra, registries);
-        this.getOuterNode().loadFromNBT(extra);
+    public void readFromNBT(ValueInput extra) {
+        super.readFromNBT(extra);
+        this.getOuterNode().deserialize(extra);
     }
 
     @Override
-    public void writeToNBT(CompoundTag extra, HolderLookup.Provider registries) {
-        super.writeToNBT(extra, registries);
-        this.getOuterNode().saveToNBT(extra);
+    public void writeToNBT(ValueOutput extra) {
+        super.writeToNBT(extra);
+        this.getOuterNode().serialize(extra);
     }
 
     @Override

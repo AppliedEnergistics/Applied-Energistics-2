@@ -17,11 +17,11 @@ import appeng.core.definitions.AEParts;
 @Mixin(AnvilMenu.class)
 public abstract class AnvilMenuMixin extends ItemCombinerMenu {
     public AnvilMenuMixin(int containerId, Inventory playerInventory) {
-        super(null, 0, null, null);
+        super(null, 0, null, null, null);
         throw new AssertionError();
     }
 
-    @ModifyExpressionValue(method = "createResult", at = @At(value = "INVOKE", target = "net/minecraft/world/item/ItemStack.isDamageableItem()Z", ordinal = 1))
+    @ModifyExpressionValue(method = "createResultInternal", at = @At(value = "INVOKE", target = "net/minecraft/world/item/ItemStack.isDamageableItem()Z", ordinal = 1))
     public boolean setAnnihilationPlaneThreadLocal(boolean isDamageable) {
         if (AEParts.ANNIHILATION_PLANE.is(inputSlots.getItem(0))
                 && AEParts.ANNIHILATION_PLANE.is(inputSlots.getItem(1))) {

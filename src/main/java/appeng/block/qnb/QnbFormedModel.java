@@ -24,10 +24,10 @@ import java.util.Set;
 
 import com.mojang.serialization.MapCodec;
 
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BlockModelPart;
 import net.minecraft.client.renderer.block.model.BlockStateModel;
 import net.minecraft.client.renderer.block.model.SimpleModelWrapper;
+import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BlockModelRotation;
@@ -120,7 +120,7 @@ public class QnbFormedModel implements DynamicBlockStateModel {
             return;
         }
 
-        var renderType = state.is(AEBlocks.QUANTUM_LINK.block()) ? RenderType.CUTOUT : RenderType.SOLID;
+        var renderType = state.is(AEBlocks.QUANTUM_LINK.block()) ? ChunkSectionLayer.CUTOUT : ChunkSectionLayer.SOLID;
         parts.add(new SimpleModelWrapper(
                 getQuads(formedState, state),
                 true,

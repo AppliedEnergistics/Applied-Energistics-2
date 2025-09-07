@@ -41,8 +41,6 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 import appeng.block.storage.SkyStoneChestBlock;
 import appeng.block.storage.SkyStoneChestBlock.Type;
@@ -50,7 +48,6 @@ import appeng.blockentity.storage.SkyStoneChestBlockEntity;
 import appeng.core.AppEng;
 
 // This is mostly a copy&paste job of the vanilla chest TESR
-@OnlyIn(Dist.CLIENT)
 public class SkyStoneChestRenderer implements BlockEntityRenderer<SkyStoneChestBlockEntity> {
 
     public static ModelLayerLocation MODEL_LAYER = new ModelLayerLocation(AppEng.makeId("sky_chest"), "main");

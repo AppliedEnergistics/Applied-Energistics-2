@@ -24,8 +24,6 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
@@ -34,6 +32,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 import appeng.api.config.Actionable;
 import appeng.api.inventories.ISegmentedInventory;
@@ -124,9 +124,9 @@ public class VibrationChamberBlockEntity extends AENetworkedInvBlockEntity
     }
 
     @Override
-    public void saveAdditional(CompoundTag data, HolderLookup.Provider registries) {
-        super.saveAdditional(data, registries);
-        this.upgrades.writeToNBT(data, "upgrades", registries);
+    public void saveAdditional(ValueOutput data) {
+        super.saveAdditional(data);
+        this.upgrades.writeToNBT(data, "upgrades");
         data.putDouble("burnTime", this.getRemainingFuelTicks());
         data.putDouble("maxBurnTime", this.getFuelItemFuelTicks());
         // Save as percentage of max-speed
@@ -135,9 +135,9 @@ public class VibrationChamberBlockEntity extends AENetworkedInvBlockEntity
     }
 
     @Override
-    public void loadTag(CompoundTag data, HolderLookup.Provider registries) {
-        super.loadTag(data, registries);
-        this.upgrades.readFromNBT(data, "upgrades", registries);
+    public void loadTag(ValueInput data) {
+        super.loadTag(data);
+        this.upgrades.readFromNBT(data, "upgrades");
         this.setRemainingFuelTicks(data.getDoubleOr("burnTime", 0.0));
         this.setFuelItemFuelTicks(data.getDoubleOr("maxBurnTime", 0.0));
         this.setCurrentFuelTicksPerTick(data.getIntOr("burnSpeed", 0) * maxFuelTicksPerTick / 100.0);

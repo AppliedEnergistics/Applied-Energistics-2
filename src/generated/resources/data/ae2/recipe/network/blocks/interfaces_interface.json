@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "a": "#c:ingots/iron",
-    "b": "#c:glass_blocks",
+    "b": "#c:glass_blocks/cheap",
     "c": "ae2:annihilation_core",
     "d": "ae2:formation_core"
   },

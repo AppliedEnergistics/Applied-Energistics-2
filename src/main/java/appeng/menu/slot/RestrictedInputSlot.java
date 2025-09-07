@@ -74,7 +74,7 @@ public class RestrictedInputSlot extends AppEngSlot {
     }
 
     private Level getLevel() {
-        return getMenu().getPlayerInventory().player.getCommandSenderWorld();
+        return getMenu().getPlayerInventory().player.level();
     }
 
     @Override

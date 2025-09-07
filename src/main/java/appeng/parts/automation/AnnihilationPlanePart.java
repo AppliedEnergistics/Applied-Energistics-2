@@ -25,15 +25,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtOps;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.model.data.ModelData;
 
 import appeng.api.behaviors.PickupStrategy;
@@ -105,30 +104,15 @@ public class AnnihilationPlanePart extends AEBasePart implements IGridTickable {
     }
 
     @Override
-    public void readFromNBT(CompoundTag data, HolderLookup.Provider registries) {
-        super.readFromNBT(data, registries);
-
-        var enchantmentsTag = data.getCompound("enchantments");
-        var ops = registries.createSerializationContext(NbtOps.INSTANCE);
-        if (enchantmentsTag.isPresent()) {
-            this.enchantments = ItemEnchantments.CODEC.decode(ops, enchantmentsTag.get())
-                    .ifError(err -> LOG.warn("Failed to load enchantments for part {}: {}", this, err.message()))
-                    .getOrThrow()
-                    .getFirst();
-        } else {
-            this.enchantments = ItemEnchantments.EMPTY;
-        }
+    public void readFromNBT(ValueInput input) {
+        super.readFromNBT(input);
+        this.enchantments = input.read("enchantments", ItemEnchantments.CODEC).orElse(ItemEnchantments.EMPTY);
     }
 
     @Override
-    public void writeToNBT(CompoundTag data, HolderLookup.Provider registries) {
-        super.writeToNBT(data, registries);
-
-        var ops = registries.createSerializationContext(NbtOps.INSTANCE);
-        var enchantmentsTag = ItemEnchantments.CODEC.encodeStart(ops, enchantments).getOrThrow();
-        if (enchantmentsTag instanceof CompoundTag compoundTag && !compoundTag.isEmpty()) {
-            data.put("enchantments", enchantmentsTag);
-        }
+    public void writeToNBT(ValueOutput output) {
+        super.writeToNBT(output);
+        output.store("enchantments", ItemEnchantments.CODEC, this.enchantments);
     }
 
     @Override

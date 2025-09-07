@@ -11,8 +11,11 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.GsonHelper;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.level.storage.TagValueInput;
+import net.minecraft.world.level.storage.TagValueOutput;
 import net.neoforged.neoforge.fluids.FluidStack;
 
 import appeng.util.BootstrapMinecraft;
@@ -67,10 +70,12 @@ class AEKeyTest {
         expected.putString("id", "minecraft:diamond");
 
         var key = AEItemKey.of(Items.DIAMOND);
-        var tag = key.toTagGeneric(registries);
+        var output = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, registries);
+        key.toTagGeneric(output);
+        var tag = output.buildResult();
         assertEquals(expected, tag);
 
-        assertEquals(key, AEKey.fromTagGeneric(registries, tag));
+        assertEquals(key, AEKey.fromTagGeneric(TagValueInput.create(ProblemReporter.DISCARDING, registries, tag)));
     }
 
     @Test
@@ -80,10 +85,12 @@ class AEKeyTest {
         expected.putString("id", "minecraft:water");
 
         var key = AEFluidKey.of(Fluids.WATER);
-        var tag = key.toTagGeneric(registries);
+        var output = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, registries);
+        key.toTagGeneric(output);
+        var tag = output.buildResult();
         assertEquals(expected, tag);
 
-        assertEquals(key, AEKey.fromTagGeneric(registries, tag));
+        assertEquals(key, AEKey.fromTagGeneric(TagValueInput.create(ProblemReporter.DISCARDING, registries, tag)));
     }
 
     private static <T> void testKeyTypeRoundtrip(AEKey key, DynamicOps<T> ops, T encodedValue) {

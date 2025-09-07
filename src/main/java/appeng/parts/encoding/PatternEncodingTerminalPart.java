@@ -20,11 +20,11 @@ package appeng.parts.encoding;
 
 import java.util.List;
 
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 import appeng.api.parts.IPartItem;
 import appeng.helpers.IPatternTerminalLogicHost;
@@ -60,16 +60,16 @@ public class PatternEncodingTerminalPart extends AbstractTerminalPart
     }
 
     @Override
-    public void readFromNBT(CompoundTag data, HolderLookup.Provider registries) {
-        super.readFromNBT(data, registries);
+    public void readFromNBT(ValueInput input) {
+        super.readFromNBT(input);
 
-        logic.readFromNBT(data, registries);
+        logic.readFromNBT(input);
     }
 
     @Override
-    public void writeToNBT(CompoundTag data, HolderLookup.Provider registries) {
-        super.writeToNBT(data, registries);
-        logic.writeToNBT(data, registries);
+    public void writeToNBT(ValueOutput output) {
+        super.writeToNBT(output);
+        logic.writeToNBT(output);
     }
 
     @Override

@@ -151,13 +151,10 @@ public class EncodePatternTransferHandler<T extends PatternEncodingTermMenu> ext
             for (Widget widget : widgets) {
                 if (widget instanceof Slot slot && slot.getNoticeMark() == Slot.INPUT) {
                     if (isCraftable(craftableKeys, slot.getEntries())) {
-                        var poseStack = guiGraphics.pose();
-                        poseStack.pushPose();
-                        poseStack.translate(0, 0, 400);
+                        guiGraphics.nextStratum();
                         Rectangle innerBounds = slot.getInnerBounds();
                         guiGraphics.fill(innerBounds.x, innerBounds.y, innerBounds.getMaxX(),
                                 innerBounds.getMaxY(), BLUE_SLOT_HIGHLIGHT_COLOR);
-                        poseStack.popPose();
                     }
                 }
             }

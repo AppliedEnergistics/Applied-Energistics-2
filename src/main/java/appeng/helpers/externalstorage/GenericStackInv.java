@@ -27,10 +27,9 @@ import com.google.common.base.Preconditions;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 import it.unimi.dsi.fastutil.objects.Reference2LongArrayMap;
 import it.unimi.dsi.fastutil.objects.Reference2LongMap;
@@ -259,26 +258,19 @@ public class GenericStackInv implements MEStorage, GenericInternalInventory {
         }
     }
 
-    public ListTag writeToTag(HolderLookup.Provider registries) {
-        ListTag tag = new ListTag();
-
-        for (var stack : stacks) {
-            tag.add(GenericStack.writeTag(registries, stack));
+    public void writeToTag(ValueOutput.ValueOutputList output) {
+        // Count how many trailing nulls we have and don't write them in the first place
+        var lastIndex = stacks.length;
+        for (; lastIndex > 0 && stacks[lastIndex - 1] == null; lastIndex--) {
         }
 
-        // Strip out trailing nulls
-        for (int i = tag.size() - 1; i >= 0; i--) {
-            if (tag.getCompound(i).orElseThrow().isEmpty()) {
-                tag.remove(i);
-            } else {
-                break;
-            }
+        for (int i = 0; i < lastIndex; i++) {
+            var stack = stacks[i];
+            GenericStack.writeTag(output.addChild(), stack);
         }
-
-        return tag;
     }
 
-    public void writeToChildTag(CompoundTag tag, String name, HolderLookup.Provider registries) {
+    public void writeToChildTag(ValueOutput output, String name) {
         boolean isEmpty = true;
         for (var stack : stacks) {
             if (stack != null) {
@@ -288,28 +280,32 @@ public class GenericStackInv implements MEStorage, GenericInternalInventory {
         }
 
         if (!isEmpty) {
-            tag.put(name, writeToTag(registries));
-        } else {
-            tag.remove(name);
+            writeToTag(output.childrenList(name));
         }
     }
 
-    public void readFromTag(ListTag tag, HolderLookup.Provider registries) {
+    public void readFromTag(ValueInput.ValueInputList input) {
         boolean changed = false;
-        for (int i = 0; i < Math.min(size(), tag.size()); ++i) {
-            var stackTag = tag.getCompound(i).orElse(null);
-            var stack = stackTag != null ? GenericStack.readTag(registries, stackTag) : null;
-            if (!Objects.equals(stack, stacks[i])) {
-                stacks[i] = stack;
+        var index = 0;
+        for (var inputElement : input) {
+            if (index >= size()) {
+                break;
+            }
+
+            var stack = GenericStack.readTag(inputElement);
+            if (!Objects.equals(stack, stacks[index])) {
+                stacks[index] = stack;
                 changed = true;
             }
+            index++;
         }
         // Ensure any of the remaining slots are cleared
-        for (int i = tag.size(); i < size(); i++) {
-            if (stacks[i] != null) {
-                stacks[i] = null;
+        while (index < size()) {
+            if (stacks[index] != null) {
+                stacks[index] = null;
                 changed = true;
             }
+            index++;
         }
 
         if (changed) {
@@ -332,10 +328,10 @@ public class GenericStackInv implements MEStorage, GenericInternalInventory {
         }
     }
 
-    public void readFromChildTag(CompoundTag tag, String name, HolderLookup.Provider registries) {
-        var contentTag = tag.getList(name);
-        if (contentTag.isPresent()) {
-            readFromTag(contentTag.get(), registries);
+    public void readFromChildTag(ValueInput input, String name) {
+        var content = input.childrenListOrEmpty(name);
+        if (!content.isEmpty()) {
+            readFromTag(content);
         } else {
             clear();
         }

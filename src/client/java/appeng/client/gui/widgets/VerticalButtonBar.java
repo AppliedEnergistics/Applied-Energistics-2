@@ -26,7 +26,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.renderer.Rect2i;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderPipelines;
 
 import appeng.client.Point;
 import appeng.client.gui.AEBaseScreen;
@@ -123,8 +123,7 @@ public class VerticalButtonBar implements ICompositeWidget {
 
     @Override
     public void drawBackgroundLayer(GuiGraphics guiGraphics, Rect2i bounds, Point mouse) {
-        guiGraphics.blitSprite(
-                RenderType::guiTextured,
+        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED,
                 AppEng.makeId("vertical_buttons_bg"),
                 bounds.getX() + this.bounds.getX() - 2,
                 bounds.getY() + this.bounds.getY() - 1,

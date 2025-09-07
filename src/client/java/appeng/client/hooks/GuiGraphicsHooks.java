@@ -44,7 +44,7 @@ public final class GuiGraphicsHooks {
      * is held.
      */
     public static boolean onRenderGuiItem(GuiGraphics guiGraphics, @Nullable LivingEntity livingEntity,
-            @Nullable Level level, ItemStack stack, int x, int y, int seed, int z) {
+            @Nullable Level level, ItemStack stack, int x, int y, int seed) {
         var minecraft = Minecraft.getInstance();
 
         if (stack.getItem() instanceof EncodedPatternItem encodedPattern) {
@@ -57,7 +57,7 @@ public final class GuiGraphicsHooks {
                 var output = encodedPattern.getOutput(stack);
                 // If output would be identical to stack, we'd infinitely loop
                 if (!output.isEmpty() && output != stack) {
-                    renderInstead(guiGraphics, livingEntity, level, output, x, y, seed, z);
+                    renderInstead(guiGraphics, livingEntity, level, output, x, y, seed);
                     return true;
                 }
             }
@@ -83,10 +83,10 @@ public final class GuiGraphicsHooks {
     }
 
     private static void renderInstead(GuiGraphics guiGraphics, @Nullable LivingEntity livingEntity,
-            @Nullable Level level, ItemStack stack, int x, int y, int seed, int z) {
+            @Nullable Level level, ItemStack stack, int x, int y, int seed) {
         OVERRIDING_FOR.set(stack);
         try {
-            guiGraphics.renderItem(livingEntity, level, stack, x, y, seed, z);
+            guiGraphics.renderItem(livingEntity, level, stack, x, y, seed);
         } finally {
             OVERRIDING_FOR.remove();
         }

@@ -24,10 +24,10 @@ import java.util.List;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BlockModelPart;
 import net.minecraft.client.renderer.block.model.BlockStateModel;
 import net.minecraft.client.renderer.block.model.SimpleModelWrapper;
+import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.QuadCollection;
@@ -118,7 +118,7 @@ public abstract class CraftingCubeModel implements DynamicBlockStateModel {
             this.addInnerCube(cullFace, state, extraData, builder, x1, y1, z1, x2, y2, z2);
         }
 
-        parts.add(new SimpleModelWrapper(quadCollection.build(), false, ringCorner, RenderType.cutout()));
+        parts.add(new SimpleModelWrapper(quadCollection.build(), false, ringCorner, ChunkSectionLayer.CUTOUT));
     }
 
     private void addRing(CubeBuilder builder, Direction side, EnumSet<Direction> connections) {

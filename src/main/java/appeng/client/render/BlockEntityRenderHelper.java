@@ -89,6 +89,8 @@ public final class BlockEntityRenderHelper {
 
         var renderedStackSize = amount == 0 && canCraft ? "Craft" : what.formatAmount(amount, AmountFormat.SLOT);
 
+        textColor |= 0xFF000000; // ensure full visibility
+
         // Render the item count
         var fr = Minecraft.getInstance().font;
         var width = fr.width(renderedStackSize);

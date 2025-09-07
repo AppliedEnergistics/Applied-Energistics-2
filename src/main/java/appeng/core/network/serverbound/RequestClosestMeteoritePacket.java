@@ -32,8 +32,8 @@ public record RequestClosestMeteoritePacket(ChunkPos pos) implements Serverbound
 
     @Override
     public void handleOnServer(ServerPlayer player) {
-        var result = ServerCompassService.getClosestMeteorite(player.serverLevel(), pos);
-        LOG.trace("{} requested closest meteorite for {} in {} -> {}", player, pos, player.serverLevel(), result);
+        var result = ServerCompassService.getClosestMeteorite(player.level(), pos);
+        LOG.trace("{} requested closest meteorite for {} in {} -> {}", player, pos, player.level(), result);
         player.connection.send(new CompassResponsePacket(pos, result));
     }
 }

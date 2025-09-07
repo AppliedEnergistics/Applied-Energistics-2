@@ -21,7 +21,7 @@ package appeng.client.gui.implementations;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.network.chat.Component;
-import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 
 import appeng.client.gui.WidgetContainer;
 import appeng.client.gui.widgets.TabButton;
@@ -55,7 +55,7 @@ public final class AESubScreen {
 
     public static void goBack() {
         ServerboundPacket message = SwitchGuisPacket.returnToParentMenu();
-        PacketDistributor.sendToServer(message);
+        ClientPacketDistributor.sendToServer(message);
     }
 
 }

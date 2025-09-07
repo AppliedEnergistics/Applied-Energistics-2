@@ -22,13 +22,9 @@ import appeng.items.parts.PartItem;
  */
 public class AnnihilationPlanePartItem extends PartItem<AnnihilationPlanePart> {
     public AnnihilationPlanePartItem(Properties properties) {
-        super(properties.component(DataComponents.ENCHANTABLE, new Enchantable(10)), AnnihilationPlanePart.class,
+        super(properties.component(DataComponents.ENCHANTABLE, new Enchantable(10))
+                .component(DataComponents.ENCHANTMENTS, ItemEnchantments.EMPTY), AnnihilationPlanePart.class,
                 AnnihilationPlanePart::new);
-    }
-
-    @Override
-    public boolean isBookEnchantable(ItemStack stack, ItemStack book) {
-        return true;
     }
 
     @Override

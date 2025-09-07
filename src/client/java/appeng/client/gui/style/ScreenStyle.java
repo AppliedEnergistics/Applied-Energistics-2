@@ -18,11 +18,11 @@
 
 package appeng.client.gui.style;
 
+import java.awt.event.ComponentAdapter;
 import java.lang.reflect.Type;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Stream;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -37,8 +37,8 @@ import com.mojang.serialization.JsonOps;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.renderer.Rect2i;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.network.chat.Style;
 
 /**
@@ -48,13 +48,26 @@ public class ScreenStyle {
 
     public static final Gson GSON = new GsonBuilder()
             .disableHtmlEscaping()
-            .registerTypeHierarchyAdapter(Component.class,
-                    new Component.SerializerAdapter(HolderLookup.Provider.create(Stream.of())))
+            .registerTypeHierarchyAdapter(Component.class, new ComponentAdapter())
             .registerTypeAdapter(Style.class, new StyleSerializer())
             .registerTypeAdapter(Blitter.class, BlitterDeserializer.INSTANCE)
             .registerTypeAdapter(Rect2i.class, Rectangle2dDeserializer.INSTANCE)
             .registerTypeAdapter(Color.class, ColorDeserializer.INSTANCE)
             .create();
+
+    private static class ComponentAdapter implements JsonDeserializer<Component>, JsonSerializer<Component> {
+        @Override
+        public Component deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
+                throws JsonParseException {
+            return ComponentSerialization.CODEC.decode(JsonOps.INSTANCE, json).getOrThrow(JsonParseException::new)
+                    .getFirst();
+        }
+
+        @Override
+        public JsonElement serialize(Component src, Type typeOfSrc, JsonSerializationContext context) {
+            return ComponentSerialization.CODEC.encodeStart(JsonOps.INSTANCE, src).getOrThrow();
+        }
+    }
 
     /**
      * Overrides the default help topic for this screen. This will be resolved as a link to a page in the guidebook and

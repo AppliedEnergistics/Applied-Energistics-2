@@ -151,7 +151,7 @@ class AECodecsTest {
                     new ItemStack(Items.STICK, 999))));
 
             // Validate our assumption that this throws
-            assertThrows(Exception.class, () -> stack.save(RegistryAccess.EMPTY));
+            assertThrows(Exception.class, () -> StackUtil.toTag(RegistryAccess.EMPTY, stack));
 
             // Build a generic stack out of this item
             var listInput = List.of(

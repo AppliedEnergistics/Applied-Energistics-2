@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "a": "#c:glass_blocks",
+    "a": "#c:glass_blocks/cheap",
     "b": "ae2:terminal",
     "c": "ae2:fluix_glass_cable",
     "d": "#c:ingots/iron",

@@ -32,8 +32,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 import appeng.api.ids.AEComponents;
 import appeng.api.implementations.items.ISpatialStorageCell;
@@ -56,11 +54,10 @@ public class SpatialStorageCellItem extends AEBaseItem implements ISpatialStorag
         this.maxRegion = spatialScale;
     }
 
-    @OnlyIn(Dist.CLIENT)
     @Override
     public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay tooltipDisplay,
             Consumer<Component> lines,
-            TooltipFlag advancedTooltips) {
+            TooltipFlag tooltipFlags) {
         var plotInfo = stack.get(AEComponents.SPATIAL_PLOT_INFO);
         if (plotInfo == null) {
             lines.accept(Tooltips.of(GuiText.Unformatted).withStyle(ChatFormatting.ITALIC));

@@ -56,6 +56,7 @@ import appeng.core.definitions.AEItems;
 import appeng.util.BootstrapMinecraft;
 import appeng.util.LoadTranslations;
 import appeng.util.RecursiveTagReplace;
+import appeng.util.StackUtil;
 
 @BootstrapMinecraft
 @LoadTranslations
@@ -108,7 +109,7 @@ class AECraftingPatternTest {
     @Test
     void testDecodeWithoutComponent() {
         var item = AEItems.CRAFTING_PATTERN.stack();
-        var tag = item.save(registries);
+        var tag = StackUtil.toTag(registries, item);
         assertNull(decode((CompoundTag) tag));
     }
 
@@ -119,11 +120,11 @@ class AECraftingPatternTest {
     @Test
     void testDecodeWithRemovedIngredientItemIds() {
         var encoded = createTestPattern();
-        var encodedTag = (CompoundTag) encoded.save(registries);
+        var encodedTag = StackUtil.toTag(registries, encoded);
 
         // Replace the diamond ID string with an unknown ID string
         assertEquals(1, RecursiveTagReplace.replace(encodedTag, "minecraft:torch", "minecraft:does_not_exist"));
-        var brokenPatternStack = ItemStack.parse(registries, encodedTag).get();
+        var brokenPatternStack = StackUtil.fromTag(registries, encodedTag);
 
         assertNull(decode(encodedTag));
         assertThat(getExtraTooltip(brokenPatternStack)).containsExactly(
@@ -168,7 +169,7 @@ class AECraftingPatternTest {
         when(level.recipeAccess()).thenReturn(recipeManager);
         when(recipeManager.recipeMap().byType(RecipeType.CRAFTING)).thenReturn(List.of(TEST_RECIPE));
 
-        var pattern = ItemStack.parse(registries, tag).get();
+        var pattern = StackUtil.fromTag(registries, tag);
         var details = PatternDetailsHelper.decodePattern(AEItemKey.of(pattern), level);
         if (details == null) {
             return null;

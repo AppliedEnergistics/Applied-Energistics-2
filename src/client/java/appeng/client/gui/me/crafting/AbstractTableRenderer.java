@@ -107,8 +107,8 @@ public abstract class AbstractTableRenderer<T> {
                 // Position the item at the right side of the cell with a 3px margin
                 int itemX = cellX + CELL_WIDTH - 19;
 
-                pose.pushPose();
-                pose.scale(TEXT_SCALE, TEXT_SCALE, 1.0f);
+                pose.pushMatrix();
+                pose.scale(TEXT_SCALE);
                 for (Component line : lines) {
                     final int w = fontRenderer.width(line);
                     guiGraphics.drawString(fontRenderer, line,
@@ -116,7 +116,7 @@ public abstract class AbstractTableRenderer<T> {
                             (int) (textY * INV_TEXT_SCALE), textColor, false);
                     textY += lineHeight + LINE_SPACING;
                 }
-                pose.popPose();
+                pose.popMatrix();
 
                 var entryStack = getEntryStack(entry);
 

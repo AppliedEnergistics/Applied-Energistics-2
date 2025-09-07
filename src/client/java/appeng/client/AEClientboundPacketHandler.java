@@ -21,6 +21,7 @@ import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -31,6 +32,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.material.Fluid;
+import net.neoforged.neoforge.client.network.event.RegisterClientPayloadHandlersEvent;
 import net.neoforged.neoforge.common.SoundActions;
 
 import appeng.api.util.IConfigurableObject;
@@ -44,6 +46,7 @@ import appeng.client.gui.me.patternaccess.PatternAccessTermScreen;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
 import appeng.core.AppEng;
+import appeng.core.network.ClientboundPacket;
 import appeng.core.network.bidirectional.ConfigValuePacket;
 import appeng.core.network.clientbound.BlockTransitionEffectPacket;
 import appeng.core.network.clientbound.ClearPatternAccessTerminalPacket;
@@ -193,7 +196,7 @@ public class AEClientboundPacketHandler {
 
     public void handleMolecularAssemblerAnimationPacket(MolecularAssemblerAnimationPacket packet, Minecraft minecraft,
             Player player) {
-        BlockEntity te = player.getCommandSenderWorld().getBlockEntity(packet.pos());
+        BlockEntity te = player.level().getBlockEntity(packet.pos());
         if (te instanceof MolecularAssemblerBlockEntity ma) {
             ma.setAnimationStatus(
                     new MolecularAssemblerAnimationStatus(packet.rate(), packet.what().wrapForDisplayOrFilter()));
@@ -243,7 +246,7 @@ public class AEClientboundPacketHandler {
     }
 
     public void handleMockExplosionPacket(MockExplosionPacket packet, Minecraft minecraft, Player player) {
-        final Level level = player.getCommandSenderWorld();
+        final Level level = player.level();
         level.addParticle(net.minecraft.core.particles.ParticleTypes.EXPLOSION, packet.x(), packet.y(), packet.z(),
                 1.0D, 0.0D, 0.0D);
 
@@ -252,7 +255,7 @@ public class AEClientboundPacketHandler {
     public void handleLightningPacket(LightningPacket packet, Minecraft minecraft, Player player) {
         try {
             if (AEConfig.instance().isEnableEffects()) {
-                player.getCommandSenderWorld().addParticle(ParticleTypes.LIGHTNING, packet.x(), packet.y(), packet.z(),
+                player.level().addParticle(ParticleTypes.LIGHTNING, packet.x(), packet.y(), packet.z(),
                         0.0f, 0.0f,
                         0.0f);
             }
@@ -333,24 +336,34 @@ public class AEClientboundPacketHandler {
         }
     }
 
-    public void register(ClientsidePacketHandlers handlers) {
-        handlers.register(GuiDataSyncPacket.TYPE, this::handleGuiDataSyncPacket);
-        handlers.register(MatterCannonPacket.TYPE, this::handleMatterCannonPacket);
-        handlers.register(SetLinkStatusPacket.TYPE, this::handleSetLinkStatusPacket);
-        handlers.register(PatternAccessTerminalPacket.TYPE, this::handlePatternAccessTerminalPacket);
-        handlers.register(BlockTransitionEffectPacket.TYPE, this::handleBlockTransitionEffectPacket);
-        handlers.register(CraftingStatusPacket.TYPE, this::handleCraftingStatusPacket);
-        handlers.register(CraftConfirmPlanPacket.TYPE, this::handleCraftConfirmPlanPacket);
-        handlers.register(NetworkStatusPacket.TYPE, this::handleNetworkStatusPacket);
-        handlers.register(MolecularAssemblerAnimationPacket.TYPE, this::handleMolecularAssemblerAnimationPacket);
-        handlers.register(MEInventoryUpdatePacket.TYPE, this::handleMEInventoryUpdatePacket);
-        handlers.register(CompassResponsePacket.TYPE, this::handleCompassResponsePacket);
-        handlers.register(ClearPatternAccessTerminalPacket.TYPE, this::handleClearPatternAccessTerminalPacket);
-        handlers.register(ItemTransitionEffectPacket.TYPE, this::handleItemTransitionEffectPacket);
-        handlers.register(MockExplosionPacket.TYPE, this::handleMockExplosionPacket);
-        handlers.register(LightningPacket.TYPE, this::handleLightningPacket);
-        handlers.register(ExportedGridContent.TYPE, this::handleExportedGridContent);
-        handlers.register(CraftingJobStatusPacket.TYPE, this::handleCraftingJobStatusPacket);
-        handlers.register(ConfigValuePacket.TYPE, this::handleConfigValuePacket);
+    public void register(RegisterClientPayloadHandlersEvent event) {
+        register(event, GuiDataSyncPacket.TYPE, this::handleGuiDataSyncPacket);
+        register(event, MatterCannonPacket.TYPE, this::handleMatterCannonPacket);
+        register(event, SetLinkStatusPacket.TYPE, this::handleSetLinkStatusPacket);
+        register(event, PatternAccessTerminalPacket.TYPE, this::handlePatternAccessTerminalPacket);
+        register(event, BlockTransitionEffectPacket.TYPE, this::handleBlockTransitionEffectPacket);
+        register(event, CraftingStatusPacket.TYPE, this::handleCraftingStatusPacket);
+        register(event, CraftConfirmPlanPacket.TYPE, this::handleCraftConfirmPlanPacket);
+        register(event, NetworkStatusPacket.TYPE, this::handleNetworkStatusPacket);
+        register(event, MolecularAssemblerAnimationPacket.TYPE, this::handleMolecularAssemblerAnimationPacket);
+        register(event, MEInventoryUpdatePacket.TYPE, this::handleMEInventoryUpdatePacket);
+        register(event, CompassResponsePacket.TYPE, this::handleCompassResponsePacket);
+        register(event, ClearPatternAccessTerminalPacket.TYPE, this::handleClearPatternAccessTerminalPacket);
+        register(event, ItemTransitionEffectPacket.TYPE, this::handleItemTransitionEffectPacket);
+        register(event, MockExplosionPacket.TYPE, this::handleMockExplosionPacket);
+        register(event, LightningPacket.TYPE, this::handleLightningPacket);
+        register(event, ExportedGridContent.TYPE, this::handleExportedGridContent);
+        register(event, CraftingJobStatusPacket.TYPE, this::handleCraftingJobStatusPacket);
+        register(event, ConfigValuePacket.TYPE, this::handleConfigValuePacket);
+    }
+
+    private static <T extends ClientboundPacket> void register(RegisterClientPayloadHandlersEvent event,
+            CustomPacketPayload.Type<T> type, ClientPacketHandler<T> handler) {
+        event.register(type, (payload, context) -> handler.handle(payload, Minecraft.getInstance(), context.player()));
+    }
+
+    @FunctionalInterface
+    private interface ClientPacketHandler<T extends ClientboundPacket> {
+        void handle(T payload, Minecraft minecraft, Player player);
     }
 }

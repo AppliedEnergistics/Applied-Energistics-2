@@ -20,12 +20,12 @@ package appeng.parts.reporting;
 
 import java.util.List;
 
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 import appeng.api.inventories.InternalInventory;
 import appeng.api.parts.IPartItem;
@@ -63,15 +63,15 @@ public class CraftingTerminalPart extends AbstractTerminalPart {
     }
 
     @Override
-    public void readFromNBT(CompoundTag data, HolderLookup.Provider registries) {
-        super.readFromNBT(data, registries);
-        this.craftingGrid.readFromNBT(data, "craftingGrid", registries);
+    public void readFromNBT(ValueInput input) {
+        super.readFromNBT(input);
+        this.craftingGrid.readFromNBT(input, "craftingGrid");
     }
 
     @Override
-    public void writeToNBT(CompoundTag data, HolderLookup.Provider registries) {
-        super.writeToNBT(data, registries);
-        this.craftingGrid.writeToNBT(data, "craftingGrid", registries);
+    public void writeToNBT(ValueOutput output) {
+        super.writeToNBT(output);
+        this.craftingGrid.writeToNBT(output, "craftingGrid");
     }
 
     @Override

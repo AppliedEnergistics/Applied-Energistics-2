@@ -1,15 +1,10 @@
 package appeng.client.integration.itemlists;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.Tesselator;
-
 import org.joml.Matrix4fStack;
 import org.joml.Quaternionf;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.FogParameters;
-import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
@@ -29,41 +24,33 @@ public final class FluidBlockRendering {
     }
 
     public static void render(GuiGraphics guiGraphics, Fluid fluid, int x, int y, int width, int height) {
-        var fluidState = fluid.defaultFluidState();
-
-        var blockRenderer = Minecraft.getInstance().getBlockRenderer();
-
-        var renderType = ItemBlockRenderTypes.getRenderLayer(fluidState);
-
-        var worldMatStack = RenderSystem.getModelViewStack();
-        worldMatStack.pushMatrix();
-        worldMatStack.mul(guiGraphics.pose().last().pose());
-        worldMatStack.translate(x, y, 0);
-
-        RenderSystem.setShaderFog(FogParameters.NO_FOG);
-
-        // The fluid block will render [-0.5,0.5] since it's intended for world-rendering
-        // we need to scale it to the rectangle's size, and then move it to the center
-        worldMatStack.translate(width / 2.f, height / 2.f, 0);
-        worldMatStack.scale(width, height, 1);
-
-        setupOrthographicProjection(worldMatStack);
-
-        var builder = Tesselator.getInstance().begin(renderType.mode(), renderType.format());
-        blockRenderer.renderLiquid(
-                BlockPos.ZERO,
-                new FakeWorld(fluidState),
-                builder,
-                fluidState.createLegacyBlock(),
-                fluidState);
-        var meshData = builder.build();
-        if (meshData != null) {
-            renderType.draw(meshData);
-        }
-
-        // Reset the render state and return to the previous modelview matrix
-        renderType.clearRenderState();
-        worldMatStack.popMatrix();
+        // TODO 1.21.8 Has to be rewritten
+        /*
+         * var fluidState = fluid.defaultFluidState();
+         * 
+         * var blockRenderer = Minecraft.getInstance().getBlockRenderer();
+         * 
+         * var renderType = ItemBlockRenderTypes.getRenderLayer(fluidState);
+         * 
+         * var worldMatStack = RenderSystem.getModelViewStack(); worldMatStack.pushMatrix();
+         * worldMatStack.mul(guiGraphics.pose().last().pose()); worldMatStack.translate(x, y, 0);
+         * 
+         * RenderSystem.setShaderFog(FogParameters.NO_FOG);
+         * 
+         * // The fluid block will render [-0.5,0.5] since it's intended for world-rendering // we need to scale it to
+         * the rectangle's size, and then move it to the center worldMatStack.translate(width / 2.f, height / 2.f, 0);
+         * worldMatStack.scale(width, height, 1);
+         * 
+         * setupOrthographicProjection(worldMatStack);
+         * 
+         * var builder = Tesselator.getInstance().begin(renderType.mode(), renderType.format());
+         * blockRenderer.renderLiquid( BlockPos.ZERO, new FakeWorld(fluidState), builder,
+         * fluidState.createLegacyBlock(), fluidState); var meshData = builder.build(); if (meshData != null) {
+         * renderType.draw(meshData); }
+         * 
+         * // Reset the render state and return to the previous modelview matrix renderType.clearRenderState();
+         * worldMatStack.popMatrix();
+         */
     }
 
     private static void setupOrthographicProjection(Matrix4fStack worldMatStack) {

@@ -24,9 +24,9 @@ import com.mojang.serialization.MapCodec;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BlockModelPart;
 import net.minecraft.client.renderer.block.model.SimpleModelWrapper;
+import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.Material;
@@ -76,7 +76,7 @@ public class PaintSplotchesModel implements DynamicBlockStateModel {
                 quadListBuilder.build(),
                 false,
                 textures[0],
-                RenderType.CUTOUT));
+                ChunkSectionLayer.CUTOUT));
     }
 
     @Override

@@ -257,7 +257,7 @@ public record FillCraftingGridFromRecipePacket(
     private List<Optional<Ingredient>> getDesiredIngredients(ServerPlayer player) {
         // Try to retrieve the real recipe on the server-side
         if (this.recipeId != null) {
-            var recipe = player.serverLevel().recipeAccess().byKey(this.recipeId).orElse(null);
+            var recipe = player.level().recipeAccess().byKey(this.recipeId).orElse(null);
             if (recipe != null) {
                 return CraftingRecipeUtil.ensure3by3CraftingMatrix(recipe.value());
             }

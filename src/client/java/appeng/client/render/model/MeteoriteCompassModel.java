@@ -19,6 +19,7 @@
 package appeng.client.render.model;
 
 import java.util.Objects;
+import java.util.Set;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Transformation;
@@ -28,6 +29,7 @@ import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 import org.joml.Vector2f;
+import org.joml.Vector3f;
 
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -78,7 +80,7 @@ public class MeteoriteCompassModel implements ItemModel {
         var pointerLayer = renderState.newLayer();
         pointerLayer.setTransform(pointer.renderProperties().transforms().getTransform(displayContext));
         pointerLayer.setupSpecialModel(rotatedPointerRenderer, target);
-
+        renderState.setAnimated();
     }
 
     /**
@@ -154,6 +156,11 @@ public class MeteoriteCompassModel implements ItemModel {
                 bakedQuad = transformer.process(bakedQuad);
                 buffer.putBulkData(pose, bakedQuad, 1f, 1f, 1f, 1f, packedLight, packedOverlay);
             }
+        }
+
+        @Override
+        public void getExtents(Set<Vector3f> extents) {
+            extents.size();
         }
 
         @Override

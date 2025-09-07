@@ -25,12 +25,9 @@ import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.client.particle.TextureSheetParticle;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 import appeng.core.particles.LightningArcParticleData;
 
-@OnlyIn(Dist.CLIENT)
 public class LightningArcFX extends LightningFX {
 
     private static final RandomSource RANDOM_GENERATOR = RandomSource.create();
@@ -67,7 +64,6 @@ public class LightningArcFX extends LightningFX {
         }
     }
 
-    @OnlyIn(Dist.CLIENT)
     public static class Factory implements ParticleProvider<LightningArcParticleData> {
         private final SpriteSet spriteSet;
 

@@ -97,7 +97,7 @@ public class EncodedPatternItem<T extends IPatternDetails> extends AEBaseItem {
 
     private boolean clearPattern(ItemStack stack, Player player) {
         if (InteractionUtil.isInAlternateUseMode(player)) {
-            if (player.getCommandSenderWorld().isClientSide()) {
+            if (player.level().isClientSide()) {
                 return false;
             }
 

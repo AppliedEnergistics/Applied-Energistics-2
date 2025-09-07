@@ -45,11 +45,7 @@ import appeng.core.areaoverlay.IAreaOverlayDataSource;
 public class AreaOverlayRenderer {
 
     @SubscribeEvent
-    public void renderWorldLastEvent(RenderLevelStageEvent event) {
-        if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_LEVEL) {
-            return;
-        }
-
+    public void renderWorldLastEvent(RenderLevelStageEvent.AfterLevel event) {
         var visibleAreas = AreaOverlayManager.getInstance().getVisible();
 
         Minecraft minecraft = Minecraft.getInstance();

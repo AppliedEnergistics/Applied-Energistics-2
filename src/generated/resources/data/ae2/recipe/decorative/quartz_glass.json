@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "a": "#ae2:all_quartz_dust",
-    "b": "#c:glass_blocks"
+    "b": "#c:glass_blocks/cheap"
   },
   "pattern": [
     "aba",

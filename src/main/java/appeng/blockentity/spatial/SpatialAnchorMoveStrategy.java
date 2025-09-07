@@ -18,8 +18,6 @@
 
 package appeng.blockentity.spatial;
 
-import org.jetbrains.annotations.Nullable;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -41,7 +39,6 @@ public class SpatialAnchorMoveStrategy extends DefaultBlockEntityMoveStrategy {
         return type == AEBlockEntities.SPATIAL_ANCHOR.get();
     }
 
-    @Nullable
     @Override
     public CompoundTag beginMove(BlockEntity blockEntity, HolderLookup.Provider registries) {
         var result = super.beginMove(blockEntity, registries);

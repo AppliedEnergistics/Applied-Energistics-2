@@ -22,14 +22,14 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.particles.DustParticleOptions;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.model.data.ModelData;
 
 import appeng.api.config.RedstoneMode;
@@ -95,17 +95,17 @@ public abstract class AbstractLevelEmitterPart extends UpgradeablePart {
     }
 
     @Override
-    public void writeVisualStateToNBT(CompoundTag data) {
-        super.writeVisualStateToNBT(data);
+    public void writeVisualStateToNBT(ValueOutput output) {
+        super.writeVisualStateToNBT(output);
 
-        data.putBoolean("on", isLevelEmitterOn());
+        output.putBoolean("on", isLevelEmitterOn());
     }
 
     @Override
-    public void readVisualStateFromNBT(CompoundTag data) {
-        super.readVisualStateFromNBT(data);
+    public void readVisualStateFromNBT(ValueInput input) {
+        super.readVisualStateFromNBT(input);
 
-        this.clientSideOn = data.getBooleanOr("on", false);
+        this.clientSideOn = input.getBooleanOr("on", false);
     }
 
     protected void updateState() {
@@ -181,16 +181,16 @@ public abstract class AbstractLevelEmitterPart extends UpgradeablePart {
     }
 
     @Override
-    public void readFromNBT(CompoundTag data, HolderLookup.Provider registries) {
-        super.readFromNBT(data, registries);
-        this.lastReportedValue = data.getLongOr("lastReportedValue", 0);
-        this.reportingValue = data.getLongOr("reportingValue", 0);
-        this.prevState = data.getBooleanOr("prevState", false);
+    public void readFromNBT(ValueInput input) {
+        super.readFromNBT(input);
+        this.lastReportedValue = input.getLongOr("lastReportedValue", 0);
+        this.reportingValue = input.getLongOr("reportingValue", 0);
+        this.prevState = input.getBooleanOr("prevState", false);
     }
 
     @Override
-    public void writeToNBT(CompoundTag data, HolderLookup.Provider registries) {
-        super.writeToNBT(data, registries);
+    public void writeToNBT(ValueOutput data) {
+        super.writeToNBT(data);
         data.putLong("lastReportedValue", this.lastReportedValue);
         data.putLong("reportingValue", this.reportingValue);
         data.putBoolean("prevState", this.prevState);

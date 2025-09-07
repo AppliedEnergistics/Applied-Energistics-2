@@ -26,11 +26,11 @@ import com.mojang.serialization.MapCodec;
 
 import org.joml.Vector3f;
 
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.BlockModelPart;
 import net.minecraft.client.renderer.block.model.BlockStateModel;
 import net.minecraft.client.renderer.block.model.SimpleModelWrapper;
+import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.Material;
@@ -137,7 +137,7 @@ public class QuartzGlassModel implements DynamicBlockStateModel {
             }
         }
 
-        parts.add(new SimpleModelWrapper(quads.build(), false, particleIcon(), RenderType.cutout()));
+        parts.add(new SimpleModelWrapper(quads.build(), false, particleIcon(), ChunkSectionLayer.CUTOUT));
     }
 
     /**

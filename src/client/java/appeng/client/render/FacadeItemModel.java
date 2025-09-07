@@ -28,6 +28,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.serialization.MapCodec;
 
 import org.jetbrains.annotations.Nullable;
+import org.joml.Vector3f;
 
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -132,10 +133,8 @@ public class FacadeItemModel implements ItemModel {
                     packedLight,
             };
             for (var blockModelPart : blockModelParts) {
-                var renderType = blockModelPart.getRenderType(blockState);
-                if (renderType.getChunkLayerId() != -1) {
-                    renderType = RenderTypeHelper.getEntityRenderType(renderType);
-                }
+                var chunkSectionLayer = blockModelPart.getRenderType(blockState);
+                var renderType = RenderTypeHelper.getEntityRenderType(chunkSectionLayer);
                 var buffer = bufferSource.getBuffer(renderType);
                 for (int cullFaceIdx = 0; cullFaceIdx <= ModelHelper.NULL_FACE_ID; cullFaceIdx++) {
                     var cullFace = ModelHelper.faceFromIndex(cullFaceIdx);
@@ -150,6 +149,11 @@ public class FacadeItemModel implements ItemModel {
                     }
                 }
             }
+        }
+
+        @Override
+        public void getExtents(Set<Vector3f> extents) {
+            // TODO 1.21.8 Probably delegate to the facade model?
         }
 
         private float getShade(Direction side) {

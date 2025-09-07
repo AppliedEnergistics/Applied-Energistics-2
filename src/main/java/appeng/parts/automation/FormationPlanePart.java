@@ -21,13 +21,13 @@ package appeng.parts.automation;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.model.data.ModelData;
 
@@ -181,18 +181,18 @@ public class FormationPlanePart extends UpgradeablePart implements IStorageProvi
     }
 
     @Override
-    public void readFromNBT(CompoundTag data, HolderLookup.Provider registries) {
-        super.readFromNBT(data, registries);
-        this.priority = data.getIntOr("priority", 0);
-        this.config.readFromChildTag(data, "config", registries);
+    public void readFromNBT(ValueInput input) {
+        super.readFromNBT(input);
+        this.priority = input.getIntOr("priority", 0);
+        this.config.readFromChildTag(input, "config");
         remountStorage();
     }
 
     @Override
-    public void writeToNBT(CompoundTag data, HolderLookup.Provider registries) {
-        super.writeToNBT(data, registries);
+    public void writeToNBT(ValueOutput data) {
+        super.writeToNBT(data);
         data.putInt("priority", this.getPriority());
-        this.config.writeToChildTag(data, "config", registries);
+        this.config.writeToChildTag(data, "config");
     }
 
     @Override

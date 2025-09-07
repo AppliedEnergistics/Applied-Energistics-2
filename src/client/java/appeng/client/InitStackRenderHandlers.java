@@ -60,13 +60,13 @@ public class InitStackRenderHandlers {
         @Override
         public void drawInGui(Minecraft minecraft, GuiGraphics guiGraphics, int x, int y, AEItemKey stack) {
             var poseStack = guiGraphics.pose();
-            poseStack.pushPose();
+            poseStack.pushMatrix();
 
             var displayStack = stack.getReadOnlyStack();
             guiGraphics.renderItem(displayStack, x, y);
             guiGraphics.renderItemDecorations(minecraft.font, displayStack, x, y, "");
 
-            poseStack.popPose();
+            poseStack.popMatrix();
         }
 
         @Override

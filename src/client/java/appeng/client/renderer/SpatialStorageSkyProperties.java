@@ -32,9 +32,8 @@ import net.minecraft.world.phys.Vec3;
 public class SpatialStorageSkyProperties {
 
     // See the fabric version of this to get any idea what its doing
-    public static final DimensionSpecialEffects INSTANCE = new DimensionSpecialEffects(Float.NaN /* disables clouds */,
-            false,
-            SkyType.NONE /* we use a custom render mixin */, true, false) {
+    public static final DimensionSpecialEffects INSTANCE = new DimensionSpecialEffects(
+            SkyType.NONE /* we use a custom render mixin */, false, false) {
 
         @Override
         public Vec3 getBrightnessDependentFogColor(Vec3 fogColor, float brightness) {
@@ -48,14 +47,14 @@ public class SpatialStorageSkyProperties {
 
         @Override
         public boolean renderSky(ClientLevel level, int ticks, float partialTick, Matrix4f modelViewMatrix,
-                Camera camera, Matrix4f projectionMatrix, Runnable setupFog) {
-            SpatialSkyRender.getInstance().render(modelViewMatrix, projectionMatrix);
+                Camera camera, Runnable setupFog) {
+            SpatialSkyRender.getInstance().render(modelViewMatrix);
             return true;
         }
 
         @Override
         public boolean renderClouds(ClientLevel level, int ticks, float partialTick, double camX, double camY,
-                double camZ, Matrix4f modelViewMatrix, Matrix4f projectionMatrix) {
+                double camZ, Matrix4f modelViewMatrix) {
             return true; // Disable clouds
         }
     };

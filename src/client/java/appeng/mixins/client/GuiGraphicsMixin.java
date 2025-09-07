@@ -37,12 +37,12 @@ import appeng.client.hooks.GuiGraphicsHooks;
 @Mixin(GuiGraphics.class)
 public abstract class GuiGraphicsMixin {
     @SuppressWarnings("ConstantConditions")
-    @Inject(method = "Lnet/minecraft/client/gui/GuiGraphics;renderItem(Lnet/minecraft/world/entity/LivingEntity;Lnet/minecraft/world/level/Level;Lnet/minecraft/world/item/ItemStack;IIII)V", at = @At(value = "HEAD"), cancellable = true)
+    @Inject(method = "Lnet/minecraft/client/gui/GuiGraphics;renderItem(Lnet/minecraft/world/entity/LivingEntity;Lnet/minecraft/world/level/Level;Lnet/minecraft/world/item/ItemStack;III)V", at = @At(value = "HEAD"), cancellable = true)
     protected void renderGuiItem(@Nullable LivingEntity livingEntity, @Nullable Level level, ItemStack stack, int x,
-            int y, int seed, int z, CallbackInfo ci) {
+            int y, int seed, CallbackInfo ci) {
         var self = (GuiGraphics) (Object) this;
 
-        if (GuiGraphicsHooks.onRenderGuiItem(self, livingEntity, level, stack, x, y, seed, z)) {
+        if (GuiGraphicsHooks.onRenderGuiItem(self, livingEntity, level, stack, x, y, seed)) {
             ci.cancel();
         }
     }

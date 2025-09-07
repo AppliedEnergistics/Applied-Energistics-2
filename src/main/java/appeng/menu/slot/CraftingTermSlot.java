@@ -315,7 +315,7 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
         final List<ItemStack> drops = new ArrayList<>();
 
         // add one of each item to the items on the board...
-        if (!p.getCommandSenderWorld().isClientSide()) {
+        if (!p.level().isClientSide()) {
             // set new items onto the crafting table...
             for (var x = 0; x < this.craftInv.size(); x++) {
                 if (this.craftInv.getStackInSlot(x).isEmpty()) {

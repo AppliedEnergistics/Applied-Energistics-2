@@ -19,11 +19,13 @@ import org.junit.jupiter.params.provider.EnumSource;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.storage.TagValueInput;
 import net.neoforged.testframework.junit.EphemeralTestServerProvider;
 
 import appeng.api.config.FuzzyMode;
@@ -180,7 +182,7 @@ class AEItemKeyTest {
         }
 
         private void assertMissingContent(CompoundTag tag, String error) {
-            var decodedKey = AEKey.fromTagGeneric(registries, tag);
+            var decodedKey = AEKey.fromTagGeneric(TagValueInput.create(ProblemReporter.DISCARDING, registries, tag));
             assertNotNull(decodedKey);
             assertEquals(decodedKey.dropSecondary(), AEItemKey.of(AEItems.MISSING_CONTENT));
             assertEquals(error, decodedKey.get(AEComponents.MISSING_CONTENT_ERROR));

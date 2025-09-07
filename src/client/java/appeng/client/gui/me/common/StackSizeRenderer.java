@@ -18,37 +18,12 @@
 
 package appeng.client.gui.me.common;
 
-import org.joml.Matrix4f;
-
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 
 import appeng.core.AEConfig;
 
-/**
- * @author AlgorithmX2
- * @author thatsIch
- * @version rv2
- * @since rv0
- */
 public class StackSizeRenderer {
-    private static void renderSizeLabel(Matrix4f matrix, Font fontRenderer, float xPos, float yPos, String text,
-            boolean largeFonts) {
-        final float scaleFactor = largeFonts ? 0.85f : 0.666f;
-        final float inverseScaleFactor = 1.0f / scaleFactor;
-        final int offset = largeFonts ? 0 : -1;
-
-        final int X = (int) ((xPos + offset + 16.0f + 2.0f - fontRenderer.width(text) * scaleFactor)
-                * inverseScaleFactor);
-        final int Y = (int) ((yPos + offset + 16.0f - 5.0f * scaleFactor) * inverseScaleFactor);
-        var buffer = Minecraft.getInstance().renderBuffers().bufferSource();
-        fontRenderer.drawInBatch(text, X + 1, Y + 1, 0x413f54, false, matrix, buffer, Font.DisplayMode.NORMAL, 0,
-                15728880);
-        fontRenderer.drawInBatch(text, X, Y, 0xffffff, false, matrix, buffer, Font.DisplayMode.NORMAL, 0, 15728880);
-        buffer.endBatch();
-    }
-
     public static void renderSizeLabel(GuiGraphics guiGraphics, Font fontRenderer, float xPos, float yPos,
             String text) {
         renderSizeLabel(guiGraphics, fontRenderer, xPos, yPos, text, AEConfig.instance().isUseLargeFonts());
@@ -56,17 +31,22 @@ public class StackSizeRenderer {
 
     public static void renderSizeLabel(GuiGraphics guiGraphics, Font fontRenderer, float xPos, float yPos, String text,
             boolean largeFonts) {
-        final float scaleFactor = largeFonts ? 0.85f : 0.666f;
+        float scaleFactor = largeFonts ? 0.85f : 0.666f;
+        float inverseScaleFactor = 1.0f / scaleFactor;
+        int offset = largeFonts ? 0 : -1;
 
+        int x = (int) ((xPos + offset + 16.0f + 2.0f - fontRenderer.width(text) * scaleFactor)
+                * inverseScaleFactor);
+        int y = (int) ((yPos + offset + 16.0f - 5.0f * scaleFactor) * inverseScaleFactor);
+
+        guiGraphics.nextStratum();
         var stack = guiGraphics.pose();
-        stack.pushPose();
-        // According to ItemRenderer, text is 200 above items.
-        stack.translate(0, 0, 200);
-        stack.scale(scaleFactor, scaleFactor, scaleFactor);
+        stack.pushMatrix();
+        stack.scale(scaleFactor);
 
-        renderSizeLabel(stack.last().pose(), fontRenderer, xPos, yPos, text, largeFonts);
+        guiGraphics.drawString(fontRenderer, text, x, y, -1);
 
-        stack.popPose();
+        stack.popMatrix();
     }
 
 }

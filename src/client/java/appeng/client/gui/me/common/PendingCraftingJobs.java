@@ -7,8 +7,6 @@ import java.util.UUID;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 import appeng.api.client.AEKeyRendering;
 import appeng.api.stacks.AEKey;
@@ -21,7 +19,6 @@ import appeng.util.SearchInventoryEvent;
 /**
  * Tracks pending crafting jobs started by this player.
  */
-@OnlyIn(Dist.CLIENT)
 public final class PendingCraftingJobs {
     private static final Map<UUID, PendingJob> jobs = new HashMap<>();
 

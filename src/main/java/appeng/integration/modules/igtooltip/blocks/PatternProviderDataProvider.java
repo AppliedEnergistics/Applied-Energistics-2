@@ -3,6 +3,7 @@ package appeng.integration.modules.igtooltip.blocks;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.world.entity.player.Player;
 
 import appeng.api.client.AEKeyRendering;
@@ -26,23 +27,15 @@ public final class PatternProviderDataProvider
 
     @Override
     public void buildTooltip(PatternProviderLogicHost host, TooltipContext context, TooltipBuilder tooltip) {
-        var lockReason = context.serverData().getStringOr(NBT_LOCK_REASON, "");
-        if (!lockReason.isEmpty()) {
-            tooltip.addLine(Component.Serializer.fromJson(lockReason, context.registries()));
+        var lockReason = context.serverData().read(NBT_LOCK_REASON, ComponentSerialization.CODEC).orElse(null);
+        if (lockReason != null) {
+            tooltip.addLine(lockReason);
         }
-        var stack = context.serverData().getCompound(NBT_LOCK_UNTIL_RESULT_STACK).orElse(null);
-        if (stack != null) {
-            var genericStack = GenericStack.readTag(context.registries(), stack);
-            Component stackName;
-            Component stackAmount;
-            if (genericStack == null) {
-                stackName = Component.literal("ERROR");
-                stackAmount = Component.literal("ERROR");
-            } else {
-                stackName = AEKeyRendering.getDisplayName(genericStack.what());
-                stackAmount = Component
-                        .literal(genericStack.what().formatAmount(genericStack.amount(), AmountFormat.FULL));
-            }
+        var genericStack = context.serverData().read(NBT_LOCK_UNTIL_RESULT_STACK, GenericStack.CODEC).orElse(null);
+        if (genericStack != null) {
+            var stackName = AEKeyRendering.getDisplayName(genericStack.what());
+            var stackAmount = Component
+                    .literal(genericStack.what().formatAmount(genericStack.amount(), AmountFormat.FULL));
             tooltip.addLine(
                     InGameTooltip.CraftingLockedUntilResult.text(stackName, stackAmount).withStyle(ChatFormatting.RED));
         }
@@ -66,7 +59,7 @@ public final class PatternProviderDataProvider
             case LOCK_UNTIL_RESULT -> {
                 var stack = logic.getUnlockStack();
                 if (stack != null) {
-                    serverData.put(NBT_LOCK_UNTIL_RESULT_STACK, GenericStack.writeTag(player.registryAccess(), stack));
+                    serverData.storeNullable(NBT_LOCK_UNTIL_RESULT_STACK, GenericStack.CODEC, stack);
                 } else {
                     // Put a non-empty compound tag, so we get "ERROR" when handling this on the client
                     final CompoundTag errorDummy = new CompoundTag();
@@ -78,8 +71,8 @@ public final class PatternProviderDataProvider
         }
 
         if (reason != null) {
-            serverData.putString(NBT_LOCK_REASON,
-                    Component.Serializer.toJson(reason.copy().withStyle(ChatFormatting.RED), player.registryAccess()));
+            serverData.store(NBT_LOCK_REASON, ComponentSerialization.CODEC,
+                    reason.copy().withStyle(ChatFormatting.RED));
         }
     }
 }

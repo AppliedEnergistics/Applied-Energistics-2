@@ -32,10 +32,7 @@ import com.mojang.serialization.MapCodec;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -43,6 +40,7 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.level.storage.ValueInput;
 
 import appeng.api.storage.AEKeyFilter;
 import appeng.core.AELog;
@@ -152,12 +150,11 @@ public abstract class AEKeyType {
      * Attempts to load a key of this type from the given tag.
      */
     @Nullable
-    public AEKey loadKeyFromTag(HolderLookup.Provider registries, CompoundTag tag) {
-        var ops = registries.createSerializationContext(NbtOps.INSTANCE);
+    public AEKey loadKeyFromTag(ValueInput input) {
         try {
-            return codec().codec().decode(ops, tag).getOrThrow().getFirst();
+            return input.read(codec()).orElseThrow();
         } catch (Exception e) {
-            AELog.debug("Tried to load an invalid item key from NBT: %s", tag, e);
+            AELog.debug("Tried to load an invalid item key from NBT: %s", input, e);
             return null;
         }
     }

@@ -7,7 +7,7 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 
 import me.shedaniel.math.Point;
@@ -41,7 +41,7 @@ public class EntropyRecipeCategory implements DisplayCategory<EntropyRecipeDispl
     @Override
     public Renderer getIcon() {
         return (graphics, bounds, mouseX, mouseY, delta) -> graphics.blit(
-                RenderType::guiTextured,
+                RenderPipelines.GUI_TEXTURED,
                 AppEng.makeId("textures/item/entropy_manipulator.png"),
                 bounds.getX(),
                 bounds.getY(),
@@ -122,7 +122,7 @@ public class EntropyRecipeCategory implements DisplayCategory<EntropyRecipeDispl
                     int mouseY, float delta) {
                 var baseRenderer = entry.getDefinition().getRenderer();
                 baseRenderer.render(entry, graphics, bounds, mouseX, mouseY, delta);
-                graphics.blit(RenderType::guiTextured, ReiClientPlugin.TEXTURE, bounds.x, bounds.y, 0, 0,
+                graphics.blit(RenderPipelines.GUI_TEXTURED, ReiClientPlugin.TEXTURE, bounds.x, bounds.y, 0, 0,
                         0, 52, 16, 16);
             }
 

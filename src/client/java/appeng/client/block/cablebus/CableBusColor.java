@@ -16,7 +16,7 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.block.networking;
+package appeng.client.block.cablebus;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -25,8 +25,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 import appeng.api.util.AEColor;
 import appeng.blockentity.networking.CableBusBlockEntity;
@@ -35,7 +33,6 @@ import appeng.parts.CableBusContainer;
 /**
  * Exposes the cable bus color as tint indices 0 (dark variant), 1 (medium variant) and 2 (bright variant).
  */
-@OnlyIn(Dist.CLIENT)
 public class CableBusColor implements BlockColor {
 
     @Override

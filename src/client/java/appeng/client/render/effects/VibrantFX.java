@@ -25,10 +25,7 @@ import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.client.particle.TextureSheetParticle;
 import net.minecraft.core.particles.SimpleParticleType;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
 public class VibrantFX extends TextureSheetParticle {
 
     public VibrantFX(ClientLevel level, double x, double y, double z, double par8,
@@ -79,7 +76,6 @@ public class VibrantFX extends TextureSheetParticle {
         this.lifetime--;
     }
 
-    @OnlyIn(Dist.CLIENT)
     public static class Factory implements ParticleProvider<SimpleParticleType> {
         private final SpriteSet spriteSet;
 

@@ -37,6 +37,7 @@ import net.minecraft.client.resources.model.QuadCollection;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.client.RenderTypeHelper;
 
 import appeng.api.client.StorageCellModels;
 import appeng.api.orientation.BlockOrientation;
@@ -99,7 +100,7 @@ public class MEChestRenderer implements BlockEntityRenderer<MEChestBlockEntity> 
 
         // We "fake" the position here to make it use the light-value in front of the drive
         blockRenderer.tesselateBlock(level, parts, chest.getBlockState(), chest.getBlockPos(), poseStack,
-                buffers::getBuffer,
+                layer -> buffers.getBuffer(RenderTypeHelper.getEntityRenderType(layer)),
                 false, packedOverlay);
 
         VertexConsumer ledBuffer = buffers.getBuffer(AERenderTypes.STORAGE_CELL_LEDS);

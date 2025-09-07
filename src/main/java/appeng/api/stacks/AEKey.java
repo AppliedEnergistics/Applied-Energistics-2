@@ -16,7 +16,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
@@ -28,6 +27,8 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.ids.AEComponents;
@@ -144,25 +145,21 @@ public abstract class AEKey {
     private volatile Component cachedDisplayName;
 
     @Nullable
-    public static AEKey fromTagGeneric(HolderLookup.Provider registries, CompoundTag tag) {
-        var ops = registries.createSerializationContext(NbtOps.INSTANCE);
+    public static AEKey fromTagGeneric(ValueInput input) {
         try {
-            return CODEC.decode(ops, tag).getOrThrow().getFirst();
+            return input.read(MAP_CODEC).orElseThrow();
         } catch (Exception e) {
-            LOG.warn("Cannot deserialize generic key from {}: {}", tag, e);
+            LOG.warn("Cannot deserialize generic key from {}: {}", input, e);
             return null;
         }
     }
 
     /**
-     * Same as {@link #toTag(HolderLookup.Provider)}, but includes type information so that
-     * {@link #fromTagGeneric(HolderLookup.Provider, CompoundTag)} can restore this particular type of key withot
-     * knowing the actual type beforehand.
+     * Same as {@link #toTag(ValueOutput)}, but includes type information so that {@link #fromTagGeneric(ValueInput)}
+     * can restore this particular type of key withot knowing the actual type beforehand.
      */
-    public final CompoundTag toTagGeneric(HolderLookup.Provider registries) {
-        var ops = registries.createSerializationContext(NbtOps.INSTANCE);
-        return (CompoundTag) CODEC.encodeStart(ops, this)
-                .getOrThrow();
+    public final void toTagGeneric(ValueOutput output) {
+        output.store(MAP_CODEC, this);
     }
 
     /**
@@ -215,7 +212,7 @@ public abstract class AEKey {
      * Serialized keys MUST NOT contain keys that start with <code>#</code>, because this prefix can be used to add
      * additional data into the same tag as the key.
      */
-    public abstract CompoundTag toTag(HolderLookup.Provider registries);
+    public abstract void toTag(ValueOutput output);
 
     public abstract Object getPrimaryKey();
 

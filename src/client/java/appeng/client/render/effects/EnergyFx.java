@@ -28,12 +28,9 @@ import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.client.particle.TextureSheetParticle;
 import net.minecraft.util.Mth;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 import appeng.core.particles.EnergyParticleData;
 
-@OnlyIn(Dist.CLIENT)
 public class EnergyFx extends TextureSheetParticle {
 
     private final int startBlkX;
@@ -102,7 +99,6 @@ public class EnergyFx extends TextureSheetParticle {
         this.zd = motionZ;
     }
 
-    @OnlyIn(Dist.CLIENT)
     public static class Factory implements ParticleProvider<EnergyParticleData> {
         private final SpriteSet spriteSet;
 

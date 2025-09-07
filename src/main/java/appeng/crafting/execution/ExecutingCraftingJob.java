@@ -23,9 +23,8 @@ import java.util.Map;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 import appeng.api.config.Actionable;
 import appeng.api.crafting.IPatternDetails;
@@ -89,25 +88,25 @@ public class ExecutingCraftingJob {
         this.suspended = false;
     }
 
-    ExecutingCraftingJob(CompoundTag data, HolderLookup.Provider registries,
+    ExecutingCraftingJob(ValueInput data,
             CraftingDifferenceListener postCraftingDifference, CraftingCpuLogic cpu) {
-        this.link = new CraftingLink(data.getCompoundOrEmpty(NBT_LINK), cpu.cluster);
+        this.link = new CraftingLink(data.childOrEmpty(NBT_LINK), cpu.cluster);
         IGrid grid = cpu.cluster.getGrid();
         if (grid != null) {
             ((CraftingService) grid.getCraftingService()).addLink(link);
         }
 
-        this.finalOutput = GenericStack.readTag(registries, data.getCompoundOrEmpty(NBT_FINAL_OUTPUT));
+        this.finalOutput = data.read(NBT_FINAL_OUTPUT, GenericStack.CODEC).orElse(null);
         this.remainingAmount = data.getLongOr(NBT_REMAINING_AMOUNT, 0);
         this.waitingFor = new ListCraftingInventory(postCraftingDifference::onCraftingDifference);
-        this.waitingFor.readFromNBT(data.getListOrEmpty(NBT_WAITING_FOR), registries);
-        this.timeTracker = new ElapsedTimeTracker(data.getCompoundOrEmpty(NBT_TIME_TRACKER));
+        this.waitingFor.deserialize(data.childrenListOrEmpty(NBT_WAITING_FOR));
+        this.timeTracker = new ElapsedTimeTracker(data.childOrEmpty(NBT_TIME_TRACKER));
         this.playerId = data.getInt(NBT_PLAYER_ID).orElse(null);
 
-        ListTag tasksTag = data.getListOrEmpty(NBT_TASKS);
-        for (int i = 0; i < tasksTag.size(); ++i) {
-            final CompoundTag item = tasksTag.getCompoundOrEmpty(i);
-            var pattern = AEItemKey.fromTag(registries, item);
+        var tasksList = data.childrenListOrEmpty(NBT_TASKS);
+        var index = 0;
+        for (var item : tasksList) {
+            var pattern = AEItemKey.fromTag(item);
             var details = PatternDetailsHelper.decodePattern(pattern, cpu.cluster.getLevel());
             if (details != null) {
                 final TaskProgress tp = new TaskProgress();
@@ -116,36 +115,30 @@ public class ExecutingCraftingJob {
             }
         }
 
-        this.suspended = data.getBoolean(NBT_SUSPENDED);
+        this.suspended = data.getBooleanOr(NBT_SUSPENDED, false);
     }
 
-    CompoundTag writeToNBT(HolderLookup.Provider registries) {
-        CompoundTag data = new CompoundTag();
+    void writeToNBT(ValueOutput output) {
+        link.writeToNBT(output.child(NBT_LINK));
 
-        CompoundTag linkData = new CompoundTag();
-        link.writeToNBT(linkData);
-        data.put(NBT_LINK, linkData);
+        output.storeNullable(NBT_FINAL_OUTPUT, GenericStack.CODEC, finalOutput);
 
-        data.put(NBT_FINAL_OUTPUT, GenericStack.writeTag(registries, finalOutput));
+        waitingFor.serialize(output.childrenList(NBT_WAITING_FOR));
+        timeTracker.writeToNBT(output.child(NBT_TIME_TRACKER));
 
-        data.put(NBT_WAITING_FOR, waitingFor.writeToNBT(registries));
-        data.put(NBT_TIME_TRACKER, timeTracker.writeToNBT());
-
-        final ListTag list = new ListTag();
+        var taskList = output.childrenList(NBT_TASKS);
         for (var e : this.tasks.entrySet()) {
-            var item = e.getKey().getDefinition().toTag(registries);
-            item.putLong(NBT_CRAFTING_PROGRESS, e.getValue().value);
-            list.add(item);
+            var child = taskList.addChild();
+            e.getKey().getDefinition().toTag(child);
+            child.putLong(NBT_CRAFTING_PROGRESS, e.getValue().value);
         }
-        data.put(NBT_TASKS, list);
 
-        data.putLong(NBT_REMAINING_AMOUNT, remainingAmount);
+        output.putLong(NBT_REMAINING_AMOUNT, remainingAmount);
         if (this.playerId != null) {
-            data.putInt(NBT_PLAYER_ID, this.playerId);
+            output.putInt(NBT_PLAYER_ID, this.playerId);
         }
 
-        data.putBoolean(NBT_SUSPENDED, suspended);
-        return data;
+        output.putBoolean(NBT_SUSPENDED, suspended);
     }
 
     static class TaskProgress {

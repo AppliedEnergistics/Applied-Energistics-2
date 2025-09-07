@@ -5,12 +5,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.StringTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 import appeng.api.ids.AEComponents;
 import appeng.api.stacks.AEKeyType;
@@ -87,24 +85,23 @@ public class KeyTypeSelection {
         return keyType -> keyTypes.getOrDefault(keyType, Boolean.FALSE);
     }
 
-    public void writeToNBT(CompoundTag tag) {
-        ListTag enabledKeyTypesTag = new ListTag();
+    public void writeToNBT(ValueOutput output) {
+        var enabledKeyTypes = output.list("enabledKeyTypes", ResourceLocation.CODEC);
         for (var entry : keyTypes.entrySet()) {
             if (entry.getValue()) {
-                enabledKeyTypesTag.add(StringTag.valueOf(entry.getKey().getId().toString()));
+                enabledKeyTypes.add(entry.getKey().getId());
             }
         }
-        tag.put("enabledKeyTypes", enabledKeyTypesTag);
     }
 
-    public void readFromNBT(CompoundTag tag, HolderLookup.Provider registries) {
+    public void readFromNBT(ValueInput input) {
         for (var entry : keyTypes.entrySet()) {
             entry.setValue(false);
         }
-        ListTag enabledKeyTypesTag = tag.getListOrEmpty("enabledKeyTypes");
-        for (int i = 0; i < enabledKeyTypesTag.size(); i++) {
+        var enabledKeyTypes = input.listOrEmpty("enabledKeyTypes", ResourceLocation.CODEC);
+        for (var enabledKeyType : enabledKeyTypes) {
             try {
-                var keyType = AEKeyTypes.get(ResourceLocation.parse(enabledKeyTypesTag.getStringOr(i, "")));
+                var keyType = AEKeyTypes.get(enabledKeyType);
                 if (keyTypes.containsKey(keyType)) {
                     keyTypes.put(keyType, true);
                 }

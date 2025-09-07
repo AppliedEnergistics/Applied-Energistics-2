@@ -26,10 +26,12 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.TagEntry;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.common.Tags;
+import net.neoforged.neoforge.common.data.BlockTagCopyingItemTagProvider;
 
 import appeng.api.features.P2PTunnelAttunement;
 import appeng.api.ids.AETags;
@@ -41,8 +43,7 @@ import appeng.core.definitions.AEItems;
 import appeng.core.definitions.AEParts;
 import appeng.datagen.providers.IAE2DataProvider;
 
-public class ItemTagsProvider extends net.minecraft.data.tags.ItemTagsProvider implements IAE2DataProvider {
-
+public class ItemTagsProvider extends BlockTagCopyingItemTagProvider implements IAE2DataProvider {
     public ItemTagsProvider(PackOutput packOutput, CompletableFuture<HolderLookup.Provider> registries,
             CompletableFuture<TagLookup<Block>> blockTagsProvider) {
         super(packOutput, registries, blockTagsProvider, AppEng.MOD_ID);
@@ -165,13 +166,13 @@ public class ItemTagsProvider extends net.minecraft.data.tags.ItemTagsProvider i
                 AEItems.NETWORK_TOOL.asItem());
 
         tag(AETags.METAL_INGOTS)
-                .addOptionalTag(ResourceLocation.parse("c:ingots/copper"))
-                .addOptionalTag(ResourceLocation.parse("c:ingots/tin"))
-                .addOptionalTag(ResourceLocation.parse("c:ingots/iron"))
-                .addOptionalTag(ResourceLocation.parse("c:ingots/gold"))
-                .addOptionalTag(ResourceLocation.parse("c:ingots/brass"))
-                .addOptionalTag(ResourceLocation.parse("c:ingots/nickel"))
-                .addOptionalTag(ResourceLocation.parse("c:ingots/aluminium"));
+                .addOptionalTag(Tags.Items.INGOTS_COPPER)
+                .addOptionalTag(Tags.Items.INGOTS_IRON)
+                .addOptionalTag(Tags.Items.INGOTS_GOLD)
+                .addOptionalTag(ItemTags.create(ResourceLocation.parse("c:ingots/tin")))
+                .addOptionalTag(ItemTags.create(ResourceLocation.parse("c:ingots/brass")))
+                .addOptionalTag(ItemTags.create(ResourceLocation.parse("c:ingots/nickel")))
+                .addOptionalTag(ItemTags.create(ResourceLocation.parse("c:ingots/aluminium")));
 
         tag(ConventionTags.PATTERN_PROVIDER)
                 .add(AEParts.PATTERN_PROVIDER.asItem())
@@ -231,7 +232,8 @@ public class ItemTagsProvider extends net.minecraft.data.tags.ItemTagsProvider i
         tag(ConventionTags.CAN_REMOVE_COLOR).add(Items.WATER_BUCKET, Items.SNOWBALL);
 
         // Manually add tags for mods that are unlikely to do it themselves since we don't want to force users to craft
-        tag(ConventionTags.WRENCH).addOptional(ResourceLocation.parse("immersiveengineering:hammer"));
+        tag(ConventionTags.WRENCH)
+                .add(TagEntry.optionalElement(ResourceLocation.parse("immersiveengineering:hammer")));
 
         addP2pAttunementTags();
     }

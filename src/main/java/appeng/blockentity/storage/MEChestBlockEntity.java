@@ -26,9 +26,7 @@ import org.slf4j.LoggerFactory;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
@@ -37,6 +35,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.fluids.IFluidTank;
@@ -361,7 +361,7 @@ public class MEChestBlockEntity extends AENetworkedPoweredBlockEntity
     }
 
     @Override
-    protected void saveVisualState(CompoundTag data) {
+    protected void saveVisualState(ValueOutput data) {
         super.saveVisualState(data);
 
         data.putBoolean("powered", isPowered());
@@ -372,7 +372,7 @@ public class MEChestBlockEntity extends AENetworkedPoweredBlockEntity
     }
 
     @Override
-    protected void loadVisualState(CompoundTag data) {
+    protected void loadVisualState(ValueInput data) {
         super.loadVisualState(data);
 
         this.clientPowered = data.getBooleanOr("powered", false);
@@ -400,19 +400,19 @@ public class MEChestBlockEntity extends AENetworkedPoweredBlockEntity
     }
 
     @Override
-    public void loadTag(CompoundTag data, HolderLookup.Provider registries) {
-        super.loadTag(data, registries);
-        this.config.readFromNBT(data, registries);
-        this.keyTypeSelection.readFromNBT(data, registries);
+    public void loadTag(ValueInput data) {
+        super.loadTag(data);
+        this.config.readFromNBT(data);
+        this.keyTypeSelection.readFromNBT(data);
         this.priority = data.getIntOr("priority", 0);
         var paintedColorIdx = data.getByteOr("paintedColor", (byte) AEColor.TRANSPARENT.ordinal());
         this.paintedColor = AEColor.fromOrdinal(paintedColorIdx);
     }
 
     @Override
-    public void saveAdditional(CompoundTag data, HolderLookup.Provider registries) {
-        super.saveAdditional(data, registries);
-        this.config.writeToNBT(data, registries);
+    public void saveAdditional(ValueOutput data) {
+        super.saveAdditional(data);
+        this.config.writeToNBT(data);
         this.keyTypeSelection.writeToNBT(data);
         data.putInt("priority", this.priority);
         data.putByte("paintedColor", (byte) this.paintedColor.ordinal());

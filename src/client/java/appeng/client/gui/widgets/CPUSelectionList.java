@@ -195,11 +195,11 @@ public class CPUSelectionList implements ICompositeWidget {
             }
 
             var name = getCpuName(cpu);
-            pose.pushPose();
-            pose.translate(x + 3, y + 2, 0);
-            pose.scale(0.666f, 0.666f, 1);
+            pose.pushMatrix();
+            pose.translate(x + 3, y + 2);
+            pose.scale(0.666f);
             guiGraphics.drawString(font, name, 0, 0, textColor.toARGB(), false);
-            pose.popPose();
+            pose.popMatrix();
 
             var infoBar = new InfoBar();
 
@@ -213,15 +213,15 @@ public class CPUSelectionList implements ICompositeWidget {
 
                 // Draw a bar at the bottom of the button to indicate job progress
                 var progress = (int) (cpu.progress() * (buttonBg.getSrcWidth() - 1));
-                guiGraphics.pose().pushPose();
-                guiGraphics.pose().translate(1, -1, 0);
+                guiGraphics.pose().pushMatrix();
+                guiGraphics.pose().translate(1, -1);
                 guiGraphics.fill(
                         x,
                         y + buttonBg.getSrcHeight() - 2,
                         x + progress,
                         y + buttonBg.getSrcHeight() - 1,
                         menu.getSelectedCpuSerial() == cpu.serial() ? 0xFF7da9d2 : (selectedColor));
-                guiGraphics.pose().popPose();
+                guiGraphics.pose().popMatrix();
 
             } else {
                 infoBar.add(Icon.S_STORAGE, 1f, x + 27, y + 9);

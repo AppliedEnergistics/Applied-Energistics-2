@@ -23,10 +23,11 @@ import java.util.Set;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 import appeng.api.networking.energy.IPassiveEnergyGenerator;
 import appeng.api.orientation.BlockOrientation;
@@ -83,13 +84,13 @@ public class CrystalResonanceGeneratorBlockEntity extends AENetworkedBlockEntity
     }
 
     @Override
-    protected void saveVisualState(CompoundTag data) {
+    protected void saveVisualState(ValueOutput data) {
         super.saveVisualState(data);
         data.putBoolean("suppressed", this.suppressed);
     }
 
     @Override
-    protected void loadVisualState(CompoundTag data) {
+    protected void loadVisualState(ValueInput data) {
         super.loadVisualState(data);
         this.suppressed = data.getBooleanOr("suppressed", false);
     }

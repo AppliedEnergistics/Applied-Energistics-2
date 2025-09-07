@@ -26,10 +26,10 @@ import java.util.Objects;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.CpuSelectionMode;
@@ -260,9 +260,9 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
         return node != null && node.isActive();
     }
 
-    public void writeToNBT(CompoundTag data, HolderLookup.Provider registries) {
-        this.craftingLogic.writeToNBT(data, registries);
-        this.configManager.writeToNBT(data, registries);
+    public void writeToNBT(ValueOutput output) {
+        this.craftingLogic.writeToNBT(output);
+        this.configManager.writeToNBT(output);
     }
 
     void done() {
@@ -271,16 +271,16 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
         core.setCoreBlock(true);
 
         if (core.getPreviousState() != null) {
-            this.readFromNBT(core.getPreviousState(), core.getLevel().registryAccess());
+            this.readFromNBT(core.getPreviousState());
             core.setPreviousState(null);
         }
 
         this.updateName();
     }
 
-    public void readFromNBT(CompoundTag data, HolderLookup.Provider registries) {
-        this.craftingLogic.readFromNBT(data, registries);
-        this.configManager.readFromNBT(data, registries);
+    public void readFromNBT(ValueInput input) {
+        this.craftingLogic.readFromNBT(input);
+        this.configManager.readFromNBT(input);
     }
 
     public void updateName() {

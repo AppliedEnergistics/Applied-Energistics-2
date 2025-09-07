@@ -2,7 +2,6 @@ package appeng.client.guidebook;
 
 import java.util.List;
 
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.Blocks;
@@ -98,17 +97,11 @@ public class RecipeTypeContributions implements RecipeTypeMappingSupplier {
         }
 
         @Override
-        public void renderBatch(RenderContext context, MultiBufferSource buffers) {
-
-        }
-
-        @Override
         public void render(RenderContext context) {
             context.renderFluid(
                     fluid,
                     bounds.x(),
                     bounds.y(),
-                    0,
                     bounds.width(),
                     bounds.height());
         }

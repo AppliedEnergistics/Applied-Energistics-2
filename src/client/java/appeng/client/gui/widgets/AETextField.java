@@ -31,7 +31,6 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.renderer.Rect2i;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 
@@ -53,7 +52,6 @@ public class AETextField extends EditBox implements IResizableWidget, ITooltip {
 
     private final int fontPad;
     private final ScreenStyle style;
-    private int selectionColor;
     private List<Component> tooltipMessage = Collections.emptyList();
 
     /**
@@ -79,7 +77,6 @@ public class AETextField extends EditBox implements IResizableWidget, ITooltip {
 
         this.style = style;
         this.fontPad = fontRenderer.width("_");
-        setSelectionColor(style.getColor(PaletteColor.TEXTFIELD_SELECTION).toARGB());
         setTextColor(style.getColor(PaletteColor.TEXTFIELD_TEXT).toARGB());
     }
 
@@ -131,10 +128,6 @@ public class AETextField extends EditBox implements IResizableWidget, ITooltip {
         this.setHighlightPos(this.getMaxLength());
     }
 
-    public void setSelectionColor(int color) {
-        this.selectionColor = color;
-    }
-
     @Override
     public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partial) {
         if (this.isVisible()) {
@@ -167,35 +160,6 @@ public class AETextField extends EditBox implements IResizableWidget, ITooltip {
                         style.getColor(PaletteColor.TEXTFIELD_PLACEHOLDER).toARGB(), false);
             }
         }
-    }
-
-    @Override
-    public void renderHighlight(GuiGraphics guiGraphics, int startX, int startY, int endX, int endY) {
-        if (!this.isFocused()) {
-            return;
-        }
-
-        if (startX < endX) {
-            int i = startX;
-            startX = endX;
-            endX = i;
-        }
-
-        startX += 1;
-        endX -= 1;
-
-        if (startY < endY) {
-            int j = startY;
-            startY = endY;
-            endY = j;
-        }
-
-        startY -= PADDING;
-
-        endX = Mth.clamp(endX, getX(), getX() + this.width);
-        startX = Mth.clamp(startX, getX(), getX() + this.width);
-
-        guiGraphics.fill(RenderType.guiTextHighlight(), startX, startY, endX, endY, this.selectionColor);
     }
 
     @Override

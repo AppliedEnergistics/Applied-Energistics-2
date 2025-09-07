@@ -22,11 +22,11 @@ import java.util.Set;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 
 import appeng.api.config.FuzzyMode;
@@ -116,18 +116,18 @@ public abstract class IOBusPart extends UpgradeablePart implements IGridTickable
     }
 
     @Override
-    public void readFromNBT(CompoundTag extra, HolderLookup.Provider registries) {
-        super.readFromNBT(extra, registries);
-        config.readFromChildTag(extra, "config", registries);
+    public void readFromNBT(ValueInput extra) {
+        super.readFromNBT(extra);
+        config.readFromChildTag(extra, "config");
         // Ensure the filter is rebuilt
         filter = null;
         pendingPulse = isInPulseMode() && extra.getBooleanOr("pendingPulse", false);
     }
 
     @Override
-    public void writeToNBT(CompoundTag extra, HolderLookup.Provider registries) {
-        super.writeToNBT(extra, registries);
-        config.writeToChildTag(extra, "config", registries);
+    public void writeToNBT(ValueOutput extra) {
+        super.writeToNBT(extra);
+        config.writeToChildTag(extra, "config");
         if (isInPulseMode() && pendingPulse) {
             extra.putBoolean("pendingPulse", true);
         }

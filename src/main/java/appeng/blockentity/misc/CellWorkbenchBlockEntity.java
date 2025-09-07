@@ -21,13 +21,13 @@ package appeng.blockentity.misc;
 import java.util.List;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 import appeng.api.config.CopyMode;
 import appeng.api.config.Settings;
@@ -78,19 +78,19 @@ public class CellWorkbenchBlockEntity extends AEBaseBlockEntity
     }
 
     @Override
-    public void saveAdditional(CompoundTag data, HolderLookup.Provider registries) {
-        super.saveAdditional(data, registries);
-        this.cell.writeToNBT(data, "cell", registries);
-        this.config.writeToChildTag(data, "config", registries);
-        this.manager.writeToNBT(data, registries);
+    public void saveAdditional(ValueOutput data) {
+        super.saveAdditional(data);
+        this.cell.writeToNBT(data, "cell");
+        this.config.writeToChildTag(data, "config");
+        this.manager.writeToNBT(data);
     }
 
     @Override
-    public void loadTag(CompoundTag data, HolderLookup.Provider registries) {
-        super.loadTag(data, registries);
-        this.cell.readFromNBT(data, "cell", registries);
-        this.config.readFromChildTag(data, "config", registries);
-        this.manager.readFromNBT(data, registries);
+    public void loadTag(ValueInput data) {
+        super.loadTag(data);
+        this.cell.readFromNBT(data, "cell");
+        this.config.readFromChildTag(data, "config");
+        this.manager.readFromNBT(data);
     }
 
     @Override

@@ -23,7 +23,8 @@ public final class AERenderPipelines {
             .withDepthTestFunction(DepthTestFunction.GREATER_DEPTH_TEST)
             .build();
 
-    public static final RenderPipeline SPATIAL_SKYBOX = RenderPipeline.builder(RenderPipelines.MATRICES_COLOR_SNIPPET)
+    public static final RenderPipeline SPATIAL_SKYBOX = RenderPipeline
+            .builder(RenderPipelines.MATRICES_PROJECTION_SNIPPET, RenderPipelines.GLOBALS_SNIPPET)
             .withLocation(AppEng.makeId("pipeline/spatial_skybox"))
             .withVertexShader("core/position_color")
             .withFragmentShader("core/position_color")
@@ -33,7 +34,7 @@ public final class AERenderPipelines {
             .build();
 
     public static final RenderPipeline SPATIAL_SKYBOX_SPARKLES = RenderPipeline
-            .builder(RenderPipelines.MATRICES_COLOR_SNIPPET)
+            .builder(RenderPipelines.MATRICES_PROJECTION_SNIPPET, RenderPipelines.GLOBALS_SNIPPET)
             .withLocation(AppEng.makeId("pipeline/spatial_skybox_sparkles"))
             .withVertexShader("core/position_color")
             .withFragmentShader("core/position_color")
@@ -43,7 +44,7 @@ public final class AERenderPipelines {
             .build();
 
     public static final RenderPipeline AREA_OVERLAY_FACE = RenderPipeline
-            .builder(RenderPipelines.MATRICES_COLOR_SNIPPET)
+            .builder(RenderPipelines.MATRICES_PROJECTION_SNIPPET, RenderPipelines.GLOBALS_SNIPPET)
             .withLocation(AppEng.makeId("pipeline/area_overlay_face"))
             .withVertexShader("core/position_color")
             .withFragmentShader("core/position_color")
@@ -68,7 +69,7 @@ public final class AERenderPipelines {
             .build();
 
     public static final RenderPipeline STORAGE_CELL_LEDS = RenderPipeline
-            .builder(RenderPipelines.MATRICES_COLOR_SNIPPET)
+            .builder(RenderPipelines.MATRICES_PROJECTION_SNIPPET, RenderPipelines.GLOBALS_SNIPPET)
             .withLocation(AppEng.makeId("pipeline/storage_cell_leds"))
             .withVertexShader("core/position_color")
             .withFragmentShader("core/position_color")

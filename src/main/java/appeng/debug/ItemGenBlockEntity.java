@@ -22,15 +22,14 @@ import java.util.ArrayDeque;
 import java.util.Queue;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.items.IItemHandler;
 
 import appeng.blockentity.AEBaseBlockEntity;
@@ -75,18 +74,15 @@ public class ItemGenBlockEntity extends AEBaseBlockEntity implements InternalInv
     }
 
     @Override
-    public void saveAdditional(CompoundTag data, HolderLookup.Provider registries) {
-        super.saveAdditional(data, registries);
-        data.putString("filter", BuiltInRegistries.ITEM.getKey(filter).toString());
+    public void saveAdditional(ValueOutput data) {
+        super.saveAdditional(data);
+        data.store("filter", BuiltInRegistries.ITEM.byNameCodec(), filter);
     }
 
     @Override
-    public void loadTag(CompoundTag data, HolderLookup.Provider registries) {
-        if (data.contains("filter")) {
-            Item item = BuiltInRegistries.ITEM.getValue(ResourceLocation.parse(data.getStringOr("filter", "")));
-            this.setItem(item);
-        }
-        super.loadTag(data, registries);
+    public void loadTag(ValueInput data) {
+        setItem(data.read("filter", BuiltInRegistries.ITEM.byNameCodec()).orElse(Items.AIR));
+        super.loadTag(data);
     }
 
     public IItemHandler getItemHandler() {

@@ -75,7 +75,7 @@ public class BasicStorageCell extends AEBaseItem implements IBasicCellItem, AETo
     public void appendHoverText(ItemStack stack,
             TooltipContext context,
             TooltipDisplay tooltipDisplay, Consumer<Component> lines,
-            TooltipFlag advancedTooltips) {
+            TooltipFlag tooltipFlags) {
         if (Platform.isClient()) {
             addCellInformationToTooltip(stack, lines);
         }

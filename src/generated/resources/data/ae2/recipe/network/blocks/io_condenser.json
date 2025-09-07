@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "a": "#c:ingots/iron",
-    "b": "#c:glass_blocks",
+    "b": "#c:glass_blocks/cheap",
     "c": "#c:dusts/fluix"
   },
   "pattern": [

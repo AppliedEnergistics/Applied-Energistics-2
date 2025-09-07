@@ -27,10 +27,10 @@ import java.util.Objects;
 import com.google.common.collect.ImmutableMap;
 import com.mojang.serialization.MapCodec;
 
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BlockModelPart;
 import net.minecraft.client.renderer.block.model.BlockStateModel;
 import net.minecraft.client.renderer.block.model.SimpleModelWrapper;
+import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.Material;
@@ -144,7 +144,7 @@ public class SpatialPylonModel implements DynamicBlockStateModel {
         // Reset back to default
         builder.setEmissiveMaterial(false);
 
-        parts.add(new SimpleModelWrapper(quadCollection.build(), true, particleIcon(), RenderType.cutout()));
+        parts.add(new SimpleModelWrapper(quadCollection.build(), true, particleIcon(), ChunkSectionLayer.CUTOUT));
     }
 
     private static SpatialPylonTextureType getTextureTypeFromSideOutside(SpatialPylonBlockEntity.ClientState state,

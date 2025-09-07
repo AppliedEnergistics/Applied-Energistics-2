@@ -83,7 +83,7 @@ public class TestMeteoritesCommand implements ISubCommand {
         ServerLevel level;
         BlockPos centerBlock;
         if (player != null) {
-            level = player.serverLevel();
+            level = player.level();
             centerBlock = BlockPos.containing(player.getX(), 0, player.getZ());
         } else {
             level = srv.getLevel(Level.OVERWORLD);

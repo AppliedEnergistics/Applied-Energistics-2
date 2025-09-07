@@ -21,8 +21,6 @@ package appeng.client.renderer;
 import java.util.OptionalDouble;
 import java.util.OptionalInt;
 
-import com.mojang.blaze3d.buffers.BufferType;
-import com.mojang.blaze3d.buffers.BufferUsage;
 import com.mojang.blaze3d.buffers.GpuBuffer;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
@@ -66,7 +64,7 @@ public class SpatialSkyRender implements AutoCloseable {
             new Quaternionf().rotationZ(Mth.DEG_TO_RAD * 90.0F),
             new Quaternionf().rotationZ(Mth.DEG_TO_RAD * -90.0F), };
 
-    public void render(Matrix4f modelViewMatrix, Matrix4f projectionMatrix) {
+    public void render(Matrix4f modelViewMatrix) {
         var poseStack = new PoseStack();
         poseStack.mulPose(modelViewMatrix);
 
@@ -91,42 +89,39 @@ public class SpatialSkyRender implements AutoCloseable {
         final long now = System.currentTimeMillis();
         if (sparklesVertices == null || now - this.cycle > 2000) {
             this.cycle = now;
-            this.rebuildSparkles();
         }
         float fade = now - this.cycle;
         fade /= 1000;
         fade = 0.25f * (1.0f - Math.abs((fade - 1.0f) * (fade - 1.0f)));
 
-        if (fade > 0.0f) {
-            renderSparkles(sparklesVertices, fade, modelViewMatrix);
-        }
+        this.rebuildSparkles(fade);
+        renderSparkles(sparklesVertices, modelViewMatrix);
     }
 
-    private void renderSparkles(GpuBuffer sparklesVertices, float fade, Matrix4f modelViewMatrix) {
+    private void renderSparkles(GpuBuffer sparklesVertices, Matrix4f modelViewMatrix) {
         RenderSystem.getModelViewStack().pushMatrix();
         RenderSystem.getModelViewStack().set(modelViewMatrix);
 
-        RenderSystem.setShaderColor(fade, fade, fade, 1.0f);
-
         var renderTarget = Minecraft.getInstance().getMainRenderTarget();
-        var colorBuffer = renderTarget.getColorTexture();
-        var depthBuffer = renderTarget.getDepthTexture();
+        var colorBuffer = renderTarget.getColorTextureView();
+        var depthBuffer = renderTarget.getDepthTextureView();
         var autoIndexBuffer = RenderSystem.getSequentialBuffer(VertexFormat.Mode.QUADS);
         var indexBuffer = autoIndexBuffer.getBuffer(sparklesQuads * 4);
 
         try (var pass = RenderSystem.getDevice()
                 .createCommandEncoder()
-                .createRenderPass(colorBuffer, OptionalInt.empty(), depthBuffer, OptionalDouble.empty())) {
+                .createRenderPass(() -> "spatial sky", colorBuffer, OptionalInt.empty(), depthBuffer,
+                        OptionalDouble.empty())) {
             pass.setPipeline(AERenderPipelines.SPATIAL_SKYBOX_SPARKLES);
             pass.setVertexBuffer(0, sparklesVertices);
             pass.setIndexBuffer(indexBuffer, autoIndexBuffer.type());
-            pass.drawIndexed(0, sparklesQuads * 4);
+            pass.drawIndexed(0, 0, sparklesQuads * 4, 1);
         }
 
         RenderSystem.getModelViewStack().popMatrix();
     }
 
-    private void rebuildSparkles() {
+    private void rebuildSparkles(float fade) {
         if (sparklesVertices != null) {
             sparklesVertices.close();
         }
@@ -171,7 +166,7 @@ public class SpatialSkyRender implements AutoCloseable {
                         float d23 = d17 * d12 - d20 * d13;
                         float d24 = d23 * d9 - d21 * d10;
                         float d25 = d21 * d9 + d23 * d10;
-                        vb.addVertex(x + d24, y + d22, z + d25).setColor(255, 255, 255, 255);
+                        vb.addVertex(x + d24, y + d22, z + d25).setColor(fade, fade, fade, 1.0f);
                     }
                     sparklesQuads++;
                 }
@@ -179,8 +174,8 @@ public class SpatialSkyRender implements AutoCloseable {
 
             try (var meshdata = vb.buildOrThrow()) {
                 sparklesVertices = RenderSystem.getDevice()
-                        .createBuffer(() -> "Spatial sky sparkles vertex buffer", BufferType.VERTICES,
-                                BufferUsage.STATIC_WRITE, meshdata.vertexBuffer());
+                        .createBuffer(() -> "Spatial sky sparkles vertex buffer", GpuBuffer.USAGE_VERTEX,
+                                meshdata.vertexBuffer());
             }
         }
     }

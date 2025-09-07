@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
 
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -16,7 +17,12 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.storage.TagValueInput;
+import net.minecraft.world.level.storage.TagValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
@@ -58,7 +64,7 @@ class GenericStackInvTest {
         large.setStack(0, ONE_STICK);
         large.setStack(1, ONE_STICK);
 
-        inv.readFromTag(large.writeToTag(registryAccess), registryAccess);
+        roundtripList(large::writeToTag, inv::readFromTag);
 
         assertEquals(ONE_STICK, inv.getStack(0));
         // Size didnt change...
@@ -68,13 +74,14 @@ class GenericStackInvTest {
     @Test
     void testLoadingFromEmptyTagClearsFilledSlots() {
         inv.setStack(0, ONE_STICK);
-        inv.readFromTag(new ListTag(), registryAccess);
+        inv.readFromTag(TagValueInput.create(ProblemReporter.DISCARDING, RegistryAccess.EMPTY, new CompoundTag())
+                .childrenListOrEmpty("x"));
         assertNull(inv.getStack(0));
     }
 
     @Test
     void testWritingAnEmptyInventoryProducesAnEmptyTag() {
-        var serializedTag = inv.writeToTag(registryAccess);
+        var serializedTag = toListTag(inv::writeToTag);
         assertEquals(0, serializedTag.size());
     }
 
@@ -83,8 +90,7 @@ class GenericStackInvTest {
      */
     @Test
     void testWritingAnEmptyInventoryProducesNoChildTag() {
-        var tag = new CompoundTag();
-        inv.writeToChildTag(tag, "child", registryAccess);
+        var tag = toTag(o -> inv.writeToChildTag(o, "child"));
         assertEquals(new CompoundTag(), tag);
     }
 
@@ -93,9 +99,8 @@ class GenericStackInvTest {
      */
     @Test
     void testWritingToChildTag() {
-        var tag = new CompoundTag();
         inv.setStack(0, ONE_STICK);
-        inv.writeToChildTag(tag, "child", registryAccess);
+        var tag = toTag(o -> inv.writeToChildTag(o, "child"));
         assertThat(tag.keySet()).containsOnly("child");
     }
 
@@ -104,12 +109,11 @@ class GenericStackInvTest {
      */
     @Test
     void testReadingFromChildTag() {
-        var tag = new CompoundTag();
         inv.setStack(0, ONE_STICK);
-        inv.writeToChildTag(tag, "child", registryAccess);
+        var tag = toTag(o -> inv.writeToChildTag(o, "child"));
         inv.clear();
         changeNotifications.set(0);
-        inv.readFromChildTag(tag, "child", registryAccess);
+        fromTag(tag, i -> inv.readFromChildTag(i, "child"));
 
         assertEquals(ONE_STICK, inv.getStack(0));
         assertEquals(1, changeNotifications.get());
@@ -124,15 +128,15 @@ class GenericStackInvTest {
         otherInv.setStack(0, ONE_STICK);
 
         // Read once
-        inv.readFromTag(otherInv.writeToTag(registryAccess), registryAccess);
+        roundtripList(otherInv::writeToTag, inv::readFromTag);
         assertEquals(1, changeNotifications.get());
 
         // Read again
-        inv.readFromTag(otherInv.writeToTag(registryAccess), registryAccess);
+        roundtripList(otherInv::writeToTag, inv::readFromTag);
         assertEquals(1, changeNotifications.get());
 
         // Notification on clear
-        inv.readFromTag(new ListTag(), registryAccess);
+        fromListTag(new ListTag(), inv::readFromTag);
         assertEquals(2, changeNotifications.get());
     }
 
@@ -160,7 +164,7 @@ class GenericStackInvTest {
     @Test
     void testReadingFromMissingChildTag() {
         inv.setStack(0, ONE_STICK);
-        inv.readFromChildTag(new CompoundTag(), "child", registryAccess);
+        fromTag(new CompoundTag(), i -> inv.readFromChildTag(i, "child"));
         assertNull(inv.getStack(0));
     }
 
@@ -194,7 +198,7 @@ class GenericStackInvTest {
             inv.setStack(0, ONE_STICK);
             inv.setStack(0, null);
             inv.setStack(0, ONE_STICK);
-            inv.readFromTag(new ListTag(), registryAccess);
+            fromListTag(new ListTag(), inv::readFromTag);
             assertEquals(0, changeNotifications.get());
             inv.endBatch();
             assertEquals(1, changeNotifications.get());
@@ -249,5 +253,33 @@ class GenericStackInvTest {
             inv.setStack(1, new GenericStack(STICK_KEY, 64));
             assertEquals(70, inv.extract(STICK_KEY, 70, Actionable.SIMULATE, SRC));
         }
+    }
+
+    private CompoundTag toTag(Consumer<ValueOutput> serializer) {
+        var output = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, registryAccess);
+        serializer.accept(output);
+        return output.buildResult();
+    }
+
+    private ListTag toListTag(Consumer<ValueOutput.ValueOutputList> serializer) {
+        return toTag(tag -> serializer.accept(tag.childrenList("x"))).getListOrEmpty("x");
+    }
+
+    private void fromTag(CompoundTag tag, Consumer<ValueInput> deserializer) {
+        var input = TagValueInput.create(ProblemReporter.DISCARDING, registryAccess, tag);
+        deserializer.accept(input);
+    }
+
+    private void fromListTag(ListTag tag, Consumer<ValueInput.ValueInputList> deserializer) {
+        var compound = new CompoundTag();
+        compound.put("x", tag);
+        fromTag(compound, o -> deserializer.accept(o.childrenListOrEmpty("x")));
+    }
+
+    private void roundtripList(Consumer<ValueOutput.ValueOutputList> serializer,
+            Consumer<ValueInput.ValueInputList> deserializer) {
+        var output = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, registryAccess);
+        serializer.accept(output.childrenList("x"));
+        fromTag(output.buildResult(), o -> deserializer.accept(o.childrenListOrEmpty("x")));
     }
 }

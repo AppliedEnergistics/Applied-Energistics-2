@@ -1,13 +1,9 @@
 package appeng.client.render;
 
-import org.joml.Matrix4f;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
-import net.minecraft.client.renderer.LightTexture;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
@@ -66,23 +62,21 @@ public class StorageCellClientTooltipComponent implements ClientTooltipComponent
     }
 
     @Override
-    public void renderText(Font font, int x, int y, Matrix4f matrix4f, MultiBufferSource.BufferSource bufferSource) {
+    public void renderText(GuiGraphics guiGraphics, Font font, int x, int y) {
         var yoff = (16 - font.lineHeight) / 2;
 
         var content = tooltipComponent.content();
         if (!content.isEmpty()) {
             var xoff = content.size() * 17;
             if (tooltipComponent.hasMoreContent()) {
-                font.drawInBatch("\u2026", x + xoff + 2, y + 2, -1, false, matrix4f, bufferSource,
-                        Font.DisplayMode.NORMAL, 0, LightTexture.FULL_BRIGHT);
+                guiGraphics.drawString(font, "\u2026", x + xoff + 2, y + 2, -1, false);
             }
             y += 17;
         }
 
         var upgrades = tooltipComponent.upgrades();
         if (!upgrades.isEmpty()) {
-            font.drawInBatch(upgradesLabel, x, y + yoff, 0x7E7E7E, false, matrix4f, bufferSource,
-                    Font.DisplayMode.NORMAL, 0, LightTexture.FULL_BRIGHT);
+            guiGraphics.drawString(font, upgradesLabel, x, y + yoff, 0x7E7E7E, false);
         }
     }
 

@@ -27,6 +27,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -37,6 +38,7 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.TagValueOutput;
 
 import appeng.api.networking.GridHelper;
 import appeng.api.networking.IGrid;
@@ -192,8 +194,11 @@ public class ReplicatorCardItem extends AEBaseItem {
                                                     level.setBlockAndUpdate(d, state);
                                                     if (state.hasBlockEntity()) {
                                                         final BlockEntity ote = src_w.getBlockEntity(p);
-                                                        var data = ote.saveWithId(level.registryAccess());
-                                                        var newBe = BlockEntity.loadStatic(d, state, data,
+                                                        var dataOutput = TagValueOutput.createWithContext(
+                                                                ProblemReporter.DISCARDING, level.registryAccess());
+                                                        ote.saveWithId(dataOutput);
+                                                        var newBe = BlockEntity.loadStatic(d, state,
+                                                                dataOutput.buildResult(),
                                                                 level.registryAccess());
                                                         if (newBe != null) {
                                                             level.setBlockEntity(newBe);

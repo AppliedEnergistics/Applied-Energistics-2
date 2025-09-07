@@ -27,8 +27,6 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
@@ -47,11 +45,10 @@ public abstract class AEBasePoweredItem extends AEBaseItem implements IAEItemPow
         this.powerCapacity = powerCapacity;
     }
 
-    @OnlyIn(Dist.CLIENT)
     @Override
     public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay tooltipDisplay,
             Consumer<Component> lines,
-            TooltipFlag advancedTooltips) {
+            TooltipFlag tooltipFlags) {
         var storedEnergy = getAECurrentPower(stack);
         var energyCapacity = getAEMaxPower(stack);
         lines.accept(Tooltips.energyStorageComponent(storedEnergy, energyCapacity));

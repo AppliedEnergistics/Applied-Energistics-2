@@ -24,14 +24,14 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.FullnessMode;
@@ -111,18 +111,18 @@ public class IOPortBlockEntity extends AENetworkedInvBlockEntity
     }
 
     @Override
-    public void saveAdditional(CompoundTag data, HolderLookup.Provider registries) {
-        super.saveAdditional(data, registries);
-        this.manager.writeToNBT(data, registries);
-        this.upgrades.writeToNBT(data, "upgrades", registries);
+    public void saveAdditional(ValueOutput data) {
+        super.saveAdditional(data);
+        this.manager.writeToNBT(data);
+        this.upgrades.writeToNBT(data, "upgrades");
         data.putInt("lastRedstoneState", this.lastRedstoneState.ordinal());
     }
 
     @Override
-    public void loadTag(CompoundTag data, HolderLookup.Provider registries) {
-        super.loadTag(data, registries);
-        this.manager.readFromNBT(data, registries);
-        this.upgrades.readFromNBT(data, "upgrades", registries);
+    public void loadTag(ValueInput data) {
+        super.loadTag(data);
+        this.manager.readFromNBT(data);
+        this.upgrades.readFromNBT(data, "upgrades");
         this.lastRedstoneState = YesNo.values()[data.getIntOr("lastRedstoneState", YesNo.UNDECIDED.ordinal())];
     }
 

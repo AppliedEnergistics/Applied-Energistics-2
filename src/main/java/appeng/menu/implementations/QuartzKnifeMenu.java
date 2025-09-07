@@ -131,7 +131,7 @@ public class QuartzKnifeMenu extends AEBaseMenu {
                 final ItemStack item = itemMenuHost.getItemStack();
                 final ItemStack before = item.copy();
                 Inventory playerInv = QuartzKnifeMenu.this.getPlayerInventory();
-                item.hurtAndBreak(1, serverPlayer.serverLevel(), serverPlayer, ignored -> {
+                item.hurtAndBreak(1, serverPlayer.level(), serverPlayer, ignored -> {
                     if (itemMenuHost.getPlayerInventorySlot() != null) {
                         playerInv.setItem(itemMenuHost.getPlayerInventorySlot(), ItemStack.EMPTY);
                     }

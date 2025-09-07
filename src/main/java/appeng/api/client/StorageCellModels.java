@@ -48,7 +48,7 @@ public final class StorageCellModels {
 
     private static final ResourceLocation MODEL_CELL_DEFAULT = AppEng.makeId("block/drive_cell");
     private static final StandaloneModelKey<SimpleModelWrapper> MODEL_CELL_DEFAULT_STANDALONE = new StandaloneModelKey<>(
-            MODEL_CELL_DEFAULT);
+            MODEL_CELL_DEFAULT::toString);
 
     private static final Map<Item, ResourceLocation> registry = new IdentityHashMap<>();
     private static final Map<Item, StandaloneModelKey<SimpleModelWrapper>> standaloneRegistry = new IdentityHashMap<>();
@@ -76,7 +76,7 @@ public final class StorageCellModels {
         Preconditions.checkArgument(!registry.containsKey(item), "Cannot register an item twice.");
 
         registry.put(item, model);
-        standaloneRegistry.put(item, new StandaloneModelKey<>(model));
+        standaloneRegistry.put(item, new StandaloneModelKey<>(model::toString));
     }
 
     /**

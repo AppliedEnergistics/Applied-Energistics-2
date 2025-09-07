@@ -54,8 +54,6 @@ import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.HitResult.Type;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.util.BlockSnapshot;
 import net.neoforged.neoforge.event.EventHooks;
@@ -110,12 +108,11 @@ public class MatterCannonItem extends AEBasePoweredItem implements IBasicCellIte
         return 800d + 800d * Upgrades.getEnergyCardMultiplier(getUpgrades(stack));
     }
 
-    @OnlyIn(Dist.CLIENT)
     @Override
     public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay tooltipDisplay,
             Consumer<Component> lines,
-            TooltipFlag advancedTooltips) {
-        super.appendHoverText(stack, context, tooltipDisplay, lines, advancedTooltips);
+            TooltipFlag tooltipFlags) {
+        super.appendHoverText(stack, context, tooltipDisplay, lines, tooltipFlags);
         addCellInformationToTooltip(stack, lines);
     }
 
@@ -351,7 +348,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IBasicCellIte
                     final int dmg = getDamageFromPenetration(penetration);
                     if (entityHit instanceof LivingEntity el) {
                         penetration -= dmg;
-                        if (el.hurt(dmgSrc, dmg)) {
+                        if (el.hurtServer(level, dmgSrc, dmg)) {
                             el.knockback(0, -direction.x, -direction.z);
                             if (!el.isAlive()) {
                                 hasDestroyed = true;

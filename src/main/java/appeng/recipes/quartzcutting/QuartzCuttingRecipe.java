@@ -126,7 +126,7 @@ public class QuartzCuttingRecipe implements CraftingRecipe {
 
                 var broken = new MutableBoolean(false);
                 if (CommonHooks.getCraftingPlayer() instanceof ServerPlayer serverPlayer) {
-                    result.hurtAndBreak(1, serverPlayer.serverLevel(), serverPlayer, ignored -> broken.setTrue());
+                    result.hurtAndBreak(1, serverPlayer.level(), serverPlayer, ignored -> broken.setTrue());
                 } else {
                     var currentServer = ServerLifecycleHooks.getCurrentServer();
                     if (currentServer != null) {

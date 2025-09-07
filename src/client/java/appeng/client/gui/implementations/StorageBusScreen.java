@@ -78,15 +78,15 @@ public class StorageBusScreen extends UpgradeableScreen<StorageBusMenu> {
         super.drawFG(guiGraphics, offsetX, offsetY, mouseX, mouseY);
 
         var poseStack = guiGraphics.pose();
-        poseStack.pushPose();
-        poseStack.translate(10, 17, 0);
-        poseStack.scale(0.6f, 0.6f, 1);
+        poseStack.pushMatrix();
+        poseStack.translate(10, 17);
+        poseStack.scale(0.6f);
         var color = style.getColor(PaletteColor.DEFAULT_TEXT_COLOR);
         if (menu.getConnectedTo() != null) {
             guiGraphics.drawString(font, GuiText.AttachedTo.text(menu.getConnectedTo()), 0, 0, color.toARGB(), false);
         } else {
             guiGraphics.drawString(font, GuiText.Unattached.text(), 0, 0, color.toARGB(), false);
         }
-        poseStack.popPose();
+        poseStack.popMatrix();
     }
 }

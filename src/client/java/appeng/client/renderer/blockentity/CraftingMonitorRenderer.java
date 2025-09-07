@@ -24,8 +24,6 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 import appeng.blockentity.crafting.CraftingMonitorBlockEntity;
 import appeng.client.render.BlockEntityRenderHelper;
@@ -33,7 +31,6 @@ import appeng.client.render.BlockEntityRenderHelper;
 /**
  * Renders the item currently being crafted
  */
-@OnlyIn(Dist.CLIENT)
 public class CraftingMonitorRenderer implements BlockEntityRenderer<CraftingMonitorBlockEntity> {
 
     public CraftingMonitorRenderer(BlockEntityRendererProvider.Context context) {

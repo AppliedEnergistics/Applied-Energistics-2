@@ -18,9 +18,9 @@
 
 package appeng.parts.reporting;
 
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 
 import appeng.api.config.Settings;
@@ -58,14 +58,14 @@ public class PatternAccessTerminalPart extends AbstractDisplayPart implements IP
         return configManager;
     }
 
-    public void writeToNBT(CompoundTag tag, HolderLookup.Provider registries) {
-        super.writeToNBT(tag, registries);
-        configManager.writeToNBT(tag, registries);
+    public void writeToNBT(ValueOutput tag) {
+        super.writeToNBT(tag);
+        configManager.writeToNBT(tag);
     }
 
-    public void readFromNBT(CompoundTag tag, HolderLookup.Provider registries) {
-        super.readFromNBT(tag, registries);
-        configManager.readFromNBT(tag, registries);
+    public void readFromNBT(ValueInput tag) {
+        super.readFromNBT(tag);
+        configManager.readFromNBT(tag);
     }
 
     @Override

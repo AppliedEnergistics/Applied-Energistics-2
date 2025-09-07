@@ -35,7 +35,6 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
@@ -73,11 +72,10 @@ import net.neoforged.neoforge.client.event.RegisterRenderPipelinesEvent;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
-import net.neoforged.neoforge.client.model.standalone.StandaloneModelBaker;
+import net.neoforged.neoforge.client.model.standalone.SimpleUnbakedStandaloneModel;
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import net.neoforged.neoforge.client.settings.KeyConflictContext;
 import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.network.PacketDistributor;
-import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import guideme.Guide;
 import guideme.compiler.TagCompiler;
@@ -88,7 +86,6 @@ import guideme.siteexport.RecipeExporter;
 import appeng.api.client.StorageCellModels;
 import appeng.api.parts.CableRenderMode;
 import appeng.api.util.AEColor;
-import appeng.block.networking.CableBusColor;
 import appeng.block.qnb.QnbFormedModel;
 import appeng.client.api.model.parts.CompositePartModel;
 import appeng.client.api.model.parts.RegisterPartModelsEvent;
@@ -96,6 +93,7 @@ import appeng.client.api.model.parts.StaticPartModel;
 import appeng.client.api.renderer.parts.RegisterPartRendererEvent;
 import appeng.client.areaoverlay.AreaOverlayRenderer;
 import appeng.client.block.cablebus.CableBusBlockClientExtensions;
+import appeng.client.block.cablebus.CableBusColor;
 import appeng.client.commands.ClientCommands;
 import appeng.client.gui.me.common.PendingCraftingJobs;
 import appeng.client.gui.me.common.PinnedKeys;
@@ -104,6 +102,7 @@ import appeng.client.guidebook.AEAdditionalExportData;
 import appeng.client.guidebook.AERecipeExporter;
 import appeng.client.guidebook.ConfigValueTagExtension;
 import appeng.client.guidebook.PartAnnotationStrategy;
+import appeng.client.hooks.BlockAttackHook;
 import appeng.client.hooks.RenderBlockOutlineHook;
 import appeng.client.item.ColorApplicatorItemModel;
 import appeng.client.item.EnergyFillLevelProperty;
@@ -148,6 +147,7 @@ import appeng.client.renderer.blockentity.MEChestRenderer;
 import appeng.client.renderer.blockentity.MolecularAssemblerRenderer;
 import appeng.client.renderer.blockentity.SkyStoneChestRenderer;
 import appeng.client.renderer.blockentity.SkyStoneTankRenderer;
+import appeng.client.renderer.entity.TinyTNTPrimedRenderer;
 import appeng.client.renderer.part.MonitorRenderer;
 import appeng.client.renderer.parts.PartRendererDispatcher;
 import appeng.core.AEConfig;
@@ -158,15 +158,12 @@ import appeng.core.definitions.AEBlockEntities;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEEntities;
 import appeng.core.definitions.AEItems;
-import appeng.core.network.ClientboundPacket;
 import appeng.core.network.ServerboundPacket;
 import appeng.core.network.serverbound.MouseWheelPacket;
 import appeng.core.network.serverbound.UpdateHoldingCtrlPacket;
 import appeng.core.particles.EnergyParticleData;
 import appeng.core.particles.ParticleTypes;
-import appeng.entity.TinyTNTPrimedRenderer;
 import appeng.helpers.IMouseWheelItem;
-import appeng.hooks.BlockAttackHook;
 import appeng.items.storage.StorageCellTooltipComponent;
 import appeng.parts.reporting.ConversionMonitorPart;
 import appeng.parts.reporting.StorageMonitorPart;
@@ -231,8 +228,6 @@ public class AppEngClient extends AppEngBase {
 
     private final Guide guide;
 
-    private final ClientsidePacketHandlers clientPacketHandlers = new ClientsidePacketHandlers();
-
     public AppEngClient(IEventBus modEventBus, ModContainer container) {
         super(modEventBus, container);
 
@@ -267,8 +262,7 @@ public class AppEngClient extends AppEngBase {
         container.registerExtensionPoint(IConfigScreenFactory.class,
                 (mc, parent) -> new ConfigurationScreen(container, parent));
 
-        registerClientboundPacketHandlers();
-
+        modEventBus.addListener(new AEClientboundPacketHandler()::register);
         modEventBus.addListener(this::registerEntityRenderers);
         modEventBus.addListener(this::registerEntityLayerDefinitions);
         modEventBus.addListener(this::registerClientExtensions);
@@ -383,7 +377,7 @@ public class AppEngClient extends AppEngBase {
 
             if (mainHand || offHand) {
                 ServerboundPacket message = new MouseWheelPacket(me.getScrollDeltaY() > 0);
-                PacketDistributor.sendToServer(message);
+                ClientPacketDistributor.sendToServer(message);
                 me.setCanceled(true);
             }
         }
@@ -398,7 +392,7 @@ public class AppEngClient extends AppEngBase {
                 var previousIsDown = player.getData(AEAttachmentTypes.HOLDING_CTRL);
                 if (previousIsDown != isDown) {
                     player.setData(AEAttachmentTypes.HOLDING_CTRL, isDown);
-                    PacketDistributor.sendToServer(new UpdateHoldingCtrlPacket(isDown));
+                    ClientPacketDistributor.sendToServer(new UpdateHoldingCtrlPacket(isDown));
                 }
             }
         }
@@ -512,23 +506,6 @@ public class AppEngClient extends AppEngBase {
             Minecraft.getInstance().gui.getChat().addMessage(text);
         }
         super.sendSystemMessage(player, text);
-    }
-
-    private void registerClientboundPacketHandlers() {
-        var handler = new AEClientboundPacketHandler();
-        handler.register(clientPacketHandlers);
-    }
-
-    @Override
-    public <T extends ClientboundPacket> void handleClientboundPacket(CustomPacketPayload.Type<T> type, T payload,
-            IPayloadContext context) {
-        var handler = clientPacketHandlers.get(type);
-        if (handler == null) {
-            throw new IllegalStateException(
-                    "Cannot handle packet type " + payload.type() + " clientside. Missing registration?");
-        } else {
-            handler.handle(payload, Minecraft.getInstance(), context.player());
-        }
     }
 
     @Override
@@ -657,13 +634,17 @@ public class AppEngClient extends AppEngBase {
     }
 
     private void registerStandaloneModels(ModelEvent.RegisterStandalone event) {
-        event.register(CrankRenderer.HANDLE_MODEL, StandaloneModelBaker.simpleModelWrapper());
+        event.register(CrankRenderer.HANDLE_MODEL,
+                SimpleUnbakedStandaloneModel.simpleModelWrapper(CrankRenderer.HANDLE_MODEL_ID));
 
         // For rendering the ME chest we require the original storage cell models as standalone models
         for (var cellModelKey : StorageCellModels.standaloneModels().values()) {
-            event.register(cellModelKey, StandaloneModelBaker.simpleModelWrapper());
+            // TODO 1.21.8 Investigate what model debug name vs. model key vs. resource location is
+            event.register(cellModelKey,
+                    SimpleUnbakedStandaloneModel.simpleModelWrapper(ResourceLocation.parse(cellModelKey.getName())));
         }
-        event.register(StorageCellModels.getDefaultStandaloneModel(), StandaloneModelBaker.simpleModelWrapper());
+        event.register(StorageCellModels.getDefaultStandaloneModel(), SimpleUnbakedStandaloneModel
+                .simpleModelWrapper(ResourceLocation.parse(StorageCellModels.getDefaultStandaloneModel().getName())));
     }
 
     private void registerItemModelProperties(RegisterRangeSelectItemModelPropertyEvent event) {

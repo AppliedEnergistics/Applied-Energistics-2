@@ -9,9 +9,9 @@ import com.mojang.math.Transformation;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BlockModelPart;
 import net.minecraft.client.renderer.block.model.SimpleModelWrapper;
+import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.Material;
@@ -62,12 +62,12 @@ public class PlanePartModel implements PartModel {
                     buildQuads(frontOnSprite, sidesSprite, backSprite, permutation, quadTransformer),
                     true,
                     frontOnSprite,
-                    RenderType.solid()));
+                    ChunkSectionLayer.SOLID));
             this.offParts.put(permutation, new SimpleModelWrapper(
                     buildQuads(frontOffSprite, sidesSprite, backSprite, permutation, quadTransformer),
                     true,
                     frontOffSprite,
-                    RenderType.solid()));
+                    ChunkSectionLayer.SOLID));
         }
     }
 

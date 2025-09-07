@@ -4,8 +4,10 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.TagValueOutput;
 
 public class SavedBlockEntity {
 
@@ -26,7 +28,10 @@ public class SavedBlockEntity {
         if (be == null) {
             throw helper.assertionException(pos, "No BlockEntity");
         }
-        data = be.saveWithId(helper.getLevel().registryAccess());
+        var dataOutput = TagValueOutput.createWithContext(ProblemReporter.DISCARDING,
+                helper.getLevel().registryAccess());
+        be.saveWithId(dataOutput);
+        data = dataOutput.buildResult();
     }
 
     public void saveAndRemove(BlockPos pos) {

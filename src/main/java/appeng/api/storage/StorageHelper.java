@@ -27,7 +27,7 @@ import java.util.Objects;
 
 import com.google.common.primitives.Ints;
 
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.storage.ValueInput;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
@@ -50,7 +50,7 @@ public final class StorageHelper {
      * @param data to be loaded data
      * @return crafting link
      */
-    public static ICraftingLink loadCraftingLink(CompoundTag data, ICraftingRequester req) {
+    public static ICraftingLink loadCraftingLink(ValueInput data, ICraftingRequester req) {
         Objects.requireNonNull(data);
         Objects.requireNonNull(req);
 

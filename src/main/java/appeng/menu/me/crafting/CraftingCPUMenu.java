@@ -46,7 +46,7 @@ import appeng.menu.me.common.IncrementalUpdateHelper;
 public class CraftingCPUMenu extends AEBaseMenu {
 
     private static final ClientActionKey<Void> ACTION_CANCEL_CRAFTING = new ClientActionKey<>("cancelCrafting");
-    private static final String ACTION_TOGGLE_SCHEDULING = "toggleScheduling";
+    private static final ClientActionKey<Void> ACTION_TOGGLE_SCHEDULING = new ClientActionKey<>("toggleScheduling");
 
     public static final MenuType<CraftingCPUMenu> TYPE = MenuTypeBuilder
             .create(CraftingCPUMenu::new, CraftingBlockEntity.class)

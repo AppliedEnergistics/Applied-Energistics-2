@@ -37,11 +37,11 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.BlockModelPart;
 import net.minecraft.client.renderer.block.model.BlockStateModel;
 import net.minecraft.client.renderer.block.model.SimpleModelWrapper;
+import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.ModelBaker;
@@ -230,7 +230,7 @@ public class CableBusModel implements DynamicBlockStateModel {
         if (quadCollection.getAll().isEmpty()) {
             return emptyCableModel;
         }
-        return new SimpleModelWrapper(quadCollection, true, particleTexture, RenderType.cutout());
+        return new SimpleModelWrapper(quadCollection, true, particleTexture, ChunkSectionLayer.CUTOUT);
     }
 
     private void getCableQuads(CableBusRenderState renderState, Consumer<BakedQuad> quadsOut) {

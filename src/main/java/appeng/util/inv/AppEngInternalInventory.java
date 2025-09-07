@@ -25,12 +25,11 @@ import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.ItemContainerContents;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 import appeng.api.inventories.BaseInternalInventory;
 import appeng.util.inv.filter.IAEItemFilter;
@@ -159,34 +158,23 @@ public class AppEngInternalInventory extends BaseInternalInventory {
         contents.copyInto(stacks);
     }
 
-    public void writeToNBT(CompoundTag data, String name, HolderLookup.Provider registries) {
-        if (isEmpty()) {
-            data.remove(name);
-            return;
-        }
-
-        var items = new ListTag();
+    public void writeToNBT(ValueOutput output, String name) {
+        var list = output.childrenList(name);
         for (int i = 0; i < stacks.size(); i++) {
             var stack = stacks.get(i);
             if (!stack.isEmpty()) {
-                CompoundTag itemTag = new CompoundTag();
-                itemTag.putInt("Slot", i);
-                items.add(stack.save(registries, itemTag));
+                var entry = list.addChild();
+                entry.store(ItemStack.MAP_CODEC, stack);
+                entry.putInt("Slot", i);
             }
         }
-        data.put(name, items);
     }
 
-    public void readFromNBT(CompoundTag data, String name, HolderLookup.Provider registries) {
-        if (data.contains(name)) {
-            var tagList = data.getListOrEmpty(name);
-            for (var itemTag : tagList) {
-                var itemCompound = (CompoundTag) itemTag;
-                int slot = itemCompound.getIntOr("Slot", 0);
-
-                if (slot >= 0 && slot < stacks.size()) {
-                    stacks.set(slot, ItemStack.parse(registries, itemCompound).orElse(ItemStack.EMPTY));
-                }
+    public void readFromNBT(ValueInput input, String name) {
+        for (var entry : input.childrenListOrEmpty(name)) {
+            int slot = entry.getIntOr("Slot", 0);
+            if (slot >= 0 && slot < stacks.size()) {
+                stacks.set(slot, entry.read(ItemStack.MAP_CODEC).orElse(ItemStack.EMPTY));
             }
         }
     }

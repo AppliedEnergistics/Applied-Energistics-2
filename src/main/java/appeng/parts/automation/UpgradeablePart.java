@@ -23,10 +23,10 @@ import java.util.List;
 import org.jetbrains.annotations.MustBeInvokedByOverriders;
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 import appeng.api.config.RedstoneMode;
 import appeng.api.config.Setting;
@@ -96,17 +96,17 @@ public abstract class UpgradeablePart extends AEBasePart implements IConfigurabl
     }
 
     @Override
-    public void readFromNBT(CompoundTag extra, HolderLookup.Provider registries) {
-        super.readFromNBT(extra, registries);
-        this.config.readFromNBT(extra, registries);
-        this.upgrades.readFromNBT(extra, "upgrades", registries);
+    public void readFromNBT(ValueInput extra) {
+        super.readFromNBT(extra);
+        this.config.readFromNBT(extra);
+        this.upgrades.readFromNBT(extra, "upgrades");
     }
 
     @Override
-    public void writeToNBT(CompoundTag extra, HolderLookup.Provider registries) {
-        super.writeToNBT(extra, registries);
-        this.config.writeToNBT(extra, registries);
-        this.upgrades.writeToNBT(extra, "upgrades", registries);
+    public void writeToNBT(ValueOutput extra) {
+        super.writeToNBT(extra);
+        this.config.writeToNBT(extra);
+        this.upgrades.writeToNBT(extra, "upgrades");
     }
 
     @Override

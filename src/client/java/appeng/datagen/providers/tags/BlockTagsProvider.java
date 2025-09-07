@@ -50,7 +50,7 @@ public class BlockTagsProvider extends IntrinsicHolderTagsProvider<Block> implem
         // Black- and whitelist tags
         tag(AETags.SPATIAL_BLACKLIST)
                 .add(Blocks.BEDROCK)
-                .addOptionalTag(ConventionTags.IMMOVABLE_BLOCKS.location());
+                .addOptionalTag(ConventionTags.IMMOVABLE_BLOCKS);
         tag(AETags.ANNIHILATION_PLANE_BLOCK_BLACKLIST);
         tag(AETags.FACADE_BLOCK_WHITELIST)
                 .add(AEBlocks.QUARTZ_GLASS.block(), AEBlocks.QUARTZ_VIBRANT_GLASS.block(),
@@ -62,14 +62,14 @@ public class BlockTagsProvider extends IntrinsicHolderTagsProvider<Block> implem
                         AEBlocks.CRAFTING_STORAGE_64K.block(), AEBlocks.CRAFTING_STORAGE_256K.block(),
                         AEBlocks.CRAFTING_MONITOR.block(), AEBlocks.CRAFTING_UNIT.block(),
                         AEBlocks.CRAFTING_ACCELERATOR.block())
-                .addOptionalTag(ConventionTags.GLASS_BLOCK.location());
+                .addOptionalTag(ConventionTags.GLASS_BLOCK);
         tag(AETags.GROWTH_ACCELERATABLE)
                 // TODO: Should all be in some conventional tag
                 .add(Blocks.BAMBOO_SAPLING, Blocks.BAMBOO, Blocks.SUGAR_CANE, Blocks.SUGAR_CANE, Blocks.VINE,
                         Blocks.TWISTING_VINES, Blocks.WEEPING_VINES, Blocks.CAVE_VINES, Blocks.SWEET_BERRY_BUSH,
                         Blocks.NETHER_WART, Blocks.KELP, Blocks.COCOA)
-                .addOptionalTag(ConventionTags.CROPS.location())
-                .addOptionalTag(ConventionTags.SAPLINGS.location())
+                .addOptionalTag(ConventionTags.CROPS)
+                .addOptionalTag(ConventionTags.SAPLINGS)
                 .addTag(ConventionTags.BUDDING_BLOCKS_BLOCKS);
 
         tag(ConventionTags.BUDDING_BLOCKS_BLOCKS)

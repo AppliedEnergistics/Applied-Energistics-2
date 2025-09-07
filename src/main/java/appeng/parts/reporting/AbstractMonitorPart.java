@@ -20,13 +20,13 @@ package appeng.parts.reporting;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.model.data.ModelData;
 
@@ -106,24 +106,24 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
     }
 
     @Override
-    public void readFromNBT(CompoundTag data, HolderLookup.Provider registries) {
-        super.readFromNBT(data, registries);
+    public void readFromNBT(ValueInput input) {
+        super.readFromNBT(input);
 
-        this.isLocked = data.getBooleanOr("isLocked", false);
+        this.isLocked = input.getBooleanOr("isLocked", false);
 
-        this.configuredItem = data.getCompound("configuredItem")
-                .map(tag -> AEKey.fromTagGeneric(registries, tag))
+        this.configuredItem = input.child("configuredItem")
+                .map(AEKey::fromTagGeneric)
                 .orElse(null);
     }
 
     @Override
-    public void writeToNBT(CompoundTag data, HolderLookup.Provider registries) {
-        super.writeToNBT(data, registries);
+    public void writeToNBT(ValueOutput data) {
+        super.writeToNBT(data);
 
         data.putBoolean("isLocked", this.isLocked);
 
         if (this.configuredItem != null) {
-            data.put("configuredItem", this.configuredItem.toTagGeneric(registries));
+            this.configuredItem.toTagGeneric(data.child("configuredItem"));
         }
     }
 
@@ -164,17 +164,17 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
     }
 
     @Override
-    public void writeVisualStateToNBT(CompoundTag data) {
-        super.writeVisualStateToNBT(data);
-        data.putLong("amount", this.amount);
-        data.putBoolean("canCraft", this.canCraft);
+    public void writeVisualStateToNBT(ValueOutput output) {
+        super.writeVisualStateToNBT(output);
+        output.putLong("amount", this.amount);
+        output.putBoolean("canCraft", this.canCraft);
     }
 
     @Override
-    public void readVisualStateFromNBT(CompoundTag data) {
-        super.readVisualStateFromNBT(data);
-        this.amount = data.getLongOr("amount", 0);
-        this.canCraft = data.getBooleanOr("canCraft", false);
+    public void readVisualStateFromNBT(ValueInput input) {
+        super.readVisualStateFromNBT(input);
+        this.amount = input.getLongOr("amount", 0);
+        this.canCraft = input.getBooleanOr("canCraft", false);
     }
 
     @Override

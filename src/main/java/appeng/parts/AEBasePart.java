@@ -34,9 +34,9 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.Nameable;
@@ -45,6 +45,8 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.model.data.ModelData;
 
@@ -191,26 +193,19 @@ public abstract class AEBasePart
     }
 
     @Override
-    public void readFromNBT(CompoundTag data, HolderLookup.Provider registries) {
-        this.mainNode.loadFromNBT(data);
+    public void readFromNBT(ValueInput input) {
+        this.mainNode.deserialize(input);
 
-        if (data.contains("customName")) {
-            try {
-                this.customName = Component.Serializer.fromJson(data.getStringOr("customName", ""), registries);
-            } catch (Exception ignored) {
-            }
-        }
+        this.customName = input.read("customName", ComponentSerialization.CODEC).orElse(null);
 
-        data.getCompound("visual").ifPresent(this::readVisualStateFromNBT);
+        input.child("visual").ifPresent(this::readVisualStateFromNBT);
     }
 
     @Override
-    public void writeToNBT(CompoundTag data, HolderLookup.Provider registries) {
-        this.mainNode.saveToNBT(data);
+    public void writeToNBT(ValueOutput data) {
+        this.mainNode.serialize(data);
 
-        if (this.customName != null) {
-            data.putString("customName", Component.Serializer.toJson(this.customName, registries));
-        }
+        data.storeNullable("customName", ComponentSerialization.CODEC, customName);
     }
 
     @MustBeInvokedByOverriders
@@ -248,24 +243,24 @@ public abstract class AEBasePart
      * Used to store the state that is synchronized to clients for the visual appearance of this part as NBT. This is
      * only used to store this state for tools such as Create Ponders in Structure NBT. Actual synchronization uses
      * {@link IPart#writeToStream(RegistryFriendlyByteBuf)} and {@link IPart#readFromStream(RegistryFriendlyByteBuf)}.
-     * Any data that is saved to the NBT tag in {@link IPart#writeToNBT(CompoundTag, HolderLookup.Provider)} already
-     * does not need to be saved here again.
+     * Any data that is saved to the NBT tag in {@link IPart#writeToNBT(ValueOutput)} already does not need to be saved
+     * here again.
      */
     @MustBeInvokedByOverriders
     @Override
-    public void writeVisualStateToNBT(CompoundTag data) {
-        data.putBoolean("powered", this.isPowered());
-        data.putBoolean("missingChannel", this.isMissingChannel());
+    public void writeVisualStateToNBT(ValueOutput output) {
+        output.putBoolean("powered", this.isPowered());
+        output.putBoolean("missingChannel", this.isMissingChannel());
     }
 
     /**
-     * Loads data saved by {@link #writeVisualStateToNBT(CompoundTag)}.
+     * Loads data saved by {@link IPart#writeVisualStateToNBT(ValueOutput)}.
      */
     @MustBeInvokedByOverriders
     @Override
-    public void readVisualStateFromNBT(CompoundTag data) {
-        this.clientSidePowered = data.getBooleanOr("powered", false);
-        this.clientSideMissingChannel = data.getBooleanOr("missingChannel", false);
+    public void readVisualStateFromNBT(ValueInput input) {
+        this.clientSidePowered = input.getBooleanOr("powered", false);
+        this.clientSideMissingChannel = input.getBooleanOr("missingChannel", false);
     }
 
     @Override

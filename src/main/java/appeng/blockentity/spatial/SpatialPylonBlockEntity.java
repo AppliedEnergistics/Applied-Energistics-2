@@ -27,12 +27,13 @@ import com.google.common.collect.Iterators;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.model.data.ModelData;
 import net.neoforged.neoforge.model.data.ModelProperty;
 
@@ -182,13 +183,13 @@ public class SpatialPylonBlockEntity extends AENetworkedBlockEntity implements I
     }
 
     @Override
-    protected void saveVisualState(CompoundTag data) {
+    protected void saveVisualState(ValueOutput data) {
         super.saveVisualState(data);
         clientState.writeToNbt(data);
     }
 
     @Override
-    protected void loadVisualState(CompoundTag data) {
+    protected void loadVisualState(ValueInput data) {
         super.loadVisualState(data);
         clientState = ClientState.readFromNbt(data);
     }
@@ -220,7 +221,6 @@ public class SpatialPylonBlockEntity extends AENetworkedBlockEntity implements I
 
     public record ClientState(boolean powered,
             boolean online,
-
             AxisPosition axisPosition,
             Direction.Axis axis) {
 
@@ -241,14 +241,14 @@ public class SpatialPylonBlockEntity extends AENetworkedBlockEntity implements I
                     buf.readEnum(Direction.Axis.class));
         }
 
-        public void writeToNbt(CompoundTag tag) {
+        public void writeToNbt(ValueOutput tag) {
             tag.putBoolean("powered", powered);
             tag.putBoolean("online", online);
             tag.putString("axisPosition", axisPosition.name());
             tag.putString("axis", axis.name());
         }
 
-        public static ClientState readFromNbt(CompoundTag tag) {
+        public static ClientState readFromNbt(ValueInput tag) {
             var powered = tag.getBooleanOr("powered", false);
             var online = tag.getBooleanOr("online", false);
             AxisPosition axisPosition = DEFAULT.axisPosition;

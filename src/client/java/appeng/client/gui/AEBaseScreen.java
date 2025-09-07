@@ -45,7 +45,6 @@ import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.Rect2i;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
@@ -55,7 +54,7 @@ import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 
 import guideme.GuidesCommon;
 import guideme.PageAnchor;
@@ -393,7 +392,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
         for (Component line : lines) {
             styledLines.addAll(ComponentRenderUtils.wrapComponents(line, maxWidth, font));
         }
-        guiGraphics.renderTooltip(font, styledLines, x, y);
+        guiGraphics.setTooltipForNextFrame(font, styledLines, x, y);
 
     }
 
@@ -482,9 +481,9 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
             if (text.getScale() == 1) {
                 guiGraphics.drawString(font, line, x, y, color, false);
             } else {
-                guiGraphics.pose().pushPose();
-                guiGraphics.pose().translate(x, y, 1);
-                guiGraphics.pose().scale(scale, scale, 1);
+                guiGraphics.pose().pushMatrix();
+                guiGraphics.pose().translate(x, y);
+                guiGraphics.pose().scale(scale);
                 guiGraphics.drawString(
                         font,
                         line,
@@ -492,7 +491,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
                         0,
                         color,
                         false);
-                guiGraphics.pose().popPose();
+                guiGraphics.pose().popMatrix();
             }
             y += text.getScale() * this.font.lineHeight;
         }
@@ -507,7 +506,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
 
         this.drawBG(guiGraphics, leftPos, topPos, x, y, f);
 
-        guiGraphics.flush();
+        guiGraphics.nextStratum();
 
         widgets.drawBackgroundLayer(guiGraphics, getBounds(true), new Point(x - leftPos, y - topPos));
 
@@ -617,7 +616,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
                     var p = new InventoryActionPacket(
                             mouseButton == 0 ? InventoryAction.PICKUP_OR_SET_DOWN : InventoryAction.PLACE_SINGLE,
                             dr.index, 0);
-                    PacketDistributor.sendToServer(p);
+                    ClientPacketDistributor.sendToServer(p);
                 }
             }
 
@@ -649,7 +648,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
                 && mouseButton == InputConstants.MOUSE_BUTTON_RIGHT
                 && getEmptyingAction(slot, menu.getCarried()) != null) {
             var p = new InventoryActionPacket(InventoryAction.EMPTY_ITEM, slotIdx, 0);
-            PacketDistributor.sendToServer(p);
+            ClientPacketDistributor.sendToServer(p);
             return;
         }
 
@@ -661,7 +660,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
             var action = mouseButton == 1 ? InventoryAction.SPLIT_OR_PLACE_SINGLE
                     : InventoryAction.PICKUP_OR_SET_DOWN;
             var p = new InventoryActionPacket(action, slotIdx, 0);
-            PacketDistributor.sendToServer(p);
+            ClientPacketDistributor.sendToServer(p);
             return;
         }
 
@@ -677,7 +676,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
             }
 
             final InventoryActionPacket p = new InventoryActionPacket(action, slotIdx, 0);
-            PacketDistributor.sendToServer(p);
+            ClientPacketDistributor.sendToServer(p);
 
             return;
         }
@@ -685,7 +684,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
         if (slot != null && InputConstants.isKeyDown(getMinecraft().getWindow().getWindow(), GLFW.GLFW_KEY_SPACE)) {
             int slotNum = slot.index;
             final InventoryActionPacket p = new InventoryActionPacket(InventoryAction.MOVE_REGION, slotNum, 0);
-            PacketDistributor.sendToServer(p);
+            ClientPacketDistributor.sendToServer(p);
             return;
         }
 
@@ -763,7 +762,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
                             if (s.slot == j
                                     && s.container == this.menu.getPlayerInventory()) {
                                 ServerboundPacket message = new SwapSlotsPacket(s.index, theSlot.index);
-                                PacketDistributor.sendToServer(message);
+                                ClientPacketDistributor.sendToServer(message);
                                 return true;
                             }
                         }
@@ -788,7 +787,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
     public void drawBG(GuiGraphics guiGraphics, int offsetX, int offsetY, int mouseX, int mouseY,
             float partialTicks) {
 
-        guiGraphics.flush();
+        guiGraphics.nextStratum();
 
         var generatedBackground = style.getGeneratedBackground();
         if (generatedBackground != null) {
@@ -980,6 +979,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
     /**
      * Renders a highlight for the given slot to indicate the mouse is currently hovering over it.
      */
+    // TODO 1.21.8 Unused
     protected void renderSlotHighlight(GuiGraphics guiGraphics, Slot slot, int mouseX, int mouseY, float partialTick) {
         if (!slot.isHighlightable()) {
             return;
@@ -1002,7 +1002,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
         guiGraphics.hLine(x - 1, x + w, y + h, 0xFFdaffff);
         guiGraphics.vLine(x - 1, y - 2, y + h, 0xFFdaffff);
         guiGraphics.vLine(x + w, y - 2, y + h, 0xFFdaffff);
-        guiGraphics.fillGradient(RenderType.guiOverlay(), x, y, x + w, y + h, 0x669cd3ff, 0x669cd3ff, 0);
+        guiGraphics.fillGradient(x, y, x + w, y + h, 0x669cd3ff, 0x669cd3ff);
     }
 
     public final void switchToScreen(AEBaseScreen<?> screen) {

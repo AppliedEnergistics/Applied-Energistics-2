@@ -27,11 +27,11 @@ import com.google.common.collect.ImmutableSet;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
@@ -154,23 +154,23 @@ public class InterfaceLogic implements ICraftingRequester, IUpgradeableObject, I
         this.notifyNeighbors();
     }
 
-    public void writeToNBT(CompoundTag tag, HolderLookup.Provider registries) {
-        this.config.writeToChildTag(tag, "config", registries);
-        this.storage.writeToChildTag(tag, "storage", registries);
-        this.upgrades.writeToNBT(tag, "upgrades", registries);
-        this.cm.writeToNBT(tag, registries);
-        this.craftingTracker.writeToNBT(tag);
-        tag.putInt("priority", this.priority);
+    public void writeToNBT(ValueOutput output) {
+        this.config.writeToChildTag(output, "config");
+        this.storage.writeToChildTag(output, "storage");
+        this.upgrades.writeToNBT(output, "upgrades");
+        this.cm.writeToNBT(output);
+        this.craftingTracker.writeToNBT(output);
+        output.putInt("priority", this.priority);
     }
 
-    public void readFromNBT(CompoundTag tag, HolderLookup.Provider registries) {
-        this.craftingTracker.readFromNBT(tag);
-        this.upgrades.readFromNBT(tag, "upgrades", registries);
-        this.config.readFromChildTag(tag, "config", registries);
-        this.storage.readFromChildTag(tag, "storage", registries);
-        this.cm.readFromNBT(tag, registries);
+    public void readFromNBT(ValueInput input) {
+        this.craftingTracker.readFromNBT(input);
+        this.upgrades.readFromNBT(input, "upgrades");
+        this.config.readFromChildTag(input, "config");
+        this.storage.readFromChildTag(input, "storage");
+        this.cm.readFromNBT(input);
         this.readConfig();
-        this.priority = tag.getIntOr("priority", 0);
+        this.priority = input.getIntOr("priority", 0);
     }
 
     private class Ticker implements IGridTickable {

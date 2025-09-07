@@ -48,6 +48,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 import it.unimi.dsi.fastutil.objects.Reference2IntMap;
 
@@ -446,15 +448,14 @@ public class GridNode implements IGridNode, IPathItem, IDebugExportable {
         return myGrid.getEnergyService().isNetworkPowered();
     }
 
-    public void loadFromNBT(String name, CompoundTag nodeDataContainer) {
+    public void loadFromNBT(String name, ValueInput input) {
         this.owningPlayerId = -1;
 
         var oldNodeData = this.savedData;
-        if (nodeDataContainer.get(name) instanceof CompoundTag newNodeData) {
+        var newNodeData = input.read(name, CompoundTag.CODEC).orElse(null);
+        if (newNodeData != null) {
             this.savedData = newNodeData;
-            if (newNodeData.contains("p")) {
-                this.owningPlayerId = newNodeData.getIntOr("p", 0);
-            }
+            this.owningPlayerId = newNodeData.getIntOr("p", 0);
         } else {
             this.savedData = null;
         }
@@ -489,16 +490,14 @@ public class GridNode implements IGridNode, IPathItem, IDebugExportable {
         return true;
     }
 
-    public void saveToNBT(String name, CompoundTag nodeData) {
+    public void saveToNBT(String name, ValueOutput output) {
         if (this.myGrid != null) {
 
             var node = new CompoundTag();
             node.putInt("p", this.owningPlayerId);
             this.myGrid.saveNodeData(this, node);
 
-            nodeData.put(name, node);
-        } else {
-            nodeData.remove(name);
+            output.store(name, CompoundTag.CODEC, node);
         }
     }
 

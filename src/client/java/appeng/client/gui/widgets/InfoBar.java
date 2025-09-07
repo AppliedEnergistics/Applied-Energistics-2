@@ -77,11 +77,11 @@ public class InfoBar {
         @Override
         public void render(GuiGraphics guiGraphics, int x, int y) {
             var poseStack = guiGraphics.pose();
-            poseStack.pushPose();
-            poseStack.translate(xPos, yPos, 0);
-            poseStack.scale(scale, scale, 1);
+            poseStack.pushMatrix();
+            poseStack.translate(xPos, yPos);
+            poseStack.scale(scale);
             AEKeyRendering.drawInGui(Minecraft.getInstance(), guiGraphics, 0, 0, what);
-            poseStack.popPose();
+            poseStack.popMatrix();
         }
     }
 
@@ -99,13 +99,13 @@ public class InfoBar {
         @Override
         public void render(GuiGraphics guiGraphics, int x, int y) {
             var poseStack = guiGraphics.pose();
-            poseStack.pushPose();
-            poseStack.translate(xPos, yPos, 0);
-            poseStack.scale(scale, scale, 1);
+            poseStack.pushMatrix();
+            poseStack.translate(xPos, yPos);
+            poseStack.scale(scale);
             Blitter.icon(icon)
                     .dest(0, 0)
                     .blit(guiGraphics);
-            poseStack.popPose();
+            poseStack.popMatrix();
         }
     }
 
@@ -143,11 +143,11 @@ public class InfoBar {
         public void render(GuiGraphics guiGraphics, int x, int y) {
             var poseStack = guiGraphics.pose();
             var font = Minecraft.getInstance().font;
-            poseStack.pushPose();
-            poseStack.translate(xPos, yPos, 0);
-            poseStack.scale(scale, scale, 1);
+            poseStack.pushMatrix();
+            poseStack.translate(xPos, yPos);
+            poseStack.scale(scale);
             guiGraphics.drawString(font, text, 0, 0, color, false);
-            poseStack.popPose();
+            poseStack.popMatrix();
         }
     }
 

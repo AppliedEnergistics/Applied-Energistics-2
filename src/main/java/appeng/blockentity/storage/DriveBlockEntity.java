@@ -27,9 +27,7 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
@@ -38,6 +36,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.model.data.ModelData;
 
 import appeng.api.implementations.blockentities.IChestOrDrive;
@@ -117,7 +117,7 @@ public class DriveBlockEntity extends AENetworkedInvBlockEntity
     }
 
     @Override
-    protected void saveVisualState(CompoundTag data) {
+    protected void saveVisualState(ValueOutput data) {
         super.saveVisualState(data);
 
         data.putBoolean("online", isPowered());
@@ -125,12 +125,11 @@ public class DriveBlockEntity extends AENetworkedInvBlockEntity
         for (int i = 0; i < getCellCount(); i++) {
             var cellItem = getCellItem(i);
             if (cellItem != null) {
-                var cellData = new CompoundTag();
+                var cellData = data.child("cell" + i);
                 cellData.putString("id", BuiltInRegistries.ITEM.getKey(cellItem).toString());
 
                 var cellState = getCellStatus(i);
                 cellData.putString("state", cellState.name().toLowerCase(Locale.ROOT));
-                data.put("cell" + i, cellData);
             }
         }
     }
@@ -171,7 +170,7 @@ public class DriveBlockEntity extends AENetworkedInvBlockEntity
     }
 
     @Override
-    protected void loadVisualState(CompoundTag data) {
+    protected void loadVisualState(ValueInput data) {
         super.loadVisualState(data);
 
         clientSideOnline = data.getBooleanOr("online", false);
@@ -181,7 +180,7 @@ public class DriveBlockEntity extends AENetworkedInvBlockEntity
             this.clientSideCellState[i] = CellState.ABSENT;
 
             var tagName = "cell" + i;
-            var cellData = data.getCompound(tagName).orElse(null);
+            var cellData = data.child(tagName).orElse(null);
             if (cellData != null) {
                 var id = ResourceLocation.parse(cellData.getStringOr("id", ""));
                 var cellStateName = cellData.getStringOr("state", "");
@@ -260,15 +259,15 @@ public class DriveBlockEntity extends AENetworkedInvBlockEntity
     }
 
     @Override
-    public void loadTag(CompoundTag data, HolderLookup.Provider registries) {
-        super.loadTag(data, registries);
+    public void loadTag(ValueInput data) {
+        super.loadTag(data);
         this.isCached = false;
         this.priority = data.getIntOr("priority", 0);
     }
 
     @Override
-    public void saveAdditional(CompoundTag data, HolderLookup.Provider registries) {
-        super.saveAdditional(data, registries);
+    public void saveAdditional(ValueOutput data) {
+        super.saveAdditional(data);
         data.putInt("priority", this.priority);
     }
 

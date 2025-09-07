@@ -21,7 +21,8 @@ package appeng.crafting;
 import java.util.UUID;
 
 import net.minecraft.core.UUIDUtil;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 import appeng.api.config.Actionable;
 import appeng.api.networking.crafting.ICraftingCPU;
@@ -39,13 +40,13 @@ public class CraftingLink implements ICraftingLink {
     private boolean done = false;
     private CraftingLinkNexus tie;
 
-    public CraftingLink(CompoundTag data, ICraftingRequester req) {
+    public CraftingLink(ValueInput data, ICraftingRequester req) {
         this.craftId = data.read("craftId", UUIDUtil.CODEC).orElseThrow();
         this.setCanceled(data.getBooleanOr("canceled", false));
         this.setDone(data.getBooleanOr("done", false));
         this.standalone = data.getBooleanOr("standalone", false);
 
-        if (!data.contains("req") || !data.getBooleanOr("req", false)) {
+        if (!data.getBooleanOr("req", false)) {
             throw new IllegalStateException("Invalid Crafting Link for Object");
         }
 
@@ -53,18 +54,32 @@ public class CraftingLink implements ICraftingLink {
         this.cpu = null;
     }
 
-    public CraftingLink(CompoundTag data, ICraftingCPU cpu) {
+    public CraftingLink(UUID craftId, boolean standalone, ICraftingRequester requester) {
+        this.craftId = craftId;
+        this.standalone = standalone;
+        this.req = requester;
+        this.cpu = null;
+    }
+
+    public CraftingLink(ValueInput data, ICraftingCPU cpu) {
         this.craftId = data.read("craftId", UUIDUtil.CODEC).orElseThrow();
         this.setCanceled(data.getBooleanOr("canceled", false));
         this.setDone(data.getBooleanOr("done", false));
         this.standalone = data.getBooleanOr("standalone", false);
 
-        if (!data.contains("req") || data.getBooleanOr("req", false)) {
+        if (data.getBooleanOr("req", false)) {
             throw new IllegalStateException("Invalid Crafting Link for Object");
         }
 
         this.cpu = cpu;
         this.req = null;
+    }
+
+    public CraftingLink(UUID craftId, boolean standalone, ICraftingCPU cpu) {
+        this.craftId = craftId;
+        this.standalone = standalone;
+        this.req = null;
+        this.cpu = cpu;
     }
 
     @Override
@@ -122,12 +137,12 @@ public class CraftingLink implements ICraftingLink {
     }
 
     @Override
-    public void writeToNBT(CompoundTag tag) {
-        tag.store("craftId", UUIDUtil.CODEC, this.craftId);
-        tag.putBoolean("canceled", this.isCanceled());
-        tag.putBoolean("done", this.isDone());
-        tag.putBoolean("standalone", this.standalone);
-        tag.putBoolean("req", this.getRequester() != null);
+    public void writeToNBT(ValueOutput output) {
+        output.store("craftId", UUIDUtil.CODEC, this.craftId);
+        output.putBoolean("canceled", this.isCanceled());
+        output.putBoolean("done", this.isDone());
+        output.putBoolean("standalone", this.standalone);
+        output.putBoolean("req", this.getRequester() != null);
     }
 
     @Override

@@ -20,6 +20,7 @@ package appeng.blockentity;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,6 +52,7 @@ import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.Clearable;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.Nameable;
@@ -63,6 +65,9 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.TagValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.BlockHitResult;
 import net.neoforged.neoforge.common.util.FriendlyByteBufUtil;
 import net.neoforged.neoforge.model.data.ModelData;
@@ -135,22 +140,24 @@ public class AEBaseBlockEntity extends BlockEntity
     }
 
     @Override
-    public final void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+    protected void loadAdditional(ValueInput input) {
         // On the client, this can either be data received as part of an initial chunk update,
         // or as part of a sole block entity data update.
         RegistryAccess registryAccess = null;
-        if (registries instanceof RegistryAccess) {
-            registryAccess = (RegistryAccess) registries;
+        if (input.lookup() instanceof RegistryAccess) {
+            registryAccess = (RegistryAccess) input.lookup();
         } else if (level != null) {
             registryAccess = level.registryAccess();
         }
-        if (tag.size() == 1) {
-            var updateData = tag.getByteArray("#upd");
-            if (updateData.isPresent()) {
+        if (input.keySet().size() == 1 && input.keySet().contains("#upd")) {
+            var updateData = input.getStringOr("#upd", null);
+            if (updateData != null) {
+                var decodedUpdateData = Base64.getDecoder().decode(updateData);
+
                 if (registryAccess == null) {
                     LOG.warn("Ignoring  update packet for {} since no registry is available.", this);
                 } else if (readUpdateData(
-                        new RegistryFriendlyByteBuf(Unpooled.wrappedBuffer(updateData.get()), registryAccess,
+                        new RegistryFriendlyByteBuf(Unpooled.wrappedBuffer(decodedUpdateData), registryAccess,
                                 ConnectionType.NEOFORGE))) {
                     // Triggers a chunk re-render if the level is already loaded
                     if (level != null) {
@@ -163,31 +170,29 @@ public class AEBaseBlockEntity extends BlockEntity
         }
 
         // Load visual client-side data (used by PonderJS)
-        tag.getCompound("visual").ifPresent(this::loadVisualState);
+        input.child("visual").ifPresent(this::loadVisualState);
 
-        super.loadAdditional(tag, registries);
-        loadTag(tag, registries);
+        super.loadAdditional(input);
+        loadTag(input);
     }
 
-    public void loadTag(CompoundTag data, HolderLookup.Provider registries) {
+    public void loadTag(ValueInput data) {
         this.customName = data.getString("customName")
                 .map(Component::literal)
                 .orElse(null);
     }
 
     @Override
-    public void saveAdditional(CompoundTag data, HolderLookup.Provider registries) {
+    protected void saveAdditional(ValueOutput output) {
         // Save visual state first, so that it can never overwrite normal state
         if (VisualStateSaving.isEnabled(level)) {
-            var visualTag = new CompoundTag();
-            saveVisualState(visualTag);
-            data.put("visual", visualTag);
+            saveVisualState(output.child("visual"));
         }
 
-        super.saveAdditional(data, registries);
+        super.saveAdditional(output);
 
         if (this.customName != null) {
-            data.putString("customName", this.customName.getString());
+            output.putString("customName", this.customName.getString());
         }
     }
 
@@ -213,7 +218,7 @@ public class AEBaseBlockEntity extends BlockEntity
     public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
         var data = new CompoundTag();
         var updateData = FriendlyByteBufUtil.writeCustomData(this::writeToStream, level.registryAccess());
-        data.putByteArray("#upd", updateData);
+        data.putString("#upd", Base64.getEncoder().encodeToString(updateData));
         return data;
     }
 
@@ -245,20 +250,19 @@ public class AEBaseBlockEntity extends BlockEntity
      * Used to store the state that is synchronized to clients for the visual appearance of this part as NBT. This is
      * only used to store this state for tools such as Create Ponders in Structure NBT. Actual synchronization uses
      * {@link #writeToStream(RegistryFriendlyByteBuf)} and {@link #readFromStream(RegistryFriendlyByteBuf)}. Any data
-     * that is saved to the NBT tag in {@link #saveAdditional(CompoundTag, HolderLookup.Provider)} does not need to be
-     * saved here again.
+     * that is saved to the NBT tag in {@link #saveAdditional(ValueOutput)} does not need to be saved here again.
      * <p>
      * The data saved should be equivalent to the data sent to the client in {@link #writeToStream}.
      */
     @MustBeInvokedByOverriders
-    protected void saveVisualState(CompoundTag data) {
+    protected void saveVisualState(ValueOutput data) {
     }
 
     /**
-     * @see #saveVisualState(CompoundTag)
+     * @see #saveVisualState(ValueOutput)
      */
     @MustBeInvokedByOverriders
-    protected void loadVisualState(CompoundTag data) {
+    protected void loadVisualState(ValueInput data) {
     }
 
     /**
@@ -507,7 +511,7 @@ public class AEBaseBlockEntity extends BlockEntity
             Reference2IntMap<IGridNode> nodeIds)
             throws IOException {
         var data = new CompoundTag();
-        saveAdditional(data, registries);
+        saveAdditional(TagValueOutput.createWithContext(ProblemReporter.DISCARDING, registries));
 
         var ops = registries.createSerializationContext(JsonOps.INSTANCE);
         JsonStreamUtil.writeProperties(Map.of(

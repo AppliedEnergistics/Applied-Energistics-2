@@ -31,10 +31,10 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.color.block.BlockColors;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.BlockModelPart;
 import net.minecraft.client.renderer.block.model.SimpleModelWrapper;
+import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ResolvableModel;
@@ -303,7 +303,7 @@ public class FacadeBuilder {
                         }
 
                         @Override
-                        public RenderType getRenderType(BlockState state) {
+                        public ChunkSectionLayer getRenderType(BlockState state) {
                             return part.getRenderType(blockState);
                         }
                     });

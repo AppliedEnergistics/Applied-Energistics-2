@@ -29,7 +29,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 
 import appeng.api.behaviors.ContainerItemStrategies;
 import appeng.api.behaviors.EmptyingAction;
@@ -108,7 +108,7 @@ public class PatternEncodingTermScreen<C extends PatternEncodingTermMenu> extend
                                 ServerboundPacket message = new InventoryActionPacket(
                                         InventoryAction.SET_FILTER, slot.index,
                                         GenericStack.wrapInItemStack(newStack));
-                                PacketDistributor.sendToServer(message);
+                                ClientPacketDistributor.sendToServer(message);
                             });
                     switchToScreen(screen);
                     return true;
@@ -157,11 +157,8 @@ public class PatternEncodingTermScreen<C extends PatternEncodingTermMenu> extend
         super.renderSlot(guiGraphics, s);
 
         if (shouldShowCraftableIndicatorForSlot(s)) {
-            var poseStack = guiGraphics.pose();
-            poseStack.pushPose();
-            poseStack.translate(0, 0, 100); // Items are rendered with offset of 100, offset text too.
+            guiGraphics.nextStratum();
             StackSizeRenderer.renderSizeLabel(guiGraphics, this.font, s.x - 11, s.y - 11, "+", false);
-            poseStack.popPose();
         }
     }
 

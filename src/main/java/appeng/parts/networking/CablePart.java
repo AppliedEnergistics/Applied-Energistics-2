@@ -30,12 +30,11 @@ import org.jetbrains.annotations.Nullable;
 import io.netty.buffer.Unpooled;
 
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.StringTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 import appeng.api.implementations.parts.ICablePart;
 import appeng.api.networking.GridFlags;
@@ -351,8 +350,8 @@ public abstract class CablePart extends AEBasePart implements ICablePart {
     }
 
     @Override
-    public void writeVisualStateToNBT(CompoundTag data) {
-        super.writeVisualStateToNBT(data);
+    public void writeVisualStateToNBT(ValueOutput output) {
+        super.writeVisualStateToNBT(output);
 
         // Hacky hacky hacky, but it works. Refreshes the client-side state even if we're on the server
         if (!isClientSide()) {
@@ -365,41 +364,35 @@ public abstract class CablePart extends AEBasePart implements ICablePart {
         for (var side : Direction.values()) {
             if (connections.contains(side)) {
                 var sideName = "channels" + StringUtils.capitalize(side.getSerializedName());
-                data.putInt(sideName, channelsOnSide[side.ordinal()]);
+                output.putInt(sideName, channelsOnSide[side.ordinal()]);
             }
         }
 
-        var connectionsTag = new ListTag();
+        var connectionsList = output.list("connections", Direction.CODEC);
         for (var connection : connections) {
-            connectionsTag.add(StringTag.valueOf(connection.getSerializedName()));
+            connectionsList.add(connection);
         }
-        data.put("connections", connectionsTag);
     }
 
     @Override
-    public void readVisualStateFromNBT(CompoundTag data) {
-        super.readVisualStateFromNBT(data);
+    public void readVisualStateFromNBT(ValueInput input) {
+        super.readVisualStateFromNBT(input);
 
         // Restore channels per side for smart cables and also support as
         // a convenience to set them for all sides at once
-        if (data.contains("channels")) {
-            Arrays.fill(this.channelsOnSide, data.getIntOr("channels", 0));
+        var channelsAllSides = input.getInt("channels");
+        if (channelsAllSides.isPresent()) {
+            Arrays.fill(this.channelsOnSide, channelsAllSides.get());
         } else {
             for (var side : Direction.values()) {
                 var sideName = "channels" + StringUtils.capitalize(side.getSerializedName());
-                channelsOnSide[side.ordinal()] = data.getIntOr(sideName, 0);
+                channelsOnSide[side.ordinal()] = input.getIntOr(sideName, 0);
             }
         }
 
         // Restore adjacent connections
         var connections = EnumSet.noneOf(Direction.class);
-        var connectionsTag = data.getListOrEmpty("connections");
-        for (var connectionTag : connectionsTag) {
-            var side = Direction.byName(connectionTag.asString().get());
-            if (side != null) {
-                connections.add(side);
-            }
-        }
+        input.listOrEmpty("connections", Direction.CODEC).forEach(connections::add);
         setConnections(connections);
     }
 
