@@ -6,7 +6,7 @@
       "tag": "c:ingots/iron"
     },
     "b": {
-      "tag": "c:glass_blocks"
+      "tag": "c:glass_blocks/cheap"
     },
     "c": {
       "item": "ae2:annihilation_core"
