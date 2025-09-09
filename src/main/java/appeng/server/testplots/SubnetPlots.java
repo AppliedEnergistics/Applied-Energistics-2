@@ -6,8 +6,7 @@ import net.minecraft.world.item.Items;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
-import appeng.api.networking.energy.IEnergyService;
-import appeng.api.networking.storage.IStorageService;
+import appeng.api.networking.security.IActionSource;
 import appeng.api.stacks.AEItemKey;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEParts;
@@ -47,7 +46,7 @@ public final class SubnetPlots {
                     .thenWaitUntil(() -> helper.getGrid(mainNetPos))
                     .thenExecute(() -> {
                         var mainGrid = helper.getGrid(mainNetPos);
-                        var storageService = mainGrid.getService(IStorageService.class);
+                        var storageService = mainGrid.getStorageService();
                         var inserted = storageService.getInventory().insert(
                                 STICK,
                                 1,
@@ -63,7 +62,7 @@ public final class SubnetPlots {
                     .thenExecute(() -> {
                         // Check again if it's retrievable
                         var mainGrid = helper.getGrid(mainNetPos);
-                        var storageService = mainGrid.getService(IStorageService.class);
+                        var storageService = mainGrid.getStorageService();
                         var inventory = storageService.getInventory().getAvailableStacks();
                         helper.check(inventory.get(STICK) == 1, "stick not present in tick #10", mainNetPos);
 
@@ -97,9 +96,9 @@ public final class SubnetPlots {
                         var cellGrid = helper.getGrid(origin.west());
                         var noCellGrid = helper.getGrid(origin.west().west());
 
-                        var denseCellService = (EnergyService) denseCellGrid.getService(IEnergyService.class);
-                        var cellService = (EnergyService) cellGrid.getService(IEnergyService.class);
-                        var noCellService = (EnergyService) noCellGrid.getService(IEnergyService.class);
+                        var denseCellService = (EnergyService) denseCellGrid.getEnergyService();
+                        var cellService = (EnergyService) cellGrid.getEnergyService();
+                        var noCellService = (EnergyService) noCellGrid.getEnergyService();
 
                         // Inject power into each of the three grids. It should always end up in the dense
                         // cell grid, due to prioritizing grids with high storage.
@@ -121,6 +120,59 @@ public final class SubnetPlots {
                     })
                     .thenSucceed();
         });
+    }
+
+    /**
+     * Multiple storage buses should show a combined inventory.
+     */
+    @TestPlot(value = "multi_storage_bus")
+    public static void multi_storage_bus(PlotBuilder plot) {
+        var origin = BlockPos.ZERO;
+
+        // "Main" network
+        plot.storageDrive(origin.west());
+        plot.block(origin, AEBlocks.INTERFACE);
+        plot.block(origin.east(), AEBlocks.INTERFACE);
+        plot.creativeEnergyCell(origin.east().east());
+
+        // "Sub" network
+        var subnetOrigin = origin.north();
+        plot.cable(subnetOrigin)
+                .part(Direction.SOUTH, AEParts.STORAGE_BUS, bus -> {
+                    bus.getConfig().addFilter(Items.RED_CONCRETE);
+                });
+        plot.cable(subnetOrigin.east())
+                .part(Direction.SOUTH, AEParts.STORAGE_BUS, bus -> {
+                    bus.getConfig().addFilter(Items.BLUE_CONCRETE);
+                });
+        plot.cable(subnetOrigin.east().east())
+                .part(Direction.SOUTH, AEParts.QUARTZ_FIBER)
+                .part(Direction.NORTH, AEParts.TERMINAL);
+
+        plot.test(helper -> {
+            helper.startSequence()
+                    .thenWaitUntil(() -> {
+                        helper.getGrid(origin);
+                        helper.getGrid(subnetOrigin);
+                    })
+                    .thenExecute(() -> {
+                        // Insert drive content
+                        var mainGrid = helper.getGrid(origin);
+                        var mainInv = mainGrid.getStorageService().getInventory();
+                        mainInv.insert(AEItemKey.of(Items.RED_CONCRETE), 64, Actionable.MODULATE,
+                                IActionSource.empty());
+                        mainInv.insert(AEItemKey.of(Items.BLUE_CONCRETE), 64, Actionable.MODULATE,
+                                IActionSource.empty());
+                    })
+                    .thenIdle(1)
+                    .thenExecute(() -> {
+                        // Ensure both red and blue concrete are visible on the sub-network
+                        var subnet = helper.getGrid(subnetOrigin);
+                        helper.assertContains(subnet, Items.RED_CONCRETE);
+                        helper.assertContains(subnet, Items.BLUE_CONCRETE);
+                    })
+                    .thenSucceed();
+        }).withSkyAccess();
     }
 
     private static double getLocalStoredPower(EnergyService service) {

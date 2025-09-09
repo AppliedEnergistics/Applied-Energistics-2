@@ -18,10 +18,8 @@
 
 package appeng.me.storage;
 
-import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.Deque;
 import java.util.List;
 import java.util.NavigableMap;
 import java.util.TreeMap;
@@ -43,17 +41,15 @@ import appeng.core.localization.GuiText;
  * Manages all available {@link MEStorage} on the network.
  */
 public class NetworkStorage implements MEStorage {
-    private static final ThreadLocal<Deque<NetworkStorage>> DEPTH_MOD = new ThreadLocal<>();
-    private static final ThreadLocal<Deque<NetworkStorage>> DEPTH_SIM = new ThreadLocal<>();
     private static final Comparator<Integer> PRIORITY_SORTER = (o1, o2) -> Integer.compare(o2, o1);
 
+    // This flag prevents both concurrent modifications of the mounted storage while
+    // they're being iterated, and recursive extract/insert/list operations.
     private boolean mountsInUse;
-
-    private static int currentPass = 0;
 
     private final NavigableMap<Integer, List<MEStorage>> priorityInventory;
     private final List<MEStorage> secondPassInventories = new ArrayList<>();
-    private int myPass = 0;
+
     // Queued mount/unmount operations that occurred while an insert/extract was ongoing
     // Is only non-null if something is queued
     @Nullable
@@ -95,13 +91,13 @@ public class NetworkStorage implements MEStorage {
     }
 
     public long insert(AEKey what, long amount, Actionable type, IActionSource src) {
-        if (this.diveList(type)) {
-            return 0;
+        if (mountsInUse) {
+            return 0; // Prevent recursive use
         }
 
         var remaining = amount;
 
-        this.mountsInUse = true;
+        mountsInUse = true;
         try {
             for (var invList : this.priorityInventory.values()) {
                 secondPassInventories.clear();
@@ -138,10 +134,8 @@ public class NetworkStorage implements MEStorage {
             }
 
         } finally {
-            this.mountsInUse = false;
+            mountsInUse = false;
         }
-
-        this.surface(type);
 
         flushQueuedOperations();
 
@@ -176,42 +170,14 @@ public class NetworkStorage implements MEStorage {
         return false;
     }
 
-    private boolean diveList(Actionable type) {
-        var cDepth = this.getDepth(type);
-        if (cDepth.contains(this)) {
-            return true;
-        }
-
-        cDepth.push(this);
-        return false;
-    }
-
-    private void surface(Actionable type) {
-        if (getDepth(type).pop() != this) {
-            throw new IllegalStateException("Invalid Access to Networked Storage API detected.");
-        }
-    }
-
-    private Deque<NetworkStorage> getDepth(Actionable type) {
-        var depth = type == Actionable.MODULATE ? DEPTH_MOD : DEPTH_SIM;
-
-        var s = depth.get();
-
-        if (s == null) {
-            depth.set(s = new ArrayDeque<>());
-        }
-
-        return s;
-    }
-
     public long extract(AEKey what, long amount, Actionable mode, IActionSource source) {
-        if (this.diveList(mode)) {
-            return 0;
+        if (mountsInUse) {
+            return 0; // Prevent recursive use
         }
 
         var extracted = 0L;
 
-        this.mountsInUse = true;
+        mountsInUse = true;
         try {
             for (var invList : this.priorityInventory.descendingMap().values()) {
                 var ii = invList.iterator();
@@ -226,10 +192,8 @@ public class NetworkStorage implements MEStorage {
                 }
             }
         } finally {
-            this.mountsInUse = false;
+            mountsInUse = false;
         }
-
-        this.surface(mode);
 
         flushQueuedOperations();
 
@@ -238,30 +202,20 @@ public class NetworkStorage implements MEStorage {
 
     @Override
     public void getAvailableStacks(KeyCounter out) {
-        if (diveIteration(Actionable.SIMULATE)) {
-            return;
+        if (mountsInUse) {
+            return; // Prevent recursive use
         }
 
-        for (var i : this.priorityInventory.values()) {
-            for (var j : i) {
-                j.getAvailableStacks(out);
+        mountsInUse = true;
+        try {
+            for (var i : this.priorityInventory.values()) {
+                for (var j : i) {
+                    j.getAvailableStacks(out);
+                }
             }
+        } finally {
+            mountsInUse = false;
         }
-
-        this.surface(Actionable.SIMULATE);
-    }
-
-    private boolean diveIteration(Actionable type) {
-        var cDepth = this.getDepth(type);
-        if (cDepth.isEmpty()) {
-            currentPass++;
-        } else if (currentPass == this.myPass) {
-            return true;
-        }
-        this.myPass = currentPass;
-
-        cDepth.push(this);
-        return false;
     }
 
     @Override
