@@ -67,6 +67,7 @@ public class CraftConfirmMenu extends AEBaseMenu implements ISubMenu {
     private static final String ACTION_BACK = "back";
     private static final String ACTION_CYCLE_CPU = "cycleCpu";
     private static final String ACTION_START_JOB = "startJob";
+    private static final String ACTION_START_FOLLOWING_JOB = "startFollowingJob";
     private static final String ACTION_REPLAN = "replan";
 
     private static final SyncableSubmitResult NO_ERROR = new SyncableSubmitResult((ICraftingSubmitResult) null);
@@ -85,6 +86,9 @@ public class CraftConfirmMenu extends AEBaseMenu implements ISubMenu {
 
     @GuiSync(3)
     public boolean autoStart = false;
+
+    @GuiSync(4)
+    public boolean isFollowing = true;
 
     // Indicates whether any CPUs are available
     @GuiSync(6)
@@ -126,6 +130,7 @@ public class CraftConfirmMenu extends AEBaseMenu implements ISubMenu {
         registerClientAction(ACTION_BACK, this::goBack);
         registerClientAction(ACTION_CYCLE_CPU, Boolean.class, this::cycleSelectedCPU);
         registerClientAction(ACTION_START_JOB, this::startJob);
+        registerClientAction(ACTION_START_FOLLOWING_JOB, this::startFollowingJob);
         registerClientAction(ACTION_REPLAN, this::replan);
     }
 
@@ -222,7 +227,7 @@ public class CraftConfirmMenu extends AEBaseMenu implements ISubMenu {
                 this.result = this.job.get();
 
                 if (!this.result.simulation() && this.isAutoStart()) {
-                    this.startJob();
+                    this.startJob(this.isFollowing);
                     return;
                 }
 
@@ -254,16 +259,25 @@ public class CraftConfirmMenu extends AEBaseMenu implements ISubMenu {
     }
 
     public void startJob() {
+        startJob(false);
+    }
+
+    public void startFollowingJob() {
+        startJob(true);
+    }
+
+    public void startJob(boolean isFollowing) {
         clearError();
 
         if (isClientSide()) {
-            sendClientAction(ACTION_START_JOB);
+            sendClientAction(isFollowing ? ACTION_START_FOLLOWING_JOB : ACTION_START_JOB);
             return;
         }
 
         if (this.result != null && !this.result.simulation()) {
             final ICraftingService cc = this.getGrid().getCraftingService();
-            var submitResult = cc.submitJob(this.result, null, this.selectedCpu, true, this.getActionSrc());
+            var submitResult = cc.submitJob(this.result, null, this.selectedCpu, true, this.getActionSrc(),
+                    isFollowing);
             this.setAutoStart(false);
             if (submitResult.successful()) {
                 if (autoCraftingQueue != null && !autoCraftingQueue.isEmpty()) {
@@ -323,6 +337,14 @@ public class CraftConfirmMenu extends AEBaseMenu implements ISubMenu {
 
     public void setAutoStart(boolean autoStart) {
         this.autoStart = autoStart;
+    }
+
+    public void setIsFollowing(boolean isFollowing) {
+        this.isFollowing = isFollowing;
+    }
+
+    public boolean isFollowing() {
+        return this.isFollowing;
     }
 
     public long getCpuAvailableBytes() {

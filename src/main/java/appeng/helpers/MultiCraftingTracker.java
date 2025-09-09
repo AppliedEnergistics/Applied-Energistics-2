@@ -87,7 +87,7 @@ public class MultiCraftingTracker {
 
                 // Check if job is complete
                 if (job != null) {
-                    var result = cg.submitJob(job, this.owner, null, false, mySrc);
+                    var result = cg.submitJob(job, this.owner, null, false, mySrc, false);
 
                     this.setJob(x, null);
 

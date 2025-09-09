@@ -101,11 +101,14 @@ public interface ICraftingService extends IGridService {
      * @param src               - the action source to use when starting the job, this will be used for extracting
      *                          items, should usually be the same as the one provided to beginCraftingJob.
      *
+     * @param isFollowing       - if true, the job is be followed, and the player will be notified when the job is
+     *                          finished.
+     *
      * @return the success/failure state, and a crafting link in case if successful and there was a requestingMachine.
      */
     ICraftingSubmitResult submitJob(ICraftingPlan job, @Nullable ICraftingRequester requestingMachine,
             @Nullable ICraftingCPU target,
-            boolean prioritizePower, IActionSource src);
+            boolean prioritizePower, IActionSource src, boolean isFollowing);
 
     /**
      * @return list of all the crafting cpus on the grid

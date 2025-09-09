@@ -213,6 +213,7 @@ public enum GuiText implements LocalizationEnum {
     SpatialCapacity("Capacity: %dx%dx%d"),
     SpatialIOPort("Spatial IO Port"),
     Start("Start"),
+    StartWithFollow("Start with Follow"),
     StonecuttingPattern("Stonecutting Patterns"),
     StorageBus("Storage Bus"),
     StorageBusFluids("Fluid Storage Bus"),

@@ -31,30 +31,34 @@ public class ConfirmAutoCraftPacket extends BasePacket {
     private final long amount;
     private final boolean craftMissingAmount;
     private final boolean autoStart;
+    private final boolean isFollowing;
 
     public ConfirmAutoCraftPacket(FriendlyByteBuf stream) {
         this.autoStart = stream.readBoolean();
         this.craftMissingAmount = stream.readBoolean();
         this.amount = stream.readLong();
+        this.isFollowing = stream.readBoolean();
     }
 
-    public ConfirmAutoCraftPacket(long craftAmt, boolean craftMissingAmount, boolean autoStart) {
+    public ConfirmAutoCraftPacket(long craftAmt, boolean craftMissingAmount, boolean autoStart, boolean isFollowing) {
         this.amount = craftAmt;
         this.craftMissingAmount = craftMissingAmount;
         this.autoStart = autoStart;
+        this.isFollowing = isFollowing;
 
         final FriendlyByteBuf data = new FriendlyByteBuf(Unpooled.buffer());
         data.writeInt(this.getPacketID());
         data.writeBoolean(autoStart);
         data.writeBoolean(craftMissingAmount);
         data.writeLong(this.amount);
+        data.writeBoolean(isFollowing);
         this.configureWrite(data);
     }
 
     @Override
     public void serverPacketData(ServerPlayer player) {
         if (player.containerMenu instanceof CraftAmountMenu menu) {
-            menu.confirm(amount, craftMissingAmount, autoStart);
+            menu.confirm(amount, craftMissingAmount, autoStart, isFollowing);
         }
     }
 }

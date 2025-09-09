@@ -153,7 +153,7 @@ public class SimulationEnv {
             @Override
             public ICraftingSubmitResult submitJob(ICraftingPlan job, ICraftingRequester requestingMachine,
                     ICraftingCPU target,
-                    boolean prioritizePower, IActionSource src) {
+                    boolean prioritizePower, IActionSource src, boolean isFollowing) {
                 throw new UnsupportedOperationException();
             }
 

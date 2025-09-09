@@ -106,9 +106,10 @@ public class CraftAmountMenu extends AEBaseMenu implements ISubMenu {
      * @param craftMissingAmount Craft only as much as needed to have <code>amount</code>
      * @param autoStart          Start crafting immediately when the planning is done.
      */
-    public void confirm(long amount, boolean craftMissingAmount, boolean autoStart) {
+    public void confirm(long amount, boolean craftMissingAmount, boolean autoStart, boolean isFollowing) {
         if (!isServerSide()) {
-            NetworkHandler.instance().sendToServer(new ConfirmAutoCraftPacket(amount, craftMissingAmount, autoStart));
+            NetworkHandler.instance()
+                    .sendToServer(new ConfirmAutoCraftPacket(amount, craftMissingAmount, autoStart, isFollowing));
             return;
         }
 
@@ -141,6 +142,7 @@ public class CraftAmountMenu extends AEBaseMenu implements ISubMenu {
 
                 if (player.containerMenu instanceof CraftConfirmMenu ccc) {
                     ccc.setAutoStart(autoStart);
+                    ccc.setIsFollowing(isFollowing);
                     ccc.planJob(
                             whatToCraft,
                             amount,

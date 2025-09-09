@@ -49,6 +49,7 @@ public final class PendingCraftingJobs {
             long requestedAmount,
             long remainingAmount,
             long elapsedTime,
+            boolean isFollowing,
             CraftingJobStatusPacket.Status status) {
 
         AELog.debug("Crafting job " + id + " for " + requestedAmount
@@ -65,9 +66,9 @@ public final class PendingCraftingJobs {
             case FINISHED -> {
                 jobs.remove(id);
                 // Only toast if no terminal is open (i.e. REI/JEI or no screen at all)
-                // and a wireless terminal is in the player inv
+                // and a wireless terminal is in the player inv, also check if the job is following
                 var minecraft = Minecraft.getInstance();
-                if (AEConfig.instance().isNotifyForFinishedCraftingJobs()
+                if ((AEConfig.instance().isNotifyForFinishedCraftingJobs() || isFollowing)
                         && !(minecraft.screen instanceof MEStorageScreen<?>)
                         && minecraft.player != null && hasNotificationEnablingItem(minecraft.player)) {
                     minecraft.getToasts().addToast(new FinishedJobToast(what, requestedAmount));

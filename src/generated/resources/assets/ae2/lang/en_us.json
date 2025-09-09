@@ -478,6 +478,7 @@
   "gui.ae2.SpatialCapacity": "Capacity: %dx%dx%d",
   "gui.ae2.SpatialIOPort": "Spatial IO Port",
   "gui.ae2.Start": "Start",
+  "gui.ae2.StartWithFollow": "Start with Follow",
   "gui.ae2.StonecuttingPattern": "Stonecutting Patterns",
   "gui.ae2.StorageBus": "Storage Bus",
   "gui.ae2.StorageBusFluids": "Fluid Storage Bus",

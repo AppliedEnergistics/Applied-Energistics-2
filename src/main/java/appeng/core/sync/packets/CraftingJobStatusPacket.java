@@ -25,6 +25,10 @@ public class CraftingJobStatusPacket extends BasePacket {
     private long requestedAmount;
     private long remainingAmount;
     private long elapsedTime;
+    /**
+     * If true, we notify the player when the job is finished.
+     */
+    private boolean isFollowing;
     private Status status;
 
     public CraftingJobStatusPacket(FriendlyByteBuf stream) {
@@ -34,10 +38,11 @@ public class CraftingJobStatusPacket extends BasePacket {
         this.requestedAmount = stream.readLong();
         this.remainingAmount = stream.readLong();
         this.elapsedTime = stream.readLong();
+        this.isFollowing = stream.readBoolean();
     }
 
     public CraftingJobStatusPacket(UUID jobId, AEKey what, long requestedAmount, long remainingAmount,
-            long elapsedTime, Status status) {
+            long elapsedTime, boolean isFollowing, Status status) {
         var data = new FriendlyByteBuf(Unpooled.buffer());
         data.writeInt(getPacketID());
         data.writeUUID(jobId);
@@ -46,6 +51,7 @@ public class CraftingJobStatusPacket extends BasePacket {
         data.writeLong(requestedAmount);
         data.writeLong(remainingAmount);
         data.writeLong(elapsedTime);
+        data.writeBoolean(isFollowing);
         this.configureWrite(data);
     }
 
@@ -57,7 +63,7 @@ public class CraftingJobStatusPacket extends BasePacket {
             }
         }
 
-        PendingCraftingJobs.jobStatus(jobId, what, requestedAmount, remainingAmount, elapsedTime, status);
+        PendingCraftingJobs.jobStatus(jobId, what, requestedAmount, remainingAmount, elapsedTime, isFollowing, status);
     }
 
     public enum Status {

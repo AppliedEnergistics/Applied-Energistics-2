@@ -27,6 +27,7 @@ import appeng.client.gui.NumberEntryType;
 import appeng.client.gui.implementations.AESubScreen;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.NumberEntryWidget;
+import appeng.core.AEConfig;
 import appeng.core.localization.GuiText;
 import appeng.menu.me.crafting.CraftAmountMenu;
 
@@ -81,7 +82,8 @@ public class CraftAmountScreen extends AEBaseScreen<CraftAmountMenu> {
         if (amount <= 0) {
             return;
         }
-        menu.confirm(amount, craftMissingAmount, hasShiftDown());
+        menu.confirm(amount, craftMissingAmount, hasShiftDown(),
+                hasControlDown() || AEConfig.instance().isNotifyForFinishedCraftingJobs());
     }
 
 }

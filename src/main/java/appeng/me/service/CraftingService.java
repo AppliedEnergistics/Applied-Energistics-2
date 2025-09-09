@@ -342,7 +342,7 @@ public class CraftingService implements ICraftingService, IGridServiceProvider {
 
     @Override
     public ICraftingSubmitResult submitJob(ICraftingPlan job, ICraftingRequester requestingMachine, ICraftingCPU target,
-            boolean prioritizePower, IActionSource src) {
+            boolean prioritizePower, IActionSource src, boolean isFollowing) {
         if (job.simulation()) {
             return CraftingSubmitResult.INCOMPLETE_PLAN;
         }
@@ -365,7 +365,7 @@ public class CraftingService implements ICraftingService, IGridServiceProvider {
             }
         }
 
-        return cpuCluster.submitJob(this.grid, job, src, requestingMachine);
+        return cpuCluster.submitJob(this.grid, job, src, requestingMachine, isFollowing);
     }
 
     @Nullable
