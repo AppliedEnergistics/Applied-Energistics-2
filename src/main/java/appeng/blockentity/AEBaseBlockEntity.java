@@ -149,24 +149,21 @@ public class AEBaseBlockEntity extends BlockEntity
         } else if (level != null) {
             registryAccess = level.registryAccess();
         }
-        if (input.keySet().size() == 1 && input.keySet().contains("#upd")) {
-            var updateData = input.getStringOr("#upd", null);
-            if (updateData != null) {
-                var decodedUpdateData = Base64.getDecoder().decode(updateData);
+        var updateData = input.getString("#upd").orElse(null);
+        if (updateData != null) {
+            var decodedUpdateData = Base64.getDecoder().decode(updateData);
 
-                if (registryAccess == null) {
-                    LOG.warn("Ignoring  update packet for {} since no registry is available.", this);
-                } else if (readUpdateData(
-                        new RegistryFriendlyByteBuf(Unpooled.wrappedBuffer(decodedUpdateData), registryAccess,
-                                ConnectionType.NEOFORGE))) {
-                    // Triggers a chunk re-render if the level is already loaded
-                    if (level != null) {
-                        requestModelDataUpdate();
-                        level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 0);
-                    }
+            if (registryAccess == null) {
+                LOG.warn("Ignoring  update packet for {} since no registry is available.", this);
+            } else if (readUpdateData(
+                    new RegistryFriendlyByteBuf(Unpooled.wrappedBuffer(decodedUpdateData), registryAccess,
+                            ConnectionType.NEOFORGE))) {
+                // Triggers a chunk re-render if the level is already loaded
+                if (level != null) {
+                    requestModelDataUpdate();
+                    level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 0);
                 }
             }
-            return;
         }
 
         // Load visual client-side data (used by PonderJS)

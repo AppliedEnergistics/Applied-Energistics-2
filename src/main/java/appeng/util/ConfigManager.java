@@ -102,10 +102,10 @@ public final class ConfigManager implements IConfigManager {
     public boolean readFromNBT(ValueInput input) {
         boolean anythingRead = false;
         for (var setting : this.settings.keySet()) {
-            if (input.keySet().contains(setting.getName())) {
-                String value = input.getStringOr(setting.getName(), "");
+            var value = input.getString(setting.getName());
+            if (value.isPresent()) {
                 try {
-                    setting.setFromString(this, value);
+                    setting.setFromString(this, value.get());
                     anythingRead = true;
                 } catch (IllegalArgumentException e) {
                     LOG.warn("Failed to load setting {} from value '{}': {}", setting, value, e.getMessage());

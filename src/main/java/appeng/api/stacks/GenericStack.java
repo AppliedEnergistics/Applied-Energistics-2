@@ -143,7 +143,7 @@ public record GenericStack(AEKey what, long amount) {
 
     @Nullable
     public static GenericStack readTag(ValueInput input) {
-        if (input.keySet().isEmpty()) {
+        if (input.getString(AEKey.TYPE_FIELD).isEmpty()) {
             return null;
         }
         return input.read(MAP_CODEC).orElse(null);
