@@ -73,6 +73,7 @@ import appeng.client.guidebook.ConfigValueTagExtension;
 import appeng.client.guidebook.PageAnchor;
 import appeng.client.guidebook.PartAnnotationStrategy;
 import appeng.client.guidebook.command.GuidebookStructureCommands;
+import appeng.client.render.PatternKeyClientTooltipComponent;
 import appeng.client.render.StorageCellClientTooltipComponent;
 import appeng.client.render.effects.EnergyParticleData;
 import appeng.client.render.effects.ParticleTypes;
@@ -80,6 +81,7 @@ import appeng.client.render.overlay.OverlayManager;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.MouseWheelPacket;
+import appeng.crafting.pattern.PatternKeyTooltipComponent;
 import appeng.helpers.IMouseWheelItem;
 import appeng.hooks.BlockAttackHook;
 import appeng.hooks.RenderBlockOutlineHook;
@@ -237,6 +239,7 @@ public class AppEngClient extends AppEngBase {
 
     private void registerClientTooltipComponents(RegisterClientTooltipComponentFactoriesEvent event) {
         event.register(StorageCellTooltipComponent.class, StorageCellClientTooltipComponent::new);
+        event.register(PatternKeyTooltipComponent.class, PatternKeyClientTooltipComponent::new);
     }
 
     private void clientSetup(FMLClientSetupEvent event) {

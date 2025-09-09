@@ -511,6 +511,10 @@ public final class AEConfig {
         CLIENT.notifyForFinishedCraftingJobs.set(enabled);
     }
 
+    public boolean isFancyPatternTooltips() {
+        return CLIENT.fancyPatternTooltips.get();
+    }
+
     public boolean isClearGridOnClose() {
         return CLIENT.clearGridOnClose.get();
     }
@@ -550,6 +554,7 @@ public final class AEConfig {
         public final BooleanOption debugGuiOverlays;
         public final BooleanOption showPlacementPreview;
         public final BooleanOption notifyForFinishedCraftingJobs;
+        public final BooleanOption fancyPatternTooltips;
 
         // Terminal Settings
         public final EnumOption<TerminalStyle> terminalStyle;
@@ -587,6 +592,8 @@ public final class AEConfig {
                     "Show a preview of part and facade placement");
             this.notifyForFinishedCraftingJobs = client.addBoolean("notifyForFinishedCraftingJobs", true,
                     "Show toast when long-running crafting jobs finish.");
+            this.fancyPatternTooltips = client.addBoolean("fancyPatternTooltips", true,
+                    "Show fancy tooltips for encoded patterns.");
 
             var terminals = root.subsection("terminals");
             this.terminalStyle = terminals.addEnum("terminalStyle", TerminalStyle.SMALL);

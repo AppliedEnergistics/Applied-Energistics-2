@@ -18,8 +18,10 @@
 
 package appeng.crafting.pattern;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.WeakHashMap;
 
 import org.jetbrains.annotations.Nullable;
@@ -31,6 +33,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -45,6 +48,7 @@ import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKeyType;
 import appeng.api.stacks.AmountFormat;
 import appeng.api.stacks.GenericStack;
+import appeng.core.AEConfig;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEItems;
 import appeng.core.localization.GuiText;
@@ -53,6 +57,8 @@ import appeng.items.misc.WrappedGenericStack;
 import appeng.util.InteractionUtil;
 
 public abstract class EncodedPatternItem extends AEBaseItem {
+    public static final boolean FANCY_TOOLTIPS = AEConfig.instance().isFancyPatternTooltips();
+
     // rather simple client side caching.
     private static final Map<ItemStack, ItemStack> SIMPLE_CACHE = new WeakHashMap<>();
 
@@ -106,11 +112,13 @@ public abstract class EncodedPatternItem extends AEBaseItem {
     @OnlyIn(Dist.CLIENT)
     public void appendHoverText(ItemStack stack, Level level, List<Component> lines,
             TooltipFlag advancedTooltips) {
-        if (!stack.hasTag()) {
+        if (!stack.hasTag() || FANCY_TOOLTIPS) {
             // This can be called very early to index tooltips for search. In those cases,
             // there is no encoded pattern present.
             return;
         }
+
+        List<Component> keyRenderer = new ArrayList<>();
 
         var details = decode(stack, level, false);
         if (details == null) {
@@ -126,16 +134,16 @@ public abstract class EncodedPatternItem extends AEBaseItem {
             boolean first = true;
             for (var output : invalid.getOutputs()) {
                 if (first)
-                    lines.add(label);
-                lines.add(Component.literal("  ").append(output.getFormattedToolTip()));
+                    keyRenderer.add(label);
+                keyRenderer.add(Component.literal("  ").append(output.getFormattedToolTip()));
                 first = false;
             }
 
             first = true;
             for (var input : invalid.getInputs()) {
                 if (first)
-                    lines.add(ingredients);
-                lines.add(Component.literal("  ").append(input.getFormattedToolTip()));
+                    keyRenderer.add(ingredients);
+                keyRenderer.add(Component.literal("  ").append(input.getFormattedToolTip()));
                 first = false;
             }
 
@@ -143,7 +151,7 @@ public abstract class EncodedPatternItem extends AEBaseItem {
                 var canSubstitute = invalid.canSubstitute() ? GuiText.Yes.text() : GuiText.No.text();
                 var substitutionLabel = GuiText.Substitute.text(canSubstitute);
 
-                lines.add(substitutionLabel);
+                keyRenderer.add(substitutionLabel);
             }
 
             return;
@@ -170,9 +178,9 @@ public abstract class EncodedPatternItem extends AEBaseItem {
                 continue;
             }
             if (first)
-                lines.add(label);
+                keyRenderer.add(label);
 
-            lines.add(Component.literal("  ").append(getStackComponent(anOut, false)));
+            keyRenderer.add(Component.literal("  ").append(getStackComponent(anOut, false)));
             first = false;
         }
 
@@ -186,9 +194,9 @@ public abstract class EncodedPatternItem extends AEBaseItem {
             var primaryInput = new GenericStack(primaryInputTemplate.what(),
                     primaryInputTemplate.amount() * anIn.getMultiplier());
             if (first)
-                lines.add(ingredients);
+                keyRenderer.add(ingredients);
 
-            lines.add(Component.literal("  ").append(getStackComponent(primaryInput, true)));
+            keyRenderer.add(Component.literal("  ").append(getStackComponent(primaryInput, true)));
             first = false;
         }
 
@@ -201,13 +209,15 @@ public abstract class EncodedPatternItem extends AEBaseItem {
             var substitutionLabel = GuiText.Substitute.text(canSubstitute);
             var fluidSubstitutionLabel = GuiText.FluidSubstitutions.text(canSubstituteFluids);
 
-            lines.add(substitutionLabel);
-            lines.add(fluidSubstitutionLabel);
+            keyRenderer.add(substitutionLabel);
+            keyRenderer.add(fluidSubstitutionLabel);
         }
 
-        if (!author.isEmpty()) {
-            lines.add(GuiText.EncodedBy.text(author).withStyle(ChatFormatting.LIGHT_PURPLE));
+        if (!details.getAuthor().isEmpty()) {
+            keyRenderer.add(GuiText.EncodedBy.text(details.getAuthor()).withStyle(ChatFormatting.LIGHT_PURPLE));
         }
+
+        lines.addAll(keyRenderer);
     }
 
     protected static Component getStackComponent(GenericStack stack, boolean isInput) {
@@ -261,4 +271,34 @@ public abstract class EncodedPatternItem extends AEBaseItem {
 
     @Nullable
     public abstract IPatternDetails decode(AEItemKey what, Level level);
+
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public Optional<TooltipComponent> getTooltipImage(ItemStack stack) {
+        if (!stack.hasTag() || !FANCY_TOOLTIPS)
+            return Optional.empty();
+
+        var details = decode(stack, AppEng.instance().getClientLevel(), false);
+        if (details == null)
+            return Optional.empty();
+
+        var isCrafting = details instanceof AECraftingPattern;
+        var substitute = isCrafting && ((AECraftingPattern) details).canSubstitute;
+        var substituteFluids = isCrafting && ((AECraftingPattern) details).canSubstituteFluids;
+        var author = details.getAuthor();
+
+        var inputs = new ArrayList<GenericStack>();
+        var outputs = new ArrayList<GenericStack>();
+
+        for (var entry : details.getOutputs()) {
+            outputs.add(new GenericStack(entry.what(), entry.amount()));
+        }
+        for (var entry : details.getInputs()) {
+            inputs.add(new GenericStack(entry.getPossibleInputs()[0].what(), entry.getMultiplier()));
+        }
+
+        return Optional.of(new PatternKeyTooltipComponent(inputs, outputs, author, isCrafting, substitute,
+                substituteFluids, false));
+    }
+
 }
