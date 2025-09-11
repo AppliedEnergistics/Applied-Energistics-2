@@ -79,8 +79,7 @@ public final class EncodingHelper {
             var slot = slots[i];
             var stack = (i < encodedInputs.size()) ? GenericStack.wrapInItemStack(encodedInputs.get(i))
                     : ItemStack.EMPTY;
-            NetworkHandler.instance().sendToServer(new InventoryActionPacket(
-                    InventoryAction.SET_FILTER, slot.index, stack));
+            slot.setFilterTo(stack);
         }
     }
 

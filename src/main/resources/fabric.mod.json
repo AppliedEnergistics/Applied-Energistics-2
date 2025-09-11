@@ -18,6 +18,7 @@
     "fabric-datagen": ["appeng.datagen.DatagenEntrypoint"],
     "rei_client": ["appeng.integration.modules.rei.ReiPlugin"],
     "jei_mod_plugin": ["appeng.integration.modules.jei.JEIPlugin"],
+    "emi": ["appeng.integration.modules.emi.AppEngEmiPlugin"],
     "jade": ["appeng.integration.modules.jade.JadeModule"]
   },
   "mixins": ["ae2.mixins.json"],
