@@ -59,6 +59,7 @@ dependencies {
     // compile against provided APIs
     modCompileOnly "mezz.jei:jei-${jei_minecraft_version}-common-api:${jei_version}"
     modCompileOnly "mezz.jei:jei-${jei_minecraft_version}-forge-api:${jei_version}"
+    modCompileOnly "dev.emi:emi-forge:${emi_version}:api"
 
     // Always depend on the REI API to compile
     if (project.runtime_itemlist_mod == "jei") {
@@ -72,6 +73,12 @@ dependencies {
         modImplementation "me.shedaniel.cloth:cloth-config-forge:${project.cloth_config_version}"
         modImplementation "dev.architectury:architectury-forge:${project.architectury_version}"
         modImplementation "me.shedaniel:RoughlyEnoughItems-forge:${project.rei_version}"
+    } else if (project.runtime_itemlist_mod == "emi") {
+        modRuntimeOnly "dev.emi:emi-forge:${emi_version}"
+
+        compileOnly "me.shedaniel.cloth:basic-math:0.6.1"
+        modCompileOnly "dev.architectury:architectury-forge:${project.architectury_version}"
+        modCompileOnly "me.shedaniel:RoughlyEnoughItems-forge:${project.rei_version}"
     } else {
         modCompileOnly "me.shedaniel.cloth:cloth-config-forge:${project.cloth_config_version}"
         modCompileOnly "dev.architectury:architectury-forge:${project.architectury_version}"
@@ -202,6 +209,7 @@ allprojects {
             }
         }
         maven { url = 'https://repo.spongepowered.org/maven' }
+        maven { url = 'https://maven.terraformersmc.com/releases'}
     }
 
     // ensure everything uses UTF-8 and not some random codepage chosen by gradle

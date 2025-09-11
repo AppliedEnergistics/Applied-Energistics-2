@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.CompletableFuture;
 
+import appeng.integration.modules.emi.EmiText;
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonObject;
 
@@ -55,6 +56,7 @@ public class LocalizationProvider implements IAE2DataProvider {
         addEnum(PlayerMessages.class);
         addEnum(InGameTooltip.class);
         addEnum(ItemModText.class);
+        addEnum(EmiText.class);
         // Can't implement LocalizationEnum since it's not in the API, but PowerUnits is
         for (var powerUnit : PowerUnits.values()) {
             add(powerUnit.unlocalizedName, powerUnit.symbolName);
@@ -105,7 +107,6 @@ public class LocalizationProvider implements IAE2DataProvider {
 
     private void generateLocalizations() {
         add("ae2.permission_denied", "You lack permission to access this.");
-        add("dimension.ae2.spatial_storage", "Spatial Storage");
         add("biome.ae2.spatial_storage", "Spatial Storage");
         add("commands.ae2.ChunkLoggerOff", "Chunk Logging is now off");
         add("commands.ae2.ChunkLoggerOn", "Chunk Logging is now on");
