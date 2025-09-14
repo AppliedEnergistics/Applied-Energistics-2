@@ -46,6 +46,8 @@ import appeng.core.definitions.AEBlocks;
 class CondenserCategory implements DisplayCategory<CondenserOutputDisplay> {
 
     private static final int PADDING = 7;
+    private static final int WIDTH = 96;
+    private static final int HEIGHT = 48;
 
     public static final CategoryIdentifier<CondenserOutputDisplay> ID = CategoryIdentifier
             .of(AppEng.makeId("condenser"));
@@ -69,31 +71,26 @@ class CondenserCategory implements DisplayCategory<CondenserOutputDisplay> {
     public List<Widget> setupDisplay(CondenserOutputDisplay recipeDisplay, Rectangle bounds) {
 
         List<Widget> widgets = new ArrayList<>();
-        widgets.add(Widgets.createRecipeBase(bounds));
+        widgets.add(Widgets.wrapRenderer(bounds, new BackgroundRenderer(getDisplayWidth(recipeDisplay), getDisplayHeight())));
 
         Point origin = new Point(bounds.x + PADDING, bounds.y + PADDING);
 
         ResourceLocation location = AppEng.makeId("textures/guis/condenser.png");
-        widgets.add(Widgets.createTexturedWidget(location, origin.x, origin.y, 50, 25, 94, 48));
+        widgets.add(Widgets.createTexturedWidget(location, origin.x, origin.y, 48, 25, WIDTH, HEIGHT));
 
         ResourceLocation statesLocation = AppEng.makeId("textures/guis/states.png");
-        widgets.add(Widgets.createTexturedWidget(statesLocation, origin.x + 2, origin.y + 28, 241, 81, 14, 14));
-        widgets.add(Widgets.createTexturedWidget(statesLocation, origin.x + 78, origin.y + 28, 240, 240, 16, 16));
+        widgets.add(Widgets.createTexturedWidget(statesLocation, origin.x + 4, origin.y + 28, 241, 81, 14, 14));
+        widgets.add(Widgets.createTexturedWidget(statesLocation, origin.x + 80, origin.y + 28, 240, 240, 16, 16));
 
-        // FIXME IDrawableStatic progressDrawable = guiHelper.drawableBuilder(location,
-        // 178, 25, 6, 18).addPadding(0, 0, 70, 0)
-        // FIXME .build();
-        // FIXME this.progress = guiHelper.createAnimatedDrawable(progressDrawable, 40,
-        // IDrawableAnimated.StartDirection.BOTTOM,
-        // FIXME false);
+        widgets.add(Widgets.wrapRenderer(bounds, new ProgressBarRenderer(location, origin.x + 72, origin.y, 6, 18, 176, 0)));
 
         if (recipeDisplay.getType() == CondenserOutput.MATTER_BALLS) {
-            widgets.add(Widgets.createTexturedWidget(statesLocation, origin.x + 78, origin.y + 28, 16, 112, 14, 14));
+            widgets.add(Widgets.createTexturedWidget(statesLocation, origin.x + 80, origin.y + 28, 16, 112, 14, 14));
         } else if (recipeDisplay.getType() == CondenserOutput.SINGULARITY) {
-            widgets.add(Widgets.createTexturedWidget(statesLocation, origin.x + 78, origin.y + 28, 32, 112, 14, 14));
+            widgets.add(Widgets.createTexturedWidget(statesLocation, origin.x + 80, origin.y + 28, 32, 112, 14, 14));
         }
         widgets.add(Widgets.createDrawableWidget((guiGraphics, mouseX, mouseY, delta) -> {
-            Rectangle rect = new Rectangle(origin.x + 78, origin.y + 28, 16, 16);
+            Rectangle rect = new Rectangle(origin.x + 80, origin.y + 28, 16, 16);
             if (rect.contains(mouseX, mouseY)) {
                 Tooltip.create(
                         getTooltip(recipeDisplay.getType()).stream().map(Component::literal)
@@ -102,11 +99,11 @@ class CondenserCategory implements DisplayCategory<CondenserOutputDisplay> {
             }
         }));
 
-        Slot outputSlot = Widgets.createSlot(new Point(origin.x + 55, origin.y + 27)).disableBackground().markOutput()
+        Slot outputSlot = Widgets.createSlot(new Point(origin.x + 57, origin.y + 27)).disableBackground().markOutput()
                 .entries(recipeDisplay.getOutputEntries().get(0));
         widgets.add(outputSlot);
 
-        Slot storageCellSlot = Widgets.createSlot(new Point(origin.x + 51, origin.y + 1)).disableBackground()
+        Slot storageCellSlot = Widgets.createSlot(new Point(origin.x + 53, origin.y + 1)).disableBackground()
                 .markInput().entries(recipeDisplay.getViableStorageComponents());
         widgets.add(storageCellSlot);
 
@@ -116,12 +113,12 @@ class CondenserCategory implements DisplayCategory<CondenserOutputDisplay> {
 
     @Override
     public int getDisplayWidth(CondenserOutputDisplay display) {
-        return 94 + 2 * PADDING;
+        return WIDTH + 2 * PADDING;
     }
 
     @Override
     public int getDisplayHeight() {
-        return 48 + 2 * PADDING;
+        return HEIGHT + 2 * PADDING;
     }
 
     private List<String> getTooltip(CondenserOutput type) {

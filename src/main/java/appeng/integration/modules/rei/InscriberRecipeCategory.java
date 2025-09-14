@@ -43,6 +43,8 @@ class InscriberRecipeCategory implements DisplayCategory<InscriberRecipeDisplay>
     private static final int SLOT_INPUT_TOP = 0;
     private static final int SLOT_INPUT_MIDDLE = 1;
     private static final int SLOT_INPUT_BOTTOM = 2;
+    private static final int WIDTH = 105;
+    private static final int HEIGHT = 54;
 
     static final CategoryIdentifier<InscriberRecipeDisplay> ID = CategoryIdentifier
             .of(AppEng.makeId("ae2.inscriber"));
@@ -67,22 +69,23 @@ class InscriberRecipeCategory implements DisplayCategory<InscriberRecipeDisplay>
         ResourceLocation location = AppEng.makeId("textures/guis/inscriber.png");
 
         List<Widget> widgets = new ArrayList<>();
-        widgets.add(Widgets.createRecipeBase(bounds));
+        widgets.add(Widgets.wrapRenderer(bounds, new BackgroundRenderer(getDisplayWidth(recipeDisplay), getDisplayHeight())));
 
         var innerX = bounds.x + PADDING;
         var innerY = bounds.y + PADDING;
-        widgets.add(Widgets.createTexturedWidget(location, innerX, innerY, 44, 15, 97, 64));
+        widgets.add(Widgets.createTexturedWidget(location, innerX, innerY, 36, 20, WIDTH, HEIGHT));
+        widgets.add(Widgets.wrapRenderer(bounds, new ProgressBarRenderer(location, innerX + 100, innerY + 19, 6, 18, 177, 0)));
 
         List<EntryIngredient> ingredients = recipeDisplay.getInputEntries();
         EntryIngredient output = recipeDisplay.getOutputEntries().get(0);
 
-        widgets.add(Widgets.createSlot(new Point(innerX + 1, innerY + 1)).disableBackground().markInput()
+        widgets.add(Widgets.createSlot(new Point(innerX + 3, innerY + 3)).disableBackground().markInput()
                 .entries(ingredients.get(SLOT_INPUT_TOP)));
-        widgets.add(Widgets.createSlot(new Point(innerX + 19, innerY + 24)).disableBackground().markInput()
+        widgets.add(Widgets.createSlot(new Point(innerX + 27, innerY + 19)).disableBackground().markInput()
                 .entries(ingredients.get(SLOT_INPUT_MIDDLE)));
-        widgets.add(Widgets.createSlot(new Point(innerX + 1, innerY + 47)).disableBackground().markInput()
+        widgets.add(Widgets.createSlot(new Point(innerX + 3, innerY + 35)).disableBackground().markInput()
                 .entries(ingredients.get(SLOT_INPUT_BOTTOM)));
-        widgets.add(Widgets.createSlot(new Point(innerX + 69, innerY + 25)).disableBackground().markOutput()
+        widgets.add(Widgets.createSlot(new Point(innerX + 77, innerY + 20)).disableBackground().markOutput()
                 .entries(output));
 
         return widgets;
@@ -90,11 +93,11 @@ class InscriberRecipeCategory implements DisplayCategory<InscriberRecipeDisplay>
 
     @Override
     public int getDisplayHeight() {
-        return 64 + 2 * PADDING;
+        return HEIGHT + 2 * PADDING;
     }
 
     @Override
     public int getDisplayWidth(InscriberRecipeDisplay display) {
-        return 97 + 2 * PADDING;
+        return WIDTH + 2 * PADDING;
     }
 }
