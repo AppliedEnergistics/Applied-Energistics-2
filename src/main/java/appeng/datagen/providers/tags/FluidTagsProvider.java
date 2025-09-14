@@ -39,5 +39,6 @@ public class FluidTagsProvider extends net.minecraft.data.tags.FluidTagsProvider
     protected void addTags(HolderLookup.Provider provider) {
         // Provide an empty fluid blacklist
         tag(AETags.ANNIHILATION_PLANE_FLUID_BLACKLIST);
+        tag(AETags.FLUID_STORAGE_BLACKLIST);
     }
 }

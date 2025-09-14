@@ -5,6 +5,7 @@ import java.util.Objects;
 import net.minecraft.network.chat.Component;
 
 import appeng.api.config.Actionable;
+import appeng.api.ids.AETags;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.KeyCounter;
@@ -38,6 +39,8 @@ public class DelegatingMEInventory implements MEStorage {
 
     @Override
     public long insert(AEKey what, long amount, Actionable mode, IActionSource source) {
+        if (what.isTagged(AETags.ITEM_STORAGE_BLACKLIST) || what.isTagged(AETags.FLUID_STORAGE_BLACKLIST))
+            return 0;
         return delegate.insert(what, amount, mode, source);
     }
 
