@@ -48,6 +48,7 @@ public class ExecutingCraftingJob {
     private static final String NBT_TIME_TRACKER = "timeTracker";
     private static final String NBT_REMAINING_AMOUNT = "remainingAmount";
     private static final String NBT_TASKS = "tasks";
+    private static final String NBT_SUSPENDED = "suspended";
     private static final String NBT_CRAFTING_PROGRESS = "#craftingProgress";
 
     final CraftingLink link;
@@ -58,6 +59,7 @@ public class ExecutingCraftingJob {
     long remainingAmount;
     @Nullable
     Integer playerId;
+    boolean suspended;
 
     @FunctionalInterface
     interface CraftingDifferenceListener {
@@ -85,6 +87,7 @@ public class ExecutingCraftingJob {
         }
         this.link = link;
         this.playerId = playerId;
+        this.suspended = false;
     }
 
     ExecutingCraftingJob(CompoundTag data, HolderLookup.Provider registries,
@@ -117,6 +120,8 @@ public class ExecutingCraftingJob {
                 this.tasks.put(details, tp);
             }
         }
+
+        this.suspended = data.getBoolean(NBT_SUSPENDED);
     }
 
     CompoundTag writeToNBT(HolderLookup.Provider registries) {
@@ -144,6 +149,7 @@ public class ExecutingCraftingJob {
             data.putInt(NBT_PLAYER_ID, this.playerId);
         }
 
+        data.putBoolean(NBT_SUSPENDED, suspended);
         return data;
     }
 
