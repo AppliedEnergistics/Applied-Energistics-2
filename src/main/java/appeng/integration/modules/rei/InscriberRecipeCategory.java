@@ -69,12 +69,14 @@ class InscriberRecipeCategory implements DisplayCategory<InscriberRecipeDisplay>
         ResourceLocation location = AppEng.makeId("textures/guis/inscriber.png");
 
         List<Widget> widgets = new ArrayList<>();
-        widgets.add(Widgets.wrapRenderer(bounds, new BackgroundRenderer(getDisplayWidth(recipeDisplay), getDisplayHeight())));
+        widgets.add(Widgets.wrapRenderer(bounds,
+                new BackgroundRenderer(getDisplayWidth(recipeDisplay), getDisplayHeight())));
 
         var innerX = bounds.x + PADDING;
         var innerY = bounds.y + PADDING;
         widgets.add(Widgets.createTexturedWidget(location, innerX, innerY, 36, 20, WIDTH, HEIGHT));
-        widgets.add(Widgets.wrapRenderer(bounds, new ProgressBarRenderer(location, innerX + 100, innerY + 19, 6, 18, 177, 0)));
+        widgets.add(Widgets.wrapRenderer(bounds,
+                new ProgressBarRenderer(location, innerX + 100, innerY + 19, 6, 18, 177, 0)));
 
         List<EntryIngredient> ingredients = recipeDisplay.getInputEntries();
         EntryIngredient output = recipeDisplay.getOutputEntries().get(0);

@@ -71,7 +71,8 @@ class CondenserCategory implements DisplayCategory<CondenserOutputDisplay> {
     public List<Widget> setupDisplay(CondenserOutputDisplay recipeDisplay, Rectangle bounds) {
 
         List<Widget> widgets = new ArrayList<>();
-        widgets.add(Widgets.wrapRenderer(bounds, new BackgroundRenderer(getDisplayWidth(recipeDisplay), getDisplayHeight())));
+        widgets.add(Widgets.wrapRenderer(bounds,
+                new BackgroundRenderer(getDisplayWidth(recipeDisplay), getDisplayHeight())));
 
         Point origin = new Point(bounds.x + PADDING, bounds.y + PADDING);
 
@@ -82,7 +83,8 @@ class CondenserCategory implements DisplayCategory<CondenserOutputDisplay> {
         widgets.add(Widgets.createTexturedWidget(statesLocation, origin.x + 4, origin.y + 28, 241, 81, 14, 14));
         widgets.add(Widgets.createTexturedWidget(statesLocation, origin.x + 80, origin.y + 28, 240, 240, 16, 16));
 
-        widgets.add(Widgets.wrapRenderer(bounds, new ProgressBarRenderer(location, origin.x + 72, origin.y, 6, 18, 176, 0)));
+        widgets.add(Widgets.wrapRenderer(bounds,
+                new ProgressBarRenderer(location, origin.x + 72, origin.y, 6, 18, 176, 0)));
 
         if (recipeDisplay.getType() == CondenserOutput.MATTER_BALLS) {
             widgets.add(Widgets.createTexturedWidget(statesLocation, origin.x + 80, origin.y + 28, 16, 112, 14, 14));
