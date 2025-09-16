@@ -63,13 +63,25 @@ public class CraftingStatus {
 
     private final List<CraftingStatusEntry> entries;
 
+    private final boolean suspended;
+
     public CraftingStatus(boolean fullStatus, long elapsedTime, long remainingItemCount, long startItemCount,
-            List<CraftingStatusEntry> entries) {
+            List<CraftingStatusEntry> entries, boolean suspended) {
         this.fullStatus = fullStatus;
         this.elapsedTime = elapsedTime;
         this.remainingItemCount = remainingItemCount;
         this.startItemCount = startItemCount;
         this.entries = ImmutableList.copyOf(entries);
+        this.suspended = suspended;
+    }
+
+    /**
+     * Alternate constructor so we don't break any existing code that made use of the old one.
+     */
+    @Deprecated
+    public CraftingStatus(boolean fullStatus, long elapsedTime, long remainingItemCount, long startItemCount,
+            List<CraftingStatusEntry> entries) {
+        this(fullStatus, elapsedTime, remainingItemCount, startItemCount, entries, false);
     }
 
     public boolean isFullStatus() {
@@ -92,6 +104,10 @@ public class CraftingStatus {
         return entries;
     }
 
+    public boolean isSuspended() {
+        return suspended;
+    }
+
     public void write(FriendlyByteBuf buffer) {
         buffer.writeBoolean(fullStatus);
         buffer.writeVarLong(elapsedTime);
@@ -101,6 +117,7 @@ public class CraftingStatus {
         for (CraftingStatusEntry entry : entries) {
             entry.write(buffer);
         }
+        buffer.writeBoolean(suspended);
     }
 
     public static CraftingStatus read(FriendlyByteBuf buffer) {
@@ -114,8 +131,10 @@ public class CraftingStatus {
         for (int i = 0; i < entryCount; i++) {
             entries.add(CraftingStatusEntry.read(buffer));
         }
+        boolean suspended = buffer.readBoolean();
 
-        return new CraftingStatus(fullStatus, elapsedTime, remainingItemCount, startItemCount, entries.build());
+        return new CraftingStatus(fullStatus, elapsedTime, remainingItemCount, startItemCount, entries.build(),
+                suspended);
     }
 
     public static CraftingStatus create(IncrementalUpdateHelper changes, CraftingCpuLogic logic) {
@@ -150,13 +169,15 @@ public class CraftingStatus {
         long elapsedTime = logic.getElapsedTimeTracker().getElapsedTime();
         long remainingItems = logic.getElapsedTimeTracker().getRemainingItemCount();
         long startItems = logic.getElapsedTimeTracker().getStartItemCount();
+        boolean suspended = logic.isJobSuspended();
 
         return new CraftingStatus(
                 full,
                 elapsedTime,
                 remainingItems,
                 startItems,
-                newEntries.build());
+                newEntries.build(),
+                suspended);
     }
 
 }
