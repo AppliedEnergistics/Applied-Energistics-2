@@ -5,7 +5,6 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.CompletableFuture;
 
-import appeng.integration.modules.emi.EmiText;
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonObject;
 
@@ -26,6 +25,7 @@ import appeng.core.localization.ItemModText;
 import appeng.core.localization.LocalizationEnum;
 import appeng.core.localization.PlayerMessages;
 import appeng.datagen.providers.IAE2DataProvider;
+import appeng.integration.modules.emi.EmiText;
 import appeng.integration.modules.igtooltip.TooltipIds;
 
 public class LocalizationProvider implements IAE2DataProvider {
