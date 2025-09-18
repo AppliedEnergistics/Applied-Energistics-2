@@ -111,6 +111,15 @@ public interface ICraftingService extends IGridService {
             boolean prioritizePower, IActionSource src, boolean isFollowing);
 
     /**
+     * Added a default implementation of {@link ICraftingService#submitJob} to not break existing code.
+     */
+    default ICraftingSubmitResult submitJob(ICraftingPlan job, @Nullable ICraftingRequester requestingMachine,
+            @Nullable ICraftingCPU target,
+            boolean prioritizePower, IActionSource src) {
+        return submitJob(job, requestingMachine, target, prioritizePower, src, false);
+    }
+
+    /**
      * @return list of all the crafting cpus on the grid
      */
     ImmutableSet<ICraftingCPU> getCpus();
