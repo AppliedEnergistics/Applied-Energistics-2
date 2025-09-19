@@ -201,8 +201,8 @@ public class GenericStackInv implements MEStorage, GenericInternalInventory {
                 var reallyExtracted = Math.max(0, currentAmount - getAmount(slot));
                 if (reallyExtracted != canExtract) {
                     AELog.warn(
-                            "GenericStackInv simulation/modulation extraction mismatch: canExtract=%d, reallyExtracted=%d",
-                            canExtract, reallyExtracted);
+                            "%s simulation/modulation extraction mismatch: canExtract=%d, reallyExtracted=%d",
+                            getClass().getName(), canExtract, reallyExtracted);
                     canExtract = reallyExtracted;
                 }
             }
