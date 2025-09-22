@@ -299,6 +299,8 @@
   "gui.ae2.CalculatingWait": "Calculando, espere por favor...",
   "gui.ae2.CanBeEnchanted": "Puede ser encantando",
   "gui.ae2.Cancel": "Cancelar",
+  "gui.ae2.Suspend": "Suspender",
+  "gui.ae2.Resume": "Restaurar",
   "gui.ae2.CantFitInsideStorageCell": "Este objeto no cabe en otras celdas de almacenamiento",
   "gui.ae2.CantStoreItems": "¡No se puede almacenar el contenido!",
   "gui.ae2.CellWorkbench": "Mesa de Trabajo de Células",
