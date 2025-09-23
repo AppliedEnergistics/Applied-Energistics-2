@@ -29,6 +29,7 @@ import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridVisitor;
 import appeng.api.networking.pathing.ControllerState;
 import appeng.blockentity.networking.ControllerBlockEntity;
+import appeng.core.AEConfig;
 
 /**
  * Validates that the controller shape doesn't exceed the max size, and counts the number of adjacent controllers.
@@ -38,7 +39,7 @@ public class ControllerValidator implements IGridVisitor {
     /**
      * Maximum size of controller structure on each axis.
      */
-    public static final int MAX_SIZE = 7;
+    public static final int MAX_SIZE = AEConfig.instance().getControllerMaxLength();
 
     private boolean valid = true;
     private int found = 0;
