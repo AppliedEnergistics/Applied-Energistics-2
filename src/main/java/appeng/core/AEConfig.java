@@ -457,6 +457,8 @@ public final class AEConfig {
         return COMMON.channels.get();
     }
 
+    public int getControllerMaxLength() { return COMMON.controllerLength.get(); }
+
     public void setChannelModel(ChannelMode mode) {
         COMMON.channels.set(mode);
     }
@@ -643,6 +645,7 @@ public final class AEConfig {
         public final BooleanOption matterCannonBlockDamage;
         public final BooleanOption tinyTntBlockDamage;
         public final EnumOption<ChannelMode> channels;
+        public final IntegerOption controllerLength;
         public final BooleanOption spatialAnchorEnableRandomTicks;
 
         public final BooleanOption disassemblyCrafting;
@@ -715,6 +718,7 @@ public final class AEConfig {
                     "Enables the ability of Tiny TNT to break blocks.");
             channels = general.addEnum("channels", ChannelMode.DEFAULT,
                     "Changes the channel capacity that cables provide in AE2.");
+            controllerLength = general.addInt("controllerLength", 11, 7, 15, "Maximum length for AE controllers");
             spatialAnchorEnableRandomTicks = general.addBoolean("spatialAnchorEnableRandomTicks", true,
                     "Whether Spatial Anchors should force random chunk ticks and entity spawning.");
 

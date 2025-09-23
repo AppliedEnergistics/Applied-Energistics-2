@@ -22,6 +22,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
+import appeng.core.AEConfig;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 
@@ -38,7 +39,7 @@ public class ControllerValidator implements IGridVisitor {
     /**
      * Maximum size of controller structure on each axis.
      */
-    public static final int MAX_SIZE = 7;
+    public static final int MAX_SIZE = AEConfig.instance().getControllerMaxLength();
 
     private boolean valid = true;
     private int found = 0;
