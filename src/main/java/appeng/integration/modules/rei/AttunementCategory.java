@@ -43,7 +43,7 @@ public class AttunementCategory implements DisplayCategory<AttunementDisplay> {
     public List<Widget> setupDisplay(AttunementDisplay display, Rectangle bounds) {
         Point startPoint = new Point(bounds.getCenterX() - 41, bounds.getCenterY() - 13);
         List<Widget> widgets = Lists.newArrayList();
-        widgets.add(Widgets.createRecipeBase(bounds));
+        widgets.add(Widgets.wrapRenderer(bounds, new BackgroundRenderer(getDisplayWidth(display), getDisplayHeight())));
         widgets.add(Widgets.createArrow(new Point(startPoint.x + 27, startPoint.y + 4)));
         widgets.add(Widgets.createResultSlotBackground(new Point(startPoint.x + 61, startPoint.y + 5)));
         widgets.add(Widgets.createSlot(new Point(startPoint.x + 4, startPoint.y + 5))

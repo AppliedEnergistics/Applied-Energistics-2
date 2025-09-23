@@ -53,7 +53,7 @@ public class EntropyRecipeCategory implements DisplayCategory<EntropyRecipeDispl
         var mode = recipe.getRecipe().getMode();
 
         var widgets = new ArrayList<Widget>();
-        widgets.add(Widgets.createRecipeBase(bounds));
+        widgets.add(Widgets.wrapRenderer(bounds, new BackgroundRenderer(getDisplayWidth(recipe), getDisplayHeight())));
 
         var centerX = bounds.getCenterX();
         var y = bounds.getY() + PADDING;
