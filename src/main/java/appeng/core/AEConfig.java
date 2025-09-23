@@ -457,7 +457,9 @@ public final class AEConfig {
         return COMMON.channels.get();
     }
 
-    public int getControllerMaxLength() { return COMMON.controllerLength.get(); }
+    public int getControllerMaxLength() {
+        return COMMON.controllerLength.get();
+    }
 
     public void setChannelModel(ChannelMode mode) {
         COMMON.channels.set(mode);
