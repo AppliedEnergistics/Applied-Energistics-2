@@ -55,7 +55,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.fml.ModList;
-import net.neoforged.fml.loading.FMLEnvironment;
+import net.neoforged.fml.loading.FMLLoader;
 import net.neoforged.fml.util.thread.SidedThreadGroups;
 import net.neoforged.neoforge.common.util.FakePlayerFactory;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -186,7 +186,8 @@ public class Platform {
      */
     public static boolean hasClientClasses() {
         // The null check is for tests
-        return FMLEnvironment.dist == null || FMLEnvironment.dist.isClient();
+        var loader = FMLLoader.getCurrentOrNull();
+        return loader == null || loader.getDist().isClient();
     }
 
     /*
@@ -385,7 +386,8 @@ public class Platform {
      * @return True if AE2 is being run within a dev environment.
      */
     public static boolean isDevelopmentEnvironment() {
-        return !FMLEnvironment.production;
+        var loader = FMLLoader.getCurrentOrNull();
+        return loader == null || !loader.isProduction();
     }
 
     /**

@@ -52,11 +52,6 @@ sourceSets {
 configurations {
     localRuntimeOnly
     buildtoolsImplementation.extendsFrom(compileClasspath)
-    // Dependencies only used for the guide export, but not shipped
-    guideExportOnly
-    configurations.compileClasspath.extendsFrom(guideExportOnly)
-    configurations.runtimeClasspath.extendsFrom(guideExportOnly)
-
     runtimeClasspath.extendsFrom localRuntimeOnly
     clientRuntimeClasspath.extendsFrom localRuntimeOnly
 }
@@ -65,10 +60,10 @@ import appengbuild.*
 import com.diffplug.gradle.spotless.JsonExtension
 
 dependencies {
-    // Used for the guide export
-    guideExportOnly("org.bytedeco:ffmpeg-platform:${ffmpeg_version}")
+    // Dependencies only used for the guide export, but not shipped
+    localRuntimeOnly("org.bytedeco:ffmpeg-platform:${ffmpeg_version}")
 
-    implementation("org.appliedenergistics:guideme:${guideme_version}") // TODO: TEMP
+    implementation("org.appliedenergistics:guideme:${guideme_version}")
     clientImplementation("org.appliedenergistics:guideme:${guideme_version}")
 
     // compile against provided APIs
@@ -205,8 +200,6 @@ neoForge {
         testedMod = mods.ae2
     }
 }
-
-configurations.additionalRuntimeClasspath.extendsFrom configurations.guideExportOnly
 
 //////////////
 // Artifacts

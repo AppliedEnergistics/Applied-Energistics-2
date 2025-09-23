@@ -98,6 +98,9 @@ public final class PartModels {
     }
 
     public void resolveDependencies(ResolvableModel.Resolver resolver) {
+        if (clientParts == null) {
+            throw new IllegalStateException("Part models have not been initialized yet.");
+        }
         for (var clientPart : clientParts.values()) {
             clientPart.model().resolveDependencies(resolver);
         }
