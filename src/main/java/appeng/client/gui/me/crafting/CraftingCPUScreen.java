@@ -26,6 +26,8 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang3.time.DurationFormatUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
@@ -50,6 +52,8 @@ import appeng.menu.me.crafting.CraftingStatusEntry;
  * This screen shows the current crafting job that a crafting CPU is working on (if any).
  */
 public class CraftingCPUScreen<T extends CraftingCPUMenu> extends AEBaseScreen<T> {
+
+    private static final Logger LOG = LoggerFactory.getLogger(CraftingCPUScreen.class);
 
     private final CraftingStatusTableRenderer table;
 
@@ -172,6 +176,10 @@ public class CraftingCPUScreen<T extends CraftingCPUMenu> extends AEBaseScreen<T
                         entry.getStoredAmount(),
                         entry.getActiveAmount(),
                         entry.getPendingAmount()));
+            } else if (entry.getWhat() == null) {
+                LOG.warn("Received an updated crafting status entry {}, but no current entry exists. {}",
+                        entry,
+                        status.isFullStatus());
             } else {
                 entries.put(entry.getSerial(), entry);
             }
