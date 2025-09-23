@@ -171,7 +171,8 @@ public class CraftingCPUScreen<T extends CraftingCPUMenu> extends AEBaseScreen<T
                         existingEntry.getWhat(),
                         entry.getStoredAmount(),
                         entry.getActiveAmount(),
-                        entry.getPendingAmount()));
+                        entry.getPendingAmount(),
+                        entry.getBlockedAmount()));
             } else {
                 entries.put(entry.getSerial(), entry);
             }

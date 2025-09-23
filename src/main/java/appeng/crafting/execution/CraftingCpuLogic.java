@@ -78,6 +78,8 @@ public class CraftingCpuLogic {
 
     private long lastModifiedOnTick = TickHandler.instance().getCurrentTick();
 
+    private final KeyCounter blockedTasks = new KeyCounter();
+
     public CraftingCpuLogic(CraftingCPUCluster cluster) {
         this.cluster = cluster;
     }
@@ -134,6 +136,7 @@ public class CraftingCpuLogic {
         // Don't tick if we're not active.
         if (!cluster.isActive())
             return;
+        this.blockedTasks.reset();
         cantStoreItems = false;
         // If we don't have a job, just try to dump our items.
         if (this.job == null) {
@@ -202,6 +205,8 @@ public class CraftingCpuLogic {
             var craftingContainer = CraftingCpuHelper.extractPatternInputs(
                     details, inventory, level, expectedOutputs, expectedContainerItems);
 
+            boolean pushedThisTask = false;
+
             // Try to push to each provider.
             for (var provider : craftingService.getProviders(details)) {
                 if (craftingContainer == null)
@@ -216,6 +221,7 @@ public class CraftingCpuLogic {
                     break;
 
                 if (provider.pushPattern(details, craftingContainer)) {
+                    pushedThisTask = true;
                     energyService.extractAEPower(patternPower, Actionable.MODULATE, PowerMultiplier.CONFIG);
                     pushedPatterns++;
 
@@ -252,6 +258,12 @@ public class CraftingCpuLogic {
 
             // Failed to push this pattern, reinject the inputs.
             if (craftingContainer != null) {
+                if (!pushedThisTask) {
+                    for (var output : details.getOutputs()) {
+                        this.blockedTasks.add(output.what(), output.amount());
+                        postChange(output.what()); // 通知菜单这个物品状态变了
+                    }
+                }
                 CraftingCpuHelper.reinjectPatternInputs(inventory, craftingContainer);
             }
         }
@@ -501,6 +513,10 @@ public class CraftingCpuLogic {
             }
         }
         return count;
+    }
+
+    public long getBlocked(AEKey template) {
+        return this.blockedTasks.get(template);
     }
 
     /**

@@ -53,14 +53,16 @@ public class CraftingStatusEntry implements Comparable<CraftingStatusEntry> {
     private final long storedAmount;
     private final long activeAmount;
     private final long pendingAmount;
+    private final long blockedAmount;
 
     public CraftingStatusEntry(long serial, @Nullable AEKey what, long storedAmount, long activeAmount,
-            long pendingAmount) {
+            long pendingAmount, long blockedAmount) {
         this.serial = serial;
         this.what = what;
         this.storedAmount = storedAmount;
         this.activeAmount = activeAmount;
         this.pendingAmount = pendingAmount;
+        this.blockedAmount = blockedAmount;
     }
 
     public long getSerial() {
@@ -79,6 +81,10 @@ public class CraftingStatusEntry implements Comparable<CraftingStatusEntry> {
         return pendingAmount;
     }
 
+    public long getBlockedAmount() {
+        return blockedAmount;
+    }
+
     public AEKey getWhat() {
         return what;
     }
@@ -88,6 +94,7 @@ public class CraftingStatusEntry implements Comparable<CraftingStatusEntry> {
         buffer.writeVarLong(entry.activeAmount);
         buffer.writeVarLong(entry.storedAmount);
         buffer.writeVarLong(entry.pendingAmount);
+        buffer.writeVarLong(entry.blockedAmount);
         AEKey.writeOptionalKey(buffer, entry.what);
     }
 
@@ -96,8 +103,9 @@ public class CraftingStatusEntry implements Comparable<CraftingStatusEntry> {
         long missingAmount = buffer.readVarLong();
         long storedAmount = buffer.readVarLong();
         long craftAmount = buffer.readVarLong();
+        long blockedAmount = buffer.readVarLong();
         var what = AEKey.readOptionalKey(buffer);
-        return new CraftingStatusEntry(serial, what, storedAmount, missingAmount, craftAmount);
+        return new CraftingStatusEntry(serial, what, storedAmount, missingAmount, craftAmount, blockedAmount);
     }
 
     /**

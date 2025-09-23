@@ -293,6 +293,7 @@
   "gui.ae2.Automatic": "Automatic",
   "gui.ae2.Black": "Black",
   "gui.ae2.Blank": "Blank",
+  "gui.ae2.Blocked": "Blocked",
   "gui.ae2.Blue": "Blue",
   "gui.ae2.Brown": "Brown",
   "gui.ae2.BytesUsed": "%s Bytes Used",

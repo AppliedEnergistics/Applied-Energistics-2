@@ -32,6 +32,7 @@ public enum GuiText implements LocalizationEnum {
     Automatic("Automatic"),
     Black("Black"),
     Blank("Blank"),
+    Blocked("Blocked"),
     Blue("Blue"),
     Brown("Brown"),
     BytesUsed("%s Bytes Used"),
