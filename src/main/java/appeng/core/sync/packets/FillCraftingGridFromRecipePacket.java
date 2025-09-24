@@ -155,19 +155,20 @@ public class FillCraftingGridFromRecipePacket extends BasePacket {
         var toAutoCraft = new LinkedHashMap<AEItemKey, IntList>();
         boolean touchedGridStorage = false;
 
-        // Handle each slot
+        // Test old item in craft matrix before transferring recipe
         for (var x = 0; x < craftMatrix.size(); x++) {
             var currentItem = craftMatrix.getStackInSlot(x);
             var ingredient = ingredients.get(x);
 
             // Move out items blocking the grid
             if (!currentItem.isEmpty()) {
-                // Put away old item, if not correct
                 if (ingredient.test(currentItem)) {
                     // Grid already has an item that matches the ingredient
                     continue;
                 } else {
+                    // Put away old item
                     var in = AEItemKey.of(currentItem);
+                    // Try to insert into ME storage first
                     var inserted = StorageHelper.poweredInsert(energy, storage, in, currentItem.getCount(),
                             cct.getActionSource());
                     if (inserted > 0) {
@@ -186,6 +187,21 @@ public class FillCraftingGridFromRecipePacket extends BasePacket {
                     craftMatrix.setItemDirect(x, currentItem.isEmpty() ? ItemStack.EMPTY : currentItem);
                 }
             }
+        }
+
+        if (touchedGridStorage) {
+            // Invalidate caches
+            // so that items that inserted into storage can be pulled back
+            storageService.invalidateCache();
+            cachedStorage = storageService.getCachedInventory();
+
+            touchedGridStorage = false;
+        }
+
+        // Handle each slot
+        for (var x = 0; x < craftMatrix.size(); x++) {
+            var currentItem = craftMatrix.getStackInSlot(x);
+            var ingredient = ingredients.get(x);
 
             if (ingredient.isEmpty()) {
                 continue;
