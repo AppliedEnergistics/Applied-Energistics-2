@@ -392,4 +392,14 @@ public final class AEItemKey extends AEKey {
             }
         }
     }
+
+    @Override
+    public int getTypeRegistryId() {
+        return Integer.MIN_VALUE;
+    }
+
+    @Override
+    public int getRegistryId() {
+        return BuiltInRegistries.ITEM.getId(item);
+    }
 }

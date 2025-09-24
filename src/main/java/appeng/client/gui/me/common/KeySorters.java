@@ -43,10 +43,18 @@ final class KeySorters {
 
     public static final Comparator<AEKey> MOD_DESC = MOD_ASC.reversed();
 
+    public static final Comparator<AEKey> REGISTRY_ASC = Comparator.comparingInt(
+            AEKey::getTypeRegistryId).thenComparingInt(
+                    AEKey::getRegistryId)
+            .thenComparing(MOD_ASC);
+
+    public static final Comparator<AEKey> REGISTRY_DESC = REGISTRY_ASC.reversed();
+
     public static Comparator<AEKey> getComparator(SortOrder order, SortDir dir) {
         return switch (order) {
             case NAME -> dir == SortDir.ASCENDING ? NAME_ASC : NAME_DESC;
             case MOD -> dir == SortDir.ASCENDING ? MOD_ASC : MOD_DESC;
+            case REGISTRY -> dir == SortDir.ASCENDING ? REGISTRY_ASC : REGISTRY_DESC;
             case AMOUNT -> throw new UnsupportedOperationException();
         };
     }

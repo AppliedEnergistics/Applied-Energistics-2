@@ -281,4 +281,12 @@ public abstract class AEKey {
     public boolean isTagged(TagKey<?> tag) {
         return false;
     }
+
+    public int getTypeRegistryId() {
+        return AEKeyTypesInternal.getRegistry().getID(getType());
+    }
+
+    public int getRegistryId() {
+        return 0;
+    }
 }
