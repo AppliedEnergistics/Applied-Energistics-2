@@ -67,6 +67,8 @@ public enum ButtonToolTips implements LocalizationEnum {
     EmitterMode("Crafting Emitter Mode"),
     Encode("Encode Pattern"),
     EncodeDescription("Write the entered pattern to the current encoded pattern, or to available blank pattern."),
+    ExportCraft("Export Craft"),
+    ExportCraftTooltip("Exports the craft to a file"),
     FZIgnoreAll("Match Any"),
     FZPercent_25("Split Damage at 25%"),
     FZPercent_50("Split Damage at 50%"),

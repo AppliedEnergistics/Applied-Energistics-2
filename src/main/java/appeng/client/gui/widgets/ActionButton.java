@@ -78,6 +78,11 @@ public class ActionButton extends IconButton {
                 displayName = ButtonToolTips.TerminalSettings;
                 displayValue = null;
             }
+            case EXPORT_CRAFT -> {
+                icon = Icon.EXPORT_CRAFT;
+                displayName = ButtonToolTips.ExportCraft;
+                displayValue = ButtonToolTips.ExportCraftTooltip;
+            }
             default -> throw new IllegalArgumentException("Unknown ActionItem: " + action);
         }
 

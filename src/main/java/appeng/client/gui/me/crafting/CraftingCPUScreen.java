@@ -25,6 +25,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+
 import org.apache.commons.lang3.time.DurationFormatUtils;
 
 import net.minecraft.ChatFormatting;
@@ -34,17 +37,20 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
+import appeng.api.config.ActionItems;
 import appeng.api.config.CpuSelectionMode;
 import appeng.api.config.Settings;
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.StackWithBounds;
 import appeng.client.gui.style.ScreenStyle;
+import appeng.client.gui.widgets.ActionButton;
 import appeng.client.gui.widgets.Scrollbar;
 import appeng.client.gui.widgets.ServerSettingToggleButton;
 import appeng.client.gui.widgets.SettingToggleButton;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.BlockHighlightPacket;
+import appeng.helpers.CraftExporter;
 import appeng.menu.me.crafting.CraftingCPUMenu;
 import appeng.menu.me.crafting.CraftingStatus;
 import appeng.menu.me.crafting.CraftingStatusEntry;
@@ -59,6 +65,8 @@ public class CraftingCPUScreen<T extends CraftingCPUMenu> extends AEBaseScreen<T
     private final Button cancel, suspend;
 
     private final Scrollbar scrollbar;
+
+    private final ActionButton exportCraft;
 
     private final SettingToggleButton<CpuSelectionMode> schedulingModeButton;
 
@@ -77,6 +85,7 @@ public class CraftingCPUScreen<T extends CraftingCPUMenu> extends AEBaseScreen<T
         this.schedulingModeButton = new ServerSettingToggleButton<>(Settings.CPU_SELECTION_MODE,
                 CpuSelectionMode.ANY);
 
+        this.exportCraft = this.addToLeftToolbar(new ActionButton(ActionItems.EXPORT_CRAFT, this::exportCraft));
         // This screen is reused for the crafting status in Terminals, where it should not show the config buttons
         if (menu.allowConfiguration()) {
             this.addToLeftToolbar(this.schedulingModeButton);
@@ -113,6 +122,8 @@ public class CraftingCPUScreen<T extends CraftingCPUMenu> extends AEBaseScreen<T
         scrollbar.setRange(0, this.table.getScrollableRows(size), 1);
 
         this.schedulingModeButton.set(this.menu.getSchedulingMode());
+
+        this.exportCraft.visible = !getVisualEntries().isEmpty();
     }
 
     private List<CraftingStatusEntry> getVisualEntries() {
@@ -197,5 +208,27 @@ public class CraftingCPUScreen<T extends CraftingCPUMenu> extends AEBaseScreen<T
             }
         }
         return super.mouseClicked(xCoord, yCoord, btn);
+    }
+
+    protected void exportCraft() {
+        var exportObject = new JsonObject();
+        var currentStatus = new JsonObject();
+        currentStatus.addProperty("elapsedTime", status.getElapsedTime());
+        currentStatus.addProperty("remainingItemCount", status.getRemainingItemCount());
+        currentStatus.addProperty("startItemCount", status.getStartItemCount());
+        currentStatus.addProperty("suspended", status.isSuspended());
+        exportObject.add("status", currentStatus);
+        var entryArray = new JsonArray();
+        for (var entry : status.getEntries()) {
+            var entryObject = new JsonObject();
+            entryObject.addProperty("what", entry.getWhat().getId().toString());
+            entryObject.addProperty("serial", entry.getSerial());
+            entryObject.addProperty("storedAmount", entry.getStoredAmount());
+            entryObject.addProperty("activeAmount", entry.getActiveAmount());
+            entryObject.addProperty("pendingAmount", entry.getPendingAmount());
+            entryArray.add(entryObject);
+        }
+        exportObject.add("entries", entryArray);
+        CraftExporter.exportCraft(exportObject, getPlayer(), CraftExporter.ExportType.CRAFTING_STATUS);
     }
 }

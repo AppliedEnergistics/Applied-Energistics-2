@@ -29,6 +29,7 @@ public enum PlayerMessages implements LocalizationEnum {
     HighlightedBlock("Highlighted block at %s §rin %s"),
     CommunicationError("Error Communicating with Network."),
     DeviceNotLinked("Device is not linked."),
+    CraftExported("Exported craft as %s"),
     LinkedNetworkNotFound("Linked network cannot be found"),
     DeviceNotPowered("Device is low on power."),
     MissingBlankPatterns("Not enough blank pattern to restore patterns (missing %d)."),
