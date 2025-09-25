@@ -132,6 +132,7 @@ public final class AEConfig {
     private boolean disableColoredCableRecipesInJEI;
     private boolean isEnableFacadesInJEI;
     private boolean isEnableFacadeRecipesInJEI;
+    private boolean isExposeNetworkInventoryToEmi;
     private int craftingCalculationTimePerTick;
     private boolean craftingSimulatedExtraction;
     private boolean spatialAnchorEnablesRandomTicks;
@@ -170,6 +171,7 @@ public final class AEConfig {
         this.disableColoredCableRecipesInJEI = CLIENT.disableColoredCableRecipesInJEI.get();
         this.isEnableFacadesInJEI = CLIENT.enableFacadesInJEI.get();
         this.isEnableFacadeRecipesInJEI = CLIENT.enableFacadeRecipesInJEI.get();
+        this.isExposeNetworkInventoryToEmi = CLIENT.exposeInventoryToEmi.get();
         this.enableEffects = CLIENT.enableEffects.get();
         this.useLargeFonts = CLIENT.useLargeFonts.get();
         this.useColoredCraftingStatus = CLIENT.useColoredCraftingStatus.get();
@@ -359,6 +361,10 @@ public final class AEConfig {
 
     public boolean isEnableFacadeRecipesInJEI() {
         return this.isEnableFacadeRecipesInJEI;
+    }
+
+    public boolean isExposeNetworkInventoryToEmi() {
+        return this.isExposeNetworkInventoryToEmi;
     }
 
     public int getCraftingCalculationTimePerTick() {
@@ -554,6 +560,7 @@ public final class AEConfig {
         public final BooleanOption disableColoredCableRecipesInJEI;
         public final BooleanOption enableFacadesInJEI;
         public final BooleanOption enableFacadeRecipesInJEI;
+        public final BooleanOption exposeInventoryToEmi;
         public final EnumOption<PowerUnits> selectedPowerUnit;
         public final BooleanOption debugGuiOverlays;
         public final BooleanOption showPlacementPreview;
@@ -587,6 +594,8 @@ public final class AEConfig {
                     "Show facades in JEI ingredient list");
             this.enableFacadeRecipesInJEI = client.addBoolean("enableFacadeRecipesInJEI", true,
                     "Show facade recipes in JEI for supported blocks");
+            this.exposeInventoryToEmi = client.addBoolean("exposeInventoryToEmi", false,
+                    "Expose the full network inventory to EMI, which might cause performance problems.");
             this.enableEffects = client.addBoolean("enableEffects", true);
             this.useLargeFonts = client.addBoolean("useTerminalUseLargeFont", false);
             this.useColoredCraftingStatus = client.addBoolean("useColoredCraftingStatus", true);

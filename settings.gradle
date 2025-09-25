@@ -8,6 +8,10 @@ pluginManagement {
             name = "Sponge"
             url = 'https://repo.spongepowered.org/maven'
         }
+        maven {
+            name = 'TerraformersMC'
+            url = 'https://maven.terraformersmc.com/releases'
+        }
         gradlePluginPortal()
         mavenCentral()
     }
