@@ -81,6 +81,7 @@ public class PatternEncodingTermMenu extends MEStorageMenu implements IMenuCraft
     private static final String ACTION_SET_FLUID_SUBSTITUTION = "setFluidSubstitution";
     private static final String ACTION_SET_STONECUTTING_RECIPE_ID = "setStonecuttingRecipeId";
     private static final String ACTION_CYCLE_PROCESSING_OUTPUT = "cycleProcessingOutput";
+    private static final String ACTION_MODIFY_PATTERN = "modifyPattern";
 
     public static final MenuType<PatternEncodingTermMenu> TYPE = MenuTypeBuilder
             .create(PatternEncodingTermMenu::new, IPatternTerminalMenuHost.class)
@@ -195,6 +196,7 @@ public class PatternEncodingTermMenu extends MEStorageMenu implements IMenuCraft
         registerClientAction(ACTION_SET_SUBSTITUTION, Boolean.class, encodingLogic::setSubstitution);
         registerClientAction(ACTION_SET_FLUID_SUBSTITUTION, Boolean.class, encodingLogic::setFluidSubstitution);
         registerClientAction(ACTION_CYCLE_PROCESSING_OUTPUT, this::cycleProcessingOutput);
+        registerClientAction(ACTION_MODIFY_PATTERN, Integer.class, this::modifyPattern);
 
         updateStonecuttingRecipes();
     }
@@ -719,4 +721,56 @@ public class PatternEncodingTermMenu extends MEStorageMenu implements IMenuCraft
         return stonecuttingRecipes;
     }
 
+    public void modifyPattern(Integer data) {
+        if (isClientSide()) {
+            sendClientAction("modifyPattern", data);
+        } else {
+            // modify
+            var output = isValid(encodedOutputsInv, data);
+            if (output == null) {
+                return;
+            }
+            var input = isValid(encodedInputsInv, data);
+            if (input == null) {
+                return;
+            }
+            for (int slot = 0; slot < output.length; ++slot) {
+                if (output[slot] != null) {
+                    encodedOutputsInv.setStack(slot, output[slot]);
+                }
+            }
+            for (int slot = 0; slot < input.length; ++slot) {
+                if (input[slot] != null) {
+                    encodedInputsInv.setStack(slot, input[slot]);
+                }
+            }
+        }
+    }
+
+    private static GenericStack[] isValid(ConfigInventory inv, int data) {
+        boolean flag = data > 0;
+        if (!flag) {
+            data = -data;
+        }
+        GenericStack[] result = new GenericStack[inv.size()];
+        for (int slot = 0; slot < inv.size(); ++slot) {
+            GenericStack stack = inv.getStack(slot);
+            if (stack != null) {
+                if (flag) {
+                    if (data * stack.amount() > Integer.MAX_VALUE) {
+                        return null;
+                    } else {
+                        result[slot] = new GenericStack(stack.what(), data * stack.amount());
+                    }
+                } else {
+                    if (stack.amount() % data != 0) {
+                        return null;
+                    } else {
+                        result[slot] = new GenericStack(stack.what(), stack.amount() / data);
+                    }
+                }
+            }
+        }
+        return result;
+    }
 }

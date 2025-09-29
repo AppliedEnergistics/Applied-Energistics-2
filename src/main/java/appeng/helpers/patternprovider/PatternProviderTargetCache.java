@@ -8,11 +8,15 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 
 import appeng.api.behaviors.ExternalStorageStrategy;
 import appeng.api.config.Actionable;
+import appeng.api.config.BlockingMode;
 import appeng.api.networking.security.IActionSource;
+import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.AEKeyType;
 import appeng.api.storage.MEStorage;
@@ -26,12 +30,15 @@ class PatternProviderTargetCache {
     private final Direction direction;
     private final IActionSource src;
     private final Map<AEKeyType, ExternalStorageStrategy> strategies;
+    private final BlockingMode blockingMode;
 
-    PatternProviderTargetCache(ServerLevel l, BlockPos pos, Direction direction, IActionSource src) {
+    PatternProviderTargetCache(ServerLevel l, BlockPos pos, Direction direction, IActionSource src,
+            BlockingMode blockingMode) {
         this.cache = BlockApiCache.create(Capabilities.STORAGE, l, pos);
         this.direction = direction;
         this.src = src;
         this.strategies = StackWorldBehaviors.createExternalStorageStrategies(l, pos, direction);
+        this.blockingMode = blockingMode;
     }
 
     @Nullable
@@ -68,10 +75,28 @@ class PatternProviderTargetCache {
 
             @Override
             public boolean containsPatternInput(Set<AEKey> patternInputs) {
-                for (var stack : storage.getAvailableStacks()) {
-                    if (patternInputs.contains(stack.getKey().dropSecondary())) {
-                        return true;
-                    }
+                switch (blockingMode) {
+                    case ALL:
+                        for (var stack : storage.getAvailableStacks()) {
+                            if (stack.getKey() instanceof AEItemKey itemKey &&
+                                    itemKey.getItem() == BuiltInRegistries.ITEM
+                                            .get(new ResourceLocation("gtceu", "programmed_circuit")))
+                                continue;
+                            return true;
+                        }
+                        break;
+                    case DEFAULT:
+                        for (var stack : storage.getAvailableStacks()) {
+                            if (patternInputs.contains(stack.getKey().dropSecondary()))
+                                continue;
+                            return true;
+                        }
+                        break;
+                    case SMART:
+                        for (var stack : storage.getAvailableStacks()) {
+                            if (patternInputs.contains(stack.getKey().dropSecondary()))
+                                return true;
+                        }
                 }
                 return false;
             }

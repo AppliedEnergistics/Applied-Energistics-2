@@ -67,6 +67,7 @@ public final class Settings {
     public static final Setting<RelativeDirection> IO_DIRECTION = register("io_direction", RelativeDirection.LEFT,
             RelativeDirection.RIGHT);
     public static final Setting<YesNo> BLOCKING_MODE = register("blocking_mode", YesNo.YES, YesNo.NO);
+    public static final Setting<BlockingMode> BLOCKING_MODE_EXTRA = register("blocking_mode_extra", BlockingMode.class);
     public static final Setting<LockCraftingMode> LOCK_CRAFTING_MODE = register("lock_crafting_mode",
             LockCraftingMode.class);
     public static final Setting<OperationMode> OPERATION_MODE = register("operation_mode", OperationMode.class);

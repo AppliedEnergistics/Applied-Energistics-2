@@ -11,7 +11,10 @@ import appeng.client.Point;
 import appeng.client.gui.WidgetContainer;
 import appeng.client.gui.style.Blitter;
 import appeng.client.gui.widgets.ActionButton;
+import appeng.client.gui.widgets.ModifyIcon;
+import appeng.client.gui.widgets.ModifyIconButton;
 import appeng.client.gui.widgets.Scrollbar;
+import appeng.core.localization.ButtonToolTips;
 import appeng.core.localization.GuiText;
 import appeng.menu.SlotSemantics;
 
@@ -21,6 +24,13 @@ public class ProcessingEncodingPanel extends EncodingModePanel {
     private final ActionButton clearBtn;
     private final ActionButton cycleOutputBtn;
     private final Scrollbar scrollbar;
+
+    private final ModifyIconButton multTwo;
+    private final ModifyIconButton multThree;
+    private final ModifyIconButton multEight;
+    private final ModifyIconButton divTwo;
+    private final ModifyIconButton divThree;
+    private final ModifyIconButton divEight;
 
     public ProcessingEncodingPanel(PatternEncodingTermScreen<?> screen, WidgetContainer widgets) {
         super(screen, widgets);
@@ -41,6 +51,36 @@ public class ProcessingEncodingPanel extends EncodingModePanel {
         this.scrollbar.setRange(0, menu.getProcessingInputSlots().length / 3 - 3, 3);
         this.scrollbar.setCaptureMouseWheel(false);
 
+        this.multTwo = new ModifyIconButton(b -> menu.modifyPattern(2),
+                ModifyIcon.MULTIPLY_2,
+                ButtonToolTips.PatternMultiply.text(2),
+                ButtonToolTips.PatternMultiplyHint.text(2));
+        this.multThree = new ModifyIconButton(b -> menu.modifyPattern(3),
+                ModifyIcon.MULTIPLY_3,
+                ButtonToolTips.PatternMultiply.text(3),
+                ButtonToolTips.PatternMultiplyHint.text(3));
+        this.multEight = new ModifyIconButton(b -> menu.modifyPattern(8),
+                ModifyIcon.MULTIPLY_8,
+                ButtonToolTips.PatternMultiply.text(8),
+                ButtonToolTips.PatternMultiplyHint.text(8));
+        this.divTwo = new ModifyIconButton(b -> menu.modifyPattern(-2),
+                ModifyIcon.DIVISION_2,
+                ButtonToolTips.PatternDivide.text(2),
+                ButtonToolTips.PatternDivideHint.text(2));
+        this.divThree = new ModifyIconButton(b -> menu.modifyPattern(-3),
+                ModifyIcon.DIVISION_3,
+                ButtonToolTips.PatternDivide.text(3),
+                ButtonToolTips.PatternDivideHint.text(3));
+        this.divEight = new ModifyIconButton(b -> menu.modifyPattern(-8),
+                ModifyIcon.DIVISION_8,
+                ButtonToolTips.PatternDivide.text(8),
+                ButtonToolTips.PatternDivideHint.text(8));
+        widgets.add("mult2", this.multTwo);
+        widgets.add("mult3", this.multThree);
+        widgets.add("mult8", this.multEight);
+        widgets.add("div2", this.divTwo);
+        widgets.add("div3", this.divThree);
+        widgets.add("div8", this.divEight);
     }
 
     @Override
@@ -101,6 +141,12 @@ public class ProcessingEncodingPanel extends EncodingModePanel {
         scrollbar.setVisible(visible);
         clearBtn.setVisibility(visible);
         cycleOutputBtn.setVisibility(menu.canCycleProcessingOutputs());
+        this.multTwo.setVisibility(visible);
+        this.multThree.setVisibility(visible);
+        this.multEight.setVisibility(visible);
+        this.divTwo.setVisibility(visible);
+        this.divThree.setVisibility(visible);
+        this.divEight.setVisibility(visible);
 
         screen.setSlotsHidden(SlotSemantics.PROCESSING_INPUTS, !visible);
         screen.setSlotsHidden(SlotSemantics.PROCESSING_OUTPUTS, !visible);

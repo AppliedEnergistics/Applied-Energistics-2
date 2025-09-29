@@ -36,6 +36,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
 
 import appeng.api.config.AccessRestriction;
+import appeng.api.config.BlockingMode;
 import appeng.api.config.CondenserOutput;
 import appeng.api.config.CpuSelectionMode;
 import appeng.api.config.FullnessMode;
@@ -215,6 +216,16 @@ public class SettingToggleButton<T extends Enum<T>> extends IconButton {
                     ButtonToolTips.Blocking);
             registerApp(Icon.BLOCKING_MODE_NO, Settings.BLOCKING_MODE, YesNo.NO, ButtonToolTips.InterfaceBlockingMode,
                     ButtonToolTips.NonBlocking);
+
+            registerApp(Icon.CLEAR, Settings.BLOCKING_MODE_EXTRA, BlockingMode.ALL,
+                    ButtonToolTips.InterfaceBlockingModeExtra,
+                    ButtonToolTips.BlockingAll);
+            registerApp(Icon.BLOCKING_MODE_YES, Settings.BLOCKING_MODE_EXTRA, BlockingMode.DEFAULT,
+                    ButtonToolTips.InterfaceBlockingModeExtra,
+                    ButtonToolTips.Blocking);
+            registerApp(Icon.BLOCKING_MODE_NO, Settings.BLOCKING_MODE_EXTRA, BlockingMode.SMART,
+                    ButtonToolTips.InterfaceBlockingModeExtra,
+                    ButtonToolTips.BlockingSmart);
 
             registerApp(Icon.VIEW_MODE_CRAFTING, Settings.CRAFT_ONLY, YesNo.YES, ButtonToolTips.Craft,
                     ButtonToolTips.CraftOnly);

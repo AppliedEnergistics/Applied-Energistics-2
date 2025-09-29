@@ -24,6 +24,7 @@ import java.util.List;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
+import appeng.api.config.BlockingMode;
 import appeng.api.config.LockCraftingMode;
 import appeng.api.config.Settings;
 import appeng.api.config.YesNo;
@@ -46,6 +47,7 @@ import appeng.menu.implementations.PatternProviderMenu;
 public class PatternProviderScreen<C extends PatternProviderMenu> extends AEBaseScreen<C> {
 
     private final SettingToggleButton<YesNo> blockingModeButton;
+    private final SettingToggleButton<BlockingMode> extraBlockingModeButton;
     private final SettingToggleButton<LockCraftingMode> lockCraftingModeButton;
     private final ToggleButton showInPatternAccessTerminalButton;
     private final PatternProviderLockReason lockReason;
@@ -58,6 +60,10 @@ public class PatternProviderScreen<C extends PatternProviderMenu> extends AEBase
                 this::getCompatibleUpgrades));
         this.blockingModeButton = new ServerSettingToggleButton<>(Settings.BLOCKING_MODE, YesNo.NO);
         this.addToLeftToolbar(this.blockingModeButton);
+
+        this.extraBlockingModeButton = new ServerSettingToggleButton<>(Settings.BLOCKING_MODE_EXTRA,
+                BlockingMode.DEFAULT);
+        this.addToLeftToolbar(this.extraBlockingModeButton);
 
         lockCraftingModeButton = new ServerSettingToggleButton<>(Settings.LOCK_CRAFTING_MODE, LockCraftingMode.NONE);
         this.addToLeftToolbar(lockCraftingModeButton);
@@ -88,6 +94,7 @@ public class PatternProviderScreen<C extends PatternProviderMenu> extends AEBase
 
         this.lockReason.setVisible(menu.getLockCraftingMode() != LockCraftingMode.NONE);
         this.blockingModeButton.set(this.menu.getBlockingMode());
+        this.extraBlockingModeButton.set(this.menu.getExtraBlockingMode());
         this.lockCraftingModeButton.set(this.menu.getLockCraftingMode());
         this.showInPatternAccessTerminalButton.setState(this.menu.getShowInAccessTerminal() == YesNo.YES);
     }

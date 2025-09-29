@@ -44,6 +44,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 
 import appeng.api.config.Actionable;
+import appeng.api.config.BlockingMode;
 import appeng.api.config.LockCraftingMode;
 import appeng.api.config.Setting;
 import appeng.api.config.Settings;
@@ -149,6 +150,7 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
 
         this.upgrades = UpgradeInventories.forMachine(host.getTerminalIcon().getItem(), 1, this::onUpgradesChanged);
         this.configManager.registerSetting(Settings.BLOCKING_MODE, YesNo.NO);
+        this.configManager.registerSetting(Settings.BLOCKING_MODE_EXTRA, BlockingMode.DEFAULT);
         this.configManager.registerSetting(Settings.PATTERN_ACCESS_TERMINAL, YesNo.YES);
         this.configManager.registerSetting(Settings.LOCK_CRAFTING_MODE, LockCraftingMode.NONE);
 
@@ -495,6 +497,10 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
         return this.configManager.getSetting(Settings.BLOCKING_MODE) == YesNo.YES;
     }
 
+    public BlockingMode getBlockingMode() {
+        return this.configManager.getSetting(Settings.BLOCKING_MODE_EXTRA);
+    }
+
     @Nullable
     private PatternProviderTarget findAdapter(Direction side) {
         if (targetCaches[side.get3DDataValue()] == null) {
@@ -503,7 +509,8 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
                     (ServerLevel) thisBe.getLevel(),
                     thisBe.getBlockPos().relative(side),
                     side.getOpposite(),
-                    actionSource);
+                    actionSource,
+                    getBlockingMode());
         }
 
         return targetCaches[side.get3DDataValue()].find();

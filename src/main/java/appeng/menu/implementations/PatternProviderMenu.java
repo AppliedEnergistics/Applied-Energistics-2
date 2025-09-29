@@ -22,6 +22,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.level.ItemLike;
 
+import appeng.api.config.BlockingMode;
 import appeng.api.config.LockCraftingMode;
 import appeng.api.config.Settings;
 import appeng.api.config.YesNo;
@@ -63,6 +64,8 @@ public class PatternProviderMenu extends AEBaseMenu {
     public LockCraftingMode craftingLockedReason = LockCraftingMode.NONE;
     @GuiSync(7)
     public GenericStack unlockStack = null;
+    @GuiSync(8)
+    private BlockingMode extraBlockingMode = BlockingMode.DEFAULT;
 
     public PatternProviderMenu(int id, Inventory playerInventory, PatternProviderLogicHost host) {
         this(TYPE, id, playerInventory, host);
@@ -98,6 +101,7 @@ public class PatternProviderMenu extends AEBaseMenu {
     public void broadcastChanges() {
         if (isServerSide()) {
             blockingMode = logic.getConfigManager().getSetting(Settings.BLOCKING_MODE);
+            extraBlockingMode = logic.getConfigManager().getSetting(Settings.BLOCKING_MODE_EXTRA);
             showInAccessTerminal = logic.getConfigManager().getSetting(Settings.PATTERN_ACCESS_TERMINAL);
             lockCraftingMode = logic.getConfigManager().getSetting(Settings.LOCK_CRAFTING_MODE);
             craftingLockedReason = logic.getCraftingLockedReason();
@@ -115,6 +119,10 @@ public class PatternProviderMenu extends AEBaseMenu {
 
     public YesNo getBlockingMode() {
         return blockingMode;
+    }
+
+    public BlockingMode getExtraBlockingMode() {
+        return extraBlockingMode;
     }
 
     public LockCraftingMode getLockCraftingMode() {
