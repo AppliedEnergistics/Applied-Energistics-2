@@ -45,7 +45,7 @@ public class LightningFX extends SingleQuadParticle {
     private boolean hasData = false;
 
     private LightningFX(ClientLevel level, double x, double y, double z, double r,
-                        double g, double b, TextureAtlasSprite sprite) {
+            double g, double b, TextureAtlasSprite sprite) {
         this(level, x, y, z, r, g, b, 6, sprite);
         this.regen();
     }
@@ -216,16 +216,17 @@ public class LightningFX extends SingleQuadParticle {
     }
 
     private void draw(float red, float green, float blue, QuadParticleRenderState tess, float[] a, float[] b,
-                      float u, float v) {
+            float u, float v) {
         if (this.hasData) {
             // TODO 1.21.9 tess.addVertex(a[0], a[1], a[2]).setUv(u, v).setColor(red, green, blue, this.alpha)
-            // TODO 1.21.9         .setUv2(BRIGHTNESS, BRIGHTNESS);
+            // TODO 1.21.9 .setUv2(BRIGHTNESS, BRIGHTNESS);
             // TODO 1.21.9 tess.addVertex(this.vertices[0], this.vertices[1], this.vertices[2]).setUv(u, v)
-            // TODO 1.21.9         .setColor(red, green, blue, this.alpha).setUv2(BRIGHTNESS, BRIGHTNESS);
-            // TODO 1.21.9 tess.addVertex(this.verticesWithUV[0], this.verticesWithUV[1], this.verticesWithUV[2]).setUv(u, v)
-            // TODO 1.21.9         .setColor(red, green, blue, this.alpha).setUv2(BRIGHTNESS, BRIGHTNESS);
+            // TODO 1.21.9 .setColor(red, green, blue, this.alpha).setUv2(BRIGHTNESS, BRIGHTNESS);
+            // TODO 1.21.9 tess.addVertex(this.verticesWithUV[0], this.verticesWithUV[1],
+            // this.verticesWithUV[2]).setUv(u, v)
+            // TODO 1.21.9 .setColor(red, green, blue, this.alpha).setUv2(BRIGHTNESS, BRIGHTNESS);
             // TODO 1.21.9 tess.addVertex(b[0], b[1], b[2]).setUv(u, v).setColor(red, green, blue, this.alpha)
-            // TODO 1.21.9         .setUv2(BRIGHTNESS, BRIGHTNESS);
+            // TODO 1.21.9 .setUv2(BRIGHTNESS, BRIGHTNESS);
         }
         this.hasData = true;
         for (int x = 0; x < 3; x++) {

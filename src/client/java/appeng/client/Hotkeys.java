@@ -3,12 +3,12 @@ package appeng.client;
 import java.util.HashMap;
 import java.util.function.Consumer;
 
-import appeng.core.AppEng;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
 import net.minecraft.client.KeyMapping;
 
+import appeng.core.AppEng;
 import appeng.hotkeys.HotkeyActions;
 
 /**

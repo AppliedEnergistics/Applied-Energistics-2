@@ -20,11 +20,14 @@ package appeng.client.renderer.blockentity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
+import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
+import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.world.phys.Vec3;
 
 import appeng.api.orientation.BlockOrientation;
@@ -35,43 +38,56 @@ import appeng.client.render.model.DriveModel;
 /**
  * Renders the drive cell status indicators.
  */
-public class DriveLedRenderer implements BlockEntityRenderer<DriveBlockEntity> {
+public class DriveRenderer implements BlockEntityRenderer<DriveBlockEntity, ChestOrDriveRenderState> {
 
-    public DriveLedRenderer(BlockEntityRendererProvider.Context context) {
+    public DriveRenderer(BlockEntityRendererProvider.Context context) {
     }
 
     @Override
-    public void render(DriveBlockEntity drive, float partialTicks, PoseStack ms, MultiBufferSource buffers,
-            int combinedLightIn, int combinedOverlayIn, Vec3 cameraPosition) {
+    public ChestOrDriveRenderState createRenderState() {
+        return new ChestOrDriveRenderState();
+    }
 
+    @Override
+    public void extractRenderState(DriveBlockEntity drive, ChestOrDriveRenderState state, float partialTicks,
+            Vec3 cameraPos, @Nullable ModelFeatureRenderer.CrumblingOverlay crumblingOverlay) {
+        BlockEntityRenderer.super.extractRenderState(drive, state, partialTicks, cameraPos, crumblingOverlay);
         if (drive.getCellCount() != 10) {
             throw new IllegalStateException("Expected drive to have 10 slots");
         }
 
-        ms.pushPose();
-        ms.translate(0.5, 0.5, 0.5);
         var blockOrientation = BlockOrientation.get(drive);
-        ms.mulPose(blockOrientation.getQuaternion());
-        ms.translate(-0.5, -0.5, -0.5);
+        state.extract(blockOrientation, drive, partialTicks);
+    }
 
-        var buffer = buffers.getBuffer(AERenderTypes.STORAGE_CELL_LEDS);
+    @Override
+    public void submit(ChestOrDriveRenderState state, PoseStack poseStack, SubmitNodeCollector nodes,
+            CameraRenderState cameraRenderState) {
+        poseStack.pushPose();
+        poseStack.translate(0.5, 0.5, 0.5);
+        poseStack.mulPose(state.blockOrientation.getQuaternion());
+        poseStack.translate(-0.5, -0.5, -0.5);
 
         Vector3f slotTranslation = new Vector3f();
         for (int row = 0; row < 5; row++) {
             for (int col = 0; col < 2; col++) {
-                ms.pushPose();
+                poseStack.pushPose();
 
                 DriveModel.getSlotOrigin(row, col, slotTranslation);
-                ms.translate(slotTranslation.x(), slotTranslation.y(), slotTranslation.z());
+                poseStack.translate(slotTranslation.x(), slotTranslation.y(), slotTranslation.z());
 
                 int slot = row * 2 + col;
-                CellLedRenderer.renderLed(drive, slot, buffer, ms, partialTicks);
+                nodes.submitCustomGeometry(
+                        poseStack,
+                        AERenderTypes.STORAGE_CELL_LEDS,
+                        (pose, consumer) -> CellLedRenderer.renderLed(
+                                state.cellColors[slot], consumer, poseStack));
 
-                ms.popPose();
+                poseStack.popPose();
             }
         }
 
-        ms.popPose();
+        poseStack.popPose();
     }
 
 }

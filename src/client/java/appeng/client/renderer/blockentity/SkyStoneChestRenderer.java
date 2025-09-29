@@ -21,7 +21,7 @@ package appeng.client.renderer.blockentity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
-import net.minecraft.data.AtlasIds;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Quaternionf;
 
 import net.minecraft.client.model.geom.ModelLayerLocation;
@@ -32,12 +32,14 @@ import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
+import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.core.BlockPos;
+import net.minecraft.data.AtlasIds;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.phys.AABB;
@@ -49,7 +51,7 @@ import appeng.blockentity.storage.SkyStoneChestBlockEntity;
 import appeng.core.AppEng;
 
 // This is mostly a copy&paste job of the vanilla chest TESR
-public class SkyStoneChestRenderer implements BlockEntityRenderer<SkyStoneChestBlockEntity> {
+public class SkyStoneChestRenderer implements BlockEntityRenderer<SkyStoneChestBlockEntity, SkyStoneChestRenderState> {
 
     public static ModelLayerLocation MODEL_LAYER = new ModelLayerLocation(AppEng.makeId("sky_chest"), "main");
 
@@ -68,6 +70,22 @@ public class SkyStoneChestRenderer implements BlockEntityRenderer<SkyStoneChestB
         this.bottom = modelpart.getChild("bottom");
         this.lid = modelpart.getChild("lid");
         this.lock = modelpart.getChild("lock");
+    }
+
+    @Override
+    public SkyStoneChestRenderState createRenderState() {
+        return new SkyStoneChestRenderState();
+    }
+
+    @Override
+    public void extractRenderState(SkyStoneChestBlockEntity be, SkyStoneChestRenderState state, float partialTicks,
+            Vec3 cameraPos, @Nullable ModelFeatureRenderer.CrumblingOverlay crumblingOverlay) {
+        BlockEntityRenderer.super.extractRenderState(be, state, partialTicks, cameraPos, crumblingOverlay);
+    }
+
+    @Override
+    public void submit(SkyStoneChestRenderState state, PoseStack poseStack, SubmitNodeCollector nodes,
+            CameraRenderState cameraRenderState) {
     }
 
     @Override
@@ -90,7 +108,7 @@ public class SkyStoneChestRenderer implements BlockEntityRenderer<SkyStoneChestB
         return LayerDefinition.create(meshdefinition, 64, 64);
     }
 
-    @Override
+    // TODO 1.21.9
     public void render(SkyStoneChestBlockEntity blockEntity, float partialTicks, PoseStack matrixStackIn,
             MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn, Vec3 cameraPosition) {
         matrixStackIn.pushPose();
@@ -103,9 +121,9 @@ public class SkyStoneChestRenderer implements BlockEntityRenderer<SkyStoneChestB
         f1 = 1.0F - f1;
         f1 = 1.0F - f1 * f1 * f1;
         Material material = this.getRenderMaterial(blockEntity);
-        VertexConsumer ivertexbuilder = material.buffer(bufferIn, RenderType::entityCutout);
-        this.renderModels(matrixStackIn, ivertexbuilder, this.lid, this.lock, this.bottom, f1,
-                combinedLightIn, combinedOverlayIn);
+        // TODO 1.21.9 VertexConsumer ivertexbuilder = material.buffer(bufferIn, RenderType::entityCutout);
+        // TODO 1.21.9 this.renderModels(matrixStackIn, ivertexbuilder, this.lid, this.lock, this.bottom, f1,
+        // TODO 1.21.9 combinedLightIn, combinedOverlayIn);
 
         matrixStackIn.popPose();
     }

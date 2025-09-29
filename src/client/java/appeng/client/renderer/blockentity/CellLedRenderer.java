@@ -18,40 +18,15 @@
 
 package appeng.client.renderer.blockentity;
 
-import java.util.EnumMap;
-
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import org.joml.Vector3f;
 
-import appeng.api.implementations.blockentities.IChestOrDrive;
-import appeng.api.storage.cells.CellState;
-
 /**
  * Utility class to render LEDs for storage cells from a Block entity Renderer.
  */
 public class CellLedRenderer {
-
-    private static final EnumMap<CellState, Vector3f> STATE_COLORS;
-
-    // Color to use if the cell is present but unpowered
-    private static final Vector3f UNPOWERED_COLOR = new Vector3f(0, 0, 0);
-
-    // Color used for the cell indicator for blinking during recent activity
-    private static final Vector3f BLINK_COLOR = new Vector3f(1, 0.5f, 0.5f);
-
-    static {
-        STATE_COLORS = new EnumMap<>(CellState.class);
-        for (var cellState : CellState.values()) {
-            var color = cellState.getStateColor();
-            var colorVector = new Vector3f(
-                    ((color >> 16) & 0xFF) / 255.0f,
-                    ((color >> 8) & 0xFF) / 255.0f,
-                    (color & 0xFF) / 255.0f);
-            STATE_COLORS.put(cellState, colorVector);
-        }
-    }
 
     // The positions are based on the upper left slot in a drive
     private static final float L = 5 / 16.f; // left (x-axis)
@@ -75,10 +50,7 @@ public class CellLedRenderer {
             // Bottom Face
             R, B, FR, L, B, FR, L, B, BA, R, B, BA, };
 
-    public static void renderLed(IChestOrDrive drive, int slot, VertexConsumer buffer, PoseStack ms,
-            float partialTicks) {
-
-        Vector3f color = getColorForSlot(drive, slot, partialTicks);
+    public static void renderLed(Vector3f color, VertexConsumer buffer, PoseStack ms) {
         if (color == null) {
             return;
         }
@@ -89,33 +61,6 @@ public class CellLedRenderer {
             float z = LED_QUADS[i + 2];
             buffer.addVertex(ms.last().pose(), x, y, z).setColor(color.x(), color.y(), color.z(), 1.f);
         }
-    }
-
-    private static Vector3f getColorForSlot(IChestOrDrive drive, int slot, float partialTicks) {
-        var state = drive.getCellStatus(slot);
-        if (state == CellState.ABSENT) {
-            return null;
-        }
-
-        if (!drive.isPowered()) {
-            return UNPOWERED_COLOR;
-        }
-
-        Vector3f col = STATE_COLORS.get(state);
-        if (drive.isCellBlinking(slot)) {
-            // 200 ms interval (100ms to get to red, then 100ms back)
-            long t = System.currentTimeMillis() % 200;
-            float f = (t - 100) / 200.0f + 0.5f;
-            f = easeInOutCubic(f);
-            col = new Vector3f(col);
-            col.lerp(BLINK_COLOR, f);
-        }
-
-        return col;
-    }
-
-    private static float easeInOutCubic(float x) {
-        return x < 0.5f ? 4 * x * x * x : 1 - (float) Math.pow(-2 * x + 2, 3) / 2;
     }
 
     private CellLedRenderer() {

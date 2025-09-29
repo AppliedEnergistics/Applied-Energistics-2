@@ -37,7 +37,7 @@ public class LightningArcFX extends LightningFX {
     private final double rz;
 
     public LightningArcFX(ClientLevel level, double x, double y, double z, double ex,
-                          double ey, double ez, double r, double g, double b, TextureAtlasSprite sprite) {
+            double ey, double ez, double r, double g, double b, TextureAtlasSprite sprite) {
         super(level, x, y, z, r, g, b, 6, sprite);
 
         this.rx = ex - x;

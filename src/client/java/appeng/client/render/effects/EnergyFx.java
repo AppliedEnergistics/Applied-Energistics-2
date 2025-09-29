@@ -18,21 +18,18 @@
 
 package appeng.client.render.effects;
 
-import com.mojang.blaze3d.vertex.VertexConsumer;
-
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
-import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.client.particle.SingleQuadParticle;
 import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.client.renderer.state.QuadParticleRenderState;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 
 import appeng.core.particles.EnergyParticleData;
-import net.minecraft.util.RandomSource;
 
 public class EnergyFx extends SingleQuadParticle {
 
@@ -109,7 +106,7 @@ public class EnergyFx extends SingleQuadParticle {
 
         @Override
         public Particle createParticle(EnergyParticleData data, ClientLevel level, double x, double y, double z,
-                                       double xSpeed, double ySpeed, double zSpeed, RandomSource random) {
+                double xSpeed, double ySpeed, double zSpeed, RandomSource random) {
             EnergyFx result = new EnergyFx(level, x, y, z, spriteSet.get(random));
             result.setMotionX((float) xSpeed);
             result.setMotionY((float) ySpeed);

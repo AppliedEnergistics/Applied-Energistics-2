@@ -10,7 +10,6 @@ import java.util.Map;
 import java.util.Optional;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingBookCategory;

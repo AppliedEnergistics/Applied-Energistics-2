@@ -20,19 +20,21 @@ package appeng.client.renderer.blockentity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.client.renderer.entity.ItemRenderer;
+import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
+import net.minecraft.client.renderer.item.ItemModelResolver;
+import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemDisplayContext;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 
-import appeng.blockentity.crafting.MolecularAssemblerAnimationStatus;
 import appeng.blockentity.crafting.MolecularAssemblerBlockEntity;
 import appeng.core.AEConfig;
 import appeng.core.particles.ParticleTypes;
@@ -40,64 +42,82 @@ import appeng.core.particles.ParticleTypes;
 /**
  * Renders the item currently being crafted by the molecular assembler, as well as the light strip when it's powered.
  */
-public class MolecularAssemblerRenderer implements BlockEntityRenderer<MolecularAssemblerBlockEntity> {
+public class MolecularAssemblerRenderer
+        implements BlockEntityRenderer<MolecularAssemblerBlockEntity, MolecularAssemblerRenderState> {
+    private final ItemModelResolver itemModelResolver;
+
     public MolecularAssemblerRenderer(BlockEntityRendererProvider.Context context) {
+        this.itemModelResolver = context.itemModelResolver();
     }
 
     @Override
-    public void render(MolecularAssemblerBlockEntity molecularAssembler, float partialTicks, PoseStack ms,
-            MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn, Vec3 cameraPosition) {
+    public MolecularAssemblerRenderState createRenderState() {
+        return new MolecularAssemblerRenderState();
+    }
 
-        var status = molecularAssembler.getAnimationStatus();
+    @Override
+    public void extractRenderState(MolecularAssemblerBlockEntity be, MolecularAssemblerRenderState state,
+            float partialTicks, Vec3 cameraPos, @Nullable ModelFeatureRenderer.CrumblingOverlay crumblingOverlay) {
+        BlockEntityRenderer.super.extractRenderState(be, state, partialTicks, cameraPos, crumblingOverlay);
+
+        state.item.clear();
+
+        var status = be.getAnimationStatus();
         if (status != null) {
             if (!Minecraft.getInstance().isPaused()) {
                 if (status.isExpired()) {
-                    molecularAssembler.setAnimationStatus(null);
+                    be.setAnimationStatus(null);
                 }
 
                 status.setAccumulatedTicks(status.getAccumulatedTicks() + partialTicks);
                 status.setTicksUntilParticles(status.getTicksUntilParticles() - partialTicks);
             }
 
-            renderStatus(molecularAssembler, ms, bufferIn, combinedLightIn, status);
-        }
-    }
+            double centerX = be.getBlockPos().getX() + 0.5f;
+            double centerY = be.getBlockPos().getY() + 0.5f;
+            double centerZ = be.getBlockPos().getZ() + 0.5f;
 
-    private void renderStatus(MolecularAssemblerBlockEntity be, PoseStack ms,
-            MultiBufferSource bufferIn, int combinedLightIn, MolecularAssemblerAnimationStatus status) {
-        double centerX = be.getBlockPos().getX() + 0.5f;
-        double centerY = be.getBlockPos().getY() + 0.5f;
-        double centerZ = be.getBlockPos().getZ() + 0.5f;
+            var is = status.getIs();
 
-        ItemStack is = status.getIs();
+            // Spawn crafting FX that fly towards the block's center
+            var level = be.getLevel();
+            if (AEConfig.instance().isEnableEffects()) {
+                if (status.getTicksUntilParticles() <= 0) {
+                    status.setTicksUntilParticles(4);
 
-        // Spawn crafting FX that fly towards the block's center
-        var level = be.getLevel();
-        var minecraft = Minecraft.getInstance();
-        if (AEConfig.instance().isEnableEffects()) {
-            if (status.getTicksUntilParticles() <= 0) {
-                status.setTicksUntilParticles(4);
-
-                for (int x = 0; x < (int) Math.ceil(status.getSpeed() / 5.0); x++) {
-                    level.addParticle(new ItemParticleOption(ParticleTypes.CRAFTING, is), centerX, centerY, centerZ, 0,
-                            0, 0);
+                    for (int x = 0; x < (int) Math.ceil(status.getSpeed() / 5.0); x++) {
+                        level.addParticle(new ItemParticleOption(ParticleTypes.CRAFTING, is), centerX, centerY, centerZ,
+                                0,
+                                0, 0);
+                    }
                 }
             }
+
+            this.itemModelResolver.updateForTopItem(
+                    state.item,
+                    is,
+                    ItemDisplayContext.FIXED,
+                    be.getLevel(),
+                    null,
+                    // This is the random seed
+                    (int) be.getBlockPos().asLong());
+            state.blockItem = (is.getItem() instanceof BlockItem);
         }
-
-        ItemRenderer itemRenderer = minecraft.getItemRenderer();
-        ms.pushPose();
-        ms.translate(0.5, 0.5, 0.5); // Translate to center of block
-
-        if (!(is.getItem() instanceof BlockItem)) {
-            ms.translate(0, -0.3f, 0);
-        } else {
-            ms.translate(0, -0.2f, 0);
-        }
-
-        itemRenderer.renderStatic(is, ItemDisplayContext.GROUND, combinedLightIn,
-                OverlayTexture.NO_OVERLAY, ms, bufferIn, be.getLevel(), 0);
-        ms.popPose();
     }
 
+    @Override
+    public void submit(MolecularAssemblerRenderState state, PoseStack poseStack, SubmitNodeCollector nodes,
+            CameraRenderState cameraRenderState) {
+        poseStack.pushPose();
+        poseStack.translate(0.5, 0.5, 0.5); // Translate to center of block
+
+        if (!state.blockItem) {
+            poseStack.translate(0, -0.3f, 0);
+        } else {
+            poseStack.translate(0, -0.2f, 0);
+        }
+
+        state.item.submit(poseStack, nodes, state.lightCoords, OverlayTexture.NO_OVERLAY, 0);
+        poseStack.popPose();
+    }
 }

@@ -20,10 +20,10 @@ package appeng.block;
 
 import java.util.List;
 
-import net.minecraft.core.Direction;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.network.chat.contents.PlainTextContents;
 import net.minecraft.world.InteractionHand;

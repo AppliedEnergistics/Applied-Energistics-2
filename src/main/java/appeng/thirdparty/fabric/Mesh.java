@@ -21,7 +21,6 @@ import java.util.function.Consumer;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.data.AtlasIds;
 
 /**

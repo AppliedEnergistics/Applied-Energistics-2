@@ -7,7 +7,7 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.item.properties.numeric.RangeSelectItemModelProperty;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ItemOwner;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.block.networking.EnergyCellBlockItem;
@@ -19,7 +19,7 @@ public class EnergyFillLevelProperty implements RangeSelectItemModelProperty {
     public static final MapCodec<EnergyFillLevelProperty> CODEC = MapCodec.unit(EnergyFillLevelProperty::new);
 
     @Override
-    public float get(ItemStack stack, @Nullable ClientLevel level, @Nullable LivingEntity entity, int seed) {
+    public float get(ItemStack stack, @Nullable ClientLevel level, @Nullable ItemOwner owner, int seed) {
         if (stack.getItem() instanceof EnergyCellBlockItem energyCell) {
             double curPower = energyCell.getAECurrentPower(stack);
             double maxPower = energyCell.getAEMaxPower(stack);

@@ -5,8 +5,6 @@ import java.util.Set;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 
 import appeng.api.stacks.AEKeyType;

@@ -23,7 +23,6 @@ import java.util.List;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
-import net.minecraft.data.AtlasIds;
 import org.joml.Matrix4f;
 
 import net.minecraft.client.Minecraft;
@@ -31,11 +30,10 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.data.AtlasIds;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
@@ -83,8 +81,9 @@ public class InitStackRenderHandlers {
             // Rotate the normal matrix a little for nicer lighting.
             poseStack.last().normal().rotateX(Mth.DEG_TO_RAD * -45f);
 
-            Minecraft.getInstance().getItemRenderer().renderStatic(what.getReadOnlyStack(), ItemDisplayContext.GUI,
-                    combinedLight, OverlayTexture.NO_OVERLAY, poseStack, buffers, level, 0);
+            // TODO 1.21.9 Minecraft.getInstance().getItemRenderer().renderStatic(what.getReadOnlyStack(),
+            // ItemDisplayContext.GUI,
+            // TODO 1.21.9 combinedLight, OverlayTexture.NO_OVERLAY, poseStack, buffers, level, 0);
 
             poseStack.popPose();
         }
@@ -120,8 +119,8 @@ public class InitStackRenderHandlers {
             var renderProps = IClientFluidTypeExtensions.of(what.getFluid());
             var texture = renderProps.getStillTexture(fluidStack);
             var color = renderProps.getTintColor(fluidStack);
-            var sprite = Minecraft.getInstance().getTextureAtlas(AtlasIds.BLOCKS)
-                    .apply(texture);
+            var sprite = Minecraft.getInstance().getAtlasManager().getAtlasOrThrow(AtlasIds.BLOCKS)
+                    .getSprite(texture);
 
             poseStack.pushPose();
             // Push it out of the block face a bit to avoid z-fighting

@@ -33,11 +33,12 @@ import java.util.WeakHashMap;
 
 import com.google.common.collect.HashMultimap;
 
-import net.minecraft.client.input.MouseButtonEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.input.CharacterEvent;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.locale.Language;
@@ -307,7 +308,7 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
 
     @Override
     public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
-        if (btn == 1 && this.searchField.isMouseOver(event, doubleClick)) {
+        if (event.button() == 1 && this.searchField.isMouseOver(event.x(), event.y())) {
             this.searchField.setValue("");
             // Don't return immediately to also grab focus.
         }
@@ -425,11 +426,11 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
     }
 
     @Override
-    public boolean charTyped(char character, int key) {
-        if (character == ' ' && this.searchField.getValue().isEmpty()) {
+    public boolean charTyped(CharacterEvent event) {
+        if (event.codepoint() == ' ' && this.searchField.getValue().isEmpty()) {
             return true;
         }
-        return super.charTyped(character, key);
+        return super.charTyped(event);
     }
 
     public void clear() {

@@ -24,7 +24,6 @@ import java.util.stream.IntStream;
 import com.google.common.base.Strings;
 import com.mojang.serialization.MapCodec;
 
-import net.minecraft.data.AtlasIds;
 import org.joml.Vector3f;
 
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -32,7 +31,6 @@ import net.minecraft.client.renderer.block.model.BlockModelPart;
 import net.minecraft.client.renderer.block.model.BlockStateModel;
 import net.minecraft.client.renderer.block.model.SimpleModelWrapper;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
-import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.resources.model.ModelBaker;
@@ -41,6 +39,7 @@ import net.minecraft.client.resources.model.QuadCollection;
 import net.minecraft.client.resources.model.SpriteGetter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.data.AtlasIds;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;

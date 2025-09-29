@@ -18,7 +18,6 @@
 
 package appeng.client.render.model;
 
-import java.util.Objects;
 import java.util.Set;
 
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -32,15 +31,14 @@ import org.joml.Vector2f;
 import org.joml.Vector3f;
 
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.Sheets;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.item.ItemModel;
 import net.minecraft.client.renderer.item.ItemModelResolver;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.special.SpecialModelRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ItemOwner;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ChunkPos;
@@ -71,10 +69,11 @@ public class MeteoriteCompassModel implements ItemModel {
 
     @Override
     public void update(ItemStackRenderState renderState, ItemStack stack, ItemModelResolver itemModelResolver,
-            ItemDisplayContext displayContext, @Nullable ClientLevel level, @Nullable LivingEntity entity, int seed) {
+            ItemDisplayContext displayContext, @Nullable ClientLevel level, @Nullable ItemOwner owner, int seed) {
         Float target = null;
-        if (level != null && entity != null) {
-            target = getAnimatedRotation(entity.position(), entity.getViewVector(0f));
+        if (level != null && owner != null) {
+            var lookVector = new Vec3(1, 0, 0).yRot(owner.getVisualRotationYInDegrees());
+            target = getAnimatedRotation(owner.position(), lookVector);
         }
 
         var pointerLayer = renderState.newLayer();
@@ -128,13 +127,14 @@ public class MeteoriteCompassModel implements ItemModel {
 
     private record RotatedPointerRenderer(ItemBaseModelWrapper pointer) implements SpecialModelRenderer<Float> {
         @Override
-        public void render(@Nullable Float target,
+        public void submit(@Nullable Float target,
                 ItemDisplayContext displayContext,
                 PoseStack poseStack,
-                MultiBufferSource bufferSource,
+                SubmitNodeCollector nodes,
                 int packedLight,
                 int packedOverlay,
-                boolean hasFoilType) {
+                boolean hasFoilType,
+                int seed) {
             if (target == null) {
                 target = getSlowSpinningRotation();
             }
@@ -149,13 +149,13 @@ public class MeteoriteCompassModel implements ItemModel {
 
             // Pre-compute the quad count to avoid list resizes
             // We'll add the pointer as "sideless" to the item rendering when state is null
-            var buffer = bufferSource
-                    .getBuffer(Objects.requireNonNullElse(pointer.renderType(), Sheets.translucentItemSheet()));
-            var pose = poseStack.last();
-            for (var bakedQuad : this.pointer.quads()) {
-                bakedQuad = transformer.process(bakedQuad);
-                buffer.putBulkData(pose, bakedQuad, 1f, 1f, 1f, 1f, packedLight, packedOverlay);
-            }
+            // TODO 1.21.9 var buffer = bufferSource
+            // TODO 1.21.9 .getBuffer(Objects.requireNonNullElse(pointer.renderType(), Sheets.translucentItemSheet()));
+            // TODO 1.21.9 var pose = poseStack.last();
+            // TODO 1.21.9 for (var bakedQuad : this.pointer.quads()) {
+            // TODO 1.21.9 bakedQuad = transformer.process(bakedQuad);
+            // TODO 1.21.9 buffer.putBulkData(pose, bakedQuad, 1f, 1f, 1f, 1f, packedLight, packedOverlay);
+            // TODO 1.21.9 }
         }
 
         @Override

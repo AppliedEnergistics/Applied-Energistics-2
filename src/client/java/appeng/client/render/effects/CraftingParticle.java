@@ -18,14 +18,13 @@
 
 package appeng.client.render.effects;
 
-import com.mojang.blaze3d.vertex.VertexConsumer;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
-import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.client.particle.SingleQuadParticle;
 import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.client.renderer.LightTexture;
@@ -42,7 +41,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 
 import appeng.api.util.AEColor;
-import org.jetbrains.annotations.Nullable;
 
 public class CraftingParticle extends SingleQuadParticle {
 
@@ -51,7 +49,8 @@ public class CraftingParticle extends SingleQuadParticle {
     private final float offsetY;
     private final float offsetZ;
 
-    public CraftingParticle(ClientLevel level, double x, double y, double z, TextureAtlasSprite sprite, ItemStack item) {
+    public CraftingParticle(ClientLevel level, double x, double y, double z, TextureAtlasSprite sprite,
+            ItemStack item) {
         super(level, x, y, z, sprite);
 
         // Use spherical coordinates to pick a point around the center
@@ -136,7 +135,8 @@ public class CraftingParticle extends SingleQuadParticle {
         }
 
         @Override
-        public @Nullable Particle createParticle(ItemParticleOption data, ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed, RandomSource random) {
+        public @Nullable Particle createParticle(ItemParticleOption data, ClientLevel level, double x, double y,
+                double z, double xSpeed, double ySpeed, double zSpeed, RandomSource random) {
             return new CraftingParticle(level, x, y, z, spriteSet.get(random), data.getItem());
         }
     }

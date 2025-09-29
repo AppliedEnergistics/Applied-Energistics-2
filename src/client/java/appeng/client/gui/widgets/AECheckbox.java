@@ -36,7 +36,6 @@ public class AECheckbox extends AbstractButton {
         this.style = style;
     }
 
-
     @Override
     public void onPress(InputWithModifiers input) {
         this.selected = !this.selected;

@@ -31,7 +31,7 @@ import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.BlockModelPart;
 import net.minecraft.client.renderer.item.ItemModel;
@@ -43,7 +43,7 @@ import net.minecraft.client.resources.model.ResolvableModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ItemOwner;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.EmptyBlockAndTintGetter;
@@ -55,7 +55,6 @@ import appeng.api.implementations.items.IFacadeItem;
 import appeng.client.render.cablebus.FacadeBuilder;
 import appeng.core.AppEng;
 import appeng.items.parts.FacadeItem;
-import appeng.thirdparty.fabric.ModelHelper;
 
 /**
  * The model class for facades. Since facades wrap existing models, they don't declare any dependencies here other than
@@ -79,16 +78,16 @@ public class FacadeItemModel implements ItemModel {
 
     @Override
     public void update(ItemStackRenderState renderState, ItemStack stack, ItemModelResolver itemModelResolver,
-            ItemDisplayContext displayContext, @Nullable ClientLevel level, @Nullable LivingEntity entity, int seed) {
+            ItemDisplayContext displayContext, @Nullable ClientLevel level, @Nullable ItemOwner owner, int seed) {
 
         if (!(stack.getItem() instanceof FacadeItem itemFacade)) {
-            missingItemModel.update(renderState, stack, itemModelResolver, displayContext, level, entity, seed);
+            missingItemModel.update(renderState, stack, itemModelResolver, displayContext, level, owner, seed);
             return;
         }
 
         var facadeBlockState = itemFacade.getTextureBlockState(stack);
         if (facadeBlockState.isEmpty()) {
-            missingItemModel.update(renderState, stack, itemModelResolver, displayContext, level, entity, seed);
+            missingItemModel.update(renderState, stack, itemModelResolver, displayContext, level, owner, seed);
             return;
         }
 
@@ -102,13 +101,14 @@ public class FacadeItemModel implements ItemModel {
 
     public class FacadeSpecialRender implements SpecialModelRenderer<BlockState> {
         @Override
-        public void render(@Nullable BlockState blockState,
+        public void submit(@Nullable BlockState blockState,
                 ItemDisplayContext displayContext,
                 PoseStack poseStack,
-                MultiBufferSource bufferSource,
+                SubmitNodeCollector nodes,
                 int packedLight,
                 int packedOverlay,
-                boolean hasFoilType) {
+                boolean hasFoilType,
+                int seed) {
             if (blockState == null) {
                 return;
             }
@@ -135,19 +135,19 @@ public class FacadeItemModel implements ItemModel {
             for (var blockModelPart : blockModelParts) {
                 var chunkSectionLayer = blockModelPart.getRenderType(blockState);
                 var renderType = RenderTypeHelper.getEntityRenderType(chunkSectionLayer);
-                var buffer = bufferSource.getBuffer(renderType);
-                for (int cullFaceIdx = 0; cullFaceIdx <= ModelHelper.NULL_FACE_ID; cullFaceIdx++) {
-                    var cullFace = ModelHelper.faceFromIndex(cullFaceIdx);
-                    for (var quad : blockModelPart.getQuads(cullFace)) {
-                        var shade = (quad.shade() && quad.direction() != null) ? getShade(quad.direction()) : 1f;
-                        brightness[0] = shade;
-                        brightness[1] = shade;
-                        brightness[2] = shade;
-                        brightness[3] = shade;
-                        buffer.putBulkData(
-                                pose, quad, brightness, 1f, 1f, 1f, 1f, lightmap, packedOverlay, false);
-                    }
-                }
+                // TODO 1.21.9 var buffer = bufferSource.getBuffer(renderType);
+                // TODO 1.21.9 for (int cullFaceIdx = 0; cullFaceIdx <= ModelHelper.NULL_FACE_ID; cullFaceIdx++) {
+                // TODO 1.21.9 var cullFace = ModelHelper.faceFromIndex(cullFaceIdx);
+                // TODO 1.21.9 for (var quad : blockModelPart.getQuads(cullFace)) {
+                // TODO 1.21.9 var shade = (quad.shade() && quad.direction() != null) ? getShade(quad.direction()) : 1f;
+                // TODO 1.21.9 brightness[0] = shade;
+                // TODO 1.21.9 brightness[1] = shade;
+                // TODO 1.21.9 brightness[2] = shade;
+                // TODO 1.21.9 brightness[3] = shade;
+                // TODO 1.21.9 buffer.putBulkData(
+                // TODO 1.21.9 pose, quad, brightness, 1f, 1f, 1f, 1f, lightmap, packedOverlay, false);
+                // TODO 1.21.9 }
+                // TODO 1.21.9 }
             }
         }
 

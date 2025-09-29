@@ -18,34 +18,83 @@
 
 package appeng.client.renderer.blockentity;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Transformation;
 
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
+import net.minecraft.client.renderer.item.ItemModelResolver;
+import net.minecraft.client.renderer.state.CameraRenderState;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.world.item.ItemDisplayContext;
+import net.minecraft.world.phys.Vec3;
 
+import appeng.api.orientation.BlockOrientation;
 import appeng.blockentity.misc.ChargerBlockEntity;
-import appeng.client.render.renderable.ItemRenderable;
 
 /**
  * Renders the item being charged.
  */
-public final class ChargerRenderer {
-    private ChargerRenderer() {
+public final class ChargerRenderer implements BlockEntityRenderer<ChargerBlockEntity, ChargerRenderState> {
+    private final ItemModelResolver itemModelResolver;
+
+    public ChargerRenderer(BlockEntityRendererProvider.Context context) {
+        this.itemModelResolver = context.itemModelResolver();
     }
 
-    public static BlockEntityRendererProvider<ChargerBlockEntity> FACTORY = context -> new CompositeBlockEntityRenderer<>(
-            new ItemRenderable<>(ChargerRenderer::getRenderedItem));
+    @Override
+    public ChargerRenderState createRenderState() {
+        return new ChargerRenderState();
+    }
 
-    private static Pair<ItemStack, Transformation> getRenderedItem(ChargerBlockEntity blockEntity) {
+    @Override
+    public void extractRenderState(ChargerBlockEntity be, ChargerRenderState state, float partialTicks, Vec3 cameraPos,
+            @Nullable ModelFeatureRenderer.CrumblingOverlay crumblingOverlay) {
+        BlockEntityRenderer.super.extractRenderState(be, state, partialTicks, cameraPos, crumblingOverlay);
+        state.blockOrientation = BlockOrientation.get(be);
 
-        double time = System.currentTimeMillis() / 1000.0;
-        float yOffset = (float) Math.sin(time) * 0.02f;
+        var time = System.currentTimeMillis() / 1000.0;
+        var yOffset = (float) Math.sin(time) * 0.02f;
+        state.transform = new Transformation(new Vector3f(0.5f, 0.35f + yOffset, 0.5f), null, null, null);
 
-        Transformation transform = new Transformation(new Vector3f(0.5f, 0.35f + yOffset, 0.5f), null, null, null);
-        return new ImmutablePair<>(blockEntity.getInternalInventory().getStackInSlot(0), transform);
+        // TODO 1.21.9: Charger should implement ItemOwner
+        state.item.clear();
+        var item = be.getInternalInventory().getStackInSlot(0);
+        if (!item.isEmpty()) {
+            this.itemModelResolver.updateForTopItem(
+                    state.item,
+                    item,
+                    ItemDisplayContext.FIXED,
+                    be.getLevel(),
+                    null,
+                    // This is the random seed
+                    (int) be.getBlockPos().asLong());
+        }
+    }
+
+    @Override
+    public void submit(ChargerRenderState state, PoseStack poseStack, SubmitNodeCollector nodes,
+            CameraRenderState cameraRenderState) {
+        if (state.item.isEmpty()) {
+            return;
+        }
+
+        poseStack.pushPose();
+        poseStack.translate(0.5, 0.5, 0.5);
+        poseStack.mulPose(state.blockOrientation.getQuaternion());
+        poseStack.translate(-0.5, -0.5, -0.5);
+
+        poseStack.pushPose();
+        poseStack.mulPose(state.transform.getMatrix());
+
+        state.item.submit(poseStack, nodes, state.lightCoords, OverlayTexture.NO_OVERLAY, 0);
+        poseStack.popPose();
+
+        poseStack.popPose();
     }
 }

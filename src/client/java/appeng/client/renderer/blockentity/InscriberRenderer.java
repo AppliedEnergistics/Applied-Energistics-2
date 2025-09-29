@@ -21,21 +21,22 @@ package appeng.client.renderer.blockentity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
-import net.minecraft.data.AtlasIds;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Quaternionf;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.entity.ItemRenderer;
-import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
+import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.core.Direction;
+import net.minecraft.data.AtlasIds;
 import net.minecraft.util.Mth;
-import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
@@ -43,13 +44,11 @@ import net.minecraft.world.phys.Vec3;
 import appeng.api.orientation.BlockOrientation;
 import appeng.blockentity.misc.InscriberBlockEntity;
 import appeng.core.AppEng;
-import appeng.recipes.handlers.InscriberProcessType;
-import appeng.recipes.handlers.InscriberRecipe;
 
 /**
  * Renders the dynamic parts of an inscriber (the presses, the animation and the item being smashed)
  */
-public final class InscriberRenderer implements BlockEntityRenderer<InscriberBlockEntity> {
+public final class InscriberRenderer implements BlockEntityRenderer<InscriberBlockEntity, InscriberRenderState> {
 
     private static final float ITEM_RENDER_SCALE = 1.0f / 1.2f;
 
@@ -60,28 +59,26 @@ public final class InscriberRenderer implements BlockEntityRenderer<InscriberBlo
     }
 
     @Override
-    public void render(InscriberBlockEntity blockEntity, float partialTicks, PoseStack ms, MultiBufferSource buffers,
-            int combinedLight, int combinedOverlay, Vec3 cameraPosition) {
+    public InscriberRenderState createRenderState() {
+        return new InscriberRenderState();
+    }
 
-        // render inscriber
+    @Override
+    public void extractRenderState(InscriberBlockEntity be, InscriberRenderState state, float partialTicks,
+            Vec3 cameraPos, @Nullable ModelFeatureRenderer.CrumblingOverlay crumblingOverlay) {
+        BlockEntityRenderer.super.extractRenderState(be, state, partialTicks, cameraPos, crumblingOverlay);
 
-        ms.pushPose();
-        ms.translate(0.5F, 0.5F, 0.5F);
-        BlockOrientation orientation = BlockOrientation.get(blockEntity);
-        ms.mulPose(orientation.getQuaternion());
-        ms.translate(-0.5F, -0.5F, -0.5F);
-
-        // render sides of stamps
+        state.orientation = BlockOrientation.get(be);
 
         long absoluteProgress = 0;
 
-        if (blockEntity.isSmash()) {
+        if (be.isSmash()) {
             final long currentTime = System.currentTimeMillis();
-            absoluteProgress = currentTime - blockEntity.getClientStart();
+            absoluteProgress = currentTime - be.getClientStart();
             if (absoluteProgress > 800) {
-                blockEntity.setSmash(false);
-                if (blockEntity.isRepeatSmash()) {
-                    blockEntity.setSmash(true);
+                be.setSmash(false);
+                if (be.isRepeatSmash()) {
+                    be.setSmash(true);
                 }
             }
         }
@@ -90,142 +87,154 @@ public final class InscriberRenderer implements BlockEntityRenderer<InscriberBlo
         float progress = relativeProgress;
 
         if (progress > 1.0f) {
-            progress = 1.0f - easeDecompressMotion(progress - 1.0f);
+            state.progress = 1.0f - easeDecompressMotion(progress - 1.0f);
         } else {
-            progress = easeCompressMotion(progress);
+            state.progress = easeCompressMotion(progress);
         }
+    }
+
+    @Override
+    public void submit(InscriberRenderState state, PoseStack poseStack, SubmitNodeCollector nodes,
+            CameraRenderState cameraRenderState) {
+
+        // render inscriber
+        poseStack.pushPose();
+        poseStack.translate(0.5F, 0.5F, 0.5F);
+        poseStack.mulPose(state.orientation.getQuaternion());
+        poseStack.translate(-0.5F, -0.5F, -0.5F);
+
+        // render sides of stamps
 
         float press = 0.2f;
-        press -= progress / 5.0f;
+        press -= state.progress / 5.0f;
 
         float middle = 0.5f;
         middle += 0.02f;
         final float TwoPx = 2.0f / 16.0f;
         final float base = 0.4f;
-
-        final TextureAtlasSprite tas = TEXTURE_INSIDE.sprite();
-
-        VertexConsumer buffer = buffers.getBuffer(RenderType.solid());
-
-        // Bottom of Top Stamp
-        addVertex(buffer, ms, tas, TwoPx, middle + press, TwoPx, 0.875f, 0.125f, combinedOverlay, combinedLight,
-                Direction.DOWN);
-        addVertex(buffer, ms, tas, 1.0f - TwoPx, middle + press, TwoPx, 0.125f, 0.125f, combinedOverlay, combinedLight,
-                Direction.DOWN);
-        addVertex(buffer, ms, tas, 1.0f - TwoPx, middle + press, 1.0f - TwoPx, 0.125f, 0.875f, combinedOverlay,
-                combinedLight,
-                Direction.DOWN);
-        addVertex(buffer, ms, tas, TwoPx, middle + press, 1.0f - TwoPx, 0.875f, 0.875f, combinedOverlay, combinedLight,
-                Direction.DOWN);
-
-        // Front of Top Stamp
-        addVertex(buffer, ms, tas, TwoPx, middle + base, TwoPx, 0.125f, 0.125f - (press - base), combinedOverlay,
-                combinedLight, Direction.NORTH);
-        addVertex(buffer, ms, tas, 1.0f - TwoPx, middle + base, TwoPx, 0.875f, 0.125f - (press - base),
-                combinedOverlay,
-                combinedLight, Direction.NORTH);
-        addVertex(buffer, ms, tas, 1.0f - TwoPx, middle + press, TwoPx, 0.875f, 0.125f, combinedOverlay, combinedLight,
-                Direction.NORTH);
-        addVertex(buffer, ms, tas, TwoPx, middle + press, TwoPx, 0.125f, 0.125f, combinedOverlay, combinedLight,
-                Direction.NORTH);
-
-        // Rear of Top Stamp
-        addVertex(buffer, ms, tas, TwoPx, middle + base, 1.0f - TwoPx, 0.125f, 0.125f - (press - base),
-                combinedOverlay,
-                combinedLight, Direction.SOUTH);
-        addVertex(buffer, ms, tas, TwoPx, middle + press, 1.0f - TwoPx, 0.125f, 0.125f, combinedOverlay, combinedLight,
-                Direction.SOUTH);
-        addVertex(buffer, ms, tas, 1.0f - TwoPx, middle + press, 1.0f - TwoPx, 0.875f, 0.125f, combinedOverlay,
-                combinedLight,
-                Direction.SOUTH);
-        addVertex(buffer, ms, tas, 1.0f - TwoPx, middle + base, 1.0f - TwoPx, 0.875f, 0.125f - (press - base),
-                combinedOverlay,
-                combinedLight, Direction.SOUTH);
-
-        // Top of Bottom Stamp
-        middle -= 2.0f * 0.02f;
-        addVertex(buffer, ms, tas, 1.0f - TwoPx, middle - press, TwoPx, 0.875f, 0.125f, combinedOverlay, combinedLight,
-                Direction.UP);
-        addVertex(buffer, ms, tas, TwoPx, middle - press, TwoPx, 0.125f, 0.125f, combinedOverlay, combinedLight,
-                Direction.UP);
-        addVertex(buffer, ms, tas, TwoPx, middle - press, 1.0f - TwoPx, 0.125f, 0.875f, combinedOverlay, combinedLight,
-                Direction.UP);
-        addVertex(buffer, ms, tas, 1.0f - TwoPx, middle - press, 1.0f - TwoPx, 0.875f, 0.875f, combinedOverlay,
-                combinedLight,
-                Direction.UP);
-
-        // Front of Bottom Stamp
-        addVertex(buffer, ms, tas, 1.0f - TwoPx, middle - base, TwoPx, 0.125f, 0.125f - (press - base),
-                combinedOverlay,
-                combinedLight, Direction.NORTH);
-        addVertex(buffer, ms, tas, TwoPx, middle - base, TwoPx, 0.875f, 0.125f - (press - base), combinedOverlay,
-                combinedLight, Direction.NORTH);
-        addVertex(buffer, ms, tas, TwoPx, middle - press, TwoPx, 0.875f, 0.125f, combinedOverlay, combinedLight,
-                Direction.NORTH);
-        addVertex(buffer, ms, tas, 1.0f - TwoPx, middle - press, TwoPx, 0.125f, 0.125f, combinedOverlay, combinedLight,
-                Direction.NORTH);
-
-        // Rear of Bottom Stamp
-        addVertex(buffer, ms, tas, TwoPx, middle - press, 1.0f - TwoPx, 0.875f, 0.125f, combinedOverlay, combinedLight,
-                Direction.SOUTH);
-        addVertex(buffer, ms, tas, TwoPx, middle - base, 1.0f - TwoPx, 0.875f, 0.125f - (press - base),
-                combinedOverlay,
-                combinedLight, Direction.SOUTH);
-        addVertex(buffer, ms, tas, 1.0f - TwoPx, middle - base, 1.0f - TwoPx, 0.125f, 0.125f - (press - base),
-                combinedOverlay,
-                combinedLight, Direction.SOUTH);
-        addVertex(buffer, ms, tas, 1.0f - TwoPx, middle - press, 1.0f - TwoPx, 0.125f, 0.125f, combinedOverlay,
-                combinedLight,
-                Direction.SOUTH);
-
-        // render items.
-
-        var inv = blockEntity.getInternalInventory();
-
-        int items = 0;
-        if (!inv.getStackInSlot(0).isEmpty()) {
-            items++;
-        }
-        if (!inv.getStackInSlot(1).isEmpty()) {
-            items++;
-        }
-        if (!inv.getStackInSlot(2).isEmpty()) {
-            items++;
-        }
-
-        boolean renderPresses;
-        if (relativeProgress > 1.0f || items == 0) {
-            // When crafting completes, dont render the presses (they mave have been
-            // consumed, see below)
-            renderPresses = false;
-
-            ItemStack is = inv.getStackInSlot(3);
-
-            if (is.isEmpty()) {
-                final InscriberRecipe ir = blockEntity.getTask();
-                if (ir != null) {
-                    // The "PRESS" type will consume the presses so they should not render after
-                    // completing
-                    // the press animation
-                    renderPresses = ir.getProcessType() == InscriberProcessType.INSCRIBE;
-                    is = ir.getResultItem().copy();
-                }
-            }
-            this.renderItem(ms, is, 0.0f, buffers, combinedLight, combinedOverlay, blockEntity.getLevel());
-        } else {
-            renderPresses = true;
-            this.renderItem(ms, inv.getStackInSlot(2), 0.0f, buffers, combinedLight, combinedOverlay,
-                    blockEntity.getLevel());
-        }
-
-        if (renderPresses) {
-            this.renderItem(ms, inv.getStackInSlot(0), press, buffers, combinedLight, combinedOverlay,
-                    blockEntity.getLevel());
-            this.renderItem(ms, inv.getStackInSlot(1), -press, buffers, combinedLight, combinedOverlay,
-                    blockEntity.getLevel());
-        }
-
-        ms.popPose();
+// TODO 1.21.9
+//        var tas = TEXTURE_INSIDE.sprite();
+//        VertexConsumer buffer = buffers.getBuffer(RenderType.solid());
+//
+//        // Bottom of Top Stamp
+//        addVertex(buffer, poseStack, tas, TwoPx, middle + press, TwoPx, 0.875f, 0.125f, combinedOverlay, combinedLight,
+//                Direction.DOWN);
+//        addVertex(buffer, poseStack, tas, 1.0f - TwoPx, middle + press, TwoPx, 0.125f, 0.125f, combinedOverlay, combinedLight,
+//                Direction.DOWN);
+//        addVertex(buffer, poseStack, tas, 1.0f - TwoPx, middle + press, 1.0f - TwoPx, 0.125f, 0.875f, combinedOverlay,
+//                combinedLight,
+//                Direction.DOWN);
+//        addVertex(buffer, poseStack, tas, TwoPx, middle + press, 1.0f - TwoPx, 0.875f, 0.875f, combinedOverlay, combinedLight,
+//                Direction.DOWN);
+//
+//        // Front of Top Stamp
+//        addVertex(buffer, poseStack, tas, TwoPx, middle + base, TwoPx, 0.125f, 0.125f - (press - base), combinedOverlay,
+//                combinedLight, Direction.NORTH);
+//        addVertex(buffer, poseStack, tas, 1.0f - TwoPx, middle + base, TwoPx, 0.875f, 0.125f - (press - base),
+//                combinedOverlay,
+//                combinedLight, Direction.NORTH);
+//        addVertex(buffer, poseStack, tas, 1.0f - TwoPx, middle + press, TwoPx, 0.875f, 0.125f, combinedOverlay, combinedLight,
+//                Direction.NORTH);
+//        addVertex(buffer, poseStack, tas, TwoPx, middle + press, TwoPx, 0.125f, 0.125f, combinedOverlay, combinedLight,
+//                Direction.NORTH);
+//
+//        // Rear of Top Stamp
+//        addVertex(buffer, poseStack, tas, TwoPx, middle + base, 1.0f - TwoPx, 0.125f, 0.125f - (press - base),
+//                combinedOverlay,
+//                combinedLight, Direction.SOUTH);
+//        addVertex(buffer, poseStack, tas, TwoPx, middle + press, 1.0f - TwoPx, 0.125f, 0.125f, combinedOverlay, combinedLight,
+//                Direction.SOUTH);
+//        addVertex(buffer, poseStack, tas, 1.0f - TwoPx, middle + press, 1.0f - TwoPx, 0.875f, 0.125f, combinedOverlay,
+//                combinedLight,
+//                Direction.SOUTH);
+//        addVertex(buffer, poseStack, tas, 1.0f - TwoPx, middle + base, 1.0f - TwoPx, 0.875f, 0.125f - (press - base),
+//                combinedOverlay,
+//                combinedLight, Direction.SOUTH);
+//
+//        // Top of Bottom Stamp
+//        middle -= 2.0f * 0.02f;
+//        addVertex(buffer, poseStack, tas, 1.0f - TwoPx, middle - press, TwoPx, 0.875f, 0.125f, combinedOverlay, combinedLight,
+//                Direction.UP);
+//        addVertex(buffer, poseStack, tas, TwoPx, middle - press, TwoPx, 0.125f, 0.125f, combinedOverlay, combinedLight,
+//                Direction.UP);
+//        addVertex(buffer, poseStack, tas, TwoPx, middle - press, 1.0f - TwoPx, 0.125f, 0.875f, combinedOverlay, combinedLight,
+//                Direction.UP);
+//        addVertex(buffer, poseStack, tas, 1.0f - TwoPx, middle - press, 1.0f - TwoPx, 0.875f, 0.875f, combinedOverlay,
+//                combinedLight,
+//                Direction.UP);
+//
+//        // Front of Bottom Stamp
+//        addVertex(buffer, poseStack, tas, 1.0f - TwoPx, middle - base, TwoPx, 0.125f, 0.125f - (press - base),
+//                combinedOverlay,
+//                combinedLight, Direction.NORTH);
+//        addVertex(buffer, poseStack, tas, TwoPx, middle - base, TwoPx, 0.875f, 0.125f - (press - base), combinedOverlay,
+//                combinedLight, Direction.NORTH);
+//        addVertex(buffer, poseStack, tas, TwoPx, middle - press, TwoPx, 0.875f, 0.125f, combinedOverlay, combinedLight,
+//                Direction.NORTH);
+//        addVertex(buffer, poseStack, tas, 1.0f - TwoPx, middle - press, TwoPx, 0.125f, 0.125f, combinedOverlay, combinedLight,
+//                Direction.NORTH);
+//
+//        // Rear of Bottom Stamp
+//        addVertex(buffer, poseStack, tas, TwoPx, middle - press, 1.0f - TwoPx, 0.875f, 0.125f, combinedOverlay, combinedLight,
+//                Direction.SOUTH);
+//        addVertex(buffer, poseStack, tas, TwoPx, middle - base, 1.0f - TwoPx, 0.875f, 0.125f - (press - base),
+//                combinedOverlay,
+//                combinedLight, Direction.SOUTH);
+//        addVertex(buffer, poseStack, tas, 1.0f - TwoPx, middle - base, 1.0f - TwoPx, 0.125f, 0.125f - (press - base),
+//                combinedOverlay,
+//                combinedLight, Direction.SOUTH);
+//        addVertex(buffer, poseStack, tas, 1.0f - TwoPx, middle - press, 1.0f - TwoPx, 0.125f, 0.125f, combinedOverlay,
+//                combinedLight,
+//                Direction.SOUTH);
+//
+//        // render items.
+//
+//        var inv = blockEntity.getInternalInventory();
+//
+//        int items = 0;
+//        if (!inv.getStackInSlot(0).isEmpty()) {
+//            items++;
+//        }
+//        if (!inv.getStackInSlot(1).isEmpty()) {
+//            items++;
+//        }
+//        if (!inv.getStackInSlot(2).isEmpty()) {
+//            items++;
+//        }
+//
+//        boolean renderPresses;
+//        if (relativeProgress > 1.0f || items == 0) {
+//            // When crafting completes, dont render the presses (they mave have been
+//            // consumed, see below)
+//            renderPresses = false;
+//
+//            ItemStack is = inv.getStackInSlot(3);
+//
+//            if (is.isEmpty()) {
+//                final InscriberRecipe ir = blockEntity.getTask();
+//                if (ir != null) {
+//                    // The "PRESS" type will consume the presses so they should not render after
+//                    // completing
+//                    // the press animation
+//                    renderPresses = ir.getProcessType() == InscriberProcessType.INSCRIBE;
+//                    is = ir.getResultItem().copy();
+//                }
+//            }
+//            this.renderItem(poseStack, is, 0.0f, buffers, combinedLight, combinedOverlay, blockEntity.getLevel());
+//        } else {
+//            renderPresses = true;
+//            this.renderItem(poseStack, inv.getStackInSlot(2), 0.0f, buffers, combinedLight, combinedOverlay,
+//                    blockEntity.getLevel());
+//        }
+//
+//        if (renderPresses) {
+//            this.renderItem(poseStack, inv.getStackInSlot(0), press, buffers, combinedLight, combinedOverlay,
+//                    blockEntity.getLevel());
+//            this.renderItem(poseStack, inv.getStackInSlot(1), -press, buffers, combinedLight, combinedOverlay,
+//                    blockEntity.getLevel());
+//        }
+//
+//        poseStack.popPose();
     }
 
     private static void addVertex(VertexConsumer vb, PoseStack ms, TextureAtlasSprite sprite, float x, float y,
@@ -255,8 +264,9 @@ public final class InscriberRenderer implements BlockEntityRenderer<InscriberBlo
             // for direction=null, while a block-model will have their faces for
             // cull-faces, but not direction=null
             ms.scale(0.5f, 0.5f, 0.5f);
-            itemRenderer.renderStatic(stack, ItemDisplayContext.FIXED, combinedLight, combinedOverlay, ms,
-                    buffers, level, 0);
+            // TODO 1.21.9 itemRenderer.renderStatic(stack, ItemDisplayContext.FIXED, combinedLight, combinedOverlay,
+            // ms,
+            // TODO 1.21.9 buffers, level, 0);
             ms.popPose();
         }
     }

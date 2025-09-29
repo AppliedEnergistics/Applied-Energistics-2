@@ -23,7 +23,6 @@ import java.util.function.Function;
 
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 
-import net.minecraft.data.AtlasIds;
 import org.joml.Matrix3x2f;
 
 import net.minecraft.Util;
@@ -37,6 +36,7 @@ import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.data.AtlasIds;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;

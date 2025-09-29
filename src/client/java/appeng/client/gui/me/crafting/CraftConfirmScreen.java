@@ -20,11 +20,9 @@ package appeng.client.gui.me.crafting;
 
 import java.text.NumberFormat;
 
-import net.minecraft.client.input.KeyEvent;
-import org.lwjgl.glfw.GLFW;
-
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.input.KeyEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 

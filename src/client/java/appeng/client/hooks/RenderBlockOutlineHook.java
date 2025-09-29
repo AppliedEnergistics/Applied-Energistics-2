@@ -100,27 +100,31 @@ public class RenderBlockOutlineHook {
         }
     }
 
-    record PartPlacementPreviewRenderer(PartPlacement.Placement placement, IPart part) implements CustomBlockOutlineRenderer {
+    record PartPlacementPreviewRenderer(PartPlacement.Placement placement,
+            IPart part) implements CustomBlockOutlineRenderer {
         @Override
         public boolean render(BlockOutlineRenderState blockOutlineRenderState,
-                              MultiBufferSource.BufferSource bufferSource,
-                              PoseStack poseStack,
-                              boolean translucentPass,
-                              LevelRenderState levelRenderState) {
+                MultiBufferSource.BufferSource bufferSource,
+                PoseStack poseStack,
+                boolean translucentPass,
+                LevelRenderState levelRenderState) {
             // Render without depth test to also have a preview for parts inside blocks.
-            // TODO 1.21.5 renderPart(poseStack, bufferSource, camera, placement.pos(), part, placement.side(), true, true);
-            // TODO 1.21.5 renderPart(poseStack, bufferSource, camera, placement.pos(), part, placement.side(), true, false);
+            // TODO 1.21.5 renderPart(poseStack, bufferSource, camera, placement.pos(), part, placement.side(), true,
+            // true);
+            // TODO 1.21.5 renderPart(poseStack, bufferSource, camera, placement.pos(), part, placement.side(), true,
+            // false);
             return false;
         }
     }
 
-    record FacadePlacementPreviewRenderer(Direction side, IFacadePart facade, boolean renderAnchor) implements CustomBlockOutlineRenderer {
+    record FacadePlacementPreviewRenderer(Direction side, IFacadePart facade,
+            boolean renderAnchor) implements CustomBlockOutlineRenderer {
         @Override
         public boolean render(BlockOutlineRenderState blockOutlineRenderState,
-                              MultiBufferSource.BufferSource bufferSource,
-                              PoseStack poseStack,
-                              boolean b,
-                              LevelRenderState levelRenderState) {
+                MultiBufferSource.BufferSource bufferSource,
+                PoseStack poseStack,
+                boolean b,
+                LevelRenderState levelRenderState) {
             var pos = blockOutlineRenderState.pos();
 
             // Use same rendering inside blocks as part preview.
@@ -130,9 +134,9 @@ public class RenderBlockOutlineHook {
         }
 
         private void showFacadePlacementPreview(PoseStack poseStack,
-                                                BlockPos pos,
-                                                MultiBufferSource buffers,
-                                                boolean insideBlock) {
+                BlockPos pos,
+                MultiBufferSource buffers,
+                boolean insideBlock) {
             if (renderAnchor) {
                 var cableAnchor = AEParts.CABLE_ANCHOR.get().createPart();
                 renderPart(poseStack, buffers, null, pos, cableAnchor, side, true, insideBlock);
@@ -144,16 +148,22 @@ public class RenderBlockOutlineHook {
 
     static class FacadeOutlineRenderer implements CustomBlockOutlineRenderer {
         @Override
-        public boolean render(BlockOutlineRenderState blockOutlineRenderState, MultiBufferSource.BufferSource bufferSource, PoseStack poseStack, boolean b, LevelRenderState levelRenderState) {
-            // TODO 1.21.9 renderFacade(poseStack, buffers, camera, pos, selectedPart.facade, selectedPart.side, false, false);
+        public boolean render(BlockOutlineRenderState blockOutlineRenderState,
+                MultiBufferSource.BufferSource bufferSource, PoseStack poseStack, boolean b,
+                LevelRenderState levelRenderState) {
+            // TODO 1.21.9 renderFacade(poseStack, buffers, camera, pos, selectedPart.facade, selectedPart.side, false,
+            // false);
             return false;
         }
     }
 
     static class PartOutlineRenderer implements CustomBlockOutlineRenderer {
         @Override
-        public boolean render(BlockOutlineRenderState blockOutlineRenderState, MultiBufferSource.BufferSource bufferSource, PoseStack poseStack, boolean b, LevelRenderState levelRenderState) {
-            // TODO 1.21.9 renderPart(poseStack, buffers, camera, pos, selectedPart.part, selectedPart.side, false, false);
+        public boolean render(BlockOutlineRenderState blockOutlineRenderState,
+                MultiBufferSource.BufferSource bufferSource, PoseStack poseStack, boolean b,
+                LevelRenderState levelRenderState) {
+            // TODO 1.21.9 renderPart(poseStack, buffers, camera, pos, selectedPart.part, selectedPart.side, false,
+            // false);
             return false;
         }
     }

@@ -12,7 +12,7 @@ import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.resources.model.ResolvableModel;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ARGB;
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ItemOwner;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 
@@ -35,7 +35,7 @@ public class ColorApplicatorItemModel implements ItemModel {
             ItemModelResolver itemModelResolver,
             ItemDisplayContext displayContext,
             @Nullable ClientLevel level,
-            @Nullable LivingEntity entity,
+            @Nullable ItemOwner owner,
             int seed) {
         if (!(stack.getItem() instanceof ColorApplicatorItem colorApplicator)) {
             return;

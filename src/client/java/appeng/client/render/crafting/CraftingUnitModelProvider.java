@@ -5,15 +5,14 @@ import java.util.Collections;
 import java.util.List;
 
 import net.minecraft.client.renderer.block.model.BlockStateModel;
-import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.resources.model.ModelDebugName;
 import net.minecraft.client.resources.model.SpriteGetter;
+import net.minecraft.data.AtlasIds;
 
 import appeng.block.crafting.CraftingUnitType;
 import appeng.core.AppEng;
-import net.minecraft.data.AtlasIds;
 
 public class CraftingUnitModelProvider extends AbstractCraftingUnitModelProvider<CraftingUnitType>
         implements ModelDebugName {

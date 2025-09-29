@@ -98,8 +98,8 @@ public interface IPlayerRegistry {
     }
 
     /**
-     * Queries AE2's internal player ID for the given {@link GameProfile#id() profile UUID}. If AE2 has not assigned
-     * an ID to that player yet, it will be automatically assigned.
+     * Queries AE2's internal player ID for the given {@link GameProfile#id() profile UUID}. If AE2 has not assigned an
+     * ID to that player yet, it will be automatically assigned.
      */
     int getPlayerId(UUID profileId);
 

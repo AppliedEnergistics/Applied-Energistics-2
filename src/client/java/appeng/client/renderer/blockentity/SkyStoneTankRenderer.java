@@ -21,13 +21,17 @@ package appeng.client.renderer.blockentity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
+import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.data.AtlasIds;
@@ -41,27 +45,40 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import appeng.blockentity.storage.SkyStoneTankBlockEntity;
 import appeng.client.render.CubeBuilder;
 
-public final class SkyStoneTankRenderer implements BlockEntityRenderer<SkyStoneTankBlockEntity> {
+public final class SkyStoneTankRenderer
+        implements BlockEntityRenderer<SkyStoneTankBlockEntity, SkyStoneTankRenderState> {
 
     public SkyStoneTankRenderer(BlockEntityRendererProvider.Context context) {
     }
 
     @Override
-    public void render(SkyStoneTankBlockEntity tank, float tickDelta, PoseStack ms, MultiBufferSource vertexConsumers,
-            int light, int overlay, Vec3 cameraPosition) {
-        if (!tank.getTank().getFluid().isEmpty()) {
+    public SkyStoneTankRenderState createRenderState() {
+        return new SkyStoneTankRenderState();
+    }
 
-            /*
-             * 
-             * // Uncomment to allow the liquid to rotate with the tank ms.pushPose(); ms.translate(0.5, 0.5, 0.5);
-             * FacingToRotation.get(tank.getForward(), tank.getUp()).push(ms); ms.translate(-0.5, -0.5, -0.5);
-             */
+    @Override
+    public void extractRenderState(SkyStoneTankBlockEntity be, SkyStoneTankRenderState state, float partialTicks,
+            Vec3 cameraPos, @Nullable ModelFeatureRenderer.CrumblingOverlay crumblingOverlay) {
+        BlockEntityRenderer.super.extractRenderState(be, state, partialTicks, cameraPos, crumblingOverlay);
+    }
 
-            drawFluidInTank(tank, ms, vertexConsumers, tank.getTank().getFluid(),
-                    (float) tank.getTank().getFluid().getAmount() / tank.getTank().getCapacity());
+    @Override
+    public void submit(SkyStoneTankRenderState state, PoseStack poseStack, SubmitNodeCollector nodes,
+            CameraRenderState cameraRenderState) {
+        // TODO 1.21.9 if (!tank.getTank().getFluid().isEmpty()) {
 
-            // ms.popPose();
-        }
+        // TODO 1.21.9 /*
+        // TODO 1.21.9 *
+        // TODO 1.21.9 * // Uncomment to allow the liquid to rotate with the tank ms.pushPose(); ms.translate(0.5, 0.5,
+        // 0.5);
+        // TODO 1.21.9 * FacingToRotation.get(tank.getForward(), tank.getUp()).push(ms); ms.translate(-0.5, -0.5, -0.5);
+        // TODO 1.21.9 */
+
+        // TODO 1.21.9 drawFluidInTank(tank, ms, vertexConsumers, tank.getTank().getFluid(),
+        // TODO 1.21.9 (float) tank.getTank().getFluid().getAmount() / tank.getTank().getCapacity());
+
+        // TODO 1.21.9 // ms.popPose();
+        // TODO 1.21.9 }
     }
 
     private static final float TANK_W = 1 / 16f + 0.001f; // avoiding Z-fighting
@@ -77,8 +94,8 @@ public final class SkyStoneTankRenderer implements BlockEntityRenderer<SkyStoneT
         // From Modern Industrialization
         VertexConsumer vc = mbs.getBuffer(RenderType.translucentMovingBlock());
         var renderProps = IClientFluidTypeExtensions.of(fluid.getFluid());
-        TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(AtlasIds.BLOCKS)
-                .apply(renderProps.getStillTexture(fluid));
+        TextureAtlasSprite sprite = Minecraft.getInstance().getAtlasManager().getAtlasOrThrow(AtlasIds.BLOCKS)
+                .getSprite(renderProps.getStillTexture(fluid));
 
         int color = renderProps.getTintColor(fluid);
 

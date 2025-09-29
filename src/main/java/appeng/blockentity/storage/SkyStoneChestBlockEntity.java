@@ -88,7 +88,8 @@ public class SkyStoneChestBlockEntity extends AEBaseInvBlockEntity implements Cl
 
     public void startOpen(Player player) {
         if (!this.remove && !player.isSpectator()) {
-            this.openersCounter.incrementOpeners(player, this.getLevel(), this.getBlockPos(), this.getBlockState(), player.getContainerInteractionRange());
+            this.openersCounter.incrementOpeners(player, this.getLevel(), this.getBlockPos(), this.getBlockState(),
+                    player.getContainerInteractionRange());
         }
     }
 

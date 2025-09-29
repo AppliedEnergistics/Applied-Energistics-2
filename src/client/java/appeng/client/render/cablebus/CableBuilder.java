@@ -24,19 +24,18 @@ import java.util.Locale;
 import java.util.function.Consumer;
 
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.resources.model.ModelDebugName;
 import net.minecraft.client.resources.model.SpriteGetter;
 import net.minecraft.core.Direction;
+import net.minecraft.data.AtlasIds;
 
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
 import appeng.block.networking.CableCoreType;
 import appeng.client.render.CubeBuilder;
 import appeng.core.AppEng;
-import net.minecraft.data.AtlasIds;
 
 /**
  * A helper class that builds quads for cable connections.

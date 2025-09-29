@@ -19,7 +19,6 @@
 package appeng.client.render.cablebus;
 
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.client.particle.SingleQuadParticle;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 

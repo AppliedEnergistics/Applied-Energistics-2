@@ -30,10 +30,6 @@ import java.util.concurrent.TimeUnit;
 import com.google.common.base.Stopwatch;
 import com.mojang.blaze3d.platform.InputConstants;
 
-import net.minecraft.client.input.KeyEvent;
-import net.minecraft.client.input.MouseButtonEvent;
-import net.minecraft.client.input.MouseButtonInfo;
-import net.minecraft.network.chat.FontDescription;
 import org.jetbrains.annotations.MustBeInvokedByOverriders;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
@@ -47,10 +43,14 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.ComponentRenderUtils;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.input.MouseButtonInfo;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.FontDescription;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -570,8 +570,8 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
                 for (var widget : this.children()) {
                     if (widget.isMouseOver(event.x(), event.y())) {
                         return super.mouseClicked(new MouseButtonEvent(
-                                event.x(), event.y(), new MouseButtonInfo(0, event.buttonInfo().modifiers())
-                        ), doubleClick);
+                                event.x(), event.y(), new MouseButtonInfo(0, event.buttonInfo().modifiers())),
+                                doubleClick);
                     }
                 }
             } finally {

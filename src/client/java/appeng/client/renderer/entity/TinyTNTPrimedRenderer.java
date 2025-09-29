@@ -22,24 +22,21 @@ import com.mojang.blaze3d.vertex.PoseStack;
 
 import org.joml.Quaternionf;
 
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.block.BlockRenderDispatcher;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.TntMinecartRenderer;
 import net.minecraft.client.renderer.entity.state.TntRenderState;
+import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.util.Mth;
 
 import appeng.core.definitions.AEBlocks;
 import appeng.entity.TinyTNTPrimedEntity;
 
 public class TinyTNTPrimedRenderer extends EntityRenderer<TinyTNTPrimedEntity, TntRenderState> {
-    private final BlockRenderDispatcher blockRenderer;
-
     public TinyTNTPrimedRenderer(EntityRendererProvider.Context context) {
         super(context);
         this.shadowRadius = 0.25F;
-        this.blockRenderer = context.getBlockRenderDispatcher();
     }
 
     @Override
@@ -54,8 +51,8 @@ public class TinyTNTPrimedRenderer extends EntityRenderer<TinyTNTPrimedEntity, T
     }
 
     @Override
-    public void render(TntRenderState renderState, PoseStack poseStack, MultiBufferSource bufferSource,
-            int packedLight) {
+    public void submit(TntRenderState renderState, PoseStack poseStack, SubmitNodeCollector nodes,
+            CameraRenderState cameraRenderState) {
         poseStack.pushPose();
         poseStack.translate(0, 0.5F, 0);
         float f2;
@@ -80,13 +77,16 @@ public class TinyTNTPrimedRenderer extends EntityRenderer<TinyTNTPrimedEntity, T
         poseStack.mulPose(new Quaternionf().rotationY(Mth.DEG_TO_RAD * -90.0F));
         poseStack.translate(-0.5D, -0.5D, 0.5D);
         poseStack.mulPose(new Quaternionf().rotationY(Mth.DEG_TO_RAD * 90.0F));
-        TntMinecartRenderer.renderWhiteSolidBlock(this.blockRenderer, AEBlocks.TINY_TNT.block().defaultBlockState(),
-                poseStack, bufferSource,
-                packedLight,
-                renderState.fuseRemainingInTicks / 5 % 2 == 0);
+        TntMinecartRenderer.submitWhiteSolidBlock(
+                AEBlocks.TINY_TNT.block().defaultBlockState(),
+                poseStack,
+                nodes,
+                renderState.lightCoords,
+                renderState.fuseRemainingInTicks / 5 % 2 == 0,
+                renderState.outlineColor);
         poseStack.popPose();
 
-        super.render(renderState, poseStack, bufferSource, packedLight);
+        super.submit(renderState, poseStack, nodes, cameraRenderState);
     }
 
 }

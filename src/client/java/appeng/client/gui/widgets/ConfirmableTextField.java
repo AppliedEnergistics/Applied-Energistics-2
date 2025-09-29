@@ -18,10 +18,8 @@
 
 package appeng.client.gui.widgets;
 
-import net.minecraft.client.input.KeyEvent;
-import org.lwjgl.glfw.GLFW;
-
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.input.KeyEvent;
 
 import appeng.client.gui.style.ScreenStyle;
 

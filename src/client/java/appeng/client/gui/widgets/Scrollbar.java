@@ -319,12 +319,14 @@ public class Scrollbar implements IScrollSource, ICompositeWidget {
 
         public int handleWidth() {
             var minecraft = Minecraft.getInstance();
-            return minecraft.getAtlasManager().getAtlasOrThrow(AtlasIds.GUI).getSprite(enabledSprite).contents().width();
+            return minecraft.getAtlasManager().getAtlasOrThrow(AtlasIds.GUI).getSprite(enabledSprite).contents()
+                    .width();
         }
 
         public int handleHeight() {
             var minecraft = Minecraft.getInstance();
-            return minecraft.getAtlasManager().getAtlasOrThrow(AtlasIds.GUI).getSprite(enabledSprite).contents().height();
+            return minecraft.getAtlasManager().getAtlasOrThrow(AtlasIds.GUI).getSprite(enabledSprite).contents()
+                    .height();
         }
     }
 

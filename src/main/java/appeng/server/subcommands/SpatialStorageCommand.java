@@ -47,6 +47,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.ResolvableProfile;
 
 import appeng.api.features.IPlayerRegistry;
 import appeng.core.definitions.AEItems;
@@ -57,7 +58,6 @@ import appeng.spatial.SpatialStorageDimensionIds;
 import appeng.spatial.SpatialStoragePlot;
 import appeng.spatial.SpatialStoragePlotManager;
 import appeng.spatial.TransitionInfo;
-import net.minecraft.world.item.component.ResolvableProfile;
 
 /**
  * This admin command allows management of spatial storage plots.
@@ -177,7 +177,8 @@ public class SpatialStorageCommand implements ISubCommand {
                             PlayerMessages.PlayerConnected.text(player.getGameProfile().name()));
                 } else {
                     sendKeyValuePair(source, PlayerMessages.Owner.text(),
-                            PlayerMessages.PlayerDisconnected.text(Component.object(new PlayerSprite(ResolvableProfile.createUnresolved(profileId), true))));
+                            PlayerMessages.PlayerDisconnected.text(Component
+                                    .object(new PlayerSprite(ResolvableProfile.createUnresolved(profileId), true))));
                 }
             }
         } else {

@@ -21,36 +21,36 @@ package appeng.client.renderer.blockentity;
 import java.util.List;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
+
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.block.ModelBlockRenderer;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.BlockModelPart;
-import net.minecraft.client.renderer.block.model.BlockStateModel;
 import net.minecraft.client.renderer.block.model.SimpleModelWrapper;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
+import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.client.resources.model.ModelManager;
 import net.minecraft.client.resources.model.QuadCollection;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.client.RenderTypeHelper;
 
 import appeng.api.client.StorageCellModels;
 import appeng.api.orientation.BlockOrientation;
 import appeng.blockentity.storage.MEChestBlockEntity;
 import appeng.client.render.AERenderTypes;
-import appeng.core.definitions.AEBlocks;
 import appeng.thirdparty.fabric.ModelHelper;
 
 /**
  * The block entity renderer for ME chests takes care of rendering the right model for the inserted cell, as well as the
  * LED.
  */
-public class MEChestRenderer implements BlockEntityRenderer<MEChestBlockEntity> {
+public class MEChestRenderer implements BlockEntityRenderer<MEChestBlockEntity, MEChestRenderState> {
 
     private final ModelManager modelManager;
 
@@ -63,15 +63,24 @@ public class MEChestRenderer implements BlockEntityRenderer<MEChestBlockEntity> 
     }
 
     @Override
-    public void render(MEChestBlockEntity chest, float partialTicks, PoseStack poseStack, MultiBufferSource buffers,
-            int combinedLight, int packedOverlay, Vec3 cameraPosition) {
+    public MEChestRenderState createRenderState() {
+        return new MEChestRenderState();
+    }
 
-        Level level = chest.getLevel();
+    @Override
+    public void extractRenderState(MEChestBlockEntity be, MEChestRenderState state, float partialTicks, Vec3 cameraPos,
+            @Nullable ModelFeatureRenderer.CrumblingOverlay crumblingOverlay) {
+        BlockEntityRenderer.super.extractRenderState(be, state, partialTicks, cameraPos, crumblingOverlay);
+
+        var blockOrientation = BlockOrientation.get(be);
+        state.extract(blockOrientation, be, partialTicks);
+
+        Level level = be.getLevel();
         if (level == null) {
             return;
         }
 
-        var cellItem = chest.getCellItem(0);
+        var cellItem = be.getCellItem(0);
         if (cellItem == null) {
             return; // No cell inserted into chest
         }
@@ -82,36 +91,40 @@ public class MEChestRenderer implements BlockEntityRenderer<MEChestBlockEntity> 
         if (cellModelKey == null) {
             cellModelKey = StorageCellModels.getDefaultStandaloneModel();
         }
-        var cellModel = modelManager.getStandaloneModel(cellModelKey);
+        state.cellModel = modelManager.getStandaloneModel(cellModelKey);
+    }
+
+    @Override
+    public void submit(MEChestRenderState state, PoseStack poseStack, SubmitNodeCollector nodes,
+            CameraRenderState cameraRenderState) {
 
         poseStack.pushPose();
         poseStack.translate(0.5, 0.5, 0.5);
-        var rotation = BlockOrientation.get(chest);
-        poseStack.mulPose(rotation.getQuaternion());
+        poseStack.mulPose(state.blockOrientation.getQuaternion());
         poseStack.translate(-0.5, -0.5, -0.5);
 
         // The models are created for the top-left slot of the drive model,
         // we need to move them into place for the slot on the ME chest
         poseStack.translate(5 / 16.0, 4 / 16.0, 0);
 
-        var rotatedModelQuads = rotateQuadCullFaces(cellModel.quads(), rotation);
+        var cellModel = state.cellModel;
+        var rotatedModelQuads = rotateQuadCullFaces(cellModel.quads(), state.blockOrientation);
         List<BlockModelPart> parts = List.of(new SimpleModelWrapper(rotatedModelQuads, cellModel.useAmbientOcclusion(),
                 cellModel.particleIcon(), cellModel.renderType()));
 
         // We "fake" the position here to make it use the light-value in front of the drive
-        blockRenderer.tesselateBlock(level, parts, chest.getBlockState(), chest.getBlockPos(), poseStack,
-                layer -> buffers.getBuffer(RenderTypeHelper.getEntityRenderType(layer)),
-                false, packedOverlay);
+        // TODO: 1.21.9 blockRenderer.tesselateBlock(level, parts, chest.getBlockState(), chest.getBlockPos(),
+        // poseStack,
+        // TODO: 1.21.9 layer -> buffers.getBuffer(RenderTypeHelper.getEntityRenderType(layer)),
+        // TODO: 1.21.9 false, packedOverlay);
 
-        VertexConsumer ledBuffer = buffers.getBuffer(AERenderTypes.STORAGE_CELL_LEDS);
-        CellLedRenderer.renderLed(chest, 0, ledBuffer, poseStack, partialTicks);
+        nodes.submitCustomGeometry(
+                poseStack,
+                AERenderTypes.STORAGE_CELL_LEDS,
+                (pose, consumer) -> CellLedRenderer.renderLed(
+                        state.cellColors[0], consumer, poseStack));
 
         poseStack.popPose();
-    }
-
-    private BlockStateModel getDriveModel() {
-        return modelManager.getBlockModelShaper()
-                .getBlockModel(AEBlocks.DRIVE.block().defaultBlockState());
     }
 
     /**

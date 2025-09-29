@@ -28,7 +28,6 @@ import net.minecraft.client.renderer.block.model.BlockModelPart;
 import net.minecraft.client.renderer.block.model.BlockStateModel;
 import net.minecraft.client.renderer.block.model.SimpleModelWrapper;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
-import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BlockModelRotation;
 import net.minecraft.client.resources.model.Material;
