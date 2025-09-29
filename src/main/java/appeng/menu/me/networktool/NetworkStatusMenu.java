@@ -109,7 +109,7 @@ public class NetworkStatusMenu extends AEBaseMenu {
         }
 
         var serverPlayer = (ServerPlayer) getPlayer();
-        var server = serverPlayer.getServer();
+        var server = serverPlayer.level().getServer();
 
         var grid = (Grid) this.grid;
 

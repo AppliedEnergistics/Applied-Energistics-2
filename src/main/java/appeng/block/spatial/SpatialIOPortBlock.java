@@ -77,7 +77,7 @@ public class SpatialIOPortBlock extends AEBaseEntityBlock<SpatialIOPortBlockEnti
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player,
             BlockHitResult hitResult) {
         if (level.getBlockEntity(pos) instanceof SpatialIOPortBlockEntity be) {
-            if (!level.isClientSide) {
+            if (!level.isClientSide()) {
                 MenuOpener.open(SpatialIOPortMenu.TYPE, player, MenuLocators.forBlockEntity(be));
             }
             return InteractionResult.SUCCESS;

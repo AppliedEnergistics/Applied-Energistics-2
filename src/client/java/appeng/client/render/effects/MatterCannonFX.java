@@ -22,16 +22,18 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.ParticleRenderType;
+import net.minecraft.client.particle.SingleQuadParticle;
 import net.minecraft.client.particle.SpriteSet;
-import net.minecraft.client.particle.TextureSheetParticle;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.SimpleParticleType;
+import net.minecraft.util.RandomSource;
 
-public class MatterCannonFX extends TextureSheetParticle {
+public class MatterCannonFX extends SingleQuadParticle {
 
     public MatterCannonFX(ClientLevel level, double x, double y, double z,
-            SpriteSet sprite) {
-        super(level, x, y, z);
+            TextureAtlasSprite sprite) {
+        super(level, x, y, z, sprite);
         this.gravity = 0;
         this.bCol = 1;
         this.gCol = 1;
@@ -41,16 +43,11 @@ public class MatterCannonFX extends TextureSheetParticle {
         this.xd = 0.0f;
         this.yd = 0.0f;
         this.zd = 0.0f;
-        this.pickSprite(sprite);
-    }
-
-    public void fromItem(Direction d) {
-        this.quadSize *= 1.2f;
     }
 
     @Override
-    public ParticleRenderType getRenderType() {
-        return ParticleRenderType.PARTICLE_SHEET_OPAQUE;
+    protected Layer getLayer() {
+        return Layer.OPAQUE;
     }
 
     @Override
@@ -82,8 +79,8 @@ public class MatterCannonFX extends TextureSheetParticle {
 
         @Override
         public Particle createParticle(SimpleParticleType data, ClientLevel level, double x, double y, double z,
-                double xSpeed, double ySpeed, double zSpeed) {
-            return new MatterCannonFX(level, x, y, z, spriteSet);
+                                       double xSpeed, double ySpeed, double zSpeed, RandomSource random) {
+            return new MatterCannonFX(level, x, y, z, spriteSet.get(random));
         }
     }
 

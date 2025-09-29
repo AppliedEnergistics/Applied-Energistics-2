@@ -26,31 +26,33 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.ParticleRenderType;
+import net.minecraft.client.particle.SingleQuadParticle;
 import net.minecraft.client.particle.SpriteSet;
-import net.minecraft.client.particle.TextureSheetParticle;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
+import net.minecraft.client.renderer.state.QuadParticleRenderState;
 import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
-import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 
 import appeng.api.util.AEColor;
+import org.jetbrains.annotations.Nullable;
 
-public class CraftingParticle extends TextureSheetParticle {
+public class CraftingParticle extends SingleQuadParticle {
 
     // Offset relative to center of block, is the starting point of the particle movement
     private final float offsetX;
     private final float offsetY;
     private final float offsetZ;
 
-    public CraftingParticle(ClientLevel level, double x, double y, double z, SpriteSet sprite, ItemStack item) {
-        super(level, x, y, z);
+    public CraftingParticle(ClientLevel level, double x, double y, double z, TextureAtlasSprite sprite, ItemStack item) {
+        super(level, x, y, z, sprite);
 
         // Use spherical coordinates to pick a point around the center
         double theta = 2 * Math.PI * random.nextFloat();
@@ -67,12 +69,11 @@ public class CraftingParticle extends TextureSheetParticle {
         this.rCol = ARGB.redFloat(color);
         this.gCol = ARGB.greenFloat(color);
         this.bCol = ARGB.blueFloat(color);
-        this.pickSprite(sprite);
         this.lifetime = 8; // MA spawns particles every 4 ticks
         this.hasPhysics = false; // we're INSIDE the block anyway
 
         // Add the item break particle that we'll cross-fade with
-        var itemParticle = new ItemParticle(level, x, y, z, item);
+        var itemParticle = new ItemParticle(level, x, y, z, item, random);
         Minecraft.getInstance().particleEngine.add(itemParticle);
     }
 
@@ -92,7 +93,7 @@ public class CraftingParticle extends TextureSheetParticle {
     }
 
     @Override
-    public void render(VertexConsumer buffer, Camera renderInfo, float partialTicks) {
+    public void extract(QuadParticleRenderState state, Camera camera, float partialTicks) {
         var f = getLife(partialTicks);
         float offX = (float) x + Mth.lerp(f, offsetX, 0);
         float offY = (float) y + Mth.lerp(f, offsetY, 0);
@@ -102,12 +103,12 @@ public class CraftingParticle extends TextureSheetParticle {
         // I believe this particle is same as breaking particle, but should not exit the
         // original block it was
         // spawned in (which is encased in glass)
-        Vec3 camPos = renderInfo.getPosition();
+        Vec3 camPos = camera.getPosition();
         offX -= camPos.x;
         offY -= camPos.y;
         offZ -= camPos.z;
 
-        renderRotatedQuad(buffer, renderInfo.rotation(), offX, offY, offZ, partialTicks);
+        extractRotatedQuad(state, camera.rotation(), offX, offY, offZ, partialTicks);
     }
 
     // https://easings.net/#easeOutCirc
@@ -116,8 +117,8 @@ public class CraftingParticle extends TextureSheetParticle {
     }
 
     @Override
-    public ParticleRenderType getRenderType() {
-        return ParticleRenderType.PARTICLE_SHEET_TRANSLUCENT;
+    protected Layer getLayer() {
+        return SingleQuadParticle.Layer.TRANSLUCENT;
     }
 
     @Override
@@ -135,29 +136,18 @@ public class CraftingParticle extends TextureSheetParticle {
         }
 
         @Override
-        public Particle createParticle(ItemParticleOption data, ClientLevel level, double x, double y, double z,
-                double xSpeed, double ySpeed, double zSpeed) {
-            return new CraftingParticle(level, x, y, z, spriteSet, data.getItem());
+        public @Nullable Particle createParticle(ItemParticleOption data, ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed, RandomSource random) {
+            return new CraftingParticle(level, x, y, z, spriteSet.get(random), data.getItem());
         }
     }
 
-    private class ItemParticle extends TextureSheetParticle {
+    private class ItemParticle extends SingleQuadParticle {
         private final float uo;
         private final float vo;
 
-        public ItemParticle(ClientLevel level, double x, double y, double z, ItemStack stack) {
-            super(level, x, y, z);
+        public ItemParticle(ClientLevel level, double x, double y, double z, ItemStack stack, RandomSource random) {
+            super(level, x, y, z, getSprite(level, stack, random));
 
-            var renderState = new ItemStackRenderState();
-            Minecraft.getInstance().getItemModelResolver().updateForTopItem(renderState, stack,
-                    ItemDisplayContext.GROUND, level, null, 0);
-            TextureAtlasSprite breakingParticle = renderState.pickParticleIcon(this.random);
-            if (breakingParticle != null) {
-                setSprite(breakingParticle);
-            } else {
-                setSprite(Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS)
-                        .apply(MissingTextureAtlasSprite.getLocation()));
-            }
             this.uo = this.random.nextFloat() * 3.0F;
             this.vo = this.random.nextFloat() * 3.0F;
 
@@ -167,6 +157,19 @@ public class CraftingParticle extends TextureSheetParticle {
             this.rCol = 1;
             this.lifetime = CraftingParticle.this.lifetime;
             this.hasPhysics = false; // we're INSIDE the block anyway
+        }
+
+        private static TextureAtlasSprite getSprite(ClientLevel level, ItemStack stack, RandomSource random) {
+            var renderState = new ItemStackRenderState();
+            Minecraft.getInstance().getItemModelResolver().updateForTopItem(renderState, stack,
+                    ItemDisplayContext.GROUND, level, null, 0);
+            var breakingParticle = renderState.pickParticleIcon(random);
+            if (breakingParticle != null) {
+                return breakingParticle;
+            } else {
+                return Minecraft.getInstance().getAtlasManager().getAtlasOrThrow(Layer.TERRAIN.textureAtlasLocation())
+                        .getSprite(MissingTextureAtlasSprite.getLocation());
+            }
         }
 
         @Override
@@ -200,7 +203,7 @@ public class CraftingParticle extends TextureSheetParticle {
         }
 
         @Override
-        public void render(VertexConsumer buffer, Camera renderInfo, float partialTicks) {
+        public void extract(QuadParticleRenderState state, Camera camera, float partialTicks) {
             var f = getLife(partialTicks);
             float offX = (float) x + Mth.lerp(easeOutCirc(f), offsetX, 0);
             float offY = (float) y + Mth.lerp(easeOutCirc(f), offsetY, 0);
@@ -209,7 +212,7 @@ public class CraftingParticle extends TextureSheetParticle {
             // I believe this particle is same as breaking particle, but should not exit the
             // original block it was
             // spawned in (which is encased in glass)
-            Vec3 camPos = renderInfo.getPosition();
+            Vec3 camPos = camera.getPosition();
             offX -= camPos.x;
             offY -= camPos.y;
             offZ -= camPos.z;
@@ -217,12 +220,12 @@ public class CraftingParticle extends TextureSheetParticle {
             /// this.alpha = 0.1f + (1.2f - Mth.lerp(easeOutCirc(f), 1.2f, 0f));
             this.alpha = 0.1f + (1.2f - Mth.lerp(easeOutCirc(f), 1.2f, 0f));
 
-            renderRotatedQuad(buffer, renderInfo.rotation(), offX, offY, offZ, partialTicks);
+            extractRotatedQuad(state, camera.rotation(), offX, offY, offZ, partialTicks);
         }
 
         @Override
-        public ParticleRenderType getRenderType() {
-            return ParticleRenderType.TERRAIN_SHEET;
+        protected Layer getLayer() {
+            return Layer.TERRAIN;
         }
 
         @Override

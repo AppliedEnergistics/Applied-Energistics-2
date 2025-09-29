@@ -204,7 +204,7 @@ public class DriveBlockEntity extends AENetworkedInvBlockEntity
     @Override
     public Item getCellItem(int slot) {
         // Client-side we'll need to actually use the synced state
-        if (level == null || level.isClientSide) {
+        if (level == null || level.isClientSide()) {
             return clientSideCellItems[slot];
         }
 

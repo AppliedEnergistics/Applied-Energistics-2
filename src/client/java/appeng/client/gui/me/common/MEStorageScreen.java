@@ -28,6 +28,7 @@ import java.util.Set;
 import com.google.common.collect.Sets;
 import com.mojang.blaze3d.platform.InputConstants;
 
+import net.minecraft.data.AtlasIds;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
@@ -491,7 +492,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
             if (slot instanceof RepoSlot repoSlot) {
                 var entry = repoSlot.getEntry();
                 if (entry != null && PendingCraftingJobs.hasPendingJob(entry.getWhat())) {
-                    var sprite = minecraft.getTextureAtlas(TextureAtlas.LOCATION_BLOCKS)
+                    var sprite = minecraft.getTextureAtlas(AtlasIds.BLOCKS)
                             .apply(AppEng.makeId("block/molecular_assembler_lights"));
                     Blitter.sprite(sprite)
                             .src(sprite.getX() + 2, sprite.getY() + 2, sprite.contents().width() - 4,

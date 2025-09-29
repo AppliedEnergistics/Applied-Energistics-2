@@ -132,7 +132,7 @@ public abstract class AbstractTerminalPart extends AbstractDisplayPart
 
     @Override
     public boolean onUseWithoutItem(Player player, Vec3 pos) {
-        if (!super.onUseWithoutItem(player, pos) && !player.level().isClientSide) {
+        if (!super.onUseWithoutItem(player, pos) && !player.level().isClientSide()) {
             MenuOpener.open(getMenuType(player), player, MenuLocators.forPart(this));
         }
         return true;

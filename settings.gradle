@@ -87,14 +87,18 @@ dependencyResolutionManagement {
             }
         }
         maven {
-            name = "Maven for PR #357" // https://github.com/neoforged/FancyModLoader/pull/357
-            url = uri("https://prmaven.neoforged.net/FancyModLoader/pr357")
+            name = "Maven for PR #2639" // https://github.com/neoforged/NeoForge/pull/2639
+            url = uri("https://prmaven.neoforged.net/NeoForge/pr2639")
             content {
-                includeModule("net.neoforged.fancymodloader", "bootstraplauncher")
-                includeModule("net.neoforged.fancymodloader", "earlydisplay")
-                includeModule("net.neoforged.fancymodloader", "junit-fml")
-                includeModule("net.neoforged.fancymodloader", "loader")
-                includeModule("net.neoforged.fancymodloader", "securejarhandler")
+                includeModule("net.neoforged", "neoforge")
+                includeModule("net.neoforged", "testframework")
+            }
+        }
+        maven {
+            name = 'GuideME Snapshots'
+            url = 'https://central.sonatype.com/repository/maven-snapshots/'
+            content {
+                includeModule('org.appliedenergistics', 'guideme')
             }
         }
         mavenCentral()

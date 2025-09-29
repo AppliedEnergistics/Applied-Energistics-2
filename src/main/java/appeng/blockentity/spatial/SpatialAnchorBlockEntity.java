@@ -270,7 +270,7 @@ public class SpatialAnchorBlockEntity extends AENetworkedBlockEntity
     }
 
     public boolean isActive() {
-        if (level != null && !level.isClientSide) {
+        if (level != null && !level.isClientSide()) {
             return this.getMainNode().isOnline();
         } else {
             return this.isActive;

@@ -18,23 +18,22 @@
 
 package appeng.client.render.effects;
 
-import com.mojang.blaze3d.vertex.VertexConsumer;
-
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
-import net.minecraft.client.particle.ParticleRenderType;
+import net.minecraft.client.particle.SingleQuadParticle;
 import net.minecraft.client.particle.SpriteSet;
-import net.minecraft.client.particle.TextureSheetParticle;
+import net.minecraft.client.renderer.state.QuadParticleRenderState;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 
-public class LightningFX extends TextureSheetParticle {
+public class LightningFX extends SingleQuadParticle {
 
     private static final RandomSource RANDOM_GENERATOR = RandomSource.create();
     private static final int STEPS = 5;
@@ -46,14 +45,14 @@ public class LightningFX extends TextureSheetParticle {
     private boolean hasData = false;
 
     private LightningFX(ClientLevel level, double x, double y, double z, double r,
-            double g, double b) {
-        this(level, x, y, z, r, g, b, 6);
+                        double g, double b, TextureAtlasSprite sprite) {
+        this(level, x, y, z, r, g, b, 6, sprite);
         this.regen();
     }
 
     protected LightningFX(ClientLevel level, double x, double y, double z, double r,
-            double g, double b, int maxAge) {
-        super(level, x, y, z, r, g, b);
+            double g, double b, int maxAge, TextureAtlasSprite sprite) {
+        super(level, x, y, z, r, g, b, sprite);
         this.precomputedSteps = new float[LightningFX.STEPS][3];
         this.xd = 0;
         this.yd = 0;
@@ -80,9 +79,8 @@ public class LightningFX extends TextureSheetParticle {
     }
 
     @Override
-    public ParticleRenderType getRenderType() {
-        // TODO: FIXME
-        return ParticleRenderType.PARTICLE_SHEET_OPAQUE;
+    protected Layer getLayer() {
+        return Layer.OPAQUE;
     }
 
     @Override
@@ -103,8 +101,8 @@ public class LightningFX extends TextureSheetParticle {
     }
 
     @Override
-    public void render(VertexConsumer buffer, Camera renderInfo, float partialTicks) {
-        Vec3 Vector3d = renderInfo.getPosition();
+    public void extract(QuadParticleRenderState state, Camera camera, float partialTicks) {
+        Vec3 Vector3d = camera.getPosition();
         float centerX = (float) (Mth.lerp(partialTicks, this.xo, this.x) - Vector3d.x());
         float centerY = (float) (Mth.lerp(partialTicks, this.yo, this.y) - Vector3d.y());
         float centerZ = (float) (Mth.lerp(partialTicks, this.zo, this.z) - Vector3d.z());
@@ -203,7 +201,7 @@ public class LightningFX extends TextureSheetParticle {
                     b[1] = y;
                     b[2] = z;
 
-                    this.draw(red, green, blue, buffer, a, b, u, v);
+                    this.draw(red, green, blue, state, a, b, u, v);
 
                     x = xN;
                     y = yN;
@@ -217,17 +215,17 @@ public class LightningFX extends TextureSheetParticle {
         this.hasData = false;
     }
 
-    private void draw(float red, float green, float blue, VertexConsumer tess, float[] a, float[] b,
-            float u, float v) {
+    private void draw(float red, float green, float blue, QuadParticleRenderState tess, float[] a, float[] b,
+                      float u, float v) {
         if (this.hasData) {
-            tess.addVertex(a[0], a[1], a[2]).setUv(u, v).setColor(red, green, blue, this.alpha)
-                    .setUv2(BRIGHTNESS, BRIGHTNESS);
-            tess.addVertex(this.vertices[0], this.vertices[1], this.vertices[2]).setUv(u, v)
-                    .setColor(red, green, blue, this.alpha).setUv2(BRIGHTNESS, BRIGHTNESS);
-            tess.addVertex(this.verticesWithUV[0], this.verticesWithUV[1], this.verticesWithUV[2]).setUv(u, v)
-                    .setColor(red, green, blue, this.alpha).setUv2(BRIGHTNESS, BRIGHTNESS);
-            tess.addVertex(b[0], b[1], b[2]).setUv(u, v).setColor(red, green, blue, this.alpha)
-                    .setUv2(BRIGHTNESS, BRIGHTNESS);
+            // TODO 1.21.9 tess.addVertex(a[0], a[1], a[2]).setUv(u, v).setColor(red, green, blue, this.alpha)
+            // TODO 1.21.9         .setUv2(BRIGHTNESS, BRIGHTNESS);
+            // TODO 1.21.9 tess.addVertex(this.vertices[0], this.vertices[1], this.vertices[2]).setUv(u, v)
+            // TODO 1.21.9         .setColor(red, green, blue, this.alpha).setUv2(BRIGHTNESS, BRIGHTNESS);
+            // TODO 1.21.9 tess.addVertex(this.verticesWithUV[0], this.verticesWithUV[1], this.verticesWithUV[2]).setUv(u, v)
+            // TODO 1.21.9         .setColor(red, green, blue, this.alpha).setUv2(BRIGHTNESS, BRIGHTNESS);
+            // TODO 1.21.9 tess.addVertex(b[0], b[1], b[2]).setUv(u, v).setColor(red, green, blue, this.alpha)
+            // TODO 1.21.9         .setUv2(BRIGHTNESS, BRIGHTNESS);
         }
         this.hasData = true;
         for (int x = 0; x < 3; x++) {
@@ -249,10 +247,8 @@ public class LightningFX extends TextureSheetParticle {
 
         @Override
         public Particle createParticle(SimpleParticleType typeIn, ClientLevel level, double x, double y, double z,
-                double xSpeed, double ySpeed, double zSpeed) {
-            LightningFX lightningFX = new LightningFX(level, x, y, z, xSpeed, ySpeed, zSpeed);
-            lightningFX.pickSprite(this.spriteSet);
-            return lightningFX;
+                double xSpeed, double ySpeed, double zSpeed, RandomSource random) {
+            return new LightningFX(level, x, y, z, xSpeed, ySpeed, zSpeed, spriteSet.get(random));
         }
     }
 

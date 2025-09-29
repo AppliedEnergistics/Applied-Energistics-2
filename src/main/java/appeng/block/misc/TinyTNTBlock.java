@@ -79,7 +79,7 @@ public class TinyTNTBlock extends AEBaseBlock {
             Item item = heldItem.getItem();
             if (!player.isCreative()) {
                 if (heldItem.is(Items.FLINT_AND_STEEL)) {
-                    heldItem.hurtAndBreak(1, player, LivingEntity.getSlotForHand(hand));
+                    heldItem.hurtAndBreak(1, player, hand.asEquipmentSlot());
                 } else {
                     heldItem.shrink(1);
                 }
@@ -99,7 +99,7 @@ public class TinyTNTBlock extends AEBaseBlock {
     }
 
     public void startFuse(Level level, BlockPos pos, LivingEntity igniter) {
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             var primedTinyTNTEntity = new TinyTNTPrimedEntity(level, pos.getX() + 0.5F, pos.getY(),
                     pos.getZ() + 0.5F, igniter);
             level.addFreshEntity(primedTinyTNTEntity);
@@ -129,7 +129,7 @@ public class TinyTNTBlock extends AEBaseBlock {
 
     @Override
     public void stepOn(Level level, BlockPos pos, BlockState state, Entity entity) {
-        if (!level.isClientSide && entity instanceof AbstractArrow arrow) {
+        if (!level.isClientSide() && entity instanceof AbstractArrow arrow) {
 
             if (arrow.isOnFire()) {
                 LivingEntity igniter = null;
@@ -152,7 +152,7 @@ public class TinyTNTBlock extends AEBaseBlock {
     @Override
     public void wasExploded(ServerLevel level, BlockPos pos, Explosion explosion) {
         super.wasExploded(level, pos, explosion);
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             final TinyTNTPrimedEntity primedTinyTNTEntity = new TinyTNTPrimedEntity(level, pos.getX() + 0.5F,
                     pos.getY(), pos.getZ() + 0.5F, explosion.getIndirectSourceEntity());
             primedTinyTNTEntity

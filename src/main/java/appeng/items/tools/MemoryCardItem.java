@@ -331,7 +331,7 @@ public class MemoryCardItem extends AEBaseItem implements IMemoryCard {
 
     @Override
     public InteractionResult use(Level level, Player player, InteractionHand hand) {
-        if (InteractionUtil.isInAlternateUseMode(player) && !level.isClientSide) {
+        if (InteractionUtil.isInAlternateUseMode(player) && !level.isClientSide()) {
             this.clearCard(player, level, hand);
         }
 

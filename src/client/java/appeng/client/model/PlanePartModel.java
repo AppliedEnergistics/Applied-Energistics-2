@@ -21,6 +21,7 @@ import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.client.resources.model.QuadCollection;
 import net.minecraft.core.BlockMath;
 import net.minecraft.core.BlockPos;
+import net.minecraft.data.AtlasIds;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockAndTintGetter;
@@ -141,12 +142,12 @@ public class PlanePartModel implements PartModel {
         public PartModel bake(ModelBaker baker, ModelState modelState) {
             ModelDebugName debugName = getClass()::toString;
 
-            var frontOnSprite = baker.sprites().get(new Material(TextureAtlas.LOCATION_BLOCKS, frontOnTexture),
+            var frontOnSprite = baker.sprites().get(new Material(AtlasIds.BLOCKS, frontOnTexture),
                     debugName);
-            var frontOffSprite = baker.sprites().get(new Material(TextureAtlas.LOCATION_BLOCKS, frontOffTexture),
+            var frontOffSprite = baker.sprites().get(new Material(AtlasIds.BLOCKS, frontOffTexture),
                     debugName);
-            var sidesSprite = baker.sprites().get(new Material(TextureAtlas.LOCATION_BLOCKS, sidesTexture), debugName);
-            var backSprite = baker.sprites().get(new Material(TextureAtlas.LOCATION_BLOCKS, backTexture), debugName);
+            var sidesSprite = baker.sprites().get(new Material(AtlasIds.BLOCKS, sidesTexture), debugName);
+            var backSprite = baker.sprites().get(new Material(AtlasIds.BLOCKS, backTexture), debugName);
 
             return new PlanePartModel(
                     frontOnSprite,

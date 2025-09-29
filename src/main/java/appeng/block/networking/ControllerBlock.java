@@ -152,7 +152,7 @@ public class ControllerBlock extends AEBaseEntityBlock<ControllerBlockEntity> {
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player,
             BlockHitResult hitResult) {
         if (level.getBlockEntity(pos) instanceof ControllerBlockEntity be) {
-            if (!level.isClientSide) {
+            if (!level.isClientSide()) {
                 MenuOpener.open(NetworkStatusMenu.CONTROLLER_TYPE, player, MenuLocators.forBlockEntity(be));
             }
             return InteractionResult.SUCCESS;

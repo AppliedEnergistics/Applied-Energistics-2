@@ -89,7 +89,7 @@ public abstract class AEBaseBlock extends Block implements IOrientableBlock {
 
     public static Properties fixtureProps(Properties p) {
         return defaultProps(p, MapColor.METAL, SoundType.GLASS)
-                .noCollission()
+                .noCollision()
                 .noOcclusion()
                 .pushReaction(PushReaction.DESTROY);
     }

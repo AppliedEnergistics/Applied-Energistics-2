@@ -113,7 +113,7 @@ public class SpatialStorageHelper {
                 entity.getXRot(), transportedEntity -> {
                     if (!passengersOnOtherSide.isEmpty()) {
                         for (Entity passanger : passengersOnOtherSide) {
-                            passanger.startRiding(transportedEntity, true);
+                            passanger.startRiding(transportedEntity, true, false);
                         }
                     }
                 }));

@@ -22,7 +22,7 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.SpriteSet;
-import net.minecraft.client.particle.TextureSheetParticle;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 
@@ -37,8 +37,8 @@ public class LightningArcFX extends LightningFX {
     private final double rz;
 
     public LightningArcFX(ClientLevel level, double x, double y, double z, double ex,
-            double ey, double ez, double r, double g, double b) {
-        super(level, x, y, z, r, g, b, 6);
+                          double ey, double ez, double r, double g, double b, TextureAtlasSprite sprite) {
+        super(level, x, y, z, r, g, b, 6, sprite);
 
         this.rx = ex - x;
         this.ry = ey - y;
@@ -73,11 +73,9 @@ public class LightningArcFX extends LightningFX {
 
         @Override
         public Particle createParticle(LightningArcParticleData data, ClientLevel level, double x, double y, double z,
-                double xSpeed, double ySpeed, double zSpeed) {
-            TextureSheetParticle lightningFX = new LightningArcFX(level, x, y, z, data.target().x, data.target().y,
-                    data.target().z, 0, 0, 0);
-            lightningFX.pickSprite(this.spriteSet);
-            return lightningFX;
+                double xSpeed, double ySpeed, double zSpeed, RandomSource random) {
+            return new LightningArcFX(level, x, y, z, data.target().x, data.target().y,
+                    data.target().z, 0, 0, 0, spriteSet.get(random));
         }
     }
 

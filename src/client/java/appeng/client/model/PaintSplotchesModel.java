@@ -22,6 +22,7 @@ import java.util.List;
 
 import com.mojang.serialization.MapCodec;
 
+import net.minecraft.data.AtlasIds;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.renderer.block.model.BlockModelPart;
@@ -51,11 +52,11 @@ import appeng.core.AppEng;
 import appeng.helpers.Splotch;
 
 public class PaintSplotchesModel implements DynamicBlockStateModel {
-    private static final Material TEXTURE_PAINT1 = new Material(TextureAtlas.LOCATION_BLOCKS,
+    private static final Material TEXTURE_PAINT1 = new Material(AtlasIds.BLOCKS,
             AppEng.makeId("block/paint1"));
-    private static final Material TEXTURE_PAINT2 = new Material(TextureAtlas.LOCATION_BLOCKS,
+    private static final Material TEXTURE_PAINT2 = new Material(AtlasIds.BLOCKS,
             AppEng.makeId("block/paint2"));
-    private static final Material TEXTURE_PAINT3 = new Material(TextureAtlas.LOCATION_BLOCKS,
+    private static final Material TEXTURE_PAINT3 = new Material(AtlasIds.BLOCKS,
             AppEng.makeId("block/paint3"));
 
     private final TextureAtlasSprite[] textures;

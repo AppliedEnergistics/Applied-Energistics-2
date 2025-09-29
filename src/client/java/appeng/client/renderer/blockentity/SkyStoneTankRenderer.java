@@ -30,6 +30,7 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
+import net.minecraft.data.AtlasIds;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -76,7 +77,7 @@ public final class SkyStoneTankRenderer implements BlockEntityRenderer<SkyStoneT
         // From Modern Industrialization
         VertexConsumer vc = mbs.getBuffer(RenderType.translucentMovingBlock());
         var renderProps = IClientFluidTypeExtensions.of(fluid.getFluid());
-        TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS)
+        TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(AtlasIds.BLOCKS)
                 .apply(renderProps.getStillTexture(fluid));
 
         int color = renderProps.getTintColor(fluid);

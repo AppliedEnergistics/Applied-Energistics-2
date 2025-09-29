@@ -24,6 +24,7 @@ import java.util.stream.IntStream;
 import com.google.common.base.Strings;
 import com.mojang.serialization.MapCodec;
 
+import net.minecraft.data.AtlasIds;
 import org.joml.Vector3f;
 
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -64,13 +65,13 @@ public class QuartzGlassModel implements DynamicBlockStateModel {
     public static final ModelProperty<GlassState> GLASS_STATE = new ModelProperty<>();
 
     // Alternating textures based on position
-    static final Material TEXTURE_A = new Material(TextureAtlas.LOCATION_BLOCKS,
+    static final Material TEXTURE_A = new Material(AtlasIds.BLOCKS,
             ResourceLocation.parse("ae2:block/glass/quartz_glass_a"));
-    static final Material TEXTURE_B = new Material(TextureAtlas.LOCATION_BLOCKS,
+    static final Material TEXTURE_B = new Material(AtlasIds.BLOCKS,
             ResourceLocation.parse("ae2:block/glass/quartz_glass_b"));
-    static final Material TEXTURE_C = new Material(TextureAtlas.LOCATION_BLOCKS,
+    static final Material TEXTURE_C = new Material(AtlasIds.BLOCKS,
             ResourceLocation.parse("ae2:block/glass/quartz_glass_c"));
-    static final Material TEXTURE_D = new Material(TextureAtlas.LOCATION_BLOCKS,
+    static final Material TEXTURE_D = new Material(AtlasIds.BLOCKS,
             ResourceLocation.parse("ae2:block/glass/quartz_glass_d"));
 
     // Frame texture
@@ -80,7 +81,7 @@ public class QuartzGlassModel implements DynamicBlockStateModel {
     private static Material[] generateTexturesFrame() {
         return IntStream.range(1, 16).mapToObj(Integer::toBinaryString).map(s -> Strings.padStart(s, 4, '0'))
                 .map(s -> ResourceLocation.parse("ae2:block/glass/quartz_glass_frame" + s))
-                .map(rl -> new Material(TextureAtlas.LOCATION_BLOCKS, rl)).toArray(Material[]::new);
+                .map(rl -> new Material(AtlasIds.BLOCKS, rl)).toArray(Material[]::new);
     }
 
     private final TextureAtlasSprite[] glassTextures;

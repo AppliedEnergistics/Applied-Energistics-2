@@ -21,6 +21,7 @@ package appeng.client.renderer.blockentity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
+import net.minecraft.data.AtlasIds;
 import org.joml.Quaternionf;
 
 import net.minecraft.client.model.geom.ModelLayerLocation;
@@ -53,9 +54,9 @@ public class SkyStoneChestRenderer implements BlockEntityRenderer<SkyStoneChestB
     public static ModelLayerLocation MODEL_LAYER = new ModelLayerLocation(AppEng.makeId("sky_chest"), "main");
 
     // The textures are in the block sheet due to the item model requiring them there
-    public static final Material TEXTURE_STONE = new Material(TextureAtlas.LOCATION_BLOCKS,
+    public static final Material TEXTURE_STONE = new Material(AtlasIds.BLOCKS,
             AppEng.makeId("block/skychest"));
-    public static final Material TEXTURE_BLOCK = new Material(TextureAtlas.LOCATION_BLOCKS,
+    public static final Material TEXTURE_BLOCK = new Material(AtlasIds.BLOCKS,
             AppEng.makeId("block/skyblockchest"));
 
     private final ModelPart lid;

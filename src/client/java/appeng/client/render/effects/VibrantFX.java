@@ -22,20 +22,21 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.ParticleRenderType;
+import net.minecraft.client.particle.SingleQuadParticle;
 import net.minecraft.client.particle.SpriteSet;
-import net.minecraft.client.particle.TextureSheetParticle;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.particles.SimpleParticleType;
+import net.minecraft.util.RandomSource;
 
-public class VibrantFX extends TextureSheetParticle {
+public class VibrantFX extends SingleQuadParticle {
 
     public VibrantFX(ClientLevel level, double x, double y, double z, double par8,
-            double par10, double par12, SpriteSet sprite) {
-        super(level, x, y, z, par8, par10, par12);
+                     double par10, double par12, TextureAtlasSprite sprite) {
+        super(level, x, y, z, par8, par10, par12, sprite);
         final float f = this.random.nextFloat() * 0.1F + 0.8F;
         this.rCol = f * 0.7f;
         this.gCol = f * 0.89f;
         this.bCol = f * 0.9f;
-        this.pickSprite(sprite);
         this.setSize(0.04F, 0.04F);
         this.quadSize *= this.random.nextFloat() * 0.6F + 1.9F;
         this.xd = 0.0D;
@@ -48,9 +49,8 @@ public class VibrantFX extends TextureSheetParticle {
     }
 
     @Override
-    public ParticleRenderType getRenderType() {
-        // FIXME Might be PARTICLE_SHEET_LIT
-        return ParticleRenderType.PARTICLE_SHEET_OPAQUE;
+    protected Layer getLayer() {
+        return Layer.OPAQUE;
     }
 
     @Override
@@ -85,8 +85,8 @@ public class VibrantFX extends TextureSheetParticle {
 
         @Override
         public Particle createParticle(SimpleParticleType typeIn, ClientLevel level, double x, double y, double z,
-                double xSpeed, double ySpeed, double zSpeed) {
-            return new VibrantFX(level, x, y, z, xSpeed, ySpeed, zSpeed, spriteSet);
+                                       double xSpeed, double ySpeed, double zSpeed, RandomSource random) {
+            return new VibrantFX(level, x, y, z, xSpeed, ySpeed, zSpeed, spriteSet.get(random));
         }
     }
 

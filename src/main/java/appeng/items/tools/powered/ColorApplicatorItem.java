@@ -141,7 +141,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
 
         var newStack = stack.copy();
         cycleColors(newStack, getColor(stack), 1);
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             player.displayClientMessage(stack.getHoverName(), true);
         }
         return InteractionResult.CONSUME.heldItemTransformedTo(stack);
@@ -206,7 +206,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
 
         if (p != null && InteractionUtil.isInAlternateUseMode(p)) {
             this.cycleColors(is, color, 1);
-            if (level.isClientSide) {
+            if (level.isClientSide()) {
                 p.displayClientMessage(is.getHoverName(), true);
             }
             return InteractionResult.CONSUME;
@@ -222,7 +222,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
 
         if (paintBallColor != null && interactionTarget instanceof Sheep sheep) {
             if (sheep.isAlive() && !sheep.isSheared() && sheep.getColor() != paintBallColor.dye) {
-                if (!player.level().isClientSide && this.getAECurrentPower(is) > POWER_PER_USE) {
+                if (!player.level().isClientSide() && this.getAECurrentPower(is) > POWER_PER_USE) {
                     sheep.setColor(paintBallColor.dye);
                     sheep.level().playSound(player, sheep, SoundEvents.DYE_USE, SoundSource.PLAYERS, 1.0F, 1.0F);
                     this.consumeColor(is, paintBallColor, false);

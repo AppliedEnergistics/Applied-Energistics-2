@@ -3,6 +3,7 @@ package appeng.client;
 import java.util.HashMap;
 import java.util.function.Consumer;
 
+import appeng.core.AppEng;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
@@ -15,6 +16,8 @@ import appeng.hotkeys.HotkeyActions;
  */
 public class Hotkeys {
 
+    public static final KeyMapping.Category CATEGORY = new KeyMapping.Category(AppEng.makeId("category"));
+
     private static final HashMap<String, Hotkey> HOTKEYS = new HashMap<>();
 
     private static boolean finalized;
@@ -23,7 +26,7 @@ public class Hotkeys {
         if (finalized) {
             throw new IllegalStateException("Hotkey registration already finalized!");
         }
-        return new Hotkey(id, new KeyMapping("key.ae2." + id, GLFW.GLFW_KEY_UNKNOWN, "key.ae2.category"));
+        return new Hotkey(id, new KeyMapping("key.ae2." + id, GLFW.GLFW_KEY_UNKNOWN, CATEGORY));
     }
 
     private static void registerHotkey(Hotkey hotkey) {

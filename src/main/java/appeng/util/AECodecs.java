@@ -84,7 +84,7 @@ public final class AECodecs {
             if (AEItems.MISSING_CONTENT.is(input)) {
                 var originalData = input.get(AEComponents.MISSING_CONTENT_ITEMSTACK_DATA);
                 if (originalData != null) {
-                    return DataResult.success(Dynamic.convert(NbtOps.INSTANCE, ops, originalData.getUnsafe()),
+                    return DataResult.success(Dynamic.convert(NbtOps.INSTANCE, ops, originalData.copyTag()),
                             t.lifecycle());
                 }
             }

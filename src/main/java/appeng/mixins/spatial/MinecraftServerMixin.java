@@ -17,7 +17,6 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.RegistryLayer;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.progress.ChunkProgressListener;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.BiomeManager;
 import net.minecraft.world.level.dimension.LevelStem;
@@ -57,7 +56,7 @@ public abstract class MinecraftServerMixin {
 
     @SuppressWarnings("ConstantConditions")
     @Inject(method = "createLevels", at = @At(value = "TAIL"))
-    public void injectSpatialLevel(ChunkProgressListener chunkProgressListener, CallbackInfo ci) {
+    public void injectSpatialLevel(CallbackInfo ci) {
         var registryHolder = registries.compositeAccess();
 
         var levelStem = new LevelStem(
@@ -77,7 +76,6 @@ public abstract class MinecraftServerMixin {
                 derivedLevelData,
                 SpatialStorageDimensionIds.WORLD_ID,
                 levelStem,
-                chunkProgressListener,
                 false /* debug */,
                 seed,
                 ImmutableList.of(),

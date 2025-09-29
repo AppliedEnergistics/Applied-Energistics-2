@@ -116,7 +116,7 @@ final class PlayerRegistryInternal extends SavedData implements IPlayerRegistry 
             setDirty();
 
             var player = server.getPlayerList().getPlayer(profileId);
-            var name = player != null ? player.getGameProfile().getName() : "[UNKNOWN]";
+            var name = player != null ? player.getGameProfile().name() : "[UNKNOWN]";
             AELog.info("Assigning ME player id %s to Minecraft profile %s (%s)", playerId, profileId, name);
         }
 

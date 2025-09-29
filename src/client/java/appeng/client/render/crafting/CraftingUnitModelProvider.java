@@ -13,6 +13,7 @@ import net.minecraft.client.resources.model.SpriteGetter;
 
 import appeng.block.crafting.CraftingUnitType;
 import appeng.core.AppEng;
+import net.minecraft.data.AtlasIds;
 
 public class CraftingUnitModelProvider extends AbstractCraftingUnitModelProvider<CraftingUnitType>
         implements ModelDebugName {
@@ -78,7 +79,7 @@ public class CraftingUnitModelProvider extends AbstractCraftingUnitModelProvider
     }
 
     private static Material texture(String name) {
-        var mat = new Material(TextureAtlas.LOCATION_BLOCKS,
+        var mat = new Material(AtlasIds.BLOCKS,
                 AppEng.makeId("block/crafting/" + name));
         MATERIALS.add(mat);
         return mat;

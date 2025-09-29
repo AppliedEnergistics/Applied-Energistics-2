@@ -59,7 +59,7 @@ public class PartPlacement {
         }
 
         // Consume one of the part item
-        if (!level.isClientSide && player != null && !player.isCreative()) {
+        if (!level.isClientSide() && player != null && !player.isCreative()) {
             partStack.shrink(1);
             if (partStack.getCount() == 0) {
                 player.setItemInHand(context.getHand(), ItemStack.EMPTY);

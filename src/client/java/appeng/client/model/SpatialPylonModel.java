@@ -39,6 +39,7 @@ import net.minecraft.client.resources.model.ModelDebugName;
 import net.minecraft.client.resources.model.QuadCollection;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.data.AtlasIds;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockAndTintGetter;
@@ -204,7 +205,7 @@ public class SpatialPylonModel implements DynamicBlockStateModel {
         }
 
         private static Material getTexturePath(SpatialPylonTextureType type) {
-            return new Material(TextureAtlas.LOCATION_BLOCKS,
+            return new Material(AtlasIds.BLOCKS,
                     AppEng.makeId("block/spatial_pylon/" + type.name().toLowerCase(Locale.ROOT)));
         }
 

@@ -42,6 +42,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.contents.objects.PlayerSprite;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
@@ -56,6 +57,7 @@ import appeng.spatial.SpatialStorageDimensionIds;
 import appeng.spatial.SpatialStoragePlot;
 import appeng.spatial.SpatialStoragePlotManager;
 import appeng.spatial.TransitionInfo;
+import net.minecraft.world.item.component.ResolvableProfile;
 
 /**
  * This admin command allows management of spatial storage plots.
@@ -172,16 +174,10 @@ public class SpatialStorageCommand implements ISubCommand {
                 ServerPlayer player = server.getPlayerList().getPlayer(profileId);
                 if (player != null) {
                     sendKeyValuePair(source, PlayerMessages.Owner.text(),
-                            PlayerMessages.PlayerConnected.text(player.getGameProfile().getName()));
+                            PlayerMessages.PlayerConnected.text(player.getGameProfile().name()));
                 } else {
-                    var cachedProfile = server.getProfileCache().get(profileId);
-                    if (cachedProfile.isPresent()) {
-                        sendKeyValuePair(source, PlayerMessages.Owner.text(),
-                                PlayerMessages.PlayerDisconnected.text(cachedProfile.get().getName()));
-                    } else {
-                        sendKeyValuePair(source, PlayerMessages.Owner.text(),
-                                PlayerMessages.MinecraftProfile.text(profileId));
-                    }
+                    sendKeyValuePair(source, PlayerMessages.Owner.text(),
+                            PlayerMessages.PlayerDisconnected.text(Component.object(new PlayerSprite(ResolvableProfile.createUnresolved(profileId), true))));
                 }
             }
         } else {

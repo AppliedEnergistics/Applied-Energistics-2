@@ -10,6 +10,7 @@ import com.google.common.cache.CacheBuilder;
 import com.mojang.math.Transformation;
 import com.mojang.serialization.MapCodec;
 
+import net.minecraft.data.AtlasIds;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -36,7 +37,7 @@ import appeng.parts.automation.PartModelData;
 import appeng.util.Platform;
 
 public final class P2PFrequencyPartModel implements PartModel {
-    private static final Material TEXTURE = new Material(TextureAtlas.LOCATION_BLOCKS,
+    private static final Material TEXTURE = new Material(AtlasIds.BLOCKS,
             AppEng.makeId("part/p2p_tunnel_frequency"));
     private static final int[][] QUAD_OFFSETS = new int[][] { { 3, 11, 2 }, { 11, 11, 2 }, { 3, 3, 2 }, { 11, 3, 2 } };
     private final TextureAtlasSprite texture;

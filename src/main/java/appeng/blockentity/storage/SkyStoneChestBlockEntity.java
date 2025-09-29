@@ -67,7 +67,7 @@ public class SkyStoneChestBlockEntity extends AEBaseInvBlockEntity implements Cl
             level.blockEvent(pos, state.getBlock(), 1, x);
         }
 
-        protected boolean isOwnContainer(Player player) {
+        public boolean isOwnContainer(Player player) {
             if (player.containerMenu instanceof SkyStonechestMenu menu) {
                 return menu.getChest() == SkyStoneChestBlockEntity.this;
             } else {
@@ -88,7 +88,7 @@ public class SkyStoneChestBlockEntity extends AEBaseInvBlockEntity implements Cl
 
     public void startOpen(Player player) {
         if (!this.remove && !player.isSpectator()) {
-            this.openersCounter.incrementOpeners(player, this.getLevel(), this.getBlockPos(), this.getBlockState());
+            this.openersCounter.incrementOpeners(player, this.getLevel(), this.getBlockPos(), this.getBlockState(), player.getContainerInteractionRange());
         }
     }
 

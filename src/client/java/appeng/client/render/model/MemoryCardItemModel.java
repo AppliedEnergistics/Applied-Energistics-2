@@ -9,6 +9,7 @@ import com.google.common.cache.LoadingCache;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
+import net.minecraft.data.AtlasIds;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -107,7 +108,7 @@ public class MemoryCardItemModel implements ItemModel {
         public MemoryCardItemModel bake(BakingContext context) {
 
             ModelDebugName debugName = getClass()::toString;
-            var colorOverlayMaterial = new Material(TextureAtlas.LOCATION_BLOCKS, colorOverlaySprite);
+            var colorOverlayMaterial = new Material(AtlasIds.BLOCKS, colorOverlaySprite);
             var hashSprite = context.blockModelBaker().sprites().get(colorOverlayMaterial, debugName);
 
             var baseModel = ItemBaseModelWrapper.bake(context.blockModelBaker(), this.baseModel);

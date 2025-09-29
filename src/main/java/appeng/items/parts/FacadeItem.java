@@ -65,7 +65,7 @@ public class FacadeItem extends AEBaseItem implements IFacadeItem {
             return InteractionResult.PASS;
         }
 
-        if (!level.isClientSide && player != null && !player.isCreative()) {
+        if (!level.isClientSide() && player != null && !player.isCreative()) {
             stack.grow(-1);
             if (stack.isEmpty()) {
                 player.setItemInHand(context.getHand(), ItemStack.EMPTY);

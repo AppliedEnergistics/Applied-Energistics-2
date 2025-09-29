@@ -22,6 +22,7 @@ import java.util.function.Consumer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.data.AtlasIds;
 
 /**
  * A bundle of one or more {@link QuadView} instances encoded by the renderer.
@@ -42,7 +43,7 @@ public interface Mesh {
 
     default Collection<BakedQuad> toBakedBlockQuads() {
         SpriteFinder finder = SpriteFinder
-                .get(Minecraft.getInstance().getModelManager().getAtlas(TextureAtlas.LOCATION_BLOCKS));
+                .get(Minecraft.getInstance().getAtlasManager().getAtlasOrThrow(AtlasIds.BLOCKS));
         var result = new ArrayList<BakedQuad>();
         forEach(qv -> result.add(qv.toBakedQuad(finder.find(qv))));
         return result;

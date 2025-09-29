@@ -62,7 +62,7 @@ public interface IPlayerRegistry {
      * Convenience method to get the ME player id associated with a connected player.
      */
     static int getPlayerId(ServerPlayer player) {
-        return getMapping(player.getServer()).getPlayerId(player.getGameProfile());
+        return getMapping(player.level().getServer()).getPlayerId(player.getGameProfile());
     }
 
     /**
@@ -89,7 +89,7 @@ public interface IPlayerRegistry {
      *         players by hashing their name.
      */
     default int getPlayerId(GameProfile gameProfile) {
-        var profileId = gameProfile.getId();
+        var profileId = gameProfile.id();
         if (profileId == null) {
             return -1;
         }
@@ -98,13 +98,13 @@ public interface IPlayerRegistry {
     }
 
     /**
-     * Queries AE2's internal player ID for the given {@link GameProfile#getId() profile UUID}. If AE2 has not assigned
+     * Queries AE2's internal player ID for the given {@link GameProfile#id() profile UUID}. If AE2 has not assigned
      * an ID to that player yet, it will be automatically assigned.
      */
     int getPlayerId(UUID profileId);
 
     /**
-     * Find the stored {@link GameProfile#getId() profile UUID} that is stored for the given ME player id, if any.
+     * Find the stored {@link GameProfile#id() profile UUID} that is stored for the given ME player id, if any.
      *
      * @return Null if no such player is known.
      */

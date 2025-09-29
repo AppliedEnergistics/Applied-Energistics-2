@@ -87,7 +87,7 @@ public class TestMeteoritesCommand implements ISubCommand {
             centerBlock = BlockPos.containing(player.getX(), 0, player.getZ());
         } else {
             level = srv.getLevel(Level.OVERWORLD);
-            centerBlock = level.getSharedSpawnPos();
+            centerBlock = level.getRespawnData().pos();
         }
 
         ChunkPos center = new ChunkPos(centerBlock);

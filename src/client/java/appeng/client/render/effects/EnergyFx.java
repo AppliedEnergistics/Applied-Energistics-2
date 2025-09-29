@@ -25,28 +25,29 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.ParticleRenderType;
+import net.minecraft.client.particle.SingleQuadParticle;
 import net.minecraft.client.particle.SpriteSet;
-import net.minecraft.client.particle.TextureSheetParticle;
+import net.minecraft.client.renderer.state.QuadParticleRenderState;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.Mth;
 
 import appeng.core.particles.EnergyParticleData;
+import net.minecraft.util.RandomSource;
 
-public class EnergyFx extends TextureSheetParticle {
+public class EnergyFx extends SingleQuadParticle {
 
     private final int startBlkX;
     private final int startBlkY;
     private final int startBlkZ;
 
-    public EnergyFx(ClientLevel level, double par2, double par4, double par6,
-            SpriteSet sprite) {
-        super(level, par2, par4, par6);
+    public EnergyFx(ClientLevel level, double x, double y, double z, TextureAtlasSprite sprite) {
+        super(level, x, y, z, sprite);
         this.gravity = 0;
         this.bCol = 1;
         this.gCol = 1;
         this.rCol = 1;
         this.alpha = 1.4f;
         this.quadSize = 3.5f;
-        this.pickSprite(sprite);
 
         this.startBlkX = Mth.floor(this.x);
         this.startBlkY = Mth.floor(this.y);
@@ -54,8 +55,8 @@ public class EnergyFx extends TextureSheetParticle {
     }
 
     @Override
-    public ParticleRenderType getRenderType() {
-        return ParticleRenderType.PARTICLE_SHEET_TRANSLUCENT;
+    protected Layer getLayer() {
+        return Layer.TRANSLUCENT;
     }
 
     @Override
@@ -64,7 +65,7 @@ public class EnergyFx extends TextureSheetParticle {
     }
 
     @Override
-    public void render(VertexConsumer buffer, Camera renderInfo, float partialTicks) {
+    public void extract(QuadParticleRenderState state, Camera camera, float partialTicks) {
         float x = (float) (this.xo + (this.x - this.xo) * partialTicks);
         float y = (float) (this.yo + (this.y - this.yo) * partialTicks);
         float z = (float) (this.zo + (this.z - this.zo) * partialTicks);
@@ -74,7 +75,7 @@ public class EnergyFx extends TextureSheetParticle {
         final int blkZ = Mth.floor(z);
 
         if (blkX == this.startBlkX && blkY == this.startBlkY && blkZ == this.startBlkZ) {
-            super.render(buffer, renderInfo, partialTicks);
+            super.extract(state, camera, partialTicks);
         }
     }
 
@@ -108,8 +109,8 @@ public class EnergyFx extends TextureSheetParticle {
 
         @Override
         public Particle createParticle(EnergyParticleData data, ClientLevel level, double x, double y, double z,
-                double xSpeed, double ySpeed, double zSpeed) {
-            EnergyFx result = new EnergyFx(level, x, y, z, spriteSet);
+                                       double xSpeed, double ySpeed, double zSpeed, RandomSource random) {
+            EnergyFx result = new EnergyFx(level, x, y, z, spriteSet.get(random));
             result.setMotionX((float) xSpeed);
             result.setMotionY((float) ySpeed);
             result.setMotionZ((float) zSpeed);

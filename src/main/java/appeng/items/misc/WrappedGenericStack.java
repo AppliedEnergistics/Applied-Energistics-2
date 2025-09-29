@@ -123,7 +123,7 @@ public class WrappedGenericStack extends AEBaseItem {
                 long inserted = heldContainer.insert(what, amount, Actionable.MODULATE);
 
                 // Check client to avoid duplicate sounds in singleplayer
-                if (player.level().isClientSide) {
+                if (player.level().isClientSide()) {
                     heldContainer.playFillSound(player, what);
                 }
 

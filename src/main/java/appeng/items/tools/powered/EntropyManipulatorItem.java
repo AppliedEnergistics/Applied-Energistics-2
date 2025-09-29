@@ -303,7 +303,7 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
             }
         }
 
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             for (var drop : recipe.getDrops()) {
                 Containers.dropItemStack(level, pos.getX(), pos.getY(), pos.getZ(), drop.copy());
             }

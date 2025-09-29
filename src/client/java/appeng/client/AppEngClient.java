@@ -204,11 +204,11 @@ public class AppEngClient extends AppEngBase {
      */
     private static final KeyMapping MOUSE_WHEEL_ITEM_MODIFIER = new KeyMapping(
             "key.ae2.mouse_wheel_item_modifier", KeyConflictContext.IN_GAME, InputConstants.Type.KEYSYM,
-            InputConstants.KEY_LSHIFT, "key.ae2.category");
+            InputConstants.KEY_LSHIFT, Hotkeys.CATEGORY);
 
     private static final KeyMapping PART_PLACEMENT_OPPOSITE = new KeyMapping(
             "key.ae2.part_placement_opposite", KeyConflictContext.IN_GAME, InputConstants.Type.KEYSYM,
-            InputConstants.KEY_LCONTROL, "key.ae2.category");
+            InputConstants.KEY_LCONTROL, Hotkeys.CATEGORY);
 
     private static AppEngClient INSTANCE;
 
@@ -332,6 +332,7 @@ public class AppEngClient extends AppEngBase {
     }
 
     private void registerHotkeys(RegisterKeyMappingsEvent e) {
+        e.registerCategory(Hotkeys.CATEGORY);
         e.register(MOUSE_WHEEL_ITEM_MODIFIER);
         e.register(PART_PLACEMENT_OPPOSITE);
         Hotkeys.finalizeRegistration(e::register);

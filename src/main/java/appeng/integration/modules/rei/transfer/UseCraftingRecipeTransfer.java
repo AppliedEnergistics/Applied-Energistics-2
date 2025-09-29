@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
@@ -70,7 +71,7 @@ public class UseCraftingRecipeTransfer<T extends CraftingTermMenu> extends Abstr
         }
 
         // Thank you RS for pioneering this amazing feature! :)
-        boolean craftMissing = AbstractContainerScreen.hasControlDown();
+        boolean craftMissing = Minecraft.getInstance().hasControlDown();
         // Find missing ingredient
         var slotToIngredientMap = getGuiSlotToIngredientMap(recipe);
         var missingSlots = menu.findMissingIngredients(getGuiSlotToIngredientMap(recipe));

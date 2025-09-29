@@ -326,7 +326,7 @@ public class CableBusBlockEntity extends AEBaseBlockEntity implements AEMultiBlo
     public InteractionResult disassembleWithWrench(Player player, Level level, BlockHitResult hitResult,
             ItemStack wrench) {
 
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             var is = new ArrayList<ItemStack>();
             final SelectedPart sp;
 

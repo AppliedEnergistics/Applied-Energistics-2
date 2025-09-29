@@ -15,6 +15,7 @@ package appeng.thirdparty.fabric;
  * limitations under the License.
  */
 
+import net.minecraft.data.AtlasIds;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2f;
@@ -210,7 +211,7 @@ public interface QuadView {
     }
 
     default BakedQuad toBlockBakedQuad() {
-        var finder = SpriteFinder.get(Minecraft.getInstance().getModelManager().getAtlas(TextureAtlas.LOCATION_BLOCKS));
+        var finder = SpriteFinder.get(Minecraft.getInstance().getAtlasManager().getAtlasOrThrow(AtlasIds.BLOCKS));
         return toBakedQuad(finder.find(this));
     }
 }

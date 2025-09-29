@@ -121,7 +121,7 @@ public final class TinyTNTPrimedEntity extends PrimedTnt implements IEntityWithC
         if (this.getFuse() <= 0) {
             this.discard();
 
-            if (!this.level().isClientSide) {
+            if (!this.level().isClientSide()) {
                 this.explode();
             }
         } else {

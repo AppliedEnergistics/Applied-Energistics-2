@@ -64,7 +64,7 @@ public class DebugCardItem extends AEBaseItem {
 
     @Override
     public InteractionResult use(Level level, Player player, InteractionHand usedHand) {
-        if (InteractionUtil.isInAlternateUseMode(player) && !level.isClientSide) {
+        if (InteractionUtil.isInAlternateUseMode(player) && !level.isClientSide()) {
             int grids = 0;
 
             var stats = new StatsAccumulator();

@@ -47,7 +47,7 @@ public class DriveBlock extends AEBaseEntityBlock<DriveBlockEntity> {
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player,
             BlockHitResult hitResult) {
         if (level.getBlockEntity(pos) instanceof DriveBlockEntity be) {
-            if (!level.isClientSide) {
+            if (!level.isClientSide()) {
                 be.openMenu(player);
             }
             return InteractionResult.SUCCESS;

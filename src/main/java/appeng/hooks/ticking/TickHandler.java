@@ -322,7 +322,7 @@ public class TickHandler {
     }
 
     public void registerCraftingSimulation(Level level, CraftingCalculation craftingCalculation) {
-        Preconditions.checkArgument(!level.isClientSide, "Trying to register a crafting job for a client-level");
+        Preconditions.checkArgument(!level.isClientSide(), "Trying to register a crafting job for a client-level");
 
         synchronized (this.craftingJobs) {
             this.craftingJobs.put(level, craftingCalculation);

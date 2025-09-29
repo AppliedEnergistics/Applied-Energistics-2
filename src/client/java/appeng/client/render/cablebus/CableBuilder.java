@@ -36,6 +36,7 @@ import appeng.api.util.AEColor;
 import appeng.block.networking.CableCoreType;
 import appeng.client.render.CubeBuilder;
 import appeng.core.AppEng;
+import net.minecraft.data.AtlasIds;
 
 /**
  * A helper class that builds quads for cable connections.
@@ -90,7 +91,7 @@ class CableBuilder {
             default -> throw new IllegalStateException("Cable type " + cableType + " does not support connections.");
         };
 
-        return new Material(TextureAtlas.LOCATION_BLOCKS,
+        return new Material(AtlasIds.BLOCKS,
                 AppEng.makeId(textureFolder + color.name().toLowerCase(Locale.ROOT)));
     }
 

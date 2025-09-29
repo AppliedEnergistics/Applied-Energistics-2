@@ -21,6 +21,7 @@ package appeng.client.renderer.blockentity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
+import net.minecraft.data.AtlasIds;
 import org.joml.Quaternionf;
 
 import net.minecraft.client.Minecraft;
@@ -52,7 +53,7 @@ public final class InscriberRenderer implements BlockEntityRenderer<InscriberBlo
 
     private static final float ITEM_RENDER_SCALE = 1.0f / 1.2f;
 
-    private static final Material TEXTURE_INSIDE = new Material(TextureAtlas.LOCATION_BLOCKS,
+    private static final Material TEXTURE_INSIDE = new Material(AtlasIds.BLOCKS,
             AppEng.makeId("block/inscriber_inside"));
 
     public InscriberRenderer(BlockEntityRendererProvider.Context context) {

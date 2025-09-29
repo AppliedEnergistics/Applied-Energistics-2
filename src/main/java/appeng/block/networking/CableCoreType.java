@@ -30,6 +30,7 @@ import net.minecraft.client.resources.model.Material;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
 import appeng.core.AppEng;
+import net.minecraft.data.AtlasIds;
 
 /**
  * AE can render the core of a cable (the core that connections are made to, in case the cable is not a straight line)
@@ -71,7 +72,7 @@ public enum CableCoreType {
     }
 
     public Material getTexture(AEColor color) {
-        return new Material(TextureAtlas.LOCATION_BLOCKS,
+        return new Material(AtlasIds.BLOCKS,
                 AppEng.makeId(this.textureFolder + "/" + color.name().toLowerCase(Locale.ROOT)));
     }
 

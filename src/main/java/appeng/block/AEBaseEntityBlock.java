@@ -20,6 +20,7 @@ package appeng.block;
 
 import java.util.List;
 
+import net.minecraft.core.Direction;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
@@ -124,7 +125,7 @@ public abstract class AEBaseEntityBlock<T extends AEBaseBlockEntity> extends AEB
     }
 
     @Override
-    public int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos) {
+    protected int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos, Direction side) {
         var te = this.getBlockEntity(level, pos);
         if (te instanceof AEBaseInvBlockEntity invBlockEntity) {
             if (!invBlockEntity.getInternalInventory().isEmpty()) {

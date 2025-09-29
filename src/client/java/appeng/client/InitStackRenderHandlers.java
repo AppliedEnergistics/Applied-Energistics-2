@@ -23,6 +23,7 @@ import java.util.List;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
+import net.minecraft.data.AtlasIds;
 import org.joml.Matrix4f;
 
 import net.minecraft.client.Minecraft;
@@ -119,7 +120,7 @@ public class InitStackRenderHandlers {
             var renderProps = IClientFluidTypeExtensions.of(what.getFluid());
             var texture = renderProps.getStillTexture(fluidStack);
             var color = renderProps.getTintColor(fluidStack);
-            var sprite = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS)
+            var sprite = Minecraft.getInstance().getTextureAtlas(AtlasIds.BLOCKS)
                     .apply(texture);
 
             poseStack.pushPose();
