@@ -83,7 +83,31 @@
     },
     "processingCycleOutput": {
       "left": 127,
-      "bottom": 152
+      "bottom": 163
+    },
+    "mult2": {
+      "left": 81,
+      "bottom": 148
+    },
+    "mult3": {
+      "left": 90,
+      "bottom": 148
+    },
+    "mult8": {
+      "left": 99,
+      "bottom": 148
+    },
+    "div2": {
+      "left": 81,
+      "bottom": 121
+    },
+    "div3": {
+      "left": 90,
+      "bottom": 121
+    },
+    "div8": {
+      "left": 99,
+      "bottom": 121
     },
     "processingClearPattern": {
       "left": 82,
