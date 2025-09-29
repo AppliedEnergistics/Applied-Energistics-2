@@ -23,6 +23,7 @@ import java.util.function.Function;
 
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 
+import net.minecraft.data.AtlasIds;
 import org.joml.Matrix3x2f;
 
 import net.minecraft.Util;
@@ -132,7 +133,7 @@ public final class Blitter {
     }
 
     public static Blitter guiSprite(ResourceLocation resourceLocation) {
-        var sprites = Minecraft.getInstance().getGuiSprites();
+        var sprites = Minecraft.getInstance().getAtlasManager().getAtlasOrThrow(AtlasIds.GUI);
         var sprite = sprites.getSprite(resourceLocation);
         return sprite(sprite);
     }

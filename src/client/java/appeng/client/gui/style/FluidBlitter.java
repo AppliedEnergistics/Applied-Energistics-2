@@ -50,8 +50,9 @@ public final class FluidBlitter {
 
         var attributes = IClientFluidTypeExtensions.of(fluid);
         TextureAtlasSprite sprite = Minecraft.getInstance()
-                .getTextureAtlas(AtlasIds.BLOCKS)
-                .apply(attributes.getStillTexture(stack));
+                .getAtlasManager()
+                .getAtlasOrThrow(AtlasIds.BLOCKS)
+                .getSprite(attributes.getStillTexture(stack));
 
         return Blitter.sprite(sprite)
                 .colorRgb(attributes.getTintColor(stack))

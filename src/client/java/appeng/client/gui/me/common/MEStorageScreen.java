@@ -28,6 +28,9 @@ import java.util.Set;
 import com.google.common.collect.Sets;
 import com.mojang.blaze3d.platform.InputConstants;
 
+import net.minecraft.client.input.CharacterEvent;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.data.AtlasIds;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
@@ -37,7 +40,6 @@ import org.slf4j.LoggerFactory;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.ClickType;
@@ -269,7 +271,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
 
         long serial = entry.getSerial();
 
-        if (InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), GLFW.GLFW_KEY_SPACE)) {
+        if (InputConstants.isKeyDown(Minecraft.getInstance().getWindow(), GLFW.GLFW_KEY_SPACE)) {
             // Move everything from the same group of slots (i.e. player inventory excluding hotbar)
             menu.handleInteraction(serial, InventoryAction.MOVE_REGION);
         } else {
@@ -373,7 +375,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
     protected void updateBeforeRender() {
         super.updateBeforeRender();
 
-        repo.setPaused(hasShiftDown());
+        repo.setPaused(getMinecraft().hasShiftDown());
         updateSearch();
 
         // Override the dialog title found in the screen JSON with the user-supplied name
@@ -492,8 +494,8 @@ public class MEStorageScreen<C extends MEStorageMenu>
             if (slot instanceof RepoSlot repoSlot) {
                 var entry = repoSlot.getEntry();
                 if (entry != null && PendingCraftingJobs.hasPendingJob(entry.getWhat())) {
-                    var sprite = minecraft.getTextureAtlas(AtlasIds.BLOCKS)
-                            .apply(AppEng.makeId("block/molecular_assembler_lights"));
+                    var sprite = minecraft.getAtlasManager().getAtlasOrThrow(AtlasIds.BLOCKS)
+                            .getSprite(AppEng.makeId("block/molecular_assembler_lights"));
                     Blitter.sprite(sprite)
                             .src(sprite.getX() + 2, sprite.getY() + 2, sprite.contents().width() - 4,
                                     sprite.contents().height() - 4)
@@ -505,29 +507,29 @@ public class MEStorageScreen<C extends MEStorageMenu>
     }
 
     @Override
-    public boolean mouseClicked(double xCoord, double yCoord, int btn) {
+    public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
         // Right-clicking on the search field should clear it
-        if (this.searchField.isMouseOver(xCoord, yCoord) && btn == 1) {
+        if (this.searchField.isMouseOver(event.x(), event.y()) && event.button() == 1) {
             this.searchField.setValue("");
             setSearchText("");
             // Don't return immediately to also grab focus.
         }
 
         // handler for middle mouse button crafting in survival mode
-        if (Minecraft.getInstance().options.keyPickItem.matchesMouse(btn)) {
-            Slot slot = this.getHoveredSlot(xCoord, yCoord);
+        if (Minecraft.getInstance().options.keyPickItem.matchesMouse(event)) {
+            Slot slot = this.getHoveredSlot(event.x(), event.y());
             if (slot instanceof RepoSlot repoSlot && repoSlot.isCraftable()) {
-                handleGridInventoryEntryMouseClick(repoSlot.getEntry(), btn, ClickType.CLONE);
+                handleGridInventoryEntryMouseClick(repoSlot.getEntry(), event.button(), ClickType.CLONE);
                 return true;
             }
         }
 
-        return super.mouseClicked(xCoord, yCoord, btn);
+        return super.mouseClicked(event, doubleClick);
     }
 
     @Override
     public boolean mouseScrolled(double x, double y, double deltaX, double deltaY) {
-        if (deltaY != 0 && hasShiftDown()) {
+        if (deltaY != 0 && getMinecraft().hasShiftDown()) {
             if (this.getHoveredSlot(x, y) instanceof RepoSlot repoSlot) {
                 GridInventoryEntry entry = repoSlot.getEntry();
                 long serial = entry != null ? entry.getSerial() : -1;
@@ -730,12 +732,12 @@ public class MEStorageScreen<C extends MEStorageMenu>
     }
 
     @Override
-    public boolean charTyped(char character, int modifiers) {
-        if (character == ' ' && this.searchField.getValue().isEmpty()) {
+    public boolean charTyped(CharacterEvent event) {
+        if (event.codepoint() == ' ' && this.searchField.getValue().isEmpty()) {
             return true;
         }
 
-        return super.charTyped(character, modifiers);
+        return super.charTyped(event);
     }
 
     private boolean shouldAutoFocus() {
@@ -744,19 +746,19 @@ public class MEStorageScreen<C extends MEStorageMenu>
     }
 
     @Override
-    public boolean keyPressed(int keyCode, int scanCode, int p_keyPressed_3_) {
-        if (this.searchField.isFocused() && keyCode == GLFW.GLFW_KEY_ENTER) {
+    public boolean keyPressed(KeyEvent event) {
+        if (this.searchField.isFocused() && event.key() == GLFW.GLFW_KEY_ENTER) {
             this.searchField.setFocused(false);
             this.setFocused(null);
             return true;
         }
 
-        if (!this.searchField.isFocused() && isCloseHotkey(keyCode, scanCode)) {
+        if (!this.searchField.isFocused() && isCloseHotkey(event)) {
             this.getPlayer().closeContainer();
             return true;
         }
 
-        return super.keyPressed(keyCode, scanCode, p_keyPressed_3_);
+        return super.keyPressed(event);
     }
 
     private boolean isHovered() {
@@ -846,12 +848,12 @@ public class MEStorageScreen<C extends MEStorageMenu>
         this.init();
     }
 
-    private boolean isCloseHotkey(int keyCode, int scanCode) {
+    private boolean isCloseHotkey(KeyEvent event) {
         var hotkeyId = getMenu().getHost().getCloseHotkey();
         if (hotkeyId != null) {
             var hotkey = Hotkeys.getHotkeyMapping(hotkeyId);
             if (hotkey != null) {
-                return hotkey.mapping().matches(keyCode, scanCode);
+                return hotkey.mapping().matches(event);
             } else {
                 LOG.warn("Terminal host returned unknown hotkey id: {}", hotkeyId);
             }

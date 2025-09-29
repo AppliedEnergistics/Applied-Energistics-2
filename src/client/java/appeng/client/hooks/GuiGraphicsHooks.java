@@ -52,7 +52,7 @@ public final class GuiGraphicsHooks {
                 return false; // Don't allow recursive model replacements
             }
 
-            boolean shiftHeld = Screen.hasShiftDown();
+            boolean shiftHeld = minecraft.hasShiftDown();
             if (shiftHeld && level != null) {
                 var output = encodedPattern.getOutput(stack);
                 // If output would be identical to stack, we'd infinitely loop

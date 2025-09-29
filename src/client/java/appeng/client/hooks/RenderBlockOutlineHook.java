@@ -145,14 +145,15 @@ public class RenderBlockOutlineHook {
     static class FacadeOutlineRenderer implements CustomBlockOutlineRenderer {
         @Override
         public boolean render(BlockOutlineRenderState blockOutlineRenderState, MultiBufferSource.BufferSource bufferSource, PoseStack poseStack, boolean b, LevelRenderState levelRenderState) {
-            renderFacade(poseStack, buffers, camera, pos, selectedPart.facade, selectedPart.side, false, false);
+            // TODO 1.21.9 renderFacade(poseStack, buffers, camera, pos, selectedPart.facade, selectedPart.side, false, false);
+            return false;
         }
     }
 
     static class PartOutlineRenderer implements CustomBlockOutlineRenderer {
         @Override
         public boolean render(BlockOutlineRenderState blockOutlineRenderState, MultiBufferSource.BufferSource bufferSource, PoseStack poseStack, boolean b, LevelRenderState levelRenderState) {
-            renderPart(poseStack, buffers, camera, pos, selectedPart.part, selectedPart.side, false, false);
+            // TODO 1.21.9 renderPart(poseStack, buffers, camera, pos, selectedPart.part, selectedPart.side, false, false);
             return false;
         }
     }

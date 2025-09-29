@@ -20,6 +20,7 @@ package appeng.client.gui.me.crafting;
 
 import java.text.NumberFormat;
 
+import net.minecraft.client.input.KeyEvent;
 import org.lwjgl.glfw.GLFW;
 
 import net.minecraft.client.gui.GuiGraphics;
@@ -143,12 +144,12 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmMenu> {
 
     // Allow players to confirm a craft via the enter key
     @Override
-    public boolean keyPressed(int keyCode, int scanCode, int p_keyPressed_3_) {
-        if (keyCode == GLFW.GLFW_KEY_ENTER || keyCode == GLFW.GLFW_KEY_KP_ENTER) {
+    public boolean keyPressed(KeyEvent event) {
+        if (event.isConfirmation()) {
             this.start();
             return true;
         }
-        return super.keyPressed(keyCode, scanCode, p_keyPressed_3_);
+        return super.keyPressed(event);
     }
 
     private void selectNextCpu() {

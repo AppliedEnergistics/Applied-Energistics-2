@@ -14,12 +14,12 @@ public class AE2ParticleDescriptionProvider extends ParticleDescriptionProvider 
 
     @Override
     protected void addDescriptions() {
-        this.sprite(ParticleTypes.CRAFTING, ResourceLocation.withDefaultNamespace("generic_0"));
-        this.sprite(ParticleTypes.ENERGY, AppEng.makeId("energy"));
-        this.sprite(ParticleTypes.LIGHTNING_ARC, ResourceLocation.withDefaultNamespace("generic_0"));
-        this.sprite(ParticleTypes.LIGHTNING, ResourceLocation.withDefaultNamespace("generic_0"));
-        this.sprite(ParticleTypes.MATTER_CANNON, AppEng.makeId("matter_cannon"));
-        this.sprite(ParticleTypes.VIBRANT, ResourceLocation.withDefaultNamespace("generic_0"));
+        this.spriteSet(ParticleTypes.CRAFTING, ResourceLocation.withDefaultNamespace("generic_0"));
+        this.spriteSet(ParticleTypes.ENERGY, AppEng.makeId("energy"));
+        this.spriteSet(ParticleTypes.LIGHTNING_ARC, ResourceLocation.withDefaultNamespace("generic_0"));
+        this.spriteSet(ParticleTypes.LIGHTNING, ResourceLocation.withDefaultNamespace("generic_0"));
+        this.spriteSet(ParticleTypes.MATTER_CANNON, AppEng.makeId("matter_cannon"));
+        this.spriteSet(ParticleTypes.VIBRANT, ResourceLocation.withDefaultNamespace("generic_0"));
 
     }
 }

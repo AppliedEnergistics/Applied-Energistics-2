@@ -25,6 +25,7 @@ import java.util.Map;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
@@ -94,10 +95,10 @@ public class PatternEncodingTermScreen<C extends PatternEncodingTermMenu> extend
     }
 
     @Override
-    public boolean mouseClicked(double xCoord, double yCoord, int btn) {
+    public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
         // handler for middle mouse button crafting in survival mode
-        if (this.minecraft.options.keyPickItem.matchesMouse(btn)) {
-            var slot = this.getHoveredSlot(xCoord, yCoord);
+        if (this.minecraft.options.keyPickItem.matchesMouse(event)) {
+            var slot = this.getHoveredSlot(event.x(), event.y());
             if (menu.canModifyAmountForSlot(slot)) {
                 var currentStack = GenericStack.fromItemStack(slot.getItem());
                 if (currentStack != null) {
@@ -116,7 +117,7 @@ public class PatternEncodingTermScreen<C extends PatternEncodingTermMenu> extend
             }
         }
 
-        return super.mouseClicked(xCoord, yCoord, btn);
+        return super.mouseClicked(event, doubleClick);
     }
 
     /**

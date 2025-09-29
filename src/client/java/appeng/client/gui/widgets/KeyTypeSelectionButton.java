@@ -5,6 +5,7 @@ import java.util.Set;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 
@@ -23,7 +24,7 @@ public class KeyTypeSelectionButton extends IconButton {
             Component title) {
         return new KeyTypeSelectionButton(
                 () -> {
-                    if (Screen.hasShiftDown()) {
+                    if (parentScreen.getMinecraft().hasShiftDown()) {
                         handleShiftClick(parentScreen.getMenu());
                     } else {
                         parentScreen.switchToScreen(new KeyTypeSelectionScreen<>(parentScreen, subMenuHost, title));

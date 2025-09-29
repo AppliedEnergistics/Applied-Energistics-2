@@ -25,6 +25,7 @@ import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.Rect2i;
+import net.minecraft.data.AtlasIds;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 
@@ -318,12 +319,12 @@ public class Scrollbar implements IScrollSource, ICompositeWidget {
 
         public int handleWidth() {
             var minecraft = Minecraft.getInstance();
-            return minecraft.getGuiSprites().getSprite(enabledSprite).contents().width();
+            return minecraft.getAtlasManager().getAtlasOrThrow(AtlasIds.GUI).getSprite(enabledSprite).contents().width();
         }
 
         public int handleHeight() {
             var minecraft = Minecraft.getInstance();
-            return minecraft.getGuiSprites().getSprite(enabledSprite).contents().height();
+            return minecraft.getAtlasManager().getAtlasOrThrow(AtlasIds.GUI).getSprite(enabledSprite).contents().height();
         }
     }
 

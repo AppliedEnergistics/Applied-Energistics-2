@@ -5,6 +5,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.narration.NarratedElementType;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.input.InputWithModifiers;
 import net.minecraft.network.chat.Component;
 
 import appeng.client.gui.style.Blitter;
@@ -35,8 +36,9 @@ public class AECheckbox extends AbstractButton {
         this.style = style;
     }
 
+
     @Override
-    public void onPress() {
+    public void onPress(InputWithModifiers input) {
         this.selected = !this.selected;
         if (this.changeListener != null) {
             this.changeListener.run();

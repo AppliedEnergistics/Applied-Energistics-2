@@ -21,6 +21,7 @@ package appeng.client.gui.widgets;
 import java.util.Collections;
 import java.util.List;
 
+import net.minecraft.client.input.InputWithModifiers;
 import net.minecraft.network.chat.Component;
 
 import appeng.util.Icon;
@@ -60,7 +61,7 @@ public class ToggleButton extends IconButton implements ITooltip {
     }
 
     @Override
-    public void onPress() {
+    public void onPress(InputWithModifiers input) {
         this.listener.onChange(!state);
     }
 

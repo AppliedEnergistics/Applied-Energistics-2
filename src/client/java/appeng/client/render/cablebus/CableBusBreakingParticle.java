@@ -20,20 +20,19 @@ package appeng.client.render.cablebus;
 
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.ParticleRenderType;
-import net.minecraft.client.particle.TextureSheetParticle;
+import net.minecraft.client.particle.SingleQuadParticle;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 
 // Derived from Vanilla's BreakingParticle, but allows
 // a texture to be specified directly rather than via an itemstack
-public class CableBusBreakingParticle extends TextureSheetParticle {
+public class CableBusBreakingParticle extends SingleQuadParticle {
 
     private final float uCoord;
     private final float vCoord;
 
     public CableBusBreakingParticle(ClientLevel level, double x, double y, double z, double speedX, double speedY,
             double speedZ, TextureAtlasSprite sprite) {
-        super(level, x, y, z, speedX, speedY, speedZ);
-        this.setSprite(sprite);
+        super(level, x, y, z, speedX, speedY, speedZ, sprite);
         this.gravity = 1.0F;
         this.quadSize /= 2.0F;
         this.uCoord = this.random.nextFloat() * 3.0F;
@@ -45,8 +44,8 @@ public class CableBusBreakingParticle extends TextureSheetParticle {
     }
 
     @Override
-    public ParticleRenderType getRenderType() {
-        return ParticleRenderType.TERRAIN_SHEET;
+    protected Layer getLayer() {
+        return Layer.TERRAIN;
     }
 
     @Override

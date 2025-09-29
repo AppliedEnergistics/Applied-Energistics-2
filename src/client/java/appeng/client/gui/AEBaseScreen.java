@@ -30,6 +30,10 @@ import java.util.concurrent.TimeUnit;
 import com.google.common.base.Stopwatch;
 import com.mojang.blaze3d.platform.InputConstants;
 
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.input.MouseButtonInfo;
+import net.minecraft.network.chat.FontDescription;
 import org.jetbrains.annotations.MustBeInvokedByOverriders;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
@@ -117,7 +121,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
 
     protected static final ResolvedTextStyle ERROR_TEXT_STYLE = TextStyle.builder()
             .color(SymbolicColor.ERROR_TEXT)
-            .font(Minecraft.DEFAULT_FONT)
+            .font(FontDescription.DEFAULT)
             .dropShadow(true)
             .build()
             .mergeWith(DefaultStyles.BASE_STYLE);
@@ -556,16 +560,18 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
     }
 
     @Override
-    public boolean mouseClicked(double xCoord, double yCoord, int btn) {
+    public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
         this.drag_click.clear();
 
         // Forward right-clicks as-if they were left-clicks
-        if (btn == 1) {
+        if (event.button() == 1) {
             handlingRightClick = true;
             try {
                 for (var widget : this.children()) {
-                    if (widget.isMouseOver(xCoord, yCoord)) {
-                        return super.mouseClicked(xCoord, yCoord, 0);
+                    if (widget.isMouseOver(event.x(), event.y())) {
+                        return super.mouseClicked(new MouseButtonEvent(
+                                event.x(), event.y(), new MouseButtonInfo(0, event.buttonInfo().modifiers())
+                        ), doubleClick);
                     }
                 }
             } finally {
@@ -573,14 +579,14 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
             }
         }
 
-        if (widgets.onMouseDown(getMousePoint(xCoord, yCoord), btn)) {
+        if (widgets.onMouseDown(getMousePoint(event.x(), event.y()), event.button())) {
             return true;
         }
 
         // super.mouseClicked will always return true, so we try to capture if
         // anything received focus due to the mouse click (see setFocused override)
         focusChangedToSomething = false;
-        var result = super.mouseClicked(xCoord, yCoord, btn);
+        var result = super.mouseClicked(event, doubleClick);
         if (!focusChangedToSomething) {
             var currentFocus = getCurrentFocusPath();
             if (currentFocus != null) {
@@ -591,21 +597,21 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
     }
 
     @Override
-    public boolean mouseReleased(double mouseX, double mouseY, int button) {
-        if (widgets.onMouseUp(getMousePoint(mouseX, mouseY), button)) {
+    public boolean mouseReleased(MouseButtonEvent event) {
+        if (widgets.onMouseUp(getMousePoint(event.x(), event.y()), event.button())) {
             return true;
         }
 
-        return super.mouseReleased(mouseX, mouseY, button);
+        return super.mouseReleased(event);
     }
 
     @Override
-    public boolean mouseDragged(double mouseX, double mouseY, int mouseButton, double dragX, double dragY) {
-        final Slot slot = this.getHoveredSlot(mouseX, mouseY);
+    public boolean mouseDragged(MouseButtonEvent event, double dragX, double dragY) {
+        final Slot slot = this.getHoveredSlot(event.x(), event.y());
         var itemstack = getMenu().getCarried();
 
-        Point mousePos = new Point((int) Math.round(mouseX - leftPos), (int) Math.round(mouseY - topPos));
-        if (widgets.onMouseDrag(mousePos, mouseButton)) {
+        Point mousePos = new Point((int) Math.round(event.x() - leftPos), (int) Math.round(event.y() - topPos));
+        if (widgets.onMouseDrag(mousePos, event.button())) {
             return true;
         }
 
@@ -614,7 +620,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
             if (this.drag_click.size() > 1) {
                 for (Slot dr : this.drag_click) {
                     var p = new InventoryActionPacket(
-                            mouseButton == 0 ? InventoryAction.PICKUP_OR_SET_DOWN : InventoryAction.PLACE_SINGLE,
+                            event.button() == 0 ? InventoryAction.PICKUP_OR_SET_DOWN : InventoryAction.PLACE_SINGLE,
                             dr.index, 0);
                     ClientPacketDistributor.sendToServer(p);
                 }
@@ -622,7 +628,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
 
             return true;
         } else {
-            return super.mouseDragged(mouseX, mouseY, mouseButton, dragX, dragY);
+            return super.mouseDragged(event, dragX, dragY);
         }
     }
 
@@ -666,9 +672,9 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
 
         if (slot instanceof CraftingTermSlot) {
             InventoryAction action;
-            if (hasShiftDown()) {
+            if (getMinecraft().hasShiftDown()) {
                 action = InventoryAction.CRAFT_SHIFT;
-            } else if (InputConstants.isKeyDown(getMinecraft().getWindow().getWindow(), GLFW.GLFW_KEY_SPACE)) {
+            } else if (InputConstants.isKeyDown(getMinecraft().getWindow(), GLFW.GLFW_KEY_SPACE)) {
                 action = InventoryAction.CRAFT_ALL;
             } else {
                 // Craft stack on right-click, craft single on left-click
@@ -681,14 +687,14 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
             return;
         }
 
-        if (slot != null && InputConstants.isKeyDown(getMinecraft().getWindow().getWindow(), GLFW.GLFW_KEY_SPACE)) {
+        if (slot != null && InputConstants.isKeyDown(getMinecraft().getWindow(), GLFW.GLFW_KEY_SPACE)) {
             int slotNum = slot.index;
             final InventoryActionPacket p = new InventoryActionPacket(InventoryAction.MOVE_REGION, slotNum, 0);
             ClientPacketDistributor.sendToServer(p);
             return;
         }
 
-        if (slot != null && !this.disableShiftClick && hasShiftDown() && mouseButton == 0) {
+        if (slot != null && !this.disableShiftClick && getMinecraft().hasShiftDown() && mouseButton == 0) {
             this.disableShiftClick = true;
 
             if (this.dbl_whichItem.isEmpty() || this.bl_clicked != slot
@@ -718,14 +724,14 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
     }
 
     @Override
-    protected boolean hasClickedOutside(double mouseX, double mouseY, int screenX, int screenY, int button) {
+    protected boolean hasClickedOutside(double mouseX, double mouseY, int screenX, int screenY) {
         // Consider clicks within attached compound widgets as still inside the screen
         var mousePos = new Point((int) Math.round(mouseX - screenX), (int) Math.round(mouseY - screenY));
         if (widgets.hitTest(mousePos)) {
             return false;
         }
 
-        return super.hasClickedOutside(mouseX, mouseY, screenX, screenY, button);
+        return super.hasClickedOutside(mouseX, mouseY, screenX, screenY);
     }
 
     protected LocalPlayer getPlayer() {
@@ -735,17 +741,17 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
     }
 
     @Override
-    protected boolean checkHotbarKeyPressed(int keyCode, int scanCode) {
+    protected boolean checkHotbarKeyPressed(KeyEvent event) {
         final Slot theSlot = this.getSlotUnderMouse();
 
         if (getMenu().getCarried().isEmpty() && theSlot != null) {
-            if (this.minecraft.options.keySwapOffhand.matches(keyCode, scanCode)) {
+            if (this.minecraft.options.keySwapOffhand.matches(event)) {
                 this.slotClicked(theSlot, theSlot.index, Inventory.SLOT_OFFHAND, ClickType.SWAP);
                 return true;
             }
 
             for (int j = 0; j < 9; ++j) {
-                if (getMinecraft().options.keyHotbarSlots[j].matches(keyCode, scanCode)) {
+                if (getMinecraft().options.keyHotbarSlots[j].matches(event)) {
                     final List<Slot> slots = this.getInventorySlots();
                     for (Slot s : slots) {
                         if (s.slot == j && s.container == this.menu.getPlayerInventory()

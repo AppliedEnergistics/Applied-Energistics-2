@@ -71,7 +71,7 @@ public class CraftAmountScreen extends AEBaseScreen<CraftAmountMenu> {
             }
         }
 
-        this.next.setMessage(hasShiftDown() ? GuiText.Start.text() : GuiText.Next.text());
+        this.next.setMessage(getMinecraft().hasShiftDown() ? GuiText.Start.text() : GuiText.Next.text());
         this.next.active = this.amountToCraft.getIntValue().orElse(0) > 0;
     }
 
@@ -81,7 +81,7 @@ public class CraftAmountScreen extends AEBaseScreen<CraftAmountMenu> {
         if (amount <= 0) {
             return;
         }
-        menu.confirm(amount, craftMissingAmount, hasShiftDown());
+        menu.confirm(amount, craftMissingAmount, getMinecraft().hasShiftDown());
     }
 
 }

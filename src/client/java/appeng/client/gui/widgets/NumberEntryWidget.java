@@ -279,7 +279,7 @@ public class NumberEntryWidget implements ICompositeWidget {
     }
 
     private static boolean hasShiftOrControlDown() {
-        return Screen.hasShiftDown() || Screen.hasControlDown();
+        return Minecraft.getInstance().hasShiftDown() || Minecraft.getInstance().hasControlDown();
     }
 
     /**

@@ -22,6 +22,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
@@ -90,25 +92,26 @@ public class AETextField extends EditBox implements IResizableWidget, ITooltip {
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+    public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
         // This hack is used to allow the standard mouse-click logic to recognize our clicks
         // that are on the padding, but not really inside the edit box.
-        if (isMouseOver(mouseX, mouseY)) {
-            mouseX = Mth.clamp(mouseX, getX(), getX() + width - 1);
-            mouseY = Mth.clamp(mouseY, getY(), getY() + height - 1);
+        if (isMouseOver(event.x(), event.y())) {
+            var mouseX = Mth.clamp(event.x(), getX(), getX() + width - 1);
+            var mouseY = Mth.clamp(event.y(), getY(), getY() + height - 1);
+            event = new MouseButtonEvent(mouseX, mouseY, event.buttonInfo());
         }
-        return super.mouseClicked(mouseX, mouseY, button);
+        return super.mouseClicked(event, doubleClick);
     }
 
     @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (super.keyPressed(keyCode, scanCode, modifiers)) {
+    public boolean keyPressed(KeyEvent event) {
+        if (super.keyPressed(event)) {
             return true;
         }
 
         // Swallow all key presses except for focus escape when we're focused to prevent "e" from
         // closing the window instead of typing into the text field
-        return isFocused() && canConsumeInput() && keyCode != GLFW.GLFW_KEY_TAB && keyCode != GLFW.GLFW_KEY_ESCAPE;
+        return isFocused() && canConsumeInput() && event.key() != GLFW.GLFW_KEY_TAB && event.key() != GLFW.GLFW_KEY_ESCAPE;
     }
 
     @Override

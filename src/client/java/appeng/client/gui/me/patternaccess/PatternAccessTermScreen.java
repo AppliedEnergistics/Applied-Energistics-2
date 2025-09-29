@@ -33,6 +33,7 @@ import java.util.WeakHashMap;
 
 import com.google.common.collect.HashMultimap;
 
+import net.minecraft.client.input.MouseButtonEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -305,13 +306,13 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
     }
 
     @Override
-    public boolean mouseClicked(double xCoord, double yCoord, int btn) {
-        if (btn == 1 && this.searchField.isMouseOver(xCoord, yCoord)) {
+    public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
+        if (btn == 1 && this.searchField.isMouseOver(event, doubleClick)) {
             this.searchField.setValue("");
             // Don't return immediately to also grab focus.
         }
 
-        return super.mouseClicked(xCoord, yCoord, btn);
+        return super.mouseClicked(event, doubleClick);
     }
 
     @Override
