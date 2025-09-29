@@ -28,6 +28,7 @@ public enum ButtonToolTips implements LocalizationEnum {
     AutoExport("Auto-Export"),
     AutoExportOff("Produced items will be not be auto-exported."),
     AutoExportOn("Produced items will be auto-exported through any extraction side."),
+    Blacklisted("This stack is blacklisted"),
     BlockPlacement("Block Placement"),
     BlockPlacementNo("Blocks will be dropped as item."),
     BlockPlacementYes("Blocks will be placed as block."),

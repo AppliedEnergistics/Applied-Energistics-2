@@ -46,6 +46,8 @@ public class DelegatingMEInventory implements MEStorage {
 
     @Override
     public long extract(AEKey what, long amount, Actionable mode, IActionSource source) {
+        if (what.isTagged(AETags.ITEM_STORAGE_BLACKLIST) || what.isTagged(AETags.FLUID_STORAGE_BLACKLIST))
+            return 0;
         return delegate.extract(what, amount, mode, source);
     }
 

@@ -15,7 +15,16 @@
     "errorText": {
       "position": {
         "left": 110,
-        "top": 10
+        "top": 6
+      },
+      "align": "CENTER",
+      "maxWidth": 200,
+      "color": "ERROR"
+    },
+    "blacklisted": {
+      "position": {
+        "left": 110,
+        "top": 24
       },
       "align": "CENTER",
       "maxWidth": 200,

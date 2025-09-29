@@ -542,6 +542,7 @@
   "gui.tooltips.ae2.AutoExport": "Auto-Export",
   "gui.tooltips.ae2.AutoExportOff": "Produced items will be not be auto-exported.",
   "gui.tooltips.ae2.AutoExportOn": "Produced items will be auto-exported through any extraction side.",
+  "gui.tooltips.ae2.Blacklisted": "This stack is blacklisted",
   "gui.tooltips.ae2.BlockPlacement": "Block Placement",
   "gui.tooltips.ae2.BlockPlacementNo": "Blocks will be dropped as item.",
   "gui.tooltips.ae2.BlockPlacementYes": "Blocks will be placed as block.",

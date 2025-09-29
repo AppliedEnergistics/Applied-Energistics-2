@@ -2,14 +2,17 @@ package appeng.client.gui.me.crafting;
 
 import java.util.ArrayList;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 
+import appeng.api.ids.AETags;
 import appeng.api.networking.crafting.CraftingSubmitErrorCode;
 import appeng.api.networking.crafting.UnsuitableCpus;
 import appeng.api.stacks.GenericStack;
 import appeng.client.gui.AESubScreen;
 import appeng.client.gui.me.common.ClientDisplaySlot;
+import appeng.core.localization.ButtonToolTips;
 import appeng.core.localization.GuiText;
 import appeng.menu.SlotSemantics;
 import appeng.menu.me.crafting.CraftConfirmMenu;
@@ -21,6 +24,7 @@ public class CraftErrorScreen extends AESubScreen<CraftConfirmMenu, CraftConfirm
     public CraftErrorScreen(CraftConfirmScreen parent, CraftingSubmitErrorCode errorCode, Object details) {
         super(parent, "/screens/craft_error.json");
 
+        var isBlacklisted = Component.empty();
         var errorText = switch (errorCode) {
             case INCOMPLETE_PLAN -> GuiText.CraftErrorIncompletePlan.text();
             case NO_CPU_FOUND -> GuiText.CraftErrorNoCpuFound.text();
@@ -61,6 +65,10 @@ public class CraftErrorScreen extends AESubScreen<CraftConfirmMenu, CraftConfirm
             case MISSING_INGREDIENT -> {
                 if (details instanceof GenericStack genericStack) {
                     addClientSideSlot(new ClientDisplaySlot(genericStack), SlotSemantics.MISSING_INGREDIENT);
+                    if (genericStack.what().isTagged(AETags.ITEM_STORAGE_BLACKLIST)
+                            || genericStack.what().isTagged(AETags.FLUID_STORAGE_BLACKLIST)) {
+                        isBlacklisted = ButtonToolTips.Blacklisted.text().withStyle(ChatFormatting.DARK_RED);
+                    }
                 }
 
                 yield GuiText.CraftErrorMissingIngredient.text();
@@ -68,6 +76,7 @@ public class CraftErrorScreen extends AESubScreen<CraftConfirmMenu, CraftConfirm
         };
 
         setTextContent("errorText", errorText);
+        setTextContent("blacklisted", isBlacklisted);
 
         widgets.addButton("replan", GuiText.CraftErrorReplan.text(), () -> {
             returnToParent();

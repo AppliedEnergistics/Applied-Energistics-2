@@ -48,6 +48,7 @@ import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
 import appeng.api.config.TypeFilter;
 import appeng.api.config.ViewItems;
+import appeng.api.ids.AETags;
 import appeng.api.implementations.blockentities.IMEChest;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AmountFormat;
@@ -667,6 +668,12 @@ public class MEStorageScreen<C extends MEStorageMenu>
         if (Minecraft.getInstance().options.advancedItemTooltips) {
             currentToolTip
                     .add(ButtonToolTips.Serial.text(entry.getSerial()).withStyle(ChatFormatting.DARK_GRAY));
+        }
+
+        if (entry.getWhat().isTagged(AETags.ITEM_STORAGE_BLACKLIST)
+                || entry.getWhat().isTagged(AETags.FLUID_STORAGE_BLACKLIST)) {
+            currentToolTip.add(
+                    ButtonToolTips.Blacklisted.text().withStyle(ChatFormatting.RED).withStyle(ChatFormatting.ITALIC));
         }
 
         // Special case to support the Item API of visual tooltip components
