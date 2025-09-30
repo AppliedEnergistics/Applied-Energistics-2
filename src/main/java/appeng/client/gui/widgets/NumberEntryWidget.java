@@ -88,7 +88,7 @@ public class NumberEntryWidget implements ICompositeWidget {
     private Rect2i textFieldBounds = Rects.ZERO;
     private Point currentScreenOrigin = Point.ZERO;
 
-    private final List<Button> amountButtons = List.of();
+    private List<Button> amountButtons = List.of();
 
     public NumberEntryWidget(ScreenStyle style, NumberEntryType type) {
         this.errorTextColor = style.getColor(PaletteColor.TEXTFIELD_ERROR).toARGB();
@@ -223,15 +223,15 @@ public class NumberEntryWidget implements ICompositeWidget {
                         .build());
         buttons.add(
                 Button.builder(components1000[1], btn -> addQty(hasShiftOrControlDown() ? STEPS_64[1] : STEPS_1000[1]))
-                        .bounds(left, top, 22, 20)
+                        .bounds(left + 28, top, 28, 20)
                         .build());
         buttons.add(
                 Button.builder(components1000[2], btn -> addQty(hasShiftOrControlDown() ? STEPS_64[2] : STEPS_1000[2]))
-                        .bounds(left, top, 22, 20)
+                        .bounds(left + 62, top, 32, 20)
                         .build());
         buttons.add(
                 Button.builder(components1000[3], btn -> addQty(hasShiftOrControlDown() ? STEPS_64[3] : STEPS_1000[3]))
-                        .bounds(left, top, 22, 20)
+                        .bounds(left + 100, top, 38, 20)
                         .build());
 
         // Need to add these now for sensible tab-order
@@ -245,20 +245,22 @@ public class NumberEntryWidget implements ICompositeWidget {
 
         buttons.add(Button
                 .builder(components1000[4], btn -> addQty(hasShiftOrControlDown() ? -STEPS_64[0] : -STEPS_1000[0]))
-                .bounds(left, top, 22, 20)
+                .bounds(left, top + 42, 22, 20)
                 .build());
         buttons.add(Button
                 .builder(components1000[5], btn -> addQty(hasShiftOrControlDown() ? -STEPS_64[1] : -STEPS_1000[1]))
-                .bounds(left, top, 22, 20)
+                .bounds(left + 28, top + 42, 28, 20)
                 .build());
         buttons.add(Button
                 .builder(components1000[6], btn -> addQty(hasShiftOrControlDown() ? -STEPS_64[2] : -STEPS_1000[2]))
-                .bounds(left, top, 22, 20)
+                .bounds(left + 62, top + 42, 32, 20)
                 .build());
         buttons.add(Button
                 .builder(components1000[7], btn -> addQty(hasShiftOrControlDown() ? -STEPS_64[3] : -STEPS_1000[3]))
-                .bounds(left, top, 22, 20)
+                .bounds(left + 100, top + 42, 38, 20)
                 .build());
+
+        amountButtons = List.copyOf(buttons);
 
         // This element is not focusable
         if (!hideValidationIcon) {
@@ -365,7 +367,7 @@ public class NumberEntryWidget implements ICompositeWidget {
             newValue = minimum;
         } else if (newValue > maximum) {
             newValue = maximum;
-        } else if (currentValue == 1 && delta > 0 && delta % 10 == 0) {
+        } else if (currentValue == 1 && delta > 0 && (delta % 10 == 0 || delta % 16 == 0)) {
             newValue = newValue - 1;
         }
         setValueInternal(newValue);
