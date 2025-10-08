@@ -23,8 +23,6 @@
 
 package appeng.api.inventories;
 
-import com.google.common.base.Preconditions;
-
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.world.item.ItemStack;
@@ -180,12 +178,9 @@ class InternalInventoryResourceHandler extends SnapshotJournal<InternalInventory
 
     @Override
     public void onRootCommit(Snapshot original) {
-        // Diff the last snapshot against the inventory to collect change notifications
-        Preconditions.checkState(lastReleasedSnapshot != null, "There should have been at least one snapshot");
-
-        for (int i = 0; i < lastReleasedSnapshot.items.length; i++) {
+        for (int i = 0; i < original.items.length; i++) {
             var current = inventory.getStackInSlot(i);
-            if (current != lastReleasedSnapshot.items[i] || current.getCount() != lastReleasedSnapshot.counts[i]) {
+            if (current != original.items[i] || current.getCount() != original.counts[i]) {
                 inventory.sendChangeNotification(i);
             }
         }

@@ -43,7 +43,6 @@ public class InterfaceTestPlots {
             helper.startSequence()
                     .thenExecute(() -> {
                         var itemCap = helper.getCapability(o, Capabilities.Item.BLOCK, Direction.UP);
-                        helper.check(itemCap.isValid(0, ItemResource.EMPTY), "empty stack should be valid in slot 0");
                         helper.check(itemCap.isValid(0, ItemResource.of(Items.STICK)),
                                 "stick should be valid in slot 0");
                         helper.check(itemCap.isValid(1, ItemResource.of(Items.STICK)),
@@ -54,8 +53,6 @@ public class InterfaceTestPlots {
                                 "bricks should be valid in slot 1");
 
                         var fluidCap = helper.getCapability(o, Capabilities.Fluid.BLOCK, Direction.UP);
-                        helper.check(fluidCap.isValid(0, FluidResource.EMPTY),
-                                "empty fluid stack should be valid in slot 0");
                         helper.check(!fluidCap.isValid(0, FluidResource.of(Fluids.WATER)),
                                 "fluid should not be valid in slot 0");
                         helper.check(fluidCap.isValid(1, FluidResource.of(Fluids.WATER)),

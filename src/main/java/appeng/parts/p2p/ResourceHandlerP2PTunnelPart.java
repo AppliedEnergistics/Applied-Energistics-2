@@ -15,7 +15,6 @@ import appeng.util.InsertionOnlyResourceHandler;
 public abstract class ResourceHandlerP2PTunnelPart<P extends ResourceHandlerP2PTunnelPart<P, T>, T extends Resource>
         extends CapabilityP2PTunnelPart<P, ResourceHandler<T>> {
 
-    private final T emptyResource;
     private final AEKeyType keyType;
 
     public ResourceHandlerP2PTunnelPart(IPartItem<?> partItem,
@@ -23,15 +22,14 @@ public abstract class ResourceHandlerP2PTunnelPart<P extends ResourceHandlerP2PT
             T emptyResource,
             AEKeyType keyType) {
         super(partItem, capability);
-        this.inputHandler = new InputStorage();
+        this.inputHandler = new InputStorage(emptyResource);
         this.outputHandler = new OutputStorage();
         this.emptyHandler = EmptyResourceHandler.instance();
-        this.emptyResource = emptyResource;
         this.keyType = keyType;
     }
 
     private class InputStorage extends InsertionOnlyResourceHandler<T> {
-        public InputStorage() {
+        public InputStorage(T emptyResource) {
             super(emptyResource);
         }
 
