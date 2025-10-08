@@ -17,10 +17,10 @@ import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.item.ItemModel;
 import net.minecraft.client.renderer.item.ItemModelResolver;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.resources.model.ModelDebugName;
-import net.minecraft.data.AtlasIds;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ARGB;
 import net.minecraft.world.entity.ItemOwner;
@@ -107,7 +107,7 @@ public class MemoryCardItemModel implements ItemModel {
         public MemoryCardItemModel bake(BakingContext context) {
 
             ModelDebugName debugName = getClass()::toString;
-            var colorOverlayMaterial = new Material(AtlasIds.BLOCKS, colorOverlaySprite);
+            var colorOverlayMaterial = new Material(TextureAtlas.LOCATION_BLOCKS, colorOverlaySprite);
             var hashSprite = context.blockModelBaker().sprites().get(colorOverlayMaterial, debugName);
 
             var baseModel = ItemBaseModelWrapper.bake(context.blockModelBaker(), this.baseModel);

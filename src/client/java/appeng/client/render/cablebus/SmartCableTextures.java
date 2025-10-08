@@ -20,10 +20,10 @@ package appeng.client.render.cablebus;
 
 import java.util.Arrays;
 
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.resources.model.SpriteGetter;
-import net.minecraft.data.AtlasIds;
 import net.minecraft.resources.ResourceLocation;
 
 import appeng.core.AppEng;
@@ -44,7 +44,7 @@ public class SmartCableTextures {
                     AppEng.makeId("part/cable/smart/channels_12"), //
                     AppEng.makeId("part/cable/smart/channels_13"), //
                     AppEng.makeId("part/cable/smart/channels_14")//
-            }).map(e -> new Material(AtlasIds.BLOCKS, e)).toArray(Material[]::new);
+            }).map(e -> new Material(TextureAtlas.LOCATION_BLOCKS, e)).toArray(Material[]::new);
 
     // Textures used to display channels on smart cables. There's two sets of 5
     // textures each, and
@@ -62,7 +62,7 @@ public class SmartCableTextures {
                     AppEng.makeId("part/cable/dense_smart/channels_12"), //
                     AppEng.makeId("part/cable/dense_smart/channels_13"), //
                     AppEng.makeId("part/cable/dense_smart/channels_14")//
-            }).map(e -> new Material(AtlasIds.BLOCKS, e)).toArray(Material[]::new);
+            }).map(e -> new Material(TextureAtlas.LOCATION_BLOCKS, e)).toArray(Material[]::new);
 
     // Textures used to display channels on dense smart cables. There's two sets of 5
     // textures each, and

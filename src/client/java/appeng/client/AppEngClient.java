@@ -74,6 +74,7 @@ import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import net.neoforged.neoforge.client.model.standalone.SimpleUnbakedStandaloneModel;
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
+import net.neoforged.neoforge.client.resources.VanillaClientListeners;
 import net.neoforged.neoforge.client.settings.KeyConflictContext;
 import net.neoforged.neoforge.common.NeoForge;
 
@@ -85,8 +86,12 @@ import guideme.siteexport.RecipeExporter;
 
 import appeng.api.client.StorageCellModels;
 import appeng.api.parts.CableRenderMode;
+import appeng.api.stacks.AEFluidKey;
+import appeng.api.stacks.AEItemKey;
+import appeng.api.stacks.AEKeyType;
 import appeng.api.util.AEColor;
 import appeng.block.qnb.QnbFormedModel;
+import appeng.client.api.AEKeyRendering;
 import appeng.client.api.model.parts.CompositePartModel;
 import appeng.client.api.model.parts.RegisterPartModelsEvent;
 import appeng.client.api.model.parts.StaticPartModel;
@@ -148,6 +153,8 @@ import appeng.client.renderer.blockentity.MolecularAssemblerRenderer;
 import appeng.client.renderer.blockentity.SkyStoneChestRenderer;
 import appeng.client.renderer.blockentity.SkyStoneTankRenderer;
 import appeng.client.renderer.entity.TinyTNTPrimedRenderer;
+import appeng.client.renderer.keytypes.FluidKeyRenderer;
+import appeng.client.renderer.keytypes.ItemKeyRenderer;
 import appeng.client.renderer.part.MonitorRenderer;
 import appeng.client.renderer.parts.PartRendererDispatcher;
 import appeng.core.AEConfig;
@@ -349,7 +356,8 @@ public class AppEngClient extends AppEngBase {
     private void clientSetup(FMLClientSetupEvent event) {
         event.enqueueWork(() -> {
             try {
-                InitStackRenderHandlers.init();
+                AEKeyRendering.register(AEKeyType.items(), AEItemKey.class, new ItemKeyRenderer());
+                AEKeyRendering.register(AEKeyType.fluids(), AEFluidKey.class, new FluidKeyRenderer());
             } catch (Throwable e) {
                 LOG.error("AE2 failed postClientSetup", e);
                 throw new RuntimeException(e);
@@ -562,8 +570,8 @@ public class AppEngClient extends AppEngBase {
     }
 
     private void registerPartRenderers(RegisterPartRendererEvent event) {
-        event.register(ConversionMonitorPart.class, new MonitorRenderer());
-        event.register(StorageMonitorPart.class, new MonitorRenderer());
+        event.register(ConversionMonitorPart.class, MonitorRenderer::new);
+        event.register(StorageMonitorPart.class, MonitorRenderer::new);
     }
 
     public PartModels getPartModels() {
@@ -578,7 +586,9 @@ public class AppEngClient extends AppEngBase {
     }
 
     private void registerReloadListener(AddClientReloadListenersEvent event) {
-        event.addListener(AppEng.makeId("part_renderer_dispatcher"), partRendererDispatcher);
+        event.addListener(PartRendererDispatcher.ID, partRendererDispatcher);
+        // The block entity render for parts needs access to the formed PartRendererDispatcher
+        event.addDependency(VanillaClientListeners.BLOCK_ENTITY_RENDERER, PartRendererDispatcher.ID);
     }
 
     private void registerRenderPipelines(RegisterRenderPipelinesEvent event) {

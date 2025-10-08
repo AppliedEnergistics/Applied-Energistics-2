@@ -126,7 +126,7 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
 
     @Override
     protected void entityInside(BlockState state, Level level, BlockPos pos, Entity entity,
-            InsideBlockEffectApplier effectApplier) {
+            InsideBlockEffectApplier effectApplier, boolean p_451772_) {
         this.cb(level, pos).onEntityCollision(entity);
     }
 

@@ -5,11 +5,11 @@ import java.util.Collections;
 import java.util.List;
 
 import net.minecraft.client.renderer.block.model.BlockStateModel;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.resources.model.ModelDebugName;
 import net.minecraft.client.resources.model.SpriteGetter;
-import net.minecraft.data.AtlasIds;
 
 import appeng.block.crafting.CraftingUnitType;
 import appeng.core.AppEng;
@@ -78,8 +78,7 @@ public class CraftingUnitModelProvider extends AbstractCraftingUnitModelProvider
     }
 
     private static Material texture(String name) {
-        var mat = new Material(AtlasIds.BLOCKS,
-                AppEng.makeId("block/crafting/" + name));
+        var mat = new Material(TextureAtlas.LOCATION_BLOCKS, AppEng.makeId("block/crafting/" + name));
         MATERIALS.add(mat);
         return mat;
     }

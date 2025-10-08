@@ -21,7 +21,9 @@ package appeng.client.renderer.blockentity;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import org.jetbrains.annotations.Nullable;
+import org.joml.Matrix4f;
 
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
@@ -51,30 +53,41 @@ public class CraftingMonitorRenderer
         BlockEntityRenderer.super.extractRenderState(be, state, partialTicks, cameraPos, crumblingOverlay);
 
         state.orientation = be.getOrientation();
-        state.jobProgress = be.getJobProgress();
         state.textColor = be.getColor().contrastTextColor;
+        var jobProgress = be.getJobProgress();
+        if (jobProgress != null) {
+            int seed = (int) be.getBlockPos().asLong();
+            state.what.extract(jobProgress.what(), be.getLevel(), seed);
+            state.amount = jobProgress.amount();
+        } else {
+            state.what.clear();
+            state.amount = 0;
+        }
     }
 
     @Override
     public void submit(CraftingMonitorRenderState state, PoseStack poseStack, SubmitNodeCollector nodes,
             CameraRenderState cameraRenderState) {
 
-        if (state.jobProgress != null) {
+        if (!state.what.isEmpty()) {
             poseStack.pushPose();
             poseStack.translate(0.5, 0.5, 0.5); // Move to the center of the block
             BlockEntityRenderHelper.rotateToFace(poseStack, state.orientation);
             poseStack.translate(0, 0.02, 0.5);
 
+            poseStack.mulPose(new Matrix4f().scale(0.3f, 0.3f, 0.3f));
+
             // TODO 1.21.9
-            BlockEntityRenderHelper.renderItem2dWithAmount(
-                    poseStack,
-                    null,
-                    state.jobProgress.what(),
-                    state.jobProgress.amount(), false,
-                    0.3f,
-                    -0.18f,
-                    state.textColor,
-                    null);
+            // BlockEntityRenderHelper.renderItem2dWithAmount(
+            // poseStack,
+            // null,
+            // state.jobProgress.what(),
+            // state.jobProgress.amount(), false,
+            // 0.3f,
+            // -0.18f,
+            // state.textColor,
+            // null);
+            state.what.submit(poseStack, nodes, LightTexture.FULL_BRIGHT);
 
             poseStack.popPose();
         }

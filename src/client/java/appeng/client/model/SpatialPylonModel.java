@@ -31,6 +31,7 @@ import net.minecraft.client.renderer.block.model.BlockModelPart;
 import net.minecraft.client.renderer.block.model.BlockStateModel;
 import net.minecraft.client.renderer.block.model.SimpleModelWrapper;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.resources.model.ModelBaker;
@@ -38,7 +39,6 @@ import net.minecraft.client.resources.model.ModelDebugName;
 import net.minecraft.client.resources.model.QuadCollection;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.data.AtlasIds;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockAndTintGetter;
@@ -204,7 +204,7 @@ public class SpatialPylonModel implements DynamicBlockStateModel {
         }
 
         private static Material getTexturePath(SpatialPylonTextureType type) {
-            return new Material(AtlasIds.BLOCKS,
+            return new Material(TextureAtlas.LOCATION_BLOCKS,
                     AppEng.makeId("block/spatial_pylon/" + type.name().toLowerCase(Locale.ROOT)));
         }
 

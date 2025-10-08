@@ -19,171 +19,110 @@
 package appeng.parts.p2p;
 
 import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.energy.IEnergyStorage;
+import net.neoforged.neoforge.transfer.TransferPreconditions;
+import net.neoforged.neoforge.transfer.energy.EmptyEnergyHandler;
+import net.neoforged.neoforge.transfer.energy.EnergyHandler;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
 import appeng.api.config.PowerUnit;
 import appeng.api.parts.IPartItem;
 
-public class FEP2PTunnelPart extends CapabilityP2PTunnelPart<FEP2PTunnelPart, IEnergyStorage> {
-    private static final IEnergyStorage NULL_ENERGY_STORAGE = new NullEnergyStorage();
-
+public class FEP2PTunnelPart extends CapabilityP2PTunnelPart<FEP2PTunnelPart, EnergyHandler> {
     public FEP2PTunnelPart(IPartItem<?> partItem) {
-        super(partItem, Capabilities.EnergyStorage.BLOCK);
-        inputHandler = new InputEnergyStorage();
-        outputHandler = new OutputEnergyStorage();
-        emptyHandler = NULL_ENERGY_STORAGE;
+        super(partItem, Capabilities.Energy.BLOCK);
+        inputHandler = new InputEnergyHandler();
+        outputHandler = new OutputEnergyHandler();
+        emptyHandler = EmptyEnergyHandler.INSTANCE;
     }
 
-    private class InputEnergyStorage implements IEnergyStorage {
+    private class InputEnergyHandler implements EnergyHandler {
         @Override
-        public int extractEnergy(int maxExtract, boolean simulate) {
-            return 0;
-        }
-
-        @Override
-        public int receiveEnergy(int maxReceive, boolean simulate) {
+        public int insert(int maxAmount, TransactionContext tx) {
+            TransferPreconditions.checkNonNegative(maxAmount);
             int total = 0;
 
-            final int outputTunnels = FEP2PTunnelPart.this.getOutputs().size();
+            int outputTunnels = getOutputs().size();
+            int amount = maxAmount;
 
-            if (outputTunnels == 0 | maxReceive == 0) {
+            if (outputTunnels == 0 || amount == 0) {
                 return 0;
             }
 
-            final int amountPerOutput = maxReceive / outputTunnels;
-            int overflow = amountPerOutput == 0 ? maxReceive : maxReceive % amountPerOutput;
+            int amountPerOutput = amount / outputTunnels;
+            int overflow = amountPerOutput == 0 ? amount : amount % amountPerOutput;
 
-            for (FEP2PTunnelPart target : FEP2PTunnelPart.this.getOutputs()) {
+            for (var target : getOutputs()) {
                 try (CapabilityGuard capabilityGuard = target.getAdjacentCapability()) {
-                    final IEnergyStorage output = capabilityGuard.get();
-                    final int toSend = amountPerOutput + overflow;
-                    final int received = output.receiveEnergy(toSend, simulate);
+                    var output = capabilityGuard.get();
+                    int toSend = amountPerOutput + overflow;
+
+                    int received = output.insert(toSend, tx);
 
                     overflow = toSend - received;
                     total += received;
                 }
             }
 
-            if (!simulate) {
-                deductEnergyCost(total, PowerUnit.FE);
-            }
+            deductEnergyCost(total, PowerUnit.FE, tx);
 
             return total;
         }
 
         @Override
-        public boolean canExtract() {
-            return false;
+        public int extract(int maxAmount, TransactionContext transaction) {
+            return 0;
         }
 
         @Override
-        public boolean canReceive() {
-            return true;
-        }
-
-        @Override
-        public int getMaxEnergyStored() {
-            int total = 0;
-
-            for (FEP2PTunnelPart t : FEP2PTunnelPart.this.getOutputs()) {
-                try (CapabilityGuard capabilityGuard = t.getAdjacentCapability()) {
-                    total += capabilityGuard.get().getMaxEnergyStored();
+        public long getAmountAsLong() {
+            long tot = 0;
+            for (var output : getOutputs()) {
+                try (var capabilityGuard = output.getAdjacentCapability()) {
+                    tot += capabilityGuard.get().getAmountAsLong();
                 }
             }
-
-            return total;
+            return tot;
         }
 
         @Override
-        public int getEnergyStored() {
-            int total = 0;
-
-            for (FEP2PTunnelPart t : FEP2PTunnelPart.this.getOutputs()) {
-                try (CapabilityGuard capabilityGuard = t.getAdjacentCapability()) {
-                    total += capabilityGuard.get().getEnergyStored();
+        public long getCapacityAsLong() {
+            long tot = 0;
+            for (var output : getOutputs()) {
+                try (var capabilityGuard = output.getAdjacentCapability()) {
+                    tot += capabilityGuard.get().getCapacityAsLong();
                 }
             }
-
-            return total;
+            return tot;
         }
     }
 
-    private class OutputEnergyStorage implements IEnergyStorage {
+    private class OutputEnergyHandler implements EnergyHandler {
         @Override
-        public int extractEnergy(int maxExtract, boolean simulate) {
-            try (CapabilityGuard input = getInputCapability()) {
-                final int total = input.get().extractEnergy(maxExtract, simulate);
+        public int insert(int maxAmount, TransactionContext tx) {
+            return 0;
+        }
 
-                if (!simulate) {
-                    deductEnergyCost(total, PowerUnit.FE);
-                }
-
-                return total;
+        @Override
+        public int extract(int maxAmount, TransactionContext tx) {
+            try (var input = getInputCapability()) {
+                int extracted = input.get().extract(maxAmount, tx);
+                deductEnergyCost(extracted, PowerUnit.FE, tx);
+                return extracted;
             }
         }
 
         @Override
-        public int receiveEnergy(int maxReceive, boolean simulate) {
-            return 0;
-        }
-
-        @Override
-        public boolean canExtract() {
-            try (CapabilityGuard input = getInputCapability()) {
-                return input.get().canExtract();
+        public long getAmountAsLong() {
+            try (var input = getInputCapability()) {
+                return input.get().getAmountAsLong();
             }
         }
 
         @Override
-        public boolean canReceive() {
-            return false;
-        }
-
-        @Override
-        public int getMaxEnergyStored() {
-            try (CapabilityGuard input = getInputCapability()) {
-                return input.get().getMaxEnergyStored();
+        public long getCapacityAsLong() {
+            try (var input = getInputCapability()) {
+                return input.get().getCapacityAsLong();
             }
-        }
-
-        @Override
-        public int getEnergyStored() {
-            try (CapabilityGuard input = getInputCapability()) {
-                return input.get().getEnergyStored();
-            }
-        }
-    }
-
-    private static class NullEnergyStorage implements IEnergyStorage {
-
-        @Override
-        public int receiveEnergy(int maxReceive, boolean simulate) {
-            return 0;
-        }
-
-        @Override
-        public int extractEnergy(int maxExtract, boolean simulate) {
-            return 0;
-        }
-
-        @Override
-        public int getEnergyStored() {
-            return 0;
-        }
-
-        @Override
-        public int getMaxEnergyStored() {
-            return 0;
-        }
-
-        @Override
-        public boolean canExtract() {
-            return false;
-        }
-
-        @Override
-        public boolean canReceive() {
-            return false;
         }
     }
 }

@@ -19,6 +19,7 @@
 package appeng.helpers.externalstorage;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -30,6 +31,7 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.transfer.transaction.SnapshotJournal;
 
 import it.unimi.dsi.fastutil.objects.Reference2LongArrayMap;
 import it.unimi.dsi.fastutil.objects.Reference2LongMap;
@@ -49,7 +51,7 @@ import appeng.api.storage.MEStorage;
 import appeng.core.AELog;
 import appeng.util.ConfigMenuInventory;
 
-public class GenericStackInv implements MEStorage, GenericInternalInventory {
+public class GenericStackInv extends SnapshotJournal<GenericStack[]> implements MEStorage, GenericInternalInventory {
     protected final GenericStack[] stacks;
     private final Runnable listener;
     private boolean suppressOnChange;
@@ -464,5 +466,22 @@ public class GenericStackInv implements MEStorage, GenericInternalInventory {
      */
     public void setDescription(Component description) {
         this.description = description;
+    }
+
+    @Override
+    protected GenericStack[] createSnapshot() {
+        return stacks.clone();
+    }
+
+    @Override
+    protected void revertToSnapshot(GenericStack[] snapshot) {
+        System.arraycopy(snapshot, 0, this.stacks, 0, this.stacks.length);
+    }
+
+    @Override
+    protected void onRootCommit(GenericStack[] originalState) {
+        if (!Arrays.equals(this.stacks, originalState)) {
+            onChange();
+        }
     }
 }

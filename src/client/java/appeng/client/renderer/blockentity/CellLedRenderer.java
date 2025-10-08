@@ -50,7 +50,7 @@ public class CellLedRenderer {
             // Bottom Face
             R, B, FR, L, B, FR, L, B, BA, R, B, BA, };
 
-    public static void renderLed(Vector3f color, VertexConsumer buffer, PoseStack ms) {
+    public static void renderLed(Vector3f color, VertexConsumer buffer, PoseStack.Pose pose) {
         if (color == null) {
             return;
         }
@@ -59,7 +59,7 @@ public class CellLedRenderer {
             float x = LED_QUADS[i];
             float y = LED_QUADS[i + 1];
             float z = LED_QUADS[i + 2];
-            buffer.addVertex(ms.last().pose(), x, y, z).setColor(color.x(), color.y(), color.z(), 1.f);
+            buffer.addVertex(pose, x, y, z).setColor(color.x(), color.y(), color.z(), 1.f);
         }
     }
 

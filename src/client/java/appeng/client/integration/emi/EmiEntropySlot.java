@@ -12,8 +12,8 @@ import net.minecraft.world.level.material.Fluid;
 import dev.emi.emi.api.stack.EmiStack;
 import dev.emi.emi.api.widget.SlotWidget;
 
-import appeng.api.client.AEKeyRendering;
 import appeng.api.stacks.AEFluidKey;
+import appeng.client.api.AEKeyRendering;
 import appeng.core.localization.ItemModText;
 
 /**

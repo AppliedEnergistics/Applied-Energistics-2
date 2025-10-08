@@ -37,9 +37,9 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.state.CameraRenderState;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.core.BlockPos;
-import net.minecraft.data.AtlasIds;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.phys.AABB;
@@ -56,9 +56,9 @@ public class SkyStoneChestRenderer implements BlockEntityRenderer<SkyStoneChestB
     public static ModelLayerLocation MODEL_LAYER = new ModelLayerLocation(AppEng.makeId("sky_chest"), "main");
 
     // The textures are in the block sheet due to the item model requiring them there
-    public static final Material TEXTURE_STONE = new Material(AtlasIds.BLOCKS,
+    public static final Material TEXTURE_STONE = new Material(TextureAtlas.LOCATION_BLOCKS,
             AppEng.makeId("block/skychest"));
-    public static final Material TEXTURE_BLOCK = new Material(AtlasIds.BLOCKS,
+    public static final Material TEXTURE_BLOCK = new Material(TextureAtlas.LOCATION_BLOCKS,
             AppEng.makeId("block/skyblockchest"));
 
     private final ModelPart lid;

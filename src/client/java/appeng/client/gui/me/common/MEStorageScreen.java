@@ -52,7 +52,6 @@ import guideme.document.LytRect;
 import guideme.render.SimpleRenderContext;
 
 import appeng.api.behaviors.ContainerItemStrategies;
-import appeng.api.client.AEKeyRendering;
 import appeng.api.config.ActionItems;
 import appeng.api.config.Settings;
 import appeng.api.config.SortDir;
@@ -69,6 +68,7 @@ import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 import appeng.client.Hotkeys;
 import appeng.client.Point;
+import appeng.client.api.AEKeyRendering;
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.AESubScreen;
 import appeng.client.gui.style.Blitter;
@@ -623,7 +623,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
                 GridInventoryEntry entry = repoSlot.getEntry();
                 if (entry != null) {
                     try {
-                        AEKeyRendering.drawInGui(
+                        appeng.client.api.AEKeyRendering.drawInGui(
                                 minecraft,
                                 guiGraphics,
                                 s.x,

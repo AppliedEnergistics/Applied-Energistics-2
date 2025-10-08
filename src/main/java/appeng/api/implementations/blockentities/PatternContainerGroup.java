@@ -82,12 +82,12 @@ public record PatternContainerGroup(
         }
 
         // Heuristic: If it doesn't allow item or fluid transfers, ignore it
-        var itemHandler = level.getCapability(Capabilities.ItemHandler.BLOCK, pos, target.getBlockState(), target,
+        var itemHandler = level.getCapability(Capabilities.Item.BLOCK, pos, target.getBlockState(), target,
                 side);
-        if (itemHandler == null || itemHandler.getSlots() <= 0) {
-            var fluidHandler = level.getCapability(Capabilities.FluidHandler.BLOCK, pos, target.getBlockState(), target,
+        if (itemHandler == null || itemHandler.size() <= 0) {
+            var fluidHandler = level.getCapability(Capabilities.Fluid.BLOCK, pos, target.getBlockState(), target,
                     side);
-            if (fluidHandler == null || fluidHandler.getTanks() == 0) {
+            if (fluidHandler == null || fluidHandler.size() == 0) {
                 return null;
             }
         }

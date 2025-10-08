@@ -7,8 +7,8 @@ import java.util.function.Predicate;
 
 import net.minecraft.ChatFormatting;
 
-import appeng.api.client.AEKeyRendering;
 import appeng.api.stacks.AEKey;
+import appeng.client.api.AEKeyRendering;
 import appeng.core.AEConfig;
 import appeng.menu.me.common.GridInventoryEntry;
 import appeng.util.Platform;

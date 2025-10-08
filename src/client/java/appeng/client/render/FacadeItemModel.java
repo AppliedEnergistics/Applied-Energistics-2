@@ -97,6 +97,7 @@ public class FacadeItemModel implements ItemModel {
         var facadeLayer = renderState.newLayer();
         facadeLayer.setTransform(baseModel.renderProperties().transforms().getTransform(displayContext));
         facadeLayer.setupSpecialModel(new FacadeSpecialRender(), facadeBlockState);
+        renderState.appendModelIdentityElement(this);
     }
 
     public class FacadeSpecialRender implements SpecialModelRenderer<BlockState> {

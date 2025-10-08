@@ -11,11 +11,12 @@ import net.minecraft.world.level.storage.TagValueInput;
 import net.minecraft.world.level.storage.TagValueOutput;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
-import net.neoforged.neoforge.fluids.FluidUtil;
-import net.neoforged.neoforge.fluids.IFluidTank;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
-import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.fluid.FluidStacksResourceHandler;
+import net.neoforged.neoforge.transfer.fluid.FluidUtil;
 
 import appeng.blockentity.AEBaseBlockEntity;
 
@@ -23,9 +24,10 @@ public class SkyStoneTankBlockEntity extends AEBaseBlockEntity {
 
     public static final int BUCKET_CAPACITY = 16;
 
-    protected FluidTank tank = new FluidTank(FluidType.BUCKET_VOLUME * BUCKET_CAPACITY) {
+    protected FluidStacksResourceHandler tank = new FluidStacksResourceHandler(1,
+            FluidType.BUCKET_VOLUME * BUCKET_CAPACITY) {
         @Override
-        protected void onContentsChanged() {
+        protected void onContentsChanged(int index, FluidStack previousContents) {
             SkyStoneTankBlockEntity.this.markForUpdate();
             SkyStoneTankBlockEntity.this.setChanged();
         }
@@ -48,14 +50,10 @@ public class SkyStoneTankBlockEntity extends AEBaseBlockEntity {
     }
 
     public boolean onPlayerUse(Player player, InteractionHand hand) {
-        return FluidUtil.interactWithFluidHandler(player, hand, tank);
+        return FluidUtil.interactWithFluidHandler(player, hand, getBlockPos(), tank);
     }
 
-    public IFluidTank getTank() {
-        return tank;
-    }
-
-    public IFluidHandler getFluidHandler() {
+    public ResourceHandler<FluidResource> getFluidHandler() {
         return tank;
     }
 

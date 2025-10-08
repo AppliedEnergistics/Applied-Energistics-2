@@ -80,8 +80,7 @@ public class DriveRenderer implements BlockEntityRenderer<DriveBlockEntity, Ches
                 nodes.submitCustomGeometry(
                         poseStack,
                         AERenderTypes.STORAGE_CELL_LEDS,
-                        (pose, consumer) -> CellLedRenderer.renderLed(
-                                state.cellColors[slot], consumer, poseStack));
+                        (pose, consumer) -> CellLedRenderer.renderLed(state.cellColors[slot], consumer, pose));
 
                 poseStack.popPose();
             }

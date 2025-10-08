@@ -31,7 +31,9 @@ import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.item.ItemModelResolver;
 import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.world.entity.ItemOwner;
 import net.minecraft.world.item.ItemDisplayContext;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
 import appeng.api.orientation.BlockOrientation;
@@ -69,9 +71,24 @@ public final class ChargerRenderer implements BlockEntityRenderer<ChargerBlockEn
             this.itemModelResolver.updateForTopItem(
                     state.item,
                     item,
-                    ItemDisplayContext.FIXED,
+                    ItemDisplayContext.ON_SHELF,
                     be.getLevel(),
-                    null,
+                    new ItemOwner() {
+                        @Override
+                        public Level level() {
+                            return be.getLevel();
+                        }
+
+                        @Override
+                        public Vec3 position() {
+                            return be.getBlockPos().getCenter();
+                        }
+
+                        @Override
+                        public float getVisualRotationYInDegrees() {
+                            return 0;
+                        }
+                    },
                     // This is the random seed
                     (int) be.getBlockPos().asLong());
         }
@@ -89,11 +106,9 @@ public final class ChargerRenderer implements BlockEntityRenderer<ChargerBlockEn
         poseStack.mulPose(state.blockOrientation.getQuaternion());
         poseStack.translate(-0.5, -0.5, -0.5);
 
-        poseStack.pushPose();
         poseStack.mulPose(state.transform.getMatrix());
 
         state.item.submit(poseStack, nodes, state.lightCoords, OverlayTexture.NO_OVERLAY, 0);
-        poseStack.popPose();
 
         poseStack.popPose();
     }

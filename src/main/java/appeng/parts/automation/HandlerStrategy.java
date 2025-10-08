@@ -8,7 +8,10 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.items.ItemHandlerHelper;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 
 import appeng.api.config.Actionable;
 import appeng.api.stacks.AEFluidKey;
@@ -39,24 +42,30 @@ public abstract class HandlerStrategy<C, S> {
 
     public abstract long insert(C handler, AEKey what, long amount, Actionable mode);
 
-    public static final HandlerStrategy<IItemHandler, ItemStack> ITEMS = new HandlerStrategy<>(AEKeyType.items()) {
+    public static final HandlerStrategy<ResourceHandler<ItemResource>, ItemStack> ITEMS = new HandlerStrategy<>(
+            AEKeyType.items()) {
         @Override
         public boolean isSupported(AEKey what) {
             return AEItemKey.is(what);
         }
 
         @Override
-        public ExternalStorageFacade getFacade(IItemHandler handler) {
-            return ExternalStorageFacade.of(handler);
+        public ExternalStorageFacade getFacade(ResourceHandler<ItemResource> handler) {
+            return ExternalStorageFacade.of(IItemHandler.of(handler));
         }
 
         @Override
-        public long insert(IItemHandler handler, AEKey what, long amount, Actionable mode) {
-            if (what instanceof AEItemKey itemKey) {
-                var stack = itemKey.toStack(Ints.saturatedCast(amount));
+        public long insert(ResourceHandler<ItemResource> handler, AEKey what, long amount, Actionable mode) {
+            if (what instanceof AEItemKey itemKey && amount > 0) {
+                var insertAmount = Ints.saturatedCast(amount);
 
-                var remainder = ItemHandlerHelper.insertItem(handler, stack, mode.isSimulate());
-                return amount - remainder.getCount();
+                try (var tx = Transaction.open(null)) {
+                    var inserted = handler.insert(itemKey.toResource(), insertAmount, tx);
+                    if (!mode.isSimulate()) {
+                        tx.commit();
+                    }
+                    return inserted;
+                }
             }
 
             return 0;
@@ -72,22 +81,30 @@ public abstract class HandlerStrategy<C, S> {
         }
     };
 
-    public static final HandlerStrategy<IFluidHandler, FluidStack> FLUIDS = new HandlerStrategy<>(AEKeyType.fluids()) {
+    public static final HandlerStrategy<ResourceHandler<FluidResource>, FluidStack> FLUIDS = new HandlerStrategy<>(
+            AEKeyType.fluids()) {
         @Override
         public boolean isSupported(AEKey what) {
             return AEFluidKey.is(what);
         }
 
         @Override
-        public ExternalStorageFacade getFacade(IFluidHandler handler) {
-            return ExternalStorageFacade.of(handler);
+        public ExternalStorageFacade getFacade(ResourceHandler<FluidResource> handler) {
+            return ExternalStorageFacade.of(IFluidHandler.of(handler));
         }
 
         @Override
-        public long insert(IFluidHandler handler, AEKey what, long amount, Actionable mode) {
-            if (what instanceof AEFluidKey itemKey && amount > 0) {
-                var stack = itemKey.toStack(Ints.saturatedCast(amount));
-                return handler.fill(stack, mode.getFluidAction());
+        public long insert(ResourceHandler<FluidResource> handler, AEKey what, long amount, Actionable mode) {
+            if (what instanceof AEFluidKey fluidKey && amount > 0) {
+                var insertAmount = Ints.saturatedCast(amount);
+
+                try (var tx = Transaction.open(null)) {
+                    var inserted = handler.insert(fluidKey.toResource(), insertAmount, tx);
+                    if (!mode.isSimulate()) {
+                        tx.commit();
+                    }
+                    return inserted;
+                }
             }
 
             return 0;

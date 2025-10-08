@@ -18,7 +18,9 @@
 
 package appeng.client.areaoverlay;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -29,13 +31,16 @@ import org.joml.Quaternionf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.util.context.ContextKey;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.client.event.ExtractLevelRenderStateEvent;
 import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
 
 import appeng.client.render.AERenderTypes;
+import appeng.core.AppEng;
 import appeng.core.areaoverlay.AreaOverlayManager;
 import appeng.core.areaoverlay.IAreaOverlayDataSource;
 
@@ -44,9 +49,29 @@ import appeng.core.areaoverlay.IAreaOverlayDataSource;
  */
 public class AreaOverlayRenderer {
 
+    private static final ContextKey<List<IAreaOverlayDataSource>> OVERLAY_AREAS = new ContextKey<>(
+            AppEng.makeId("overlay_areas"));
+
+    @SubscribeEvent
+    public void extractRenderState(ExtractLevelRenderStateEvent event) {
+        var visibleAreas = AreaOverlayManager.getInstance().getVisible();
+
+        var areasInThisLevel = new ArrayList<IAreaOverlayDataSource>();
+        for (var visibleArea : visibleAreas) {
+            if (visibleArea.getOverlaySourceLocation().getLevel() == event.getLevel()) {
+                areasInThisLevel.add(visibleArea);
+            }
+        }
+        event.getRenderState().setRenderData(OVERLAY_AREAS, areasInThisLevel);
+    }
+
     @SubscribeEvent
     public void renderWorldLastEvent(RenderLevelStageEvent.AfterLevel event) {
-        var visibleAreas = AreaOverlayManager.getInstance().getVisible();
+        var visibleAreas = event.getLevelRenderState().getRenderDataOrDefault(OVERLAY_AREAS, List.of());
+
+        if (visibleAreas.isEmpty()) {
+            return;
+        }
 
         Minecraft minecraft = Minecraft.getInstance();
         MultiBufferSource.BufferSource buffer = minecraft.renderBuffers().bufferSource();
@@ -61,10 +86,6 @@ public class AreaOverlayRenderer {
         poseStack.translate(-projectedView.x, -projectedView.y, -projectedView.z);
 
         for (var visibleArea : visibleAreas) {
-            if (visibleArea.getOverlaySourceLocation().getLevel() != event.getLevel()) {
-                continue;
-            }
-
             render(visibleArea, poseStack, buffer);
         }
 

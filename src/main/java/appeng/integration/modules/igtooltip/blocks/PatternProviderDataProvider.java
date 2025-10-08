@@ -6,7 +6,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.world.entity.player.Player;
 
-import appeng.api.client.AEKeyRendering;
 import appeng.api.integrations.igtooltip.TooltipBuilder;
 import appeng.api.integrations.igtooltip.TooltipContext;
 import appeng.api.integrations.igtooltip.providers.BodyProvider;
@@ -33,7 +32,7 @@ public final class PatternProviderDataProvider
         }
         var genericStack = context.serverData().read(NBT_LOCK_UNTIL_RESULT_STACK, GenericStack.CODEC).orElse(null);
         if (genericStack != null) {
-            var stackName = AEKeyRendering.getDisplayName(genericStack.what());
+            var stackName = genericStack.what().getDisplayName();
             var stackAmount = Component
                     .literal(genericStack.what().formatAmount(genericStack.amount(), AmountFormat.FULL));
             tooltip.addLine(

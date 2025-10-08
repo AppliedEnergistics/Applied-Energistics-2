@@ -18,55 +18,76 @@
 
 package appeng.helpers;
 
-import net.neoforged.neoforge.energy.IEnergyStorage;
+import net.neoforged.neoforge.transfer.TransferPreconditions;
+import net.neoforged.neoforge.transfer.energy.EnergyHandler;
+import net.neoforged.neoforge.transfer.transaction.SnapshotJournal;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerUnit;
 import appeng.blockentity.powersink.IExternalPowerSink;
+import appeng.me.energy.StoredEnergyAmount;
 
 /**
- * Adapts an {@link IExternalPowerSink} to Forges {@link IEnergyStorage}.
+ * Adapts an {@link IExternalPowerSink} to {@link EnergyHandler}, for accepting FE.
  */
-public class ForgeEnergyAdapter implements IEnergyStorage {
+public class ForgeEnergyAdapter extends SnapshotJournal<Double> implements EnergyHandler {
 
     private final IExternalPowerSink sink;
+    private double buffer = 0;
 
     public ForgeEnergyAdapter(IExternalPowerSink sink) {
         this.sink = sink;
     }
 
     @Override
-    public final int receiveEnergy(int maxReceive, boolean simulate) {
-        final double offered = maxReceive;
-        final double overflow = this.sink.injectExternalPower(PowerUnit.FE, offered,
-                simulate ? Actionable.SIMULATE : Actionable.MODULATE);
-
-        return (int) (maxReceive - overflow);
+    protected Double createSnapshot() {
+        return buffer;
     }
 
     @Override
-    public final int getEnergyStored() {
-        return (int) Math.floor(PowerUnit.AE.convertTo(PowerUnit.FE, this.sink.getAECurrentPower()));
+    protected void revertToSnapshot(Double snapshot) {
+        buffer = snapshot;
     }
 
     @Override
-    public final int getMaxEnergyStored() {
-        return (int) Math.floor(PowerUnit.AE.convertTo(PowerUnit.FE, this.sink.getAEMaxPower()));
+    protected void onRootCommit(Double originalState) {
+        buffer = sink.injectExternalPower(PowerUnit.FE, buffer, Actionable.MODULATE);
+        if (buffer < StoredEnergyAmount.MIN_AMOUNT) {
+            // Prevent a small leftover amount from blocking further energy insertions.
+            buffer = 0;
+        }
     }
 
     @Override
-    public int extractEnergy(int maxExtract, boolean simulate) {
+    public int insert(int maxAmount, TransactionContext tx) {
+        TransferPreconditions.checkNonNegative(maxAmount);
+        // Always schedule a push into the network at outer commit.
+        updateSnapshots(tx);
+
+        if (buffer == 0) {
+            // Cap at the remaining capacity...
+            maxAmount = (int) Math
+                    .floor(Math.min(maxAmount, this.sink.getExternalPowerDemand(PowerUnit.FE, maxAmount)));
+            buffer = maxAmount;
+            return maxAmount;
+        }
+
         return 0;
     }
 
     @Override
-    public boolean canExtract() {
-        return false;
+    public final long getAmountAsLong() {
+        return (long) Math.floor(PowerUnit.AE.convertTo(PowerUnit.FE, this.sink.getAECurrentPower()));
     }
 
     @Override
-    public boolean canReceive() {
-        return true;
+    public final long getCapacityAsLong() {
+        return (long) Math.floor(PowerUnit.AE.convertTo(PowerUnit.FE, this.sink.getAEMaxPower()));
     }
 
+    @Override
+    public int extract(int maxAmount, TransactionContext transaction) {
+        return 0;
+    }
 }

@@ -25,6 +25,7 @@ import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 
 import appeng.api.storage.AEKeyFilter;
 import appeng.core.AELog;
@@ -65,6 +66,14 @@ public final class AEFluidKey extends AEKey {
             return null;
         }
         return new AEFluidKey(fluidVariant.copyWithAmount(1));
+    }
+
+    @Nullable
+    public static AEFluidKey of(FluidResource resource) {
+        if (resource.isEmpty()) {
+            return null;
+        }
+        return new AEFluidKey(resource.toStack(1));
     }
 
     public static boolean matches(AEKey what, FluidStack fluid) {
@@ -158,6 +167,10 @@ public final class AEFluidKey extends AEKey {
     @Override
     public boolean hasComponents() {
         return stack.getComponents().isEmpty();
+    }
+
+    public FluidResource toResource() {
+        return FluidResource.of(stack);
     }
 
     public FluidStack toStack(int amount) {

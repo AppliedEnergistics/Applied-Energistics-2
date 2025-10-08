@@ -32,6 +32,8 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.model.data.ModelData;
+import net.neoforged.neoforge.transfer.transaction.SnapshotJournal;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
@@ -59,6 +61,7 @@ import appeng.util.SettingsFrom;
 public abstract class P2PTunnelPart<T extends P2PTunnelPart<T>> extends AEBasePart {
     private boolean output;
     private short freq;
+    private final EnergyCostJournal energyCostJournal = new EnergyCostJournal();
 
     public P2PTunnelPart(IPartItem<?> partItem) {
         super(partItem);
@@ -306,6 +309,26 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart<T>> extends AEBasePa
         });
     }
 
+    protected void deductEnergyCost(double energyTransported, PowerUnit typeTransported, TransactionContext tx) {
+        var costFactor = AEConfig.instance().getP2PTunnelEnergyTax();
+        var tax = typeTransported.convertTo(PowerUnit.AE, energyTransported * costFactor);
+        if (tax > 0) {
+            energyCostJournal.updateSnapshots(tx);
+            energyCostJournal.pendingEnergyCost += tax;
+        }
+    }
+
+    protected void deductTransportCost(long amountTransported, AEKeyType typeTransported, TransactionContext tx) {
+        var costFactor = AEConfig.instance().getP2PTunnelTransportTax();
+        double operations = amountTransported / (double) typeTransported.getAmountPerOperation();
+        double tax = operations * costFactor;
+
+        if (tax > 0) {
+            energyCostJournal.updateSnapshots(tx);
+            energyCostJournal.pendingEnergyCost += tax;
+        }
+    }
+
     /**
      * Use {@link #deductEnergyCost} or {@link #deductTransportCost}.
      */
@@ -351,5 +374,29 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart<T>> extends AEBasePa
         }
 
         builder.with(PartModelData.P2P_FREQUENCY, ret);
+    }
+
+    private class EnergyCostJournal extends SnapshotJournal<Double> {
+        private double pendingEnergyCost;
+
+        @Override
+        protected Double createSnapshot() {
+            return pendingEnergyCost;
+        }
+
+        @Override
+        protected void revertToSnapshot(Double snapshot) {
+            pendingEnergyCost = snapshot;
+        }
+
+        @Override
+        protected void onRootCommit(Double originalState) {
+            if (pendingEnergyCost > 0) {
+                getMainNode().ifPresent(grid -> {
+                    grid.getEnergyService().extractAEPower(pendingEnergyCost, Actionable.MODULATE, PowerMultiplier.ONE);
+                });
+                pendingEnergyCost = 0;
+            }
+        }
     }
 }

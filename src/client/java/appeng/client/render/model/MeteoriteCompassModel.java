@@ -18,6 +18,7 @@
 
 package appeng.client.render.model;
 
+import java.util.Objects;
 import java.util.Set;
 
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -31,6 +32,7 @@ import org.joml.Vector2f;
 import org.joml.Vector3f;
 
 import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.item.ItemModel;
 import net.minecraft.client.renderer.item.ItemModelResolver;
@@ -80,6 +82,7 @@ public class MeteoriteCompassModel implements ItemModel {
         pointerLayer.setTransform(pointer.renderProperties().transforms().getTransform(displayContext));
         pointerLayer.setupSpecialModel(rotatedPointerRenderer, target);
         renderState.setAnimated();
+        renderState.appendModelIdentityElement(this);
     }
 
     /**
@@ -147,20 +150,17 @@ public class MeteoriteCompassModel implements ItemModel {
 
             var transformer = QuadTransformers.applying(new Transformation(transformation));
 
-            // Pre-compute the quad count to avoid list resizes
-            // We'll add the pointer as "sideless" to the item rendering when state is null
-            // TODO 1.21.9 var buffer = bufferSource
-            // TODO 1.21.9 .getBuffer(Objects.requireNonNullElse(pointer.renderType(), Sheets.translucentItemSheet()));
-            // TODO 1.21.9 var pose = poseStack.last();
-            // TODO 1.21.9 for (var bakedQuad : this.pointer.quads()) {
-            // TODO 1.21.9 bakedQuad = transformer.process(bakedQuad);
-            // TODO 1.21.9 buffer.putBulkData(pose, bakedQuad, 1f, 1f, 1f, 1f, packedLight, packedOverlay);
-            // TODO 1.21.9 }
+            var renderType = Objects.requireNonNullElse(pointer.renderType(), Sheets.translucentItemSheet());
+            nodes.submitCustomGeometry(poseStack, renderType, (pose, buffer) -> {
+                for (var bakedQuad : this.pointer.quads()) {
+                    bakedQuad = transformer.process(bakedQuad);
+                    buffer.putBulkData(pose, bakedQuad, 1f, 1f, 1f, 1f, packedLight, packedOverlay);
+                }
+            });
         }
 
         @Override
         public void getExtents(Set<Vector3f> extents) {
-            extents.size();
         }
 
         @Override

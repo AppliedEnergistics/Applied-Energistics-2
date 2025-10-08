@@ -29,7 +29,6 @@ import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.material.Fluid;
 
-import appeng.api.client.AEKeyRendering;
 import appeng.api.config.FuzzyMode;
 import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.GenericStack;
@@ -73,7 +72,7 @@ public class CreativeCellItem extends AEBaseItem implements ICellWorkbenchItem {
             if (!cc.isEmpty()) {
                 if (tooltipFlags.hasShiftDown()) {
                     for (var key : cc.keySet()) {
-                        lines.accept(Tooltips.of(AEKeyRendering.getDisplayName(key)));
+                        lines.accept(Tooltips.of(key.getDisplayName()));
                     }
                 } else {
                     lines.accept(Tooltips.of(GuiText.PressShiftForFullList));

@@ -21,7 +21,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package appeng.api.client;
+package appeng.client.api;
 
 import java.util.ArrayList;
 import java.util.IdentityHashMap;
@@ -30,29 +30,26 @@ import java.util.Map;
 import java.util.Objects;
 
 import com.google.common.base.Preconditions;
-import com.mojang.blaze3d.vertex.PoseStack;
 
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.level.Level;
 
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.AEKeyType;
 
 /**
- * Registry for {@link AEKeyRenderHandler}. Also contains convenience functions to render a stack without having to
- * query the render handler first.
+ * Registry for {@link AEKeyRenderer}. Also contains convenience functions to render a stack without having to query the
+ * render handler first.
  */
 public class AEKeyRendering {
-    private static volatile Map<AEKeyType, AEKeyRenderHandler<?>> renderers = new IdentityHashMap<>();
+    private static volatile Map<AEKeyType, AEKeyRenderer<?, ?>> renderers = new IdentityHashMap<>();
 
-    public static synchronized <T extends AEKey> void register(AEKeyType channel,
+    public static synchronized <T extends AEKey, S> void register(AEKeyType channel,
             Class<T> keyClass,
-            AEKeyRenderHandler<T> handler) {
+            AEKeyRenderer<T, S> handler) {
         Objects.requireNonNull(channel, "channel");
         Objects.requireNonNull(handler, "handler");
         Objects.requireNonNull(keyClass, "keyClass");
@@ -66,46 +63,28 @@ public class AEKeyRendering {
         renderers = renderersCopy;
     }
 
+    @SuppressWarnings("unchecked")
     @Nullable
-    public static AEKeyRenderHandler<?> get(AEKeyType channel) {
-        return renderers.get(channel);
+    public static <T extends AEKey> AEKeyRenderer<? super T, ?> get(T key) {
+        return (AEKeyRenderer<? super T, ?>) renderers.get(key.getType());
     }
 
-    public static AEKeyRenderHandler<?> getOrThrow(AEKeyType channel) {
-        var renderHandler = get(channel);
+    public static <T extends AEKey> AEKeyRenderer<? super T, ?> getOrThrow(T key) {
+        var renderHandler = get(key);
 
         if (renderHandler == null) {
-            throw new IllegalArgumentException("Missing render handler for channel " + channel);
+            throw new IllegalArgumentException("Missing render handler for channel " + key.getType());
         }
 
         return renderHandler;
     }
 
-    @SuppressWarnings("rawtypes")
-    private static AEKeyRenderHandler getUnchecked(AEKey stack) {
-        return getOrThrow(stack.getType());
-    }
-
-    @SuppressWarnings("unchecked")
     public static void drawInGui(Minecraft minecraft, GuiGraphics guiGraphics, int x, int y, AEKey what) {
-        getUnchecked(what).drawInGui(minecraft, guiGraphics, x, y, what);
+        getOrThrow(what).drawInGui(minecraft, guiGraphics, x, y, what);
     }
 
-    @SuppressWarnings("unchecked")
-    public static void drawOnBlockFace(PoseStack poseStack, MultiBufferSource buffers, AEKey what, float scale,
-            int combinedLightIn, Level level) {
-        getUnchecked(what).drawOnBlockFace(poseStack, buffers, what, scale, combinedLightIn, level);
-    }
-
-    @SuppressWarnings("unchecked")
-    public static Component getDisplayName(AEKey stack) {
-        return getUnchecked(stack).getDisplayName(stack);
-    }
-
-    @SuppressWarnings("unchecked")
     public static List<Component> getTooltip(AEKey stack) {
         // The array list is used to ensure mutability of the returned tooltip.
-        return new ArrayList<Component>(getUnchecked(stack).getTooltip(stack));
+        return new ArrayList<>(getOrThrow(stack).getTooltip(stack));
     }
-
 }

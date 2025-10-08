@@ -301,6 +301,9 @@ public abstract class AEKey {
         return getType().supportsFuzzyRangeSearch();
     }
 
+    /**
+     * Display name of the resource identified by this key.
+     */
     public final Component getDisplayName() {
         var ret = cachedDisplayName;
 

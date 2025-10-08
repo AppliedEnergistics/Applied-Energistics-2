@@ -97,6 +97,9 @@ public class MEChestRenderer implements BlockEntityRenderer<MEChestBlockEntity, 
     @Override
     public void submit(MEChestRenderState state, PoseStack poseStack, SubmitNodeCollector nodes,
             CameraRenderState cameraRenderState) {
+        if (1 == 1) {
+            return; // TODO 1.21.9
+        }
 
         poseStack.pushPose();
         poseStack.translate(0.5, 0.5, 0.5);
@@ -121,8 +124,7 @@ public class MEChestRenderer implements BlockEntityRenderer<MEChestBlockEntity, 
         nodes.submitCustomGeometry(
                 poseStack,
                 AERenderTypes.STORAGE_CELL_LEDS,
-                (pose, consumer) -> CellLedRenderer.renderLed(
-                        state.cellColors[0], consumer, poseStack));
+                (pose, consumer) -> CellLedRenderer.renderLed(state.cellColors[0], consumer, pose));
 
         poseStack.popPose();
     }

@@ -9,7 +9,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.util.ARGB;
 
-import appeng.api.client.AEKeyRendering;
 import appeng.api.config.LockCraftingMode;
 import appeng.api.stacks.AmountFormat;
 import appeng.client.Point;
@@ -89,7 +88,7 @@ public class PatternProviderLockReason implements ICompositeWidget {
                 Component stackName;
                 Component stackAmount;
                 if (stack != null) {
-                    stackName = AEKeyRendering.getDisplayName(stack.what());
+                    stackName = stack.what().getDisplayName();
                     stackAmount = Component.literal(stack.what().formatAmount(stack.amount(), AmountFormat.FULL));
                 } else {
                     stackName = Component.literal("ERROR");

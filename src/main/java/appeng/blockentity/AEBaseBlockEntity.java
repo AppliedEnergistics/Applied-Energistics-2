@@ -164,6 +164,7 @@ public class AEBaseBlockEntity extends BlockEntity
                     level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 0);
                 }
             }
+            return;
         }
 
         // Load visual client-side data (used by PonderJS)

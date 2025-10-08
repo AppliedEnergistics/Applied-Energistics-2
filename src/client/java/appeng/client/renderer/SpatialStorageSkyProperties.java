@@ -20,10 +20,11 @@ package appeng.client.renderer;
 
 import org.joml.Matrix4f;
 
-import net.minecraft.client.Camera;
-import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.CloudStatus;
 import net.minecraft.client.renderer.DimensionSpecialEffects;
 import net.minecraft.client.renderer.DimensionSpecialEffects.SkyType;
+import net.minecraft.client.renderer.state.LevelRenderState;
+import net.minecraft.client.renderer.state.SkyRenderState;
 import net.minecraft.world.phys.Vec3;
 
 /**
@@ -46,15 +47,15 @@ public class SpatialStorageSkyProperties {
         }
 
         @Override
-        public boolean renderSky(ClientLevel level, int ticks, float partialTick, Matrix4f modelViewMatrix,
-                Camera camera, Runnable setupFog) {
+        public boolean renderSky(LevelRenderState levelRenderState, SkyRenderState skyRenderState,
+                Matrix4f modelViewMatrix, Runnable setupFog) {
             SpatialSkyRender.getInstance().render(modelViewMatrix);
             return true;
         }
 
         @Override
-        public boolean renderClouds(ClientLevel level, int ticks, float partialTick, double camX, double camY,
-                double camZ, Matrix4f modelViewMatrix) {
+        public boolean renderClouds(LevelRenderState levelRenderState, Vec3 camPos, CloudStatus cloudStatus,
+                int cloudColor, float cloudHeight, Matrix4f modelViewMatrix) {
             return true; // Disable clouds
         }
     };

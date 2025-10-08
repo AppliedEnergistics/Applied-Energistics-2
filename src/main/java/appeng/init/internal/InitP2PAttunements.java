@@ -37,11 +37,11 @@ public final class InitP2PAttunements {
         P2PTunnelAttunement.registerAttunementTag(AEParts.ITEM_P2P_TUNNEL);
         P2PTunnelAttunement.registerAttunementTag(AEParts.LIGHT_P2P_TUNNEL);
 
-        P2PTunnelAttunement.registerAttunementApi(P2PTunnelAttunement.ENERGY_TUNNEL,
-                Capabilities.EnergyStorage.ITEM,
+        P2PTunnelAttunement.registerItemAccessAttunementApi(P2PTunnelAttunement.ENERGY_TUNNEL,
+                Capabilities.Energy.ITEM,
                 GuiText.P2PAttunementEnergy.text());
-        P2PTunnelAttunement.registerAttunementApi(P2PTunnelAttunement.FLUID_TUNNEL,
-                Capabilities.FluidHandler.ITEM,
+        P2PTunnelAttunement.registerItemAccessAttunementApi(P2PTunnelAttunement.FLUID_TUNNEL,
+                Capabilities.Fluid.ITEM,
                 GuiText.P2PAttunementFluid.text());
     }
 }

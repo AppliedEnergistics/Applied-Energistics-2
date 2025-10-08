@@ -12,8 +12,8 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
-import appeng.api.client.AEKeyRendering;
 import appeng.api.stacks.GenericStack;
+import appeng.client.api.AEKeyRendering;
 
 @Mixin(value = Screen.class, priority = 1001)
 public class WrappedGenericStackTooltipModIdMixin {

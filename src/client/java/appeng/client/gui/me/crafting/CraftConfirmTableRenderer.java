@@ -23,9 +23,9 @@ import java.util.List;
 
 import net.minecraft.network.chat.Component;
 
-import appeng.api.client.AEKeyRendering;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.AmountFormat;
+import appeng.client.api.AEKeyRendering;
 import appeng.client.gui.AEBaseScreen;
 import appeng.core.localization.GuiText;
 import appeng.menu.me.crafting.CraftingPlanSummaryEntry;

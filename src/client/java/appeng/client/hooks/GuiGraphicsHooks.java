@@ -25,9 +25,9 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
-import appeng.api.client.AEKeyRendering;
 import appeng.api.stacks.AmountFormat;
 import appeng.api.stacks.GenericStack;
+import appeng.client.api.AEKeyRendering;
 import appeng.client.gui.me.common.StackSizeRenderer;
 import appeng.crafting.pattern.EncodedPatternItem;
 

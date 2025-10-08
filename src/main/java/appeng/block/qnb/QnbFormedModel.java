@@ -28,6 +28,7 @@ import net.minecraft.client.renderer.block.model.BlockModelPart;
 import net.minecraft.client.renderer.block.model.BlockStateModel;
 import net.minecraft.client.renderer.block.model.SimpleModelWrapper;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BlockModelRotation;
 import net.minecraft.client.resources.model.Material;
@@ -37,7 +38,6 @@ import net.minecraft.client.resources.model.QuadCollection;
 import net.minecraft.client.resources.model.SpriteGetter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.data.AtlasIds;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockAndTintGetter;
@@ -55,18 +55,17 @@ public class QnbFormedModel implements DynamicBlockStateModel {
     private static final ResourceLocation MODEL_RING = AppEng.makeId("block/quantum_ring");
     private static final ResourceLocation MODEL_LINK = AppEng.makeId("block/quantum_link");
 
-    private static final Material TEXTURE_LINK = new Material(AtlasIds.BLOCKS,
+    private static final Material TEXTURE_LINK = new Material(TextureAtlas.LOCATION_BLOCKS,
             AppEng.makeId("block/quantum_link"));
-    private static final Material TEXTURE_RING = new Material(AtlasIds.BLOCKS,
+    private static final Material TEXTURE_RING = new Material(TextureAtlas.LOCATION_BLOCKS,
             AppEng.makeId("block/quantum_ring"));
-    private static final Material TEXTURE_RING_LIGHT = new Material(AtlasIds.BLOCKS,
+    private static final Material TEXTURE_RING_LIGHT = new Material(TextureAtlas.LOCATION_BLOCKS,
             AppEng.makeId("block/quantum_ring_light"));
-    private static final Material TEXTURE_RING_LIGHT_CORNER = new Material(
-            AtlasIds.BLOCKS,
+    private static final Material TEXTURE_RING_LIGHT_CORNER = new Material(TextureAtlas.LOCATION_BLOCKS,
             AppEng.makeId("block/quantum_ring_light_corner"));
-    private static final Material TEXTURE_CABLE_GLASS = new Material(AtlasIds.BLOCKS,
+    private static final Material TEXTURE_CABLE_GLASS = new Material(TextureAtlas.LOCATION_BLOCKS,
             AppEng.makeId("part/cable/glass/transparent"));
-    private static final Material TEXTURE_COVERED_CABLE = new Material(AtlasIds.BLOCKS,
+    private static final Material TEXTURE_COVERED_CABLE = new Material(TextureAtlas.LOCATION_BLOCKS,
             AppEng.makeId("part/cable/covered/transparent"));
 
     private static final float DEFAULT_RENDER_MIN = 2.0f;

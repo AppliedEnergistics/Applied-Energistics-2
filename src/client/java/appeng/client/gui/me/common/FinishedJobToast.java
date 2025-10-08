@@ -11,7 +11,6 @@ import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
 
-import appeng.api.client.AEKeyRendering;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.AmountFormat;
 import appeng.core.localization.GuiText;
@@ -39,7 +38,7 @@ public class FinishedJobToast implements Toast {
 
         var formattedAmount = what.formatAmount(amount, AmountFormat.SLOT);
 
-        var text = GuiText.ToastCraftingJobFinishedText.text(formattedAmount, AEKeyRendering.getDisplayName(what));
+        var text = GuiText.ToastCraftingJobFinishedText.text(formattedAmount, what.getDisplayName());
         lines = font.split(text, width() - 30 - 5);
         height = Toast.super.height() + (lines.size() - 1) * font.lineHeight;
     }
@@ -78,7 +77,7 @@ public class FinishedJobToast implements Toast {
             guiGraphics.drawString(font, line, 30, lineY, TEXT_COLOR, false);
             lineY += font.lineHeight;
         }
-        AEKeyRendering.drawInGui(minecraft, guiGraphics, 8, 8, what);
+        appeng.client.api.AEKeyRendering.drawInGui(minecraft, guiGraphics, 8, 8, what);
     }
 
     @Override

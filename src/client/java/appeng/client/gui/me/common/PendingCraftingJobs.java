@@ -8,7 +8,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.item.ItemStack;
 
-import appeng.api.client.AEKeyRendering;
 import appeng.api.stacks.AEKey;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
@@ -40,7 +39,7 @@ public final class PendingCraftingJobs {
             CraftingJobStatusPacket.Status status) {
 
         AELog.debug("Crafting job " + id + " for " + requestedAmount
-                + "x" + AEKeyRendering.getDisplayName(what).getString() + ". State=" + status);
+                + "x" + what.getDisplayName().getString() + ". State=" + status);
 
         var existing = jobs.get(id);
         switch (status) {

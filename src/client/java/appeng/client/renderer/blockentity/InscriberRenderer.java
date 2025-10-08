@@ -32,10 +32,10 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.state.CameraRenderState;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.core.Direction;
-import net.minecraft.data.AtlasIds;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -52,7 +52,7 @@ public final class InscriberRenderer implements BlockEntityRenderer<InscriberBlo
 
     private static final float ITEM_RENDER_SCALE = 1.0f / 1.2f;
 
-    private static final Material TEXTURE_INSIDE = new Material(AtlasIds.BLOCKS,
+    private static final Material TEXTURE_INSIDE = new Material(TextureAtlas.LOCATION_BLOCKS,
             AppEng.makeId("block/inscriber_inside"));
 
     public InscriberRenderer(BlockEntityRendererProvider.Context context) {
@@ -234,7 +234,7 @@ public final class InscriberRenderer implements BlockEntityRenderer<InscriberBlo
 //                    blockEntity.getLevel());
 //        }
 //
-//        poseStack.popPose();
+        poseStack.popPose();
     }
 
     private static void addVertex(VertexConsumer vb, PoseStack ms, TextureAtlasSprite sprite, float x, float y,

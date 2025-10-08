@@ -10,7 +10,8 @@ import net.minecraft.world.level.block.entity.HopperBlockEntity;
 import net.minecraft.world.level.block.state.properties.ChestType;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 
 import appeng.api.config.Actionable;
 import appeng.api.stacks.AEItemKey;
@@ -41,23 +42,23 @@ public class InterfaceTestPlots {
         builder.test(helper -> {
             helper.startSequence()
                     .thenExecute(() -> {
-                        var itemCap = helper.getCapability(o, Capabilities.ItemHandler.BLOCK, Direction.UP);
-                        helper.check(itemCap.isItemValid(0, ItemStack.EMPTY), "empty stack should be valid in slot 0");
-                        helper.check(itemCap.isItemValid(0, Items.STICK.getDefaultInstance()),
+                        var itemCap = helper.getCapability(o, Capabilities.Item.BLOCK, Direction.UP);
+                        helper.check(itemCap.isValid(0, ItemResource.EMPTY), "empty stack should be valid in slot 0");
+                        helper.check(itemCap.isValid(0, ItemResource.of(Items.STICK)),
                                 "stick should be valid in slot 0");
-                        helper.check(itemCap.isItemValid(1, Items.STICK.getDefaultInstance()),
+                        helper.check(itemCap.isValid(1, ItemResource.of(Items.STICK)),
                                 "stick should be valid in slot 1");
-                        helper.check(!itemCap.isItemValid(0, Blocks.BRICKS.asItem().getDefaultInstance()),
+                        helper.check(!itemCap.isValid(0, ItemResource.of(Blocks.BRICKS)),
                                 "bricks should not be valid in slot 0");
-                        helper.check(itemCap.isItemValid(1, Blocks.BRICKS.asItem().getDefaultInstance()),
+                        helper.check(itemCap.isValid(1, ItemResource.of(Blocks.BRICKS)),
                                 "bricks should be valid in slot 1");
 
-                        var fluidCap = helper.getCapability(o, Capabilities.FluidHandler.BLOCK, Direction.UP);
-                        helper.check(fluidCap.isFluidValid(0, FluidStack.EMPTY),
+                        var fluidCap = helper.getCapability(o, Capabilities.Fluid.BLOCK, Direction.UP);
+                        helper.check(fluidCap.isValid(0, FluidResource.EMPTY),
                                 "empty fluid stack should be valid in slot 0");
-                        helper.check(!fluidCap.isFluidValid(0, new FluidStack(Fluids.WATER, 1)),
+                        helper.check(!fluidCap.isValid(0, FluidResource.of(Fluids.WATER)),
                                 "fluid should not be valid in slot 0");
-                        helper.check(fluidCap.isFluidValid(1, new FluidStack(Fluids.WATER, 1)),
+                        helper.check(fluidCap.isValid(1, FluidResource.of(Fluids.WATER)),
                                 "fluid should be valid in slot 1");
                     })
                     .thenWaitUntil(() -> {

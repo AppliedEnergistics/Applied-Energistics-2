@@ -12,8 +12,8 @@ import me.shedaniel.rei.api.client.gui.widgets.Tooltip;
 import me.shedaniel.rei.api.client.gui.widgets.TooltipContext;
 import me.shedaniel.rei.api.common.entry.EntryStack;
 
-import appeng.api.client.AEKeyRendering;
 import appeng.api.stacks.AEFluidKey;
+import appeng.client.api.AEKeyRendering;
 import appeng.client.integration.itemlists.FluidBlockRendering;
 
 public class FluidBlockRenderer implements EntryRenderer<FluidStack> {

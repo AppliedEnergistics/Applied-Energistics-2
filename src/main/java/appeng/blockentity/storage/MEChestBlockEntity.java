@@ -37,10 +37,10 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
-import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.FluidType;
-import net.neoforged.neoforge.fluids.IFluidTank;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.TransferPreconditions;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
@@ -60,6 +60,7 @@ import appeng.api.networking.security.IActionSource;
 import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
+import appeng.api.stacks.GenericStack;
 import appeng.api.storage.ILinkStatus;
 import appeng.api.storage.IStorageMounts;
 import appeng.api.storage.IStorageProvider;
@@ -87,6 +88,7 @@ import appeng.menu.MenuOpener;
 import appeng.menu.implementations.MEChestMenu;
 import appeng.menu.locator.MenuLocators;
 import appeng.menu.me.items.BasicCellChestMenu;
+import appeng.util.InsertionOnlyResourceHandlerWithJournal;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.CombinedInternalInventory;
 import appeng.util.inv.filter.IAEItemFilter;
@@ -121,7 +123,7 @@ public class MEChestBlockEntity extends AENetworkedPoweredBlockEntity
     private AEColor paintedColor = AEColor.TRANSPARENT;
     private boolean isCached = false;
     private ChestMonitorHandler cellHandler;
-    private IFluidHandler fluidHandler;
+    private ResourceHandler<FluidResource> fluidHandler;
     private double idlePowerUsage;
 
     public MEChestBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
@@ -602,7 +604,7 @@ public class MEChestBlockEntity extends AENetworkedPoweredBlockEntity
     }
 
     @Nullable
-    public IFluidHandler getFluidHandler(Direction side) {
+    public ResourceHandler<FluidResource> getFluidHandler(Direction side) {
         if (side != getFront()) {
             return fluidHandler;
         } else {
@@ -619,77 +621,62 @@ public class MEChestBlockEntity extends AENetworkedPoweredBlockEntity
         }
     }
 
-    private class FluidHandler implements IFluidHandler, IFluidTank {
+    private class FluidHandler extends InsertionOnlyResourceHandlerWithJournal<FluidResource, GenericStack> {
+        public FluidHandler() {
+            super(FluidResource.EMPTY);
+        }
 
         private boolean canAcceptLiquids() {
             return MEChestBlockEntity.this.cellHandler != null;
         }
 
         @Override
-        public FluidStack getFluid() {
-            return FluidStack.EMPTY;
-        }
+        public int insert(FluidResource resource, int maxAmount, TransactionContext transaction) {
+            TransferPreconditions.checkNonEmptyNonNegative(resource, maxAmount);
 
-        @Override
-        public int getFluidAmount() {
-            return 0;
-        }
+            if (pendingSideEffect != null) {
+                return 0; // Can only insert once per action
+            }
 
-        @Override
-        public int getCapacity() {
-            return canAcceptLiquids() ? FluidType.BUCKET_VOLUME : 0;
-        }
-
-        @Override
-        public boolean isFluidValid(FluidStack stack) {
-            return canAcceptLiquids();
-        }
-
-        @Override
-        public int getTanks() {
-            return 1;
-        }
-
-        @Override
-        public FluidStack getFluidInTank(int tank) {
-            return FluidStack.EMPTY;
-        }
-
-        @Override
-        public int getTankCapacity(int tank) {
-            return tank == 0 ? FluidType.BUCKET_VOLUME : 0;
-        }
-
-        @Override
-        public boolean isFluidValid(int tank, FluidStack stack) {
-            return tank == 0;
-        }
-
-        @Override
-        public int fill(FluidStack resource, FluidAction action) {
             MEChestBlockEntity.this.updateHandler();
             if (canAcceptLiquids()) {
                 var what = AEFluidKey.of(resource);
-                if (what != null) {
-                    return (int) StorageHelper.poweredInsert(MEChestBlockEntity.this,
-                            MEChestBlockEntity.this.cellHandler,
-                            what,
-                            resource.getAmount(),
-                            MEChestBlockEntity.this.mySrc,
-                            Actionable.of(action));
+                var inserted = pushToNetwork(what, maxAmount, Actionable.SIMULATE);
+                if (inserted > 0) {
+                    updateSnapshots(transaction);
+                    pendingSideEffect = new GenericStack(what, inserted);
                 }
+                return inserted;
             }
             return 0;
         }
 
         @Override
-        public FluidStack drain(FluidStack resource, FluidAction action) {
-            return FluidStack.EMPTY;
+        public int size() {
+            if (!canAcceptLiquids()) {
+                return 0;
+            }
+            return super.size();
         }
 
         @Override
-        public FluidStack drain(int maxDrain, FluidAction action) {
-            return FluidStack.EMPTY;
+        protected void onRootCommit(GenericStack originalState) {
+            pushToNetwork(pendingSideEffect.what(), (int) pendingSideEffect.amount(), Actionable.MODULATE);
+            pendingSideEffect = null;
+        }
+
+        private int pushToNetwork(AEKey what, int amount, Actionable mode) {
+            MEChestBlockEntity.this.updateHandler();
+            if (canAcceptLiquids()) {
+                return (int) StorageHelper.poweredInsert(
+                        MEChestBlockEntity.this,
+                        MEChestBlockEntity.this.cellHandler,
+                        what,
+                        amount,
+                        MEChestBlockEntity.this.mySrc,
+                        mode);
+            }
+            return 0;
         }
     }
 

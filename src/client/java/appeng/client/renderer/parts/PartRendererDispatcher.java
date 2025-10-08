@@ -4,9 +4,12 @@ import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.neoforged.fml.ModLoader;
@@ -14,13 +17,15 @@ import net.neoforged.fml.ModWorkManager;
 
 import appeng.api.parts.IPart;
 import appeng.client.api.renderer.parts.PartRenderer;
+import appeng.client.api.renderer.parts.PartRendererProvider;
 import appeng.client.api.renderer.parts.RegisterPartRendererEvent;
+import appeng.core.AppEng;
 
 /**
- * Registration facility for associating {@link PartModel} with {@link IPart} classes.
+ * Registration facility for associating {@link PartRenderer} with {@link IPart} classes.
  */
 public class PartRendererDispatcher implements ResourceManagerReloadListener {
-
+    public static final ResourceLocation ID = AppEng.makeId("part_renderer_dispatcher");
     private Map<Class<?>, Registration<?>> registrations = Map.of();
 
     public PartRendererDispatcher() {
@@ -41,26 +46,24 @@ public class PartRendererDispatcher implements ResourceManagerReloadListener {
         registrations = Collections.unmodifiableMap(new IdentityHashMap<>(tempMap));
     }
 
-    @SuppressWarnings("unchecked")
     @Nullable
-    public <T extends IPart> PartRenderer<T> getRenderer(T part) {
-        var renderer = registrations.get(part.getClass());
-        if (renderer == null) {
-            return null;
-        }
-        return (PartRenderer<T>) renderer.renderer;
+    public Map<Class<?>, PartRenderer<?, ?>> createRenderers(BlockEntityRendererProvider.Context context) {
+        return registrations.values().stream().collect(Collectors.toMap(
+                e -> e.partClass,
+                e -> e.factory.create(context)));
     }
 
     private RegisterPartRendererEvent.PartRegistrationSink makeRegistrationSink(
             Map<Class<?>, Registration<?>> registrations, String modId) {
         return new RegisterPartRendererEvent.PartRegistrationSink() {
             @Override
-            public <T extends IPart> void register(Class<T> partClass, PartRenderer<? super T> renderer) {
-                registrations.put(partClass, new Registration<>(modId, partClass, renderer));
+            public <T extends IPart> void register(Class<T> partClass, PartRendererProvider<? super T> factory) {
+                registrations.put(partClass, new Registration<>(modId, partClass, factory));
             }
         };
     }
 
-    private record Registration<T extends IPart>(String modId, Class<T> partClass, PartRenderer<? super T> renderer) {
+    private record Registration<T extends IPart>(String modId, Class<T> partClass,
+            PartRendererProvider<? super T> factory) {
     }
 }

@@ -7,8 +7,8 @@ import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
-import appeng.api.client.AEKeyRendering;
 import appeng.api.stacks.AmountFormat;
+import appeng.client.api.AEKeyRendering;
 import appeng.client.gui.me.common.StackSizeRenderer;
 import appeng.core.localization.GuiText;
 import appeng.items.storage.StorageCellTooltipComponent;
