@@ -109,8 +109,8 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmMenu> {
                 cpuDetails = GuiText.PartialPlan.text();
             } else if (this.menu.getCpuAvailableBytes() > 0) {
                 cpuDetails = GuiText.ConfirmCraftCpuStatus.text(
-                        this.menu.getCpuAvailableBytes(),
-                        this.menu.getCpuCoProcessors());
+                        NumberUtil.formatNumber(this.menu.getCpuAvailableBytes()),
+                        NumberUtil.formatNumber(this.menu.getCpuCoProcessors()));
             } else {
                 cpuDetails = GuiText.ConfirmCraftNoCpu.text();
             }

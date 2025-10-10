@@ -8,15 +8,12 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 
 import appeng.api.behaviors.ExternalStorageStrategy;
 import appeng.api.config.Actionable;
 import appeng.api.config.BlockingMode;
 import appeng.api.networking.security.IActionSource;
-import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.AEKeyType;
 import appeng.api.storage.MEStorage;
@@ -76,27 +73,28 @@ class PatternProviderTargetCache {
             @Override
             public boolean containsPatternInput(Set<AEKey> patternInputs) {
                 switch (blockingMode) {
-                    case ALL:
+                    case ALL -> {
                         for (var stack : storage.getAvailableStacks()) {
-                            if (stack.getKey() instanceof AEItemKey itemKey &&
-                                    itemKey.getItem() == BuiltInRegistries.ITEM
-                                            .get(new ResourceLocation("gtceu", "programmed_circuit")))
+                            if (stack.getKey().getId().equals(programmedCircuit))
                                 continue;
                             return true;
                         }
-                        break;
-                    case DEFAULT:
+                    }
+                    case DEFAULT -> {
                         for (var stack : storage.getAvailableStacks()) {
-                            if (patternInputs.contains(stack.getKey().dropSecondary()))
-                                continue;
-                            return true;
-                        }
-                        break;
-                    case SMART:
-                        for (var stack : storage.getAvailableStacks()) {
-                            if (patternInputs.contains(stack.getKey().dropSecondary()))
+                            if (patternInputs.contains(stack.getKey().dropSecondary())
+                                    || !stack.getKey().getId().equals(programmedCircuit))
                                 return true;
                         }
+                    }
+                    case SMART -> {
+                        for (var stack : storage.getAvailableStacks()) {
+                            if (patternInputs.contains(stack.getKey().dropSecondary())
+                                    || stack.getKey().getId().equals(programmedCircuit))
+                                continue;
+                            return true;
+                        }
+                    }
                 }
                 return false;
             }

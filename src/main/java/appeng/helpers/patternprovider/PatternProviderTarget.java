@@ -27,6 +27,7 @@ import com.google.common.util.concurrent.Runnables;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -44,6 +45,8 @@ import appeng.parts.automation.StackWorldBehaviors;
  * Wrapper used by the pattern provider logic to interact with adjacent inventories.
  */
 public interface PatternProviderTarget {
+    ResourceLocation programmedCircuit = new ResourceLocation("gtceu", "programmed_circuit");
+
     @Nullable
     static PatternProviderTarget get(Level l, BlockPos pos, @Nullable BlockEntity be, Direction side,
             IActionSource src) {

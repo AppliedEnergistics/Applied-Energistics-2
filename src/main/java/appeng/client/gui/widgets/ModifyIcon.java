@@ -7,10 +7,10 @@ import appeng.core.AppEng;
 
 public enum ModifyIcon {
 
-    MULTIPLY_2(194, 224),
+    MULTIPLY_2(192, 224),
     MULTIPLY_3(208, 224),
     MULTIPLY_8(224, 224),
-    DIVISION_2(194, 240),
+    DIVISION_2(192, 240),
     DIVISION_3(208, 240),
     DIVISION_8(224, 240),;
 
