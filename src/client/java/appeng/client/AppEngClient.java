@@ -570,8 +570,8 @@ public class AppEngClient extends AppEngBase {
     }
 
     private void registerPartRenderers(RegisterPartRendererEvent event) {
-        event.register(ConversionMonitorPart.class, MonitorRenderer::new);
-        event.register(StorageMonitorPart.class, MonitorRenderer::new);
+        event.register(ConversionMonitorPart.class, new MonitorRenderer());
+        event.register(StorageMonitorPart.class, new MonitorRenderer());
     }
 
     public PartModels getPartModels() {

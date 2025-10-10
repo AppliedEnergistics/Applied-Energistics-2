@@ -1,7 +1,5 @@
 package appeng.client.api.renderer.parts;
 
-import java.util.function.Supplier;
-
 import org.jetbrains.annotations.ApiStatus;
 
 import net.neoforged.fml.DeferredWorkQueue;
@@ -19,17 +17,13 @@ public class RegisterPartRendererEvent extends ParallelDispatchEvent {
         this.delegate = delegate;
     }
 
-    public <T extends IPart> void register(Class<T> partClass, PartRendererProvider<? super T> factory) {
-        delegate.register(partClass, factory);
-    }
-
-    public <T extends IPart> void register(Class<T> partClass, Supplier<PartRenderer<? super T, ?>> factory) {
-        delegate.register(partClass, context -> factory.get());
+    public <T extends IPart> void register(Class<T> partClass, PartRenderer<? super T, ?> renderer) {
+        delegate.register(partClass, renderer);
     }
 
     @FunctionalInterface
     @ApiStatus.Internal
     public interface PartRegistrationSink {
-        <T extends IPart> void register(Class<T> partClass, PartRendererProvider<? super T> factory);
+        <T extends IPart> void register(Class<T> partClass, PartRenderer<? super T, ?> factory);
     }
 }

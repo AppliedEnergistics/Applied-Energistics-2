@@ -9,7 +9,8 @@ import net.minecraft.core.Direction;
  *
  * @see PartRenderer
  */
-public class PartRenderState {
+public class PartDynamicRenderState {
+    public PartRenderer<?, ?> renderer;
     /**
      * @see net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState#lightCoords
      */

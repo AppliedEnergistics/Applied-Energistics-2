@@ -12,18 +12,20 @@ import appeng.api.parts.IPart;
  *
  * @param <T> The type of part that this renderer supports.
  */
-public interface PartRenderer<T extends IPart, S extends PartRenderState> {
+public interface PartRenderer<T extends IPart, S extends PartDynamicRenderState> {
     /**
      * {@return a new uninitialized instance of the state used by this renderer.}
      */
-    S createRenderState();
+    S createState();
+
+    Class<S> stateClass();
 
     /**
      * Extracts the state needed to later render the dynamic parts of the part.
      * 
      * @see net.minecraft.client.renderer.blockentity.BlockEntityRenderer#extractRenderState
      */
-    void extractRenderState(T part, S state, float partialTicks);
+    void extract(T part, S state, float partialTicks);
 
     /**
      * Render dynamic portions of a part attached to a cable bus.

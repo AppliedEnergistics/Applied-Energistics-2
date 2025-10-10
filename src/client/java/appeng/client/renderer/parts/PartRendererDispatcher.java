@@ -4,11 +4,9 @@ import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
@@ -17,7 +15,6 @@ import net.neoforged.fml.ModWorkManager;
 
 import appeng.api.parts.IPart;
 import appeng.client.api.renderer.parts.PartRenderer;
-import appeng.client.api.renderer.parts.PartRendererProvider;
 import appeng.client.api.renderer.parts.RegisterPartRendererEvent;
 import appeng.core.AppEng;
 
@@ -46,24 +43,27 @@ public class PartRendererDispatcher implements ResourceManagerReloadListener {
         registrations = Collections.unmodifiableMap(new IdentityHashMap<>(tempMap));
     }
 
+    @SuppressWarnings("unchecked")
     @Nullable
-    public Map<Class<?>, PartRenderer<?, ?>> createRenderers(BlockEntityRendererProvider.Context context) {
-        return registrations.values().stream().collect(Collectors.toMap(
-                e -> e.partClass,
-                e -> e.factory.create(context)));
+    public <T extends IPart> PartRenderer<T, ?> getRenderer(Class<T> partClass) {
+        var registration = registrations.get(partClass);
+        if (registration != null) {
+            return (PartRenderer<T, ?>) registration.renderer;
+        }
+        return null;
     }
 
     private RegisterPartRendererEvent.PartRegistrationSink makeRegistrationSink(
             Map<Class<?>, Registration<?>> registrations, String modId) {
         return new RegisterPartRendererEvent.PartRegistrationSink() {
             @Override
-            public <T extends IPart> void register(Class<T> partClass, PartRendererProvider<? super T> factory) {
-                registrations.put(partClass, new Registration<>(modId, partClass, factory));
+            public <T extends IPart> void register(Class<T> partClass, PartRenderer<? super T, ?> renderer) {
+                registrations.put(partClass, new Registration<>(modId, partClass, renderer));
             }
         };
     }
 
     private record Registration<T extends IPart>(String modId, Class<T> partClass,
-            PartRendererProvider<? super T> factory) {
+            PartRenderer<? super T, ?> renderer) {
     }
 }

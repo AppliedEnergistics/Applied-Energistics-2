@@ -29,19 +29,21 @@ import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.world.phys.Vec3;
 
+import appeng.api.parts.IPart;
 import appeng.blockentity.networking.CableBusBlockEntity;
 import appeng.client.AppEngClient;
+import appeng.client.api.renderer.parts.PartDynamicRenderState;
+import appeng.client.api.renderer.parts.PartRenderer;
 import appeng.client.renderer.parts.PartRendererDispatcher;
 
 /**
  * Renders dynamic aspects of parts attached to a cable bus.
  */
 public class CableBusRenderer implements BlockEntityRenderer<CableBusBlockEntity, CableBusDynamicRenderState> {
-
-    private final PartRendererDispatcher partRendererDispatcher;
+    private final PartRendererDispatcher renderers;
 
     public CableBusRenderer(BlockEntityRendererProvider.Context context) {
-        partRendererDispatcher = AppEngClient.instance().getPartRendererDispatcher();
+        this.renderers = AppEngClient.instance().getPartRendererDispatcher();
     }
 
     @Override
@@ -53,58 +55,107 @@ public class CableBusRenderer implements BlockEntityRenderer<CableBusBlockEntity
     public void extractRenderState(CableBusBlockEntity be, CableBusDynamicRenderState state, float partialTicks,
             Vec3 cameraPos, @Nullable ModelFeatureRenderer.CrumblingOverlay crumblingOverlay) {
         BlockEntityRenderer.super.extractRenderState(be, state, partialTicks, cameraPos, crumblingOverlay);
+
+        var hasDynamicRenderers = be.getPartRendererCache(Boolean.class);
+
+        // Determine if there are any renderers for us
+        if (hasDynamicRenderers == null) {
+            hasDynamicRenderers = false;
+            for (var facing : IPart.ATTACHMENT_POINTS) {
+                var part = be.getPart(facing);
+                if (part != null) {
+                    var renderer = renderers.getRenderer(part.getClass());
+                    if (renderer != null) {
+                        hasDynamicRenderers = true;
+                        break;
+                    }
+                }
+            }
+            be.setPartRendererCache(hasDynamicRenderers);
+        }
+
+        if (hasDynamicRenderers) {
+            var attachmentPoints = IPart.ATTACHMENT_POINTS;
+            state.sides = new PartDynamicRenderState[attachmentPoints.size()];
+
+            for (int i = 0; i < attachmentPoints.size(); i++) {
+                var facing = attachmentPoints.get(i);
+                var part = be.getPart(facing);
+                if (part != null) {
+                    var sideState = extractPartState(state.sides[i], part, partialTicks);
+                    if (sideState != null) {
+                        sideState.lightCoords = state.lightCoords;
+                    }
+                    state.sides[i] = sideState;
+                } else {
+                    state.sides[i] = null;
+                }
+            }
+        } else {
+            state.sides = null;
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private <T extends IPart> PartDynamicRenderState extractPartState(
+            @Nullable PartDynamicRenderState previousState,
+            T part,
+            float partialTicks) {
+        var renderer = (PartRenderer<T, ?>) renderers.getRenderer(part.getClass());
+        if (renderer != null) {
+            return extractPartState(renderer, previousState, part, partialTicks);
+        }
+        return null;
+    }
+
+    private <T extends IPart, S extends PartDynamicRenderState> S extractPartState(
+            PartRenderer<T, S> renderer,
+            @Nullable PartDynamicRenderState previousState,
+            T part,
+            float partialTicks) {
+
+        S state;
+        Class<S> stateClass = renderer.stateClass();
+        if (stateClass.isInstance(previousState)) {
+            state = stateClass.cast(previousState);
+        } else {
+            state = renderer.createState();
+        }
+        state.renderer = renderer;
+
+        renderer.extract(part, state, partialTicks);
+
+        return state;
     }
 
     @Override
     public void submit(CableBusDynamicRenderState state, PoseStack poseStack, SubmitNodeCollector nodes,
             CameraRenderState cameraRenderState) {
+
+        if (state.sides == null) {
+            return;
+        }
+
+        for (var sideState : state.sides) {
+            if (sideState == null) {
+                continue;
+            }
+            submitSide(sideState.renderer, sideState, poseStack, nodes, cameraRenderState);
+        }
     }
-// TODO 1.21.9
-//    @Override
-//    public void render(CableBusBlockEntity be, float partialTicks, PoseStack poseStack, MultiBufferSource buffers,
-//            int packedLight, int packedOverlay, Vec3 cameraPosition) {
-//
-//        var hasDynamicRenderers = be.getPartRendererCache(Boolean.class);
-//
-//        // Determine if there are any renderers for us
-//        if (hasDynamicRenderers == null) {
-//            hasDynamicRenderers = false;
-//            for (var facing : IPart.ATTACHMENT_POINTS) {
-//                var part = be.getPart(facing);
-//                if (part != null) {
-//                    var renderer = partRendererDispatcher.getRenderer(part);
-//                    if (renderer != null) {
-//                        hasDynamicRenderers = true;
-//                        break;
-//                    }
-//                }
-//            }
-//            be.setPartRendererCache(hasDynamicRenderers);
-//        }
-//
-//        if (hasDynamicRenderers) {
-//            for (var facing : IPart.ATTACHMENT_POINTS) {
-//                var part = be.getPart(facing);
-//                if (part != null) {
-//                    renderPart(part, partialTicks, poseStack, buffers, packedLight, packedOverlay, cameraPosition);
-//                }
-//            }
-//        }
-//
-//    }
-//
-//    private <T extends IPart> void renderPart(T part,
-//            float partialTicks,
-//            PoseStack poseStack,
-//            MultiBufferSource buffers,
-//            int packedLight,
-//            int packedOverlay,
-//            Vec3 cameraPosition) {
-//        var renderer = partRendererDispatcher.getRenderer(part);
-//        if (renderer != null) {
-//            renderer.renderDynamic(part, partialTicks, poseStack, buffers, packedLight, packedOverlay, cameraPosition);
-//        }
-//    }
+
+    private <T extends IPart, S extends PartDynamicRenderState> void submitSide(PartRenderer<T, S> renderer,
+            PartDynamicRenderState sideState,
+            PoseStack poseStack,
+            SubmitNodeCollector nodes,
+            CameraRenderState cameraRenderState) {
+        var partSideState = renderer.stateClass().cast(sideState);
+        renderer.submit(
+                partSideState,
+                poseStack,
+                nodes,
+                cameraRenderState);
+    }
 
     @Override
     public int getViewDistance() {
