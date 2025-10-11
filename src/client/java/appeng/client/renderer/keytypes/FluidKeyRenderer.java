@@ -11,8 +11,11 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.data.AtlasIds;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.ARGB;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 
@@ -41,14 +44,12 @@ public class FluidKeyRenderer implements AEKeyRenderer<AEFluidKey, FluidKeyRende
 
     @Override
     public void extract(RenderState state, AEFluidKey what, @Nullable Level level, int seed) {
-
         var fluidStack = what.toStack(1);
         var renderProps = IClientFluidTypeExtensions.of(what.getFluid());
         var texture = renderProps.getStillTexture(fluidStack);
-        var color = renderProps.getTintColor(fluidStack);
-        var sprite = Minecraft.getInstance().getAtlasManager().getAtlasOrThrow(AtlasIds.BLOCKS)
+        state.color = renderProps.getTintColor(fluidStack);
+        state.sprite = Minecraft.getInstance().getAtlasManager().getAtlasOrThrow(AtlasIds.BLOCKS)
                 .getSprite(texture);
-
     }
 
     @Override
@@ -58,41 +59,42 @@ public class FluidKeyRenderer implements AEKeyRenderer<AEFluidKey, FluidKeyRende
         // Push it out of the block face a bit to avoid z-fighting
         poseStack.translate(0, 0, 0.01f);
 
-// TODO 1.21.9        // In comparison to items, make it _slightly_ smaller because item icons
-// TODO 1.21.9        // usually don't extend to the full size.
-// TODO 1.21.9        scale -= 0.05f;
-// TODO 1.21.9
-// TODO 1.21.9        // y is flipped here
-// TODO 1.21.9        var x0 = -scale / 2;
-// TODO 1.21.9        var y0 = scale / 2;
-// TODO 1.21.9        var x1 = scale / 2;
-// TODO 1.21.9        var y1 = -scale / 2;
+        // y is flipped here
+        var x0 = -1 / 2f;
+        var y0 = 1 / 2f;
+        var x1 = 1 / 2f;
+        var y1 = -1 / 2f;
 
-        nodes.submitCustomGeometry(new PoseStack(), RenderType.solid(), (pose, buffer) -> {
-            // TODO 1.21.9 buffer.addVertex(pose, x0, y1, 0)
-            // TODO 1.21.9 .setColor(color)
-            // TODO 1.21.9 .setUv(sprite.getU0(), sprite.getV1())
-            // TODO 1.21.9 .setOverlay(OverlayTexture.NO_OVERLAY)
-            // TODO 1.21.9 .setLight(combinedLight)
-            // TODO 1.21.9 .setNormal(0, 0, 1);
-            // TODO 1.21.9 buffer.addVertex(pose, x1, y1, 0)
-            // TODO 1.21.9 .setColor(color)
-            // TODO 1.21.9 .setUv(sprite.getU1(), sprite.getV1())
-            // TODO 1.21.9 .setOverlay(OverlayTexture.NO_OVERLAY)
-            // TODO 1.21.9 .setLight(combinedLight)
-            // TODO 1.21.9 .setNormal(0, 0, 1);
-            // TODO 1.21.9 buffer.addVertex(pose, x1, y0, 0)
-            // TODO 1.21.9 .setColor(color)
-            // TODO 1.21.9 .setUv(sprite.getU1(), sprite.getV0())
-            // TODO 1.21.9 .setOverlay(OverlayTexture.NO_OVERLAY)
-            // TODO 1.21.9 .setLight(combinedLight)
-            // TODO 1.21.9 .setNormal(0, 0, 1);
-            // TODO 1.21.9 buffer.addVertex(pose, x0, y0, 0)
-            // TODO 1.21.9 .setColor(color)
-            // TODO 1.21.9 .setUv(sprite.getU0(), sprite.getV0())
-            // TODO 1.21.9 .setOverlay(OverlayTexture.NO_OVERLAY)
-            // TODO 1.21.9 .setLight(combinedLight)
-            // TODO 1.21.9 .setNormal(0, 0, 1);
+        var color = ARGB.opaque(state.color);
+        var sprite = state.sprite;
+
+        // We have to use "solid" here because we don't actually want to alpha blend
+        // the semi-transprent fluid textures onto a fake screen.
+        nodes.submitCustomGeometry(poseStack, RenderType.solid(), (pose, buffer) -> {
+            buffer.addVertex(pose, x0, y1, 0)
+                    .setColor(color)
+                    .setUv(sprite.getU0(), sprite.getV1())
+                    .setOverlay(OverlayTexture.NO_OVERLAY)
+                    .setLight(lightCoords)
+                    .setNormal(0, 0, 1);
+            buffer.addVertex(pose, x1, y1, 0)
+                    .setColor(color)
+                    .setUv(sprite.getU1(), sprite.getV1())
+                    .setOverlay(OverlayTexture.NO_OVERLAY)
+                    .setLight(lightCoords)
+                    .setNormal(0, 0, 1);
+            buffer.addVertex(pose, x1, y0, 0)
+                    .setColor(color)
+                    .setUv(sprite.getU1(), sprite.getV0())
+                    .setOverlay(OverlayTexture.NO_OVERLAY)
+                    .setLight(lightCoords)
+                    .setNormal(0, 0, 1);
+            buffer.addVertex(pose, x0, y0, 0)
+                    .setColor(color)
+                    .setUv(sprite.getU0(), sprite.getV0())
+                    .setOverlay(OverlayTexture.NO_OVERLAY)
+                    .setLight(lightCoords)
+                    .setNormal(0, 0, 1);
         });
 
         poseStack.popPose();
@@ -112,6 +114,8 @@ public class FluidKeyRenderer implements AEKeyRenderer<AEFluidKey, FluidKeyRende
         return tooltip;
     }
 
-    public record RenderState() {
+    public static final class RenderState {
+        public int color;
+        public TextureAtlasSprite sprite;
     }
 }

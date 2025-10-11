@@ -5,19 +5,25 @@ import java.util.Objects;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import org.jetbrains.annotations.Nullable;
+import org.joml.Quaternionf;
 
 import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.block.BlockRenderDispatcher;
+import net.minecraft.client.renderer.block.model.BlockStateModel;
 import net.minecraft.client.renderer.block.model.SimpleModelWrapper;
+import net.minecraft.client.renderer.block.model.SingleVariant;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.state.CameraRenderState;
-import net.minecraft.client.resources.model.ModelManager;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.client.RenderTypeHelper;
 import net.neoforged.neoforge.client.model.standalone.StandaloneModelKey;
 
+import appeng.api.orientation.BlockOrientation;
 import appeng.blockentity.misc.CrankBlockEntity;
 import appeng.core.AppEng;
 
@@ -27,13 +33,11 @@ public class CrankRenderer implements BlockEntityRenderer<CrankBlockEntity, Cran
     public static final StandaloneModelKey<SimpleModelWrapper> HANDLE_MODEL = new StandaloneModelKey<>(
             HANDLE_MODEL_ID::toString);
 
-    private final BlockRenderDispatcher blockRenderer;
-
-    private final ModelManager modelManager;
+    private final BlockStateModel handleModel;
 
     public CrankRenderer(BlockEntityRendererProvider.Context context) {
-        this.modelManager = context.blockRenderDispatcher().getBlockModelShaper().getModelManager();
-        this.blockRenderer = context.blockRenderDispatcher();
+        var modelManager = context.blockRenderDispatcher().getBlockModelShaper().getModelManager();
+        handleModel = new SingleVariant(Objects.requireNonNull(modelManager.getStandaloneModel(HANDLE_MODEL)));
     }
 
     @Override
@@ -45,34 +49,33 @@ public class CrankRenderer implements BlockEntityRenderer<CrankBlockEntity, Cran
     public void extractRenderState(CrankBlockEntity be, CrankRenderState state, float partialTicks, Vec3 cameraPos,
             @Nullable ModelFeatureRenderer.CrumblingOverlay crumblingOverlay) {
         BlockEntityRenderer.super.extractRenderState(be, state, partialTicks, cameraPos, crumblingOverlay);
+
+        state.orientation = BlockOrientation.get(be);
+        state.visibleRotation = be.getVisibleRotation();
     }
 
     @Override
     public void submit(CrankRenderState state, PoseStack poseStack, SubmitNodeCollector nodes,
             CameraRenderState cameraRenderState) {
-        var handleModel = Objects.requireNonNull(modelManager.getStandaloneModel(HANDLE_MODEL));
 
-        // TODO 1.21.9 var blockState = crank.getBlockState();
-        // TODO 1.21.9 var pos = crank.getBlockPos();
-// TODO 1.21.9
-        // TODO 1.21.9 stack.pushPose();
-        // TODO 1.21.9 var rotation = new Quaternionf(BlockOrientation.get(crank).getQuaternion());
-        // TODO 1.21.9 // The base model points "up" towards positive Y by default, although the unrotated state would
+        poseStack.pushPose();
+        var rotation = new Quaternionf(state.orientation.getQuaternion());
+        // The base model points "up" towards positive Y by default, although the unrotated state would
         // be facing north
-        // TODO 1.21.9 rotation.rotateX(Mth.DEG_TO_RAD * 270);
-        // TODO 1.21.9 rotation.rotateY(-Mth.DEG_TO_RAD * crank.getVisibleRotation());
-        // TODO 1.21.9 stack.rotateAround(rotation, 0.5f, 0.5f, 0.5f);
-// TODO 1.21.9
-        // TODO 1.21.9 blockRenderer.getModelRenderer().tesselateBlock(
-        // TODO 1.21.9 crank.getLevel(),
-        // TODO 1.21.9 List.of(handleModel),
-        // TODO 1.21.9 blockState,
-        // TODO 1.21.9 pos,
-        // TODO 1.21.9 stack,
-        // TODO 1.21.9 layer -> buffers.getBuffer(RenderTypeHelper.getEntityRenderType(layer)),
-        // TODO 1.21.9 false,
-        // TODO 1.21.9 packedOverlay);
-        // TODO 1.21.9 stack.popPose();
+        rotation.rotateX(Mth.DEG_TO_RAD * 270);
+        rotation.rotateY(-Mth.DEG_TO_RAD * state.visibleRotation);
+        poseStack.rotateAround(rotation, 0.5f, 0.5f, 0.5f);
+
+        nodes.submitBlockModel(
+                poseStack,
+                RenderTypeHelper.getEntityRenderType(ChunkSectionLayer.SOLID),
+                handleModel,
+                1, 1, 1,
+                state.lightCoords,
+                OverlayTexture.NO_OVERLAY,
+                0);
+
+        poseStack.popPose();
     }
 
 }
