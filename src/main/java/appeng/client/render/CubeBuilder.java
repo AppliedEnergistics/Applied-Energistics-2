@@ -70,7 +70,7 @@ public class CubeBuilder {
         y2 /= 16.0f;
         z2 /= 16.0f;
 
-        for (Direction face : this.drawFaces) {
+        for (var face : this.drawFaces) {
             this.putFace(face, x1, y1, z1, x2, y2, z2);
         }
     }

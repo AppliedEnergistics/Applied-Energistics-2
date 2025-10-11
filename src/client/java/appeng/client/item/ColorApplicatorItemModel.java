@@ -47,6 +47,7 @@ public class ColorApplicatorItemModel implements ItemModel {
         if (currentColor == null) {
             uncoloredModel.applyToLayer(layer, displayContext);
         } else {
+            renderState.appendModelIdentityElement(currentColor);
             var tint = layer.prepareTintLayers(3);
             tint[0] = ARGB.opaque(currentColor.blackVariant);
             tint[1] = ARGB.opaque(currentColor.mediumVariant);

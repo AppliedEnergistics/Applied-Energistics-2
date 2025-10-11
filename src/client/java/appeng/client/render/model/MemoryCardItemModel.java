@@ -1,6 +1,7 @@
 package appeng.client.render.model;
 
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 
 import com.google.common.cache.CacheBuilder;
@@ -21,6 +22,7 @@ import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.resources.model.ModelDebugName;
+import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ARGB;
 import net.minecraft.world.entity.ItemOwner;
@@ -63,22 +65,30 @@ public class MemoryCardItemModel implements ItemModel {
             return;
         }
 
+        renderState.appendModelIdentityElement(this);
+
         var baseLayer = renderState.newLayer();
         var tint = baseLayer.prepareTintLayers(2);
         tint[0] = -1;
         tint[1] = ARGB.opaque(item.getColor(stack));
         baseModel.applyToLayer(baseLayer, displayContext);
+        renderState.appendModelIdentityElement(tint[1]);
 
         var colors = stack.getOrDefault(AEComponents.MEMORY_CARD_COLORS, MemoryCardColors.DEFAULT);
         var colorLayer = renderState.newLayer();
+        colorLayer.setExtents(baseModel.extents());
         colorLayer.setRenderType(Sheets.translucentItemSheet());
         colorLayer.setTransform(baseModel.renderProperties().transforms().getTransform(displayContext));
         colorLayer.prepareQuadList().addAll(hashModelCache.getUnchecked(colors));
+        renderState.appendModelIdentityElement(colors);
     }
 
     private static List<BakedQuad> buildColorQuads(TextureAtlasSprite texture, MemoryCardColors colors) {
         var quads = new ArrayList<BakedQuad>(2 * 4 * 6);
         CubeBuilder builder = new CubeBuilder(quads::add);
+        builder.setDrawFaces(EnumSet.of(Direction.NORTH, Direction.SOUTH));
+        builder.setCustomUv(Direction.NORTH, 0, 0, 1, 1);
+        builder.setCustomUv(Direction.SOUTH, 0, 0, 1, 1);
 
         builder.setTexture(texture);
 

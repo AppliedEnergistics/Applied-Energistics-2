@@ -71,7 +71,7 @@ public final class ChargerRenderer implements BlockEntityRenderer<ChargerBlockEn
             this.itemModelResolver.updateForTopItem(
                     state.item,
                     item,
-                    ItemDisplayContext.ON_SHELF,
+                    ItemDisplayContext.GROUND,
                     be.getLevel(),
                     new ItemOwner() {
                         @Override
