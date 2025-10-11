@@ -36,6 +36,7 @@ public class AppEngCellInventory extends BaseInternalInventory {
     }
 
     public void setHandler(int slot, StorageCell handler) {
+        this.persist(slot);
         this.handlerForSlot[slot] = handler;
     }
 
