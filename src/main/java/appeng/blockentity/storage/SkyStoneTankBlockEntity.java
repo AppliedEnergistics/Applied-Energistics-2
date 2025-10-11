@@ -46,7 +46,7 @@ public class SkyStoneTankBlockEntity extends AEBaseBlockEntity {
     @Override
     public void loadTag(ValueInput data) {
         super.loadTag(data);
-        tank.deserialize(data.childOrEmpty("content"));
+        tank.deserialize(data.childOrEmpty("tank"));
     }
 
     public boolean onPlayerUse(Player player, InteractionHand hand) {

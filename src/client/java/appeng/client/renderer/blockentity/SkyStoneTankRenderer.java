@@ -19,12 +19,10 @@
 package appeng.client.renderer.blockentity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
@@ -32,15 +30,10 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.core.BlockPos;
 import net.minecraft.data.AtlasIds;
 import net.minecraft.util.Mth;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
-import net.neoforged.neoforge.fluids.FluidStack;
 
 import appeng.blockentity.storage.SkyStoneTankBlockEntity;
 import appeng.client.render.CubeBuilder;
@@ -60,75 +53,77 @@ public final class SkyStoneTankRenderer
     public void extractRenderState(SkyStoneTankBlockEntity be, SkyStoneTankRenderState state, float partialTicks,
             Vec3 cameraPos, @Nullable ModelFeatureRenderer.CrumblingOverlay crumblingOverlay) {
         BlockEntityRenderer.super.extractRenderState(be, state, partialTicks, cameraPos, crumblingOverlay);
+
+        var fluidHandler = be.getFluidHandler();
+        var resource = fluidHandler.getResource(0);
+        var capacity = fluidHandler.getCapacityAsLong(0, resource);
+        var amount = fluidHandler.getAmountAsLong(0);
+        if (resource.isEmpty() || capacity <= 0 || amount <= 0) {
+            state.fill = 0;
+            state.sprite = null;
+            return;
+        }
+
+        var fluidStack = resource.toStack(1);
+
+        state.fill = (float) amount / capacity;
+        var renderProps = IClientFluidTypeExtensions.of(resource.getFluid());
+        state.sprite = Minecraft.getInstance().getAtlasManager().getAtlasOrThrow(AtlasIds.BLOCKS)
+                .getSprite(renderProps.getStillTexture(fluidStack));
+        state.color = renderProps.getTintColor(fluidStack);
+        state.lighterThanAir = resource.getFluidType().isLighterThanAir();
     }
 
     @Override
     public void submit(SkyStoneTankRenderState state, PoseStack poseStack, SubmitNodeCollector nodes,
             CameraRenderState cameraRenderState) {
-        // TODO 1.21.9 if (!tank.getTank().getFluid().isEmpty()) {
 
-        // TODO 1.21.9 /*
-        // TODO 1.21.9 *
-        // TODO 1.21.9 * // Uncomment to allow the liquid to rotate with the tank ms.pushPose(); ms.translate(0.5, 0.5,
-        // 0.5);
-        // TODO 1.21.9 * FacingToRotation.get(tank.getForward(), tank.getUp()).push(ms); ms.translate(-0.5, -0.5, -0.5);
-        // TODO 1.21.9 */
+        if (state.sprite == null) {
+            return;
+        }
 
-        // TODO 1.21.9 drawFluidInTank(tank, ms, vertexConsumers, tank.getTank().getFluid(),
-        // TODO 1.21.9 (float) tank.getTank().getFluid().getAmount() / tank.getTank().getCapacity());
+        /*
+         *
+         * // Uncomment to allow the liquid to rotate with the tank ms.pushPose(); ms.translate(0.5, 0.5, // 0.5);
+         * FacingToRotation.get(tank.getForward(), tank.getUp()).push(ms); ms.translate(-0.5, -0.5, -0.5);
+         */
 
-        // TODO 1.21.9 // ms.popPose();
-        // TODO 1.21.9 }
+        // From Modern Industrialization
+        nodes.submitCustomGeometry(poseStack, RenderType.translucentMovingBlock(), (pose, consumer) -> {
+            var fill = state.fill;
+            var color = state.color;
+
+            float r = ((color >> 16) & 255) / 256f;
+            float g = ((color >> 8) & 255) / 256f;
+            float b = (color & 255) / 256f;
+
+            var fillY = Mth.lerp(Mth.clamp(fill, 0, 1), TANK_W, 1 - TANK_W);
+
+            // Top and bottom positions of the fluid inside the tank
+            float topHeight = fillY;
+            float bottomHeight = TANK_W;
+
+            // Render gas from top to bottom
+            if (state.lighterThanAir) {
+                topHeight = 1 - TANK_W;
+                bottomHeight = 1 - fillY;
+            }
+
+            var builder = new CubeBuilder(bakedQuad -> {
+                consumer.putBulkData(pose, bakedQuad, r, g, b, 1.0f, state.lightCoords, OverlayTexture.NO_OVERLAY);
+            });
+            builder.setTexture(state.sprite);
+
+            var x1 = TANK_W * 16;
+            var z1 = TANK_W * 16;
+            var x2 = (1 - TANK_W) * 16;
+            var z2 = (1 - TANK_W) * 16;
+            var y1 = bottomHeight * 16;
+            var y2 = topHeight * 16;
+            builder.addCube(x1, y1, z1, x2, y2, z2);
+        });
     }
 
     private static final float TANK_W = 1 / 16f + 0.001f; // avoiding Z-fighting
-    public static final int FULL_LIGHT = 0x00F0_00F0;
-
-    public static void drawFluidInTank(BlockEntity be, PoseStack ms, MultiBufferSource vcp, FluidStack fluid,
-            float fill) {
-        drawFluidInTank(be.getLevel(), be.getBlockPos(), ms, vcp, fluid, fill);
-    }
-
-    public static void drawFluidInTank(Level level, BlockPos pos, PoseStack ps, MultiBufferSource mbs,
-            FluidStack fluid, float fill) {
-        // From Modern Industrialization
-        VertexConsumer vc = mbs.getBuffer(RenderType.translucentMovingBlock());
-        var renderProps = IClientFluidTypeExtensions.of(fluid.getFluid());
-        TextureAtlasSprite sprite = Minecraft.getInstance().getAtlasManager().getAtlasOrThrow(AtlasIds.BLOCKS)
-                .getSprite(renderProps.getStillTexture(fluid));
-
-        int color = renderProps.getTintColor(fluid);
-
-        float r = ((color >> 16) & 255) / 256f;
-        float g = ((color >> 8) & 255) / 256f;
-        float b = (color & 255) / 256f;
-
-        var fillY = Mth.lerp(Mth.clamp(fill, 0, 1), TANK_W, 1 - TANK_W);
-
-        // Top and bottom positions of the fluid inside the tank
-        float topHeight = fillY;
-        float bottomHeight = TANK_W;
-
-        // Render gas from top to bottom
-        var attributes = fluid.getFluid().getFluidType();
-        if (attributes.isLighterThanAir()) {
-            topHeight = 1 - TANK_W;
-            bottomHeight = 1 - fillY;
-        }
-
-        var builder = new CubeBuilder(bakedQuad -> {
-            vc.putBulkData(ps.last(), bakedQuad, r, g, b, 1.0f, FULL_LIGHT, OverlayTexture.NO_OVERLAY);
-        });
-        builder.setTexture(sprite);
-
-        var x1 = TANK_W * 16;
-        var z1 = TANK_W * 16;
-        var x2 = (1 - TANK_W) * 16;
-        var z2 = (1 - TANK_W) * 16;
-        var y1 = bottomHeight * 16;
-        var y2 = topHeight * 16;
-        builder.addCube(x1, y1, z1, x2, y2, z2);
-
-    }
 
 }

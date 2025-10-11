@@ -150,6 +150,7 @@ import appeng.client.renderer.blockentity.DriveRenderer;
 import appeng.client.renderer.blockentity.InscriberRenderer;
 import appeng.client.renderer.blockentity.MEChestRenderer;
 import appeng.client.renderer.blockentity.MolecularAssemblerRenderer;
+import appeng.client.renderer.blockentity.SkyStoneChestModel;
 import appeng.client.renderer.blockentity.SkyStoneChestRenderer;
 import appeng.client.renderer.blockentity.SkyStoneTankRenderer;
 import appeng.client.renderer.entity.TinyTNTPrimedRenderer;
@@ -626,7 +627,7 @@ public class AppEngClient extends AppEngBase {
     }
 
     private void registerEntityLayerDefinitions(EntityRenderersEvent.RegisterLayerDefinitions event) {
-        event.registerLayerDefinition(SkyStoneChestRenderer.MODEL_LAYER, SkyStoneChestRenderer::createSingleBodyLayer);
+        event.registerLayerDefinition(SkyStoneChestRenderer.MODEL_LAYER, SkyStoneChestModel::createSingleBodyLayer);
     }
 
     public void registerParticleFactories(RegisterParticleProvidersEvent event) {
