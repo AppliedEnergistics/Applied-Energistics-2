@@ -6,4 +6,5 @@ import net.minecraft.client.renderer.block.model.SimpleModelWrapper;
 
 public class MEChestRenderState extends ChestOrDriveRenderState {
     public @Nullable SimpleModelWrapper cellModel;
+    public int frontLightCoords;
 }

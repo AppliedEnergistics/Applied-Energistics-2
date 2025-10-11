@@ -18,27 +18,28 @@
 
 package appeng.client.renderer.blockentity;
 
-import java.util.List;
-
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.LevelRenderer;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.block.ModelBlockRenderer;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.BlockModelPart;
 import net.minecraft.client.renderer.block.model.SimpleModelWrapper;
+import net.minecraft.client.renderer.block.model.SingleVariant;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.state.CameraRenderState;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.ModelManager;
 import net.minecraft.client.resources.model.QuadCollection;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.client.RenderTypeHelper;
 
 import appeng.api.client.StorageCellModels;
 import appeng.api.orientation.BlockOrientation;
@@ -54,12 +55,9 @@ public class MEChestRenderer implements BlockEntityRenderer<MEChestBlockEntity, 
 
     private final ModelManager modelManager;
 
-    private final ModelBlockRenderer blockRenderer;
-
     public MEChestRenderer(BlockEntityRendererProvider.Context context) {
         Minecraft client = Minecraft.getInstance();
         modelManager = client.getModelManager();
-        blockRenderer = client.getBlockRenderer().getModelRenderer();
     }
 
     @Override
@@ -71,6 +69,14 @@ public class MEChestRenderer implements BlockEntityRenderer<MEChestBlockEntity, 
     public void extractRenderState(MEChestBlockEntity be, MEChestRenderState state, float partialTicks, Vec3 cameraPos,
             @Nullable ModelFeatureRenderer.CrumblingOverlay crumblingOverlay) {
         BlockEntityRenderer.super.extractRenderState(be, state, partialTicks, cameraPos, crumblingOverlay);
+
+        // Calculate the lightlevel in front of the drive for lighting the exposed cell model.
+        if (be.getLevel() != null) {
+            var frontPos = be.getBlockPos().relative(be.getFront());
+            state.frontLightCoords = LevelRenderer.getLightColor(be.getLevel(), frontPos);
+        } else {
+            state.frontLightCoords = LightTexture.FULL_BRIGHT;
+        }
 
         var blockOrientation = BlockOrientation.get(be);
         state.extract(blockOrientation, be, partialTicks);
@@ -97,8 +103,10 @@ public class MEChestRenderer implements BlockEntityRenderer<MEChestBlockEntity, 
     @Override
     public void submit(MEChestRenderState state, PoseStack poseStack, SubmitNodeCollector nodes,
             CameraRenderState cameraRenderState) {
-        if (1 == 1) {
-            return; // TODO 1.21.9
+
+        var cellModel = state.cellModel;
+        if (cellModel == null) {
+            return;
         }
 
         poseStack.pushPose();
@@ -110,16 +118,17 @@ public class MEChestRenderer implements BlockEntityRenderer<MEChestBlockEntity, 
         // we need to move them into place for the slot on the ME chest
         poseStack.translate(5 / 16.0, 4 / 16.0, 0);
 
-        var cellModel = state.cellModel;
         var rotatedModelQuads = rotateQuadCullFaces(cellModel.quads(), state.blockOrientation);
-        List<BlockModelPart> parts = List.of(new SimpleModelWrapper(rotatedModelQuads, cellModel.useAmbientOcclusion(),
-                cellModel.particleIcon(), cellModel.renderType()));
-
-        // We "fake" the position here to make it use the light-value in front of the drive
-        // TODO: 1.21.9 blockRenderer.tesselateBlock(level, parts, chest.getBlockState(), chest.getBlockPos(),
-        // poseStack,
-        // TODO: 1.21.9 layer -> buffers.getBuffer(RenderTypeHelper.getEntityRenderType(layer)),
-        // TODO: 1.21.9 false, packedOverlay);
+        var renderType = RenderTypeHelper.getEntityRenderType(cellModel.renderType());
+        nodes.submitBlockModel(
+                poseStack,
+                renderType,
+                new SingleVariant(new SimpleModelWrapper(rotatedModelQuads, cellModel.useAmbientOcclusion(),
+                        cellModel.particleIcon(), cellModel.renderType())),
+                1, 1, 1,
+                state.frontLightCoords,
+                OverlayTexture.NO_OVERLAY,
+                0);
 
         nodes.submitCustomGeometry(
                 poseStack,

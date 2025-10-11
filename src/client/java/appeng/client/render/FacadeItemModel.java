@@ -19,9 +19,8 @@
 package appeng.client.render;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -32,7 +31,6 @@ import org.joml.Vector3f;
 
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.BlockModelPart;
 import net.minecraft.client.renderer.item.ItemModel;
 import net.minecraft.client.renderer.item.ItemModelResolver;
@@ -49,12 +47,12 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.EmptyBlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.client.RenderTypeHelper;
-import net.neoforged.neoforge.common.util.ItemStackMap;
 
 import appeng.api.implementations.items.IFacadeItem;
 import appeng.client.render.cablebus.FacadeBuilder;
 import appeng.core.AppEng;
 import appeng.items.parts.FacadeItem;
+import appeng.thirdparty.fabric.ModelHelper;
 
 /**
  * The model class for facades. Since facades wrap existing models, they don't declare any dependencies here other than
@@ -65,7 +63,6 @@ public class FacadeItemModel implements ItemModel {
     // We use this to get the default item transforms and make our lives easier
     private static final ResourceLocation MODEL_BASE = AppEng.makeId("item/facade_base");
 
-    private final Map<ItemStack, Collection<BakedQuad>> cache = ItemStackMap.createTypeAndTagMap();
     private final ItemBaseModelWrapper baseModel;
     private final ItemModel missingItemModel;
     private final FacadeBuilder facadeBuilder;
@@ -91,13 +88,14 @@ public class FacadeItemModel implements ItemModel {
             return;
         }
 
-        // This is the facade stem
-        // baseModel.applyToLayer(renderState.newLayer(), displayContext);
+        renderState.appendModelIdentityElement(this);
+        renderState.appendModelIdentityElement(facadeBlockState);
 
         var facadeLayer = renderState.newLayer();
         facadeLayer.setTransform(baseModel.renderProperties().transforms().getTransform(displayContext));
         facadeLayer.setupSpecialModel(new FacadeSpecialRender(), facadeBlockState);
-        renderState.appendModelIdentityElement(this);
+        // We use the extents of the stem, which is certainly not quite correct.
+        facadeLayer.setExtents(baseModel.extents());
     }
 
     public class FacadeSpecialRender implements SpecialModelRenderer<BlockState> {
@@ -125,7 +123,6 @@ public class FacadeItemModel implements ItemModel {
                     BlockPos.ZERO,
                     blockModelParts::add);
 
-            var pose = poseStack.last();
             float[] brightness = new float[4];
             var lightmap = new int[] {
                     packedLight,
@@ -134,27 +131,28 @@ public class FacadeItemModel implements ItemModel {
                     packedLight,
             };
             for (var blockModelPart : blockModelParts) {
-                var chunkSectionLayer = blockModelPart.getRenderType(blockState);
-                var renderType = RenderTypeHelper.getEntityRenderType(chunkSectionLayer);
-                // TODO 1.21.9 var buffer = bufferSource.getBuffer(renderType);
-                // TODO 1.21.9 for (int cullFaceIdx = 0; cullFaceIdx <= ModelHelper.NULL_FACE_ID; cullFaceIdx++) {
-                // TODO 1.21.9 var cullFace = ModelHelper.faceFromIndex(cullFaceIdx);
-                // TODO 1.21.9 for (var quad : blockModelPart.getQuads(cullFace)) {
-                // TODO 1.21.9 var shade = (quad.shade() && quad.direction() != null) ? getShade(quad.direction()) : 1f;
-                // TODO 1.21.9 brightness[0] = shade;
-                // TODO 1.21.9 brightness[1] = shade;
-                // TODO 1.21.9 brightness[2] = shade;
-                // TODO 1.21.9 brightness[3] = shade;
-                // TODO 1.21.9 buffer.putBulkData(
-                // TODO 1.21.9 pose, quad, brightness, 1f, 1f, 1f, 1f, lightmap, packedOverlay, false);
-                // TODO 1.21.9 }
-                // TODO 1.21.9 }
+                var renderType = RenderTypeHelper.getEntityRenderType(blockModelPart.getRenderType(blockState));
+
+                nodes.submitCustomGeometry(poseStack, renderType, (pose, consumer) -> {
+                    for (int cullFaceIdx = 0; cullFaceIdx <= ModelHelper.NULL_FACE_ID; cullFaceIdx++) {
+                        var cullFace = ModelHelper.faceFromIndex(cullFaceIdx);
+                        for (var quad : blockModelPart.getQuads(cullFace)) {
+                            var shade = (quad.shade() && quad.direction() != null) ? getShade(quad.direction()) : 1f;
+                            brightness[0] = shade;
+                            brightness[1] = shade;
+                            brightness[2] = shade;
+                            brightness[3] = shade;
+                            consumer.putBulkData(
+                                    pose, quad, brightness, 1f, 1f, 1f, 1f, lightmap, packedOverlay, false);
+                        }
+                    }
+                });
             }
         }
 
         @Override
         public void getExtents(Set<Vector3f> extents) {
-            // TODO 1.21.8 Probably delegate to the facade model?
+            Collections.addAll(extents, baseModel.extents().get());
         }
 
         private float getShade(Direction side) {
