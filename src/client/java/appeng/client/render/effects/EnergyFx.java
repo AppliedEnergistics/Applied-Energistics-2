@@ -18,7 +18,8 @@
 
 package appeng.client.render.effects;
 
-import net.minecraft.client.Camera;
+import org.joml.Quaternionf;
+
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
@@ -26,6 +27,7 @@ import net.minecraft.client.particle.SingleQuadParticle;
 import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.client.renderer.state.QuadParticleRenderState;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 
@@ -58,22 +60,38 @@ public class EnergyFx extends SingleQuadParticle {
 
     @Override
     public float getQuadSize(float scaleFactor) {
-        return 0.1f * this.quadSize;
+        return 0.1f * Mth.lerp(scaleFactor, this.quadSize, this.quadSize * 0.89f);
     }
 
     @Override
-    public void extract(QuadParticleRenderState state, Camera camera, float partialTicks) {
-        float x = (float) (this.xo + (this.x - this.xo) * partialTicks);
-        float y = (float) (this.yo + (this.y - this.yo) * partialTicks);
-        float z = (float) (this.zo + (this.z - this.zo) * partialTicks);
-
-        final int blkX = Mth.floor(x);
-        final int blkY = Mth.floor(y);
-        final int blkZ = Mth.floor(z);
-
-        if (blkX == this.startBlkX && blkY == this.startBlkY && blkZ == this.startBlkZ) {
-            super.extract(state, camera, partialTicks);
+    protected void extractRotatedQuad(
+            QuadParticleRenderState reusedState, Quaternionf orientation, float x, float y, float z,
+            float partialTick) {
+        var blockX = Math.floor(Mth.lerp(partialTick, xo, this.x));
+        var blockY = Math.floor(Mth.lerp(partialTick, yo, this.y));
+        var blockZ = Math.floor(Mth.lerp(partialTick, zo, this.z));
+        if (blockX != this.startBlkX || blockY != this.startBlkY || blockZ != this.startBlkZ) {
+            return;
         }
+
+        var alpha = Mth.lerp(partialTick, this.alpha, this.alpha * 0.89f);
+
+        reusedState.add(
+                this.getLayer(),
+                x,
+                y,
+                z,
+                orientation.x,
+                orientation.y,
+                orientation.z,
+                orientation.w,
+                this.getQuadSize(partialTick),
+                this.getU0(),
+                this.getU1(),
+                this.getV0(),
+                this.getV1(),
+                ARGB.colorFromFloat(alpha, this.rCol, this.gCol, this.bCol),
+                this.getLightColor(partialTick));
     }
 
     @Override

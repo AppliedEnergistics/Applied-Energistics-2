@@ -57,7 +57,6 @@ import appeng.core.network.clientbound.CraftingStatusPacket;
 import appeng.core.network.clientbound.ExportedGridContent;
 import appeng.core.network.clientbound.GuiDataSyncPacket;
 import appeng.core.network.clientbound.ItemTransitionEffectPacket;
-import appeng.core.network.clientbound.LightningPacket;
 import appeng.core.network.clientbound.MEInventoryUpdatePacket;
 import appeng.core.network.clientbound.MatterCannonPacket;
 import appeng.core.network.clientbound.MockExplosionPacket;
@@ -252,17 +251,6 @@ public class AEClientboundPacketHandler {
 
     }
 
-    public void handleLightningPacket(LightningPacket packet, Minecraft minecraft, Player player) {
-        try {
-            if (AEConfig.instance().isEnableEffects()) {
-                player.level().addParticle(ParticleTypes.LIGHTNING, packet.x(), packet.y(), packet.z(),
-                        0.0f, 0.0f,
-                        0.0f);
-            }
-        } catch (Exception ignored) {
-        }
-    }
-
     private static final DateTimeFormatter TIMESTAMP_FORMATTER = DateTimeFormatter.ofPattern("yyyyMMdd_HHmm");
 
     private static final Logger LOG = LoggerFactory.getLogger(ExportedGridContent.class);
@@ -351,7 +339,6 @@ public class AEClientboundPacketHandler {
         register(event, ClearPatternAccessTerminalPacket.TYPE, this::handleClearPatternAccessTerminalPacket);
         register(event, ItemTransitionEffectPacket.TYPE, this::handleItemTransitionEffectPacket);
         register(event, MockExplosionPacket.TYPE, this::handleMockExplosionPacket);
-        register(event, LightningPacket.TYPE, this::handleLightningPacket);
         register(event, ExportedGridContent.TYPE, this::handleExportedGridContent);
         register(event, CraftingJobStatusPacket.TYPE, this::handleCraftingJobStatusPacket);
         register(event, ConfigValuePacket.TYPE, this::handleConfigValuePacket);

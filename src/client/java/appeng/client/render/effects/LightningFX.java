@@ -18,22 +18,17 @@
 
 package appeng.client.render.effects;
 
-import net.minecraft.client.Camera;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
-import net.minecraft.client.particle.SingleQuadParticle;
+import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.client.renderer.state.QuadParticleRenderState;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.particles.SimpleParticleType;
-import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.phys.Vec3;
 
-public class LightningFX extends SingleQuadParticle {
+public class LightningFX extends Particle {
 
     private static final RandomSource RANDOM_GENERATOR = RandomSource.create();
     private static final int STEPS = 5;
@@ -52,7 +47,7 @@ public class LightningFX extends SingleQuadParticle {
 
     protected LightningFX(ClientLevel level, double x, double y, double z, double r,
             double g, double b, int maxAge, TextureAtlasSprite sprite) {
-        super(level, x, y, z, r, g, b, sprite);
+        super(level, x, y, z, r, g, b);
         this.precomputedSteps = new float[LightningFX.STEPS][3];
         this.xd = 0;
         this.yd = 0;
@@ -79,8 +74,8 @@ public class LightningFX extends SingleQuadParticle {
     }
 
     @Override
-    protected Layer getLayer() {
-        return Layer.OPAQUE;
+    public ParticleRenderType getGroup() {
+        return LightningFXGroup.RENDER_TYPE;
     }
 
     @Override
@@ -99,117 +94,117 @@ public class LightningFX extends SingleQuadParticle {
         this.yd *= 0.9800000190734863D;
         this.zd *= 0.9800000190734863D;
     }
-
-    @Override
-    public void extract(QuadParticleRenderState state, Camera camera, float partialTicks) {
-        Vec3 Vector3d = camera.getPosition();
-        float centerX = (float) (Mth.lerp(partialTicks, this.xo, this.x) - Vector3d.x());
-        float centerY = (float) (Mth.lerp(partialTicks, this.yo, this.y) - Vector3d.y());
-        float centerZ = (float) (Mth.lerp(partialTicks, this.zo, this.z) - Vector3d.z());
-
-        final float j = 1.0f;
-        float red = this.rCol * j * 0.9f;
-        float green = this.gCol * j * 0.95f;
-        float blue = this.bCol * j;
-        final float alpha = this.alpha;
-
-        if (this.age == 3) {
-            this.regen();
-        }
-
-        float u = this.getU0() + (this.getU1() - this.getU0()) / 2;
-        float v = this.getV0() + (this.getV1() - this.getV0()) / 2;
-
-        float scale = 0.02f;// 0.02F * this.particleScale;
-
-        final float[] a = new float[3];
-        final float[] b = new float[3];
-
-        float ox = 0;
-        float oy = 0;
-        float oz = 0;
-
-        final Player p = Minecraft.getInstance().player;
-
-        // FIXME: Billboard rotation is not applied to the particle yet,
-        // FIXME The old version apparently did this by hand using rX,rZ -> replicate
-        // using the quaternion
-
-        for (int layer = 0; layer < 2; layer++) {
-            if (layer == 0) {
-                scale = 0.04f;
-                // FIXME offX *= 0.001;
-                // FIXME offY *= 0.001;
-                // FIXME offZ *= 0.001;
-                red = this.rCol * j * 0.4f;
-                green = this.gCol * j * 0.25f;
-                blue = this.bCol * j * 0.45f;
-            } else {
-                // FIXME offX = 0;
-                // FIXME offY = 0;
-                // FIXME offZ = 0;
-                scale = 0.02f;
-                red = this.rCol * j * 0.9f;
-                green = this.gCol * j * 0.65f;
-                blue = this.bCol * j * 0.85f;
-            }
-
-            for (int cycle = 0; cycle < 3; cycle++) {
-                this.clear();
-
-                // FIXME removed interpPos here, check if this is correct
-                float x = centerX; // FIXME - offX;
-                float y = centerY; // FIXME - offY;
-                float z = centerZ; // FIXME - offZ;
-
-                for (int s = 0; s < LightningFX.STEPS; s++) {
-                    final float xN = x + this.precomputedSteps[s][0];
-                    final float yN = y + this.precomputedSteps[s][1];
-                    final float zN = z + this.precomputedSteps[s][2];
-
-                    final float xD = xN - x;
-                    final float yD = yN - y;
-                    final float zD = zN - z;
-
-                    if (cycle == 0) {
-                        ox = yD * 0 - 1 * zD;
-                        oy = zD * 0 - 0 * xD;
-                        oz = xD * 1 - 0 * yD;
-                    }
-                    if (cycle == 1) {
-                        ox = yD * 1 - 0 * zD;
-                        oy = zD * 0 - 1 * xD;
-                        oz = xD * 0 - 0 * yD;
-                    }
-                    if (cycle == 2) {
-                        ox = yD * 0 - 0 * zD;
-                        oy = zD * 1 - 0 * xD;
-                        oz = xD * 0 - 1 * yD;
-                    }
-
-                    final float ss = Mth.sqrt(ox * ox + oy * oy + oz * oz)
-                            / (((float) LightningFX.STEPS - (float) s) / LightningFX.STEPS * scale);
-                    ox /= ss;
-                    oy /= ss;
-                    oz /= ss;
-
-                    a[0] = x + ox;
-                    a[1] = y + oy;
-                    a[2] = z + oz;
-
-                    b[0] = x;
-                    b[1] = y;
-                    b[2] = z;
-
-                    this.draw(red, green, blue, state, a, b, u, v);
-
-                    x = xN;
-                    y = yN;
-                    z = zN;
-                }
-            }
-        }
-    }
+//
+//    @Override
+//    public void extract(QuadParticleRenderState state, Camera camera, float partialTicks) {
+//        Vec3 Vector3d = camera.getPosition();
+//        float centerX = (float) (Mth.lerp(partialTicks, this.xo, this.x) - Vector3d.x());
+//        float centerY = (float) (Mth.lerp(partialTicks, this.yo, this.y) - Vector3d.y());
+//        float centerZ = (float) (Mth.lerp(partialTicks, this.zo, this.z) - Vector3d.z());
+//
+//        final float j = 1.0f;
+//        float red = this.rCol * j * 0.9f;
+//        float green = this.gCol * j * 0.95f;
+//        float blue = this.bCol * j;
+//        final float alpha = this.alpha;
+//
+//        if (this.age == 3) {
+//            this.regen();
+//        }
+//
+//        float u = this.getU0() + (this.getU1() - this.getU0()) / 2;
+//        float v = this.getV0() + (this.getV1() - this.getV0()) / 2;
+//
+//        float scale = 0.02f;// 0.02F * this.particleScale;
+//
+//        final float[] a = new float[3];
+//        final float[] b = new float[3];
+//
+//        float ox = 0;
+//        float oy = 0;
+//        float oz = 0;
+//
+//        final Player p = Minecraft.getInstance().player;
+//
+//        // FIXME: Billboard rotation is not applied to the particle yet,
+//        // FIXME The old version apparently did this by hand using rX,rZ -> replicate
+//        // using the quaternion
+//
+//        for (int layer = 0; layer < 2; layer++) {
+//            if (layer == 0) {
+//                scale = 0.04f;
+//                // FIXME offX *= 0.001;
+//                // FIXME offY *= 0.001;
+//                // FIXME offZ *= 0.001;
+//                red = this.rCol * j * 0.4f;
+//                green = this.gCol * j * 0.25f;
+//                blue = this.bCol * j * 0.45f;
+//            } else {
+//                // FIXME offX = 0;
+//                // FIXME offY = 0;
+//                // FIXME offZ = 0;
+//                scale = 0.02f;
+//                red = this.rCol * j * 0.9f;
+//                green = this.gCol * j * 0.65f;
+//                blue = this.bCol * j * 0.85f;
+//            }
+//
+//            for (int cycle = 0; cycle < 3; cycle++) {
+//                this.clear();
+//
+//                // FIXME removed interpPos here, check if this is correct
+//                float x = centerX; // FIXME - offX;
+//                float y = centerY; // FIXME - offY;
+//                float z = centerZ; // FIXME - offZ;
+//
+//                for (int s = 0; s < LightningFX.STEPS; s++) {
+//                    final float xN = x + this.precomputedSteps[s][0];
+//                    final float yN = y + this.precomputedSteps[s][1];
+//                    final float zN = z + this.precomputedSteps[s][2];
+//
+//                    final float xD = xN - x;
+//                    final float yD = yN - y;
+//                    final float zD = zN - z;
+//
+//                    if (cycle == 0) {
+//                        ox = yD * 0 - 1 * zD;
+//                        oy = zD * 0 - 0 * xD;
+//                        oz = xD * 1 - 0 * yD;
+//                    }
+//                    if (cycle == 1) {
+//                        ox = yD * 1 - 0 * zD;
+//                        oy = zD * 0 - 1 * xD;
+//                        oz = xD * 0 - 0 * yD;
+//                    }
+//                    if (cycle == 2) {
+//                        ox = yD * 0 - 0 * zD;
+//                        oy = zD * 1 - 0 * xD;
+//                        oz = xD * 0 - 1 * yD;
+//                    }
+//
+//                    final float ss = Mth.sqrt(ox * ox + oy * oy + oz * oz)
+//                            / (((float) LightningFX.STEPS - (float) s) / LightningFX.STEPS * scale);
+//                    ox /= ss;
+//                    oy /= ss;
+//                    oz /= ss;
+//
+//                    a[0] = x + ox;
+//                    a[1] = y + oy;
+//                    a[2] = z + oz;
+//
+//                    b[0] = x;
+//                    b[1] = y;
+//                    b[2] = z;
+//
+//                    this.draw(red, green, blue, state, a, b, u, v);
+//
+//                    x = xN;
+//                    y = yN;
+//                    z = zN;
+//                }
+//            }
+//        }
+//    }
 
     private void clear() {
         this.hasData = false;

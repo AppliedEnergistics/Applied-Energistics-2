@@ -169,7 +169,6 @@ import appeng.core.definitions.AEItems;
 import appeng.core.network.ServerboundPacket;
 import appeng.core.network.serverbound.MouseWheelPacket;
 import appeng.core.network.serverbound.UpdateHoldingCtrlPacket;
-import appeng.core.particles.EnergyParticleData;
 import appeng.core.particles.ParticleTypes;
 import appeng.helpers.IMouseWheelItem;
 import appeng.items.storage.StorageCellTooltipComponent;
@@ -411,54 +410,6 @@ public class AppEngClient extends AppEngBase {
     @Override
     public HitResult getCurrentMouseOver() {
         return Minecraft.getInstance().hitResult;
-    }
-
-    // FIXME: Instead of doing a custom packet and this dispatcher, we can use the
-    // vanilla particle system
-    @Override
-    public void spawnEffect(EffectType effect, Level level, double posX, double posY,
-            double posZ, Object o) {
-        if (AEConfig.instance().isEnableEffects()) {
-            switch (effect) {
-                case Vibrant:
-                    this.spawnVibrant(level, posX, posY, posZ);
-                    return;
-                case Energy:
-                    this.spawnEnergy(level, posX, posY, posZ);
-                    return;
-                case Lightning:
-                    this.spawnLightning(level, posX, posY, posZ);
-                    return;
-                default:
-            }
-        }
-    }
-
-    private void spawnVibrant(Level level, double x, double y, double z) {
-        final double d0 = (level.getRandom().nextFloat() - 0.5F) * 0.26D;
-        final double d1 = (level.getRandom().nextFloat() - 0.5F) * 0.26D;
-        final double d2 = (level.getRandom().nextFloat() - 0.5F) * 0.26D;
-
-        level.addParticle(ParticleTypes.VIBRANT, false, true, x + d0, y + d1, z + d2, 0.0D,
-                0.0D,
-                0.0D);
-    }
-
-    private void spawnEnergy(Level level, double posX, double posY, double posZ) {
-        var random = level.getRandom();
-        final float x = (float) (Math.abs(random.nextInt()) % 100 * 0.01 - 0.5) * 0.7f;
-        final float y = (float) (Math.abs(random.nextInt()) % 100 * 0.01 - 0.5) * 0.7f;
-        final float z = (float) (Math.abs(random.nextInt()) % 100 * 0.01 - 0.5) * 0.7f;
-
-        level.addParticle(EnergyParticleData.FOR_BLOCK, false, true, posX + x, posY + y,
-                posZ + z,
-                -x * 0.1, -y * 0.1, -z * 0.1);
-    }
-
-    private void spawnLightning(Level level, double posX, double posY, double posZ) {
-        level.addParticle(ParticleTypes.LIGHTNING, false, true, posX, posY + 0.3f, posZ, 0.0f,
-                0.0f,
-                0.0f);
     }
 
     private void updateCableRenderMode() {

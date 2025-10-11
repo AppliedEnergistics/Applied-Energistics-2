@@ -17,7 +17,6 @@ import appeng.core.network.clientbound.CraftingStatusPacket;
 import appeng.core.network.clientbound.ExportedGridContent;
 import appeng.core.network.clientbound.GuiDataSyncPacket;
 import appeng.core.network.clientbound.ItemTransitionEffectPacket;
-import appeng.core.network.clientbound.LightningPacket;
 import appeng.core.network.clientbound.MEInventoryUpdatePacket;
 import appeng.core.network.clientbound.MatterCannonPacket;
 import appeng.core.network.clientbound.MockExplosionPacket;
@@ -56,7 +55,6 @@ public class InitNetwork {
         registrar.playToClient(CraftingStatusPacket.TYPE, CraftingStatusPacket.STREAM_CODEC);
         registrar.playToClient(GuiDataSyncPacket.TYPE, GuiDataSyncPacket.STREAM_CODEC);
         registrar.playToClient(ItemTransitionEffectPacket.TYPE, ItemTransitionEffectPacket.STREAM_CODEC);
-        registrar.playToClient(LightningPacket.TYPE, LightningPacket.STREAM_CODEC);
         registrar.playToClient(MatterCannonPacket.TYPE, MatterCannonPacket.STREAM_CODEC);
         registrar.playToClient(MEInventoryUpdatePacket.TYPE, MEInventoryUpdatePacket.STREAM_CODEC);
         registrar.playToClient(MockExplosionPacket.TYPE, MockExplosionPacket.STREAM_CODEC);

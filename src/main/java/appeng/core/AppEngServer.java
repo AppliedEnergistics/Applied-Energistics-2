@@ -24,8 +24,6 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 
-import appeng.client.EffectType;
-
 /**
  * Contains mod functionality specific to a dedicated server.
  */
@@ -43,10 +41,5 @@ public class AppEngServer extends AppEngBase {
     @Override
     public void registerHotkey(String id) {
         // don't register any Hotkeys
-    }
-
-    @Override
-    public void spawnEffect(EffectType effect, Level level, double posX, double posY, double posZ, Object o) {
-        // Spawning client-side effects on a server is impossible
     }
 }

@@ -34,7 +34,6 @@ import net.minecraft.world.phys.HitResult;
 
 import appeng.api.ids.AEConstants;
 import appeng.api.parts.CableRenderMode;
-import appeng.client.EffectType;
 import appeng.core.network.ClientboundPacket;
 
 public interface AppEng {
@@ -62,9 +61,6 @@ public interface AppEng {
 
     void sendToAllNearExcept(Player p, double x, double y, double z, double dist, Level level,
             ClientboundPacket packet);
-
-    void spawnEffect(EffectType effect, Level level, double posX, double posY,
-            double posZ, Object o);
 
     /**
      * Sets the player that is currently interacting with a cable or part attached to a cable. This will return that

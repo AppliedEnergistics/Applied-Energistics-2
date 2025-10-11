@@ -28,6 +28,9 @@ import net.minecraft.core.particles.ParticleType;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 
 public record EnergyParticleData(boolean forItem, Direction direction) implements ParticleOptions {
     public static final MapCodec<EnergyParticleData> CODEC = RecordCodecBuilder.mapCodec(builder -> builder.group(
@@ -47,5 +50,21 @@ public record EnergyParticleData(boolean forItem, Direction direction) implement
     @Override
     public ParticleType<?> getType() {
         return ParticleTypes.ENERGY;
+    }
+
+    public static void add(Level level, Vec3 center, RandomSource random) {
+        var xOff = (random.nextFloat() - 0.5f) * 0.7f;
+        var yOff = (random.nextFloat() - 0.5f) * 0.7f;
+        var zOff = (random.nextFloat() - 0.5f) * 0.7f;
+        level.addParticle(
+                EnergyParticleData.FOR_BLOCK,
+                false,
+                true,
+                center.x() + xOff,
+                center.y() + yOff,
+                center.z() + zOff,
+                -xOff * 0.1,
+                -yOff * 0.1,
+                -zOff * 0.1);
     }
 }

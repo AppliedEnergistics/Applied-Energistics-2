@@ -32,8 +32,8 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 import appeng.blockentity.qnb.QuantumBridgeBlockEntity;
-import appeng.client.EffectType;
-import appeng.core.AppEng;
+import appeng.core.AEConfig;
+import appeng.core.particles.EnergyParticleData;
 import appeng.menu.MenuOpener;
 import appeng.menu.implementations.QNBMenu;
 import appeng.menu.locator.MenuLocators;
@@ -53,12 +53,10 @@ public class QuantumLinkChamberBlock extends QuantumBaseBlock {
     }
 
     @Override
-    public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource rand) {
+    public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource random) {
         final QuantumBridgeBlockEntity bridge = this.getBlockEntity(level, pos);
-        if (bridge != null && bridge.hasQES()) {
-            AppEng.instance().spawnEffect(EffectType.Energy, level, pos.getX() + 0.5, pos.getY() + 0.5,
-                    pos.getZ() + 0.5,
-                    null);
+        if (bridge != null && bridge.hasQES() && AEConfig.instance().isEnableEffects()) {
+            EnergyParticleData.add(level, pos.getCenter(), random);
         }
     }
 

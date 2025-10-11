@@ -24,8 +24,7 @@ import net.minecraft.world.phys.AABB;
 
 import appeng.api.config.Actionable;
 import appeng.core.AEConfig;
-import appeng.core.AppEng;
-import appeng.core.network.clientbound.LightningPacket;
+import appeng.core.particles.ParticleTypes;
 import appeng.items.tools.powered.powersink.AEBasePoweredItem;
 
 public class ChargedStaffItem extends AEBasePoweredItem {
@@ -38,20 +37,22 @@ public class ChargedStaffItem extends AEBasePoweredItem {
     public void hurtEnemy(ItemStack item, LivingEntity target, LivingEntity hitter) {
         if (this.getAECurrentPower(item) > 300) {
             this.extractAEPower(item, 300, Actionable.MODULATE);
-            if (!target.level().isClientSide()) {
+            var level = target.level();
+            if (!level.isClientSide()) {
                 for (int x = 0; x < 2; x++) {
                     final AABB entityBoundingBox = target.getBoundingBox();
-                    final float dx = (float) (target.level().getRandom().nextFloat() * target.getBbWidth()
+                    var dx = (float) (level.getRandom().nextFloat() * target.getBbWidth()
                             + entityBoundingBox.minX);
-                    final float dy = (float) (target.level().getRandom().nextFloat() * target.getBbHeight()
+                    var dy = (float) (level.getRandom().nextFloat() * target.getBbHeight()
                             + entityBoundingBox.minY);
-                    final float dz = (float) (target.level().getRandom().nextFloat() * target.getBbWidth()
+                    var dz = (float) (level.getRandom().nextFloat() * target.getBbWidth()
                             + entityBoundingBox.minZ);
-                    AppEng.instance().sendToAllNearExcept(null, dx, dy, dz, 32.0, target.level(),
-                            new LightningPacket(dx, dy, dz));
+                    level.addParticle(ParticleTypes.LIGHTNING, dx, dy, dz,
+                            0.0f, 0.0f,
+                            0.0f);
                 }
             }
-            target.hurt(target.level().damageSources().magic(), 6);
+            target.hurt(level.damageSources().magic(), 6);
         }
     }
 

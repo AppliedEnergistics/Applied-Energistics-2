@@ -253,6 +253,9 @@ public class MEChestBlockEntity extends AENetworkedPoweredBlockEntity
         }
         // Client-side we'll need to actually use the synced state
         if (level == null || level.isClientSide()) {
+            if (cellItem == Items.AIR) {
+                return null;
+            }
             return cellItem;
         }
         ItemStack cell = getCell();
