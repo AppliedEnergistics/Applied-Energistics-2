@@ -7,6 +7,7 @@ import net.minecraft.world.item.Items;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.networking.energy.IEnergyService;
+import appeng.api.networking.security.IActionSource;
 import appeng.api.networking.storage.IStorageService;
 import appeng.api.stacks.AEItemKey;
 import appeng.core.definitions.AEBlocks;
@@ -118,6 +119,59 @@ public final class SubnetPlots {
                         helper.check(getLocalStoredPower(denseCellService) == 1, "expect power = 1", origin.east());
                         noCellService.extractAEPower(1, Actionable.MODULATE, PowerMultiplier.ONE);
                         helper.check(getLocalStoredPower(denseCellService) == 0, "expect power = 0", origin.east());
+                    })
+                    .thenSucceed();
+        });
+    }
+
+    /**
+     * Multiple storage buses should show a combined inventory.
+     */
+    @TestPlot(value = "multi_storage_bus")
+    public static void multi_storage_bus(PlotBuilder plot) {
+        var origin = BlockPos.ZERO;
+
+        // "Main" network
+        plot.storageDrive(origin.west());
+        plot.block(origin, AEBlocks.INTERFACE);
+        plot.block(origin.east(), AEBlocks.INTERFACE);
+        plot.creativeEnergyCell(origin.east().east());
+
+        // "Sub" network
+        var subnetOrigin = origin.north();
+        plot.cable(subnetOrigin)
+                .part(Direction.SOUTH, AEParts.STORAGE_BUS, bus -> {
+                    bus.getConfig().addFilter(Items.RED_CONCRETE);
+                });
+        plot.cable(subnetOrigin.east())
+                .part(Direction.SOUTH, AEParts.STORAGE_BUS, bus -> {
+                    bus.getConfig().addFilter(Items.BLUE_CONCRETE);
+                });
+        plot.cable(subnetOrigin.east().east())
+                .part(Direction.SOUTH, AEParts.QUARTZ_FIBER)
+                .part(Direction.NORTH, AEParts.TERMINAL);
+
+        plot.test(helper -> {
+            helper.startSequence()
+                    .thenWaitUntil(() -> {
+                        helper.getGrid(origin);
+                        helper.getGrid(subnetOrigin);
+                    })
+                    .thenExecute(() -> {
+                        // Insert drive content
+                        var mainGrid = helper.getGrid(origin);
+                        var mainInv = mainGrid.getStorageService().getInventory();
+                        mainInv.insert(AEItemKey.of(Items.RED_CONCRETE), 64, Actionable.MODULATE,
+                                IActionSource.empty());
+                        mainInv.insert(AEItemKey.of(Items.BLUE_CONCRETE), 64, Actionable.MODULATE,
+                                IActionSource.empty());
+                    })
+                    .thenIdle(1)
+                    .thenExecute(() -> {
+                        // Ensure both red and blue concrete are visible on the sub-network
+                        var subnet = helper.getGrid(subnetOrigin);
+                        helper.assertContains(subnet, Items.RED_CONCRETE);
+                        helper.assertContains(subnet, Items.BLUE_CONCRETE);
                     })
                     .thenSucceed();
         });
