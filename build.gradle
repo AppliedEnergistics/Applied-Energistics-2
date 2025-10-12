@@ -208,8 +208,14 @@ allprojects {
                 includeGroup "mcjty"
             }
         }
+        maven {
+            name = 'TerraformersMC'
+            url = 'https://maven.terraformersmc.com/'
+            content {
+                includeGroup 'dev.emi'
+            }
+        }
         maven { url = 'https://repo.spongepowered.org/maven' }
-        maven { url = 'https://maven.terraformersmc.com/releases'}
     }
 
     // ensure everything uses UTF-8 and not some random codepage chosen by gradle
