@@ -52,7 +52,10 @@ import appeng.core.definitions.AEParts;
 import appeng.core.definitions.ItemDefinition;
 import appeng.core.localization.GuiText;
 import appeng.core.localization.ItemModText;
+import appeng.integration.abstraction.IJEI;
 import appeng.integration.abstraction.ItemListMod;
+import appeng.integration.abstraction.ItemListModAdapter;
+import appeng.integration.abstraction.JEIFacade;
 import appeng.integration.modules.jei.transfer.EncodePatternTransferHandler;
 import appeng.integration.modules.jei.transfer.UseCraftingRecipeTransfer;
 import appeng.items.parts.FacadeItem;
@@ -282,12 +285,20 @@ public class JEIPlugin implements IModPlugin {
     public void onRuntimeAvailable(@NotNull IJeiRuntime jeiRuntime) {
         JEIPlugin.jeiRuntime = jeiRuntime;
         ItemListMod.setAdapter(new JeiItemListModAdapter(jeiRuntime));
+        JEIFacade.setInstance(new JeiRuntimeAdapter(jeiRuntime));
         this.hideDebugTools(jeiRuntime);
 
         if (!AEConfig.instance().isEnableFacadesInJEI()) {
             jeiRuntime.getIngredientManager().removeIngredientsAtRuntime(VanillaTypes.ITEM_STACK,
                     FacadeCreativeTab.getDisplayItems());
         }
+    }
+
+    @Override
+    public void onRuntimeUnavailable() {
+        // Free memory potentially held by JEI
+        JEIFacade.setInstance(new IJEI.Stub());
+        ItemListMod.setAdapter(ItemListModAdapter.none());
     }
 
     private void hideDebugTools(IJeiRuntime jeiRuntime) {

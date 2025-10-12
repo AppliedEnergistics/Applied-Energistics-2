@@ -266,6 +266,7 @@ allprojects {
         }
 
         maven {
+            name = 'TerraformersMC'
             url = "https://maven.terraformersmc.com/releases"
             content {
                 includeGroup "dev.emi"
