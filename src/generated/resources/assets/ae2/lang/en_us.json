@@ -480,6 +480,7 @@
   "gui.ae2.StoredSize": "Stored Size: %dx%dx%d",
   "gui.ae2.Stores": "Stores",
   "gui.ae2.Suspend": "Suspend",
+  "gui.ae2.Substitute": "Using Substitutions:",
   "gui.ae2.TankAmount": "Amount: %d",
   "gui.ae2.TankBucketCapacity": "Can Store up to %d Buckets",
   "gui.ae2.TankCapacity": "Capacity: %d",
