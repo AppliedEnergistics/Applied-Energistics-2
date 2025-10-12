@@ -4,14 +4,13 @@ import com.google.common.base.Strings;
 
 import mezz.jei.api.runtime.IJeiRuntime;
 
-import appeng.integration.abstraction.IJEI;
+import appeng.integration.abstraction.ItemListModAdapter;
 
-@Deprecated(forRemoval = true)
-public class JeiRuntimeAdapter implements IJEI {
+class JeiItemListModAdapter implements ItemListModAdapter {
 
     private final IJeiRuntime runtime;
 
-    JeiRuntimeAdapter(IJeiRuntime jeiRuntime) {
+    JeiItemListModAdapter(IJeiRuntime jeiRuntime) {
         this.runtime = jeiRuntime;
     }
 
@@ -20,8 +19,9 @@ public class JeiRuntimeAdapter implements IJEI {
         return true;
     }
 
-    public IJeiRuntime getRuntime() {
-        return runtime;
+    @Override
+    public String getShortName() {
+        return "JEI";
     }
 
     @Override

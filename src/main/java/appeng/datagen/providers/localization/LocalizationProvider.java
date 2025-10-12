@@ -25,6 +25,7 @@ import appeng.core.localization.ItemModText;
 import appeng.core.localization.LocalizationEnum;
 import appeng.core.localization.PlayerMessages;
 import appeng.datagen.providers.IAE2DataProvider;
+import appeng.integration.modules.emi.EmiText;
 import appeng.integration.modules.igtooltip.TooltipIds;
 
 public class LocalizationProvider implements IAE2DataProvider {
@@ -55,6 +56,7 @@ public class LocalizationProvider implements IAE2DataProvider {
         addEnum(PlayerMessages.class);
         addEnum(InGameTooltip.class);
         addEnum(ItemModText.class);
+        addEnum(EmiText.class);
         // Can't implement LocalizationEnum since it's not in the API, but PowerUnits is
         for (var powerUnit : PowerUnits.values()) {
             add(powerUnit.unlocalizedName, powerUnit.symbolName);

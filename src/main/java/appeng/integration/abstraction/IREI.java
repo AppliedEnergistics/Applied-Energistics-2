@@ -21,6 +21,7 @@ package appeng.integration.abstraction;
 /**
  * Abstracts access to the REI API functionality.
  */
+@Deprecated(forRemoval = true)
 public interface IREI {
     default boolean isEnabled() {
         return false;

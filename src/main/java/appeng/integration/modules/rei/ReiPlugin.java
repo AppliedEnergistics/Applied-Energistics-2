@@ -68,6 +68,7 @@ import appeng.core.definitions.AEParts;
 import appeng.core.definitions.ItemDefinition;
 import appeng.core.localization.GuiText;
 import appeng.core.localization.ItemModText;
+import appeng.integration.abstraction.ItemListMod;
 import appeng.integration.abstraction.REIFacade;
 import appeng.integration.modules.jeirei.CompatLayerHelper;
 import appeng.integration.modules.rei.transfer.EncodePatternTransferHandler;
@@ -95,6 +96,7 @@ public class ReiPlugin implements REIClientPlugin {
         IngredientConverters.register(new ItemIngredientConverter());
         IngredientConverters.register(new FluidIngredientConverter());
 
+        ItemListMod.setAdapter(new ReiItemListModAdapter());
         REIFacade.setInstance(new ReiRuntimeAdapter());
     }
 
