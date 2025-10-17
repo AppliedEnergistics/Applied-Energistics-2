@@ -5,18 +5,17 @@ import java.util.List;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
-import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.ShapeRenderer;
 import net.minecraft.client.renderer.state.BlockOutlineRenderState;
 import net.minecraft.client.renderer.state.LevelRenderState;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.ARGB;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.neoforged.neoforge.client.CustomBlockOutlineRenderer;
 import net.neoforged.neoforge.client.event.ExtractBlockOutlineRenderStateEvent;
@@ -64,7 +63,11 @@ public class RenderBlockOutlineHook {
                         blockHitResult.getDirection(),
                         blockHitResult.getLocation());
                 if (placement != null) {
-                    evt.addCustomRenderer(new PartPlacementPreviewRenderer(placement, part));
+                    var cameraRelativePos = new Vec3(
+                            placement.pos().getX() - evt.getCamera().position().x,
+                            placement.pos().getY() - evt.getCamera().position().y,
+                            placement.pos().getZ() - evt.getCamera().position().z);
+                    evt.addCustomRenderer(new PartPlacementPreviewRenderer(placement, part, cameraRelativePos));
                 }
             }
         }
@@ -72,6 +75,10 @@ public class RenderBlockOutlineHook {
         // Hit test against all attached parts to highlight the part that is relevant
         var pos = evt.getBlockPos();
         if (evt.getLevel().getBlockEntity(pos) instanceof IPartHost partHost) {
+            var cameraRelativePos = new Vec3(
+                    evt.getBlockPos().getX() - evt.getCamera().position().x,
+                    evt.getBlockPos().getY() - evt.getCamera().position().y,
+                    evt.getBlockPos().getZ() - evt.getCamera().position().z);
 
             // Rendering a preview of what is currently in hand has priority
             // If the item in hand is a facade and a block is hit, attempt facade placement
@@ -83,25 +90,27 @@ public class RenderBlockOutlineHook {
                         // Maybe a bit hacky, but if there's no part on the side to support the facade
                         // We would render a cable anchor implicitly
                         boolean renderAnchor = partHost.getPart(side) == null;
-                        evt.addCustomRenderer(new FacadePlacementPreviewRenderer(side, facade, renderAnchor));
+                        evt.addCustomRenderer(
+                                new FacadePlacementPreviewRenderer(side, facade, renderAnchor, cameraRelativePos));
                     }
                 }
             }
 
             var selectedPart = partHost.selectPartWorld(evt.getHitResult().getLocation());
             if (selectedPart.facade != null) {
-                evt.addCustomRenderer(new FacadeOutlineRenderer());
+                evt.addCustomRenderer(
+                        new FacadeOutlineRenderer(selectedPart.facade, selectedPart.side, cameraRelativePos));
                 return;
             }
             if (selectedPart.part != null) {
-                evt.addCustomRenderer(new PartOutlineRenderer());
+                evt.addCustomRenderer(new PartOutlineRenderer(selectedPart.part, selectedPart.side, cameraRelativePos));
                 return;
             }
         }
     }
 
     record PartPlacementPreviewRenderer(PartPlacement.Placement placement,
-            IPart part) implements CustomBlockOutlineRenderer {
+            IPart part, Vec3 cameraRelativePos) implements CustomBlockOutlineRenderer {
         @Override
         public boolean render(BlockOutlineRenderState blockOutlineRenderState,
                 MultiBufferSource.BufferSource bufferSource,
@@ -109,69 +118,67 @@ public class RenderBlockOutlineHook {
                 boolean translucentPass,
                 LevelRenderState levelRenderState) {
             // Render without depth test to also have a preview for parts inside blocks.
-            // TODO 1.21.5 renderPart(poseStack, bufferSource, camera, placement.pos(), part, placement.side(), true,
-            // true);
-            // TODO 1.21.5 renderPart(poseStack, bufferSource, camera, placement.pos(), part, placement.side(), true,
-            // false);
+            renderPart(poseStack, bufferSource, cameraRelativePos, part, placement.side(), true, true);
+            renderPart(poseStack, bufferSource, cameraRelativePos, part, placement.side(), true, false);
             return false;
         }
     }
 
     record FacadePlacementPreviewRenderer(Direction side, IFacadePart facade,
-            boolean renderAnchor) implements CustomBlockOutlineRenderer {
+            boolean renderAnchor,
+            Vec3 cameraRelativePos) implements CustomBlockOutlineRenderer {
         @Override
         public boolean render(BlockOutlineRenderState blockOutlineRenderState,
                 MultiBufferSource.BufferSource bufferSource,
                 PoseStack poseStack,
                 boolean b,
                 LevelRenderState levelRenderState) {
-            var pos = blockOutlineRenderState.pos();
-
             // Use same rendering inside blocks as part preview.
-            showFacadePlacementPreview(poseStack, pos, bufferSource, true);
-            showFacadePlacementPreview(poseStack, pos, bufferSource, false);
+            showFacadePlacementPreview(poseStack, cameraRelativePos, bufferSource, true);
+            showFacadePlacementPreview(poseStack, cameraRelativePos, bufferSource, false);
             return false;
         }
 
         private void showFacadePlacementPreview(PoseStack poseStack,
-                BlockPos pos,
+                Vec3 cameraRelativePos,
                 MultiBufferSource buffers,
                 boolean insideBlock) {
             if (renderAnchor) {
                 var cableAnchor = AEParts.CABLE_ANCHOR.get().createPart();
-                renderPart(poseStack, buffers, null, pos, cableAnchor, side, true, insideBlock);
+                renderPart(poseStack, buffers, cameraRelativePos, cableAnchor, side, true, insideBlock);
             }
 
-            renderFacade(poseStack, buffers, null, pos, facade, side, true, insideBlock);
+            renderFacade(poseStack, buffers, cameraRelativePos, facade, side, true, insideBlock);
         }
     }
 
-    static class FacadeOutlineRenderer implements CustomBlockOutlineRenderer {
+    record FacadeOutlineRenderer(IFacadePart facade, Direction side,
+            Vec3 cameraRelativePos) implements CustomBlockOutlineRenderer {
         @Override
         public boolean render(BlockOutlineRenderState blockOutlineRenderState,
                 MultiBufferSource.BufferSource bufferSource, PoseStack poseStack, boolean b,
                 LevelRenderState levelRenderState) {
-            // TODO 1.21.9 renderFacade(poseStack, buffers, camera, pos, selectedPart.facade, selectedPart.side, false,
-            // false);
-            return false;
+            renderFacade(poseStack, bufferSource, cameraRelativePos, facade, side, false,
+                    false);
+
+            return true;
         }
     }
 
-    static class PartOutlineRenderer implements CustomBlockOutlineRenderer {
+    record PartOutlineRenderer(IPart part, Direction side,
+            Vec3 cameraRelativePos) implements CustomBlockOutlineRenderer {
         @Override
         public boolean render(BlockOutlineRenderState blockOutlineRenderState,
                 MultiBufferSource.BufferSource bufferSource, PoseStack poseStack, boolean b,
                 LevelRenderState levelRenderState) {
-            // TODO 1.21.9 renderPart(poseStack, buffers, camera, pos, selectedPart.part, selectedPart.side, false,
-            // false);
-            return false;
+            renderPart(poseStack, bufferSource, cameraRelativePos, part, side, false, false);
+            return true;
         }
     }
 
     private static void renderPart(PoseStack poseStack,
             MultiBufferSource buffers,
-            Camera camera,
-            BlockPos pos,
+            Vec3 cameraRelativePos,
             IPart part,
             Direction side,
             boolean preview,
@@ -179,13 +186,12 @@ public class RenderBlockOutlineHook {
         var boxes = new ArrayList<AABB>();
         var helper = new BusCollisionHelper(boxes, side, true);
         part.getBoxes(helper);
-        renderBoxes(poseStack, buffers, camera, pos, boxes, preview, insideBlock);
+        renderBoxes(poseStack, buffers, cameraRelativePos, boxes, preview, insideBlock);
     }
 
     private static void renderFacade(PoseStack poseStack,
             MultiBufferSource buffers,
-            Camera camera,
-            BlockPos pos,
+            Vec3 cameraRelativePos,
             IFacadePart facade,
             Direction side,
             boolean preview,
@@ -193,13 +199,12 @@ public class RenderBlockOutlineHook {
         var boxes = new ArrayList<AABB>();
         var helper = new BusCollisionHelper(boxes, side, true);
         facade.getBoxes(helper, false);
-        renderBoxes(poseStack, buffers, camera, pos, boxes, preview, insideBlock);
+        renderBoxes(poseStack, buffers, cameraRelativePos, boxes, preview, insideBlock);
     }
 
     private static void renderBoxes(PoseStack poseStack,
             MultiBufferSource buffers,
-            Camera camera,
-            BlockPos pos,
+            Vec3 cameraRelativePos,
             List<AABB> boxes,
             boolean preview,
             boolean insideBlock) {
@@ -214,9 +219,9 @@ public class RenderBlockOutlineHook {
                     poseStack,
                     buffer,
                     shape,
-                    pos.getX() - camera.getPosition().x,
-                    pos.getY() - camera.getPosition().y,
-                    pos.getZ() - camera.getPosition().z,
+                    cameraRelativePos.x,
+                    cameraRelativePos.y,
+                    cameraRelativePos.z,
                     ARGB.colorFromFloat(alpha,
                             preview ? 1 : 0,
                             preview ? 1 : 0,

@@ -64,7 +64,6 @@ public final class ChargerRenderer implements BlockEntityRenderer<ChargerBlockEn
         var yOffset = (float) Math.sin(time) * 0.02f;
         state.transform = new Transformation(new Vector3f(0.5f, 0.35f + yOffset, 0.5f), null, null, null);
 
-        // TODO 1.21.9: Charger should implement ItemOwner
         state.item.clear();
         var item = be.getInternalInventory().getStackInSlot(0);
         if (!item.isEmpty()) {
