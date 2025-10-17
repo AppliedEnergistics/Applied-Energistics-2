@@ -30,8 +30,6 @@ import appeng.core.particles.LightningArcParticleData;
 
 public class LightningArcFX extends LightningFX {
 
-    private static final RandomSource RANDOM_GENERATOR = RandomSource.create();
-
     private final double rx;
     private final double ry;
     private final double rz;
@@ -57,10 +55,9 @@ public class LightningArcFX extends LightningFX {
         float len = Mth.sqrt(
                 lastDirectionX * lastDirectionX + lastDirectionY * lastDirectionY + lastDirectionZ * lastDirectionZ);
         for (int s = 0; s < this.getSteps(); s++) {
-            var localSteps = this.getPrecomputedSteps();
-            localSteps[s][0] = (lastDirectionX + (RANDOM_GENERATOR.nextFloat() - 0.5f) * len * 1.2f) / 2.0f;
-            localSteps[s][1] = (lastDirectionY + (RANDOM_GENERATOR.nextFloat() - 0.5f) * len * 1.2f) / 2.0f;
-            localSteps[s][2] = (lastDirectionZ + (RANDOM_GENERATOR.nextFloat() - 0.5f) * len * 1.2f) / 2.0f;
+            precomputedSteps[s * 3 + 0] = (lastDirectionX + (random.nextFloat() - 0.5f) * len * 1.2f) / 2.0f;
+            precomputedSteps[s * 3 + 1] = (lastDirectionY + (random.nextFloat() - 0.5f) * len * 1.2f) / 2.0f;
+            precomputedSteps[s * 3 + 2] = (lastDirectionZ + (random.nextFloat() - 0.5f) * len * 1.2f) / 2.0f;
         }
     }
 

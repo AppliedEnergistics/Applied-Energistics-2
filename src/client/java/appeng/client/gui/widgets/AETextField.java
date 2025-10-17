@@ -34,6 +34,7 @@ import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 
 import appeng.client.Point;
@@ -79,7 +80,7 @@ public class AETextField extends EditBox implements IResizableWidget, ITooltip {
 
         this.style = style;
         this.fontPad = fontRenderer.width("_");
-        setTextColor(style.getColor(PaletteColor.TEXTFIELD_TEXT).toARGB());
+        setTextColor(ARGB.opaque(style.getColor(PaletteColor.TEXTFIELD_TEXT).toARGB()));
     }
 
     // Extend the clickable area by the padding so we don't have a mouse deadzone that is still visually within

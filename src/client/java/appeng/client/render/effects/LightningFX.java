@@ -23,21 +23,19 @@ import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.client.particle.SpriteSet;
-import net.minecraft.client.renderer.state.QuadParticleRenderState;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.particles.SimpleParticleType;
+import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.phys.Vec3;
 
 public class LightningFX extends Particle {
 
-    private static final RandomSource RANDOM_GENERATOR = RandomSource.create();
-    private static final int STEPS = 5;
-    private static final int BRIGHTNESS = 13 << 4;
+    static final int SEGMENTS = 5;
+    static final int BRIGHTNESS = 13 << 4;
 
-    private final float[][] precomputedSteps;
-    private final float[] vertices = new float[3];
-    private final float[] verticesWithUV = new float[3];
-    private boolean hasData = false;
+    protected final float[] precomputedSteps;
+    private final TextureAtlasSprite sprite;
 
     private LightningFX(ClientLevel level, double x, double y, double z, double r,
             double g, double b, TextureAtlasSprite sprite) {
@@ -48,7 +46,8 @@ public class LightningFX extends Particle {
     protected LightningFX(ClientLevel level, double x, double y, double z, double r,
             double g, double b, int maxAge, TextureAtlasSprite sprite) {
         super(level, x, y, z, r, g, b);
-        this.precomputedSteps = new float[LightningFX.STEPS][3];
+        this.sprite = sprite;
+        this.precomputedSteps = new float[LightningFX.SEGMENTS * 3];
         this.xd = 0;
         this.yd = 0;
         this.zd = 0;
@@ -56,26 +55,26 @@ public class LightningFX extends Particle {
     }
 
     protected void regen() {
-        float lastDirectionX = (RANDOM_GENERATOR.nextFloat() - 0.5f) * 0.9f;
-        float lastDirectionY = (RANDOM_GENERATOR.nextFloat() - 0.5f) * 0.9f;
-        float lastDirectionZ = (RANDOM_GENERATOR.nextFloat() - 0.5f) * 0.9f;
-        for (int s = 0; s < LightningFX.STEPS; s++) {
-            this.precomputedSteps[s][0] = lastDirectionX = (lastDirectionX
-                    + (RANDOM_GENERATOR.nextFloat() - 0.5f) * 0.9f) / 2.0f;
-            this.precomputedSteps[s][1] = lastDirectionY = (lastDirectionY
-                    + (RANDOM_GENERATOR.nextFloat() - 0.5f) * 0.9f) / 2.0f;
-            this.precomputedSteps[s][2] = lastDirectionZ = (lastDirectionZ
-                    + (RANDOM_GENERATOR.nextFloat() - 0.5f) * 0.9f) / 2.0f;
+        float lastDirectionX = (random.nextFloat() - 0.5f) * 0.9f;
+        float lastDirectionY = (random.nextFloat() - 0.5f) * 0.9f;
+        float lastDirectionZ = (random.nextFloat() - 0.5f) * 0.9f;
+        for (int s = 0; s < LightningFX.SEGMENTS; s++) {
+            this.precomputedSteps[s * 3 + 0] = lastDirectionX = (lastDirectionX
+                    + (random.nextFloat() - 0.5f) * 0.9f) / 2.0f;
+            this.precomputedSteps[s * 3 + 1] = lastDirectionY = (lastDirectionY
+                    + (random.nextFloat() - 0.5f) * 0.9f) / 2.0f;
+            this.precomputedSteps[s * 3 + 2] = lastDirectionZ = (lastDirectionZ
+                    + (random.nextFloat() - 0.5f) * 0.9f) / 2.0f;
         }
     }
 
     protected int getSteps() {
-        return LightningFX.STEPS;
+        return LightningFX.SEGMENTS;
     }
 
     @Override
     public ParticleRenderType getGroup() {
-        return LightningFXGroup.RENDER_TYPE;
+        return LightningFXGroup.GROUP;
     }
 
     @Override
@@ -88,150 +87,33 @@ public class LightningFX extends Particle {
             this.remove();
         }
 
+        if (age == 3) {
+            regen();
+        }
+
         this.yd -= 0.04D * this.gravity;
         this.move(this.xd, this.yd, this.zd);
         this.xd *= 0.9800000190734863D;
         this.yd *= 0.9800000190734863D;
         this.zd *= 0.9800000190734863D;
     }
-//
-//    @Override
-//    public void extract(QuadParticleRenderState state, Camera camera, float partialTicks) {
-//        Vec3 Vector3d = camera.getPosition();
-//        float centerX = (float) (Mth.lerp(partialTicks, this.xo, this.x) - Vector3d.x());
-//        float centerY = (float) (Mth.lerp(partialTicks, this.yo, this.y) - Vector3d.y());
-//        float centerZ = (float) (Mth.lerp(partialTicks, this.zo, this.z) - Vector3d.z());
-//
-//        final float j = 1.0f;
-//        float red = this.rCol * j * 0.9f;
-//        float green = this.gCol * j * 0.95f;
-//        float blue = this.bCol * j;
-//        final float alpha = this.alpha;
-//
-//        if (this.age == 3) {
-//            this.regen();
-//        }
-//
-//        float u = this.getU0() + (this.getU1() - this.getU0()) / 2;
-//        float v = this.getV0() + (this.getV1() - this.getV0()) / 2;
-//
-//        float scale = 0.02f;// 0.02F * this.particleScale;
-//
-//        final float[] a = new float[3];
-//        final float[] b = new float[3];
-//
-//        float ox = 0;
-//        float oy = 0;
-//        float oz = 0;
-//
-//        final Player p = Minecraft.getInstance().player;
-//
-//        // FIXME: Billboard rotation is not applied to the particle yet,
-//        // FIXME The old version apparently did this by hand using rX,rZ -> replicate
-//        // using the quaternion
-//
-//        for (int layer = 0; layer < 2; layer++) {
-//            if (layer == 0) {
-//                scale = 0.04f;
-//                // FIXME offX *= 0.001;
-//                // FIXME offY *= 0.001;
-//                // FIXME offZ *= 0.001;
-//                red = this.rCol * j * 0.4f;
-//                green = this.gCol * j * 0.25f;
-//                blue = this.bCol * j * 0.45f;
-//            } else {
-//                // FIXME offX = 0;
-//                // FIXME offY = 0;
-//                // FIXME offZ = 0;
-//                scale = 0.02f;
-//                red = this.rCol * j * 0.9f;
-//                green = this.gCol * j * 0.65f;
-//                blue = this.bCol * j * 0.85f;
-//            }
-//
-//            for (int cycle = 0; cycle < 3; cycle++) {
-//                this.clear();
-//
-//                // FIXME removed interpPos here, check if this is correct
-//                float x = centerX; // FIXME - offX;
-//                float y = centerY; // FIXME - offY;
-//                float z = centerZ; // FIXME - offZ;
-//
-//                for (int s = 0; s < LightningFX.STEPS; s++) {
-//                    final float xN = x + this.precomputedSteps[s][0];
-//                    final float yN = y + this.precomputedSteps[s][1];
-//                    final float zN = z + this.precomputedSteps[s][2];
-//
-//                    final float xD = xN - x;
-//                    final float yD = yN - y;
-//                    final float zD = zN - z;
-//
-//                    if (cycle == 0) {
-//                        ox = yD * 0 - 1 * zD;
-//                        oy = zD * 0 - 0 * xD;
-//                        oz = xD * 1 - 0 * yD;
-//                    }
-//                    if (cycle == 1) {
-//                        ox = yD * 1 - 0 * zD;
-//                        oy = zD * 0 - 1 * xD;
-//                        oz = xD * 0 - 0 * yD;
-//                    }
-//                    if (cycle == 2) {
-//                        ox = yD * 0 - 0 * zD;
-//                        oy = zD * 1 - 0 * xD;
-//                        oz = xD * 0 - 1 * yD;
-//                    }
-//
-//                    final float ss = Mth.sqrt(ox * ox + oy * oy + oz * oz)
-//                            / (((float) LightningFX.STEPS - (float) s) / LightningFX.STEPS * scale);
-//                    ox /= ss;
-//                    oy /= ss;
-//                    oz /= ss;
-//
-//                    a[0] = x + ox;
-//                    a[1] = y + oy;
-//                    a[2] = z + oz;
-//
-//                    b[0] = x;
-//                    b[1] = y;
-//                    b[2] = z;
-//
-//                    this.draw(red, green, blue, state, a, b, u, v);
-//
-//                    x = xN;
-//                    y = yN;
-//                    z = zN;
-//                }
-//            }
-//        }
-//    }
 
-    private void clear() {
-        this.hasData = false;
+    public record ParticleState(float centerX, float centerY, float centerZ,
+            float u, float v, float[] precomputedSteps) {
     }
 
-    private void draw(float red, float green, float blue, QuadParticleRenderState tess, float[] a, float[] b,
-            float u, float v) {
-        if (this.hasData) {
-            // TODO 1.21.9 tess.addVertex(a[0], a[1], a[2]).setUv(u, v).setColor(red, green, blue, this.alpha)
-            // TODO 1.21.9 .setUv2(BRIGHTNESS, BRIGHTNESS);
-            // TODO 1.21.9 tess.addVertex(this.vertices[0], this.vertices[1], this.vertices[2]).setUv(u, v)
-            // TODO 1.21.9 .setColor(red, green, blue, this.alpha).setUv2(BRIGHTNESS, BRIGHTNESS);
-            // TODO 1.21.9 tess.addVertex(this.verticesWithUV[0], this.verticesWithUV[1],
-            // this.verticesWithUV[2]).setUv(u, v)
-            // TODO 1.21.9 .setColor(red, green, blue, this.alpha).setUv2(BRIGHTNESS, BRIGHTNESS);
-            // TODO 1.21.9 tess.addVertex(b[0], b[1], b[2]).setUv(u, v).setColor(red, green, blue, this.alpha)
-            // TODO 1.21.9 .setUv2(BRIGHTNESS, BRIGHTNESS);
-        }
-        this.hasData = true;
-        for (int x = 0; x < 3; x++) {
-            this.vertices[x] = a[x];
-            this.verticesWithUV[x] = b[x];
-        }
-    }
+    public ParticleState extract(float partialTicks, Vec3 cameraPos) {
+        float centerX = (float) (Mth.lerp(partialTicks, this.xo, this.x) - cameraPos.x());
+        float centerY = (float) (Mth.lerp(partialTicks, this.yo, this.y) - cameraPos.y());
+        float centerZ = (float) (Mth.lerp(partialTicks, this.zo, this.z) - cameraPos.z());
 
-    protected float[][] getPrecomputedSteps() {
-        return this.precomputedSteps;
+        // This picks the middle of the white pixel of the generic_0 particle texture
+        float u = sprite.getU(0.5f + 0.5f / 16f);
+        float v = sprite.getV(0.5f + 0.5f / 16f);
+
+        return new ParticleState(
+                centerX, centerY, centerZ,
+                u, v, precomputedSteps.clone());
     }
 
     public static class Factory implements ParticleProvider<SimpleParticleType> {

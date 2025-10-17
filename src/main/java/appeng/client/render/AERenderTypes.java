@@ -9,6 +9,7 @@ import java.util.OptionalDouble;
 
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 
 public final class AERenderTypes {
 
@@ -33,6 +34,15 @@ public final class AERenderTypes {
             8192,
             AERenderPipelines.SPATIAL_SKYBOX,
             RenderType.CompositeState.builder().createCompositeState(false));
+
+    public static final RenderType LIGHTNING_FX = RenderType.CompositeRenderType.create(
+            "ae2_lightning_fx",
+            8192,
+            AERenderPipelines.LIGHTNING_FX,
+            RenderType.CompositeState.builder()
+                    .setTextureState(new RenderStateShard.TextureStateShard(TextureAtlas.LOCATION_PARTICLES, false))
+                    .setLightmapState(RenderType.LIGHTMAP)
+                    .createCompositeState(false));
 
     private static final RenderStateShard.LineStateShard LINE_3 = new RenderStateShard.LineStateShard(
             OptionalDouble.of(3.0));

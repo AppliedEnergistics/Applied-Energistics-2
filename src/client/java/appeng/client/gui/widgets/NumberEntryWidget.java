@@ -42,6 +42,7 @@ import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.ARGB;
 
 import appeng.client.Point;
 import appeng.client.gui.AEBaseScreen;
@@ -107,7 +108,7 @@ public class NumberEntryWidget implements ICompositeWidget {
         this.textField = new ConfirmableTextField(style, font, 0, 0, 0, font.lineHeight);
         this.textField.setBordered(false);
         this.textField.setMaxLength(16);
-        this.textField.setTextColor(normalTextColor);
+        this.textField.setTextColor(ARGB.opaque(normalTextColor));
         this.textField.setVisible(true);
         this.textField.setResponder(text -> {
             validate();
@@ -409,7 +410,7 @@ public class NumberEntryWidget implements ICompositeWidget {
 
         boolean valid = validationErrors.isEmpty();
         var tooltip = valid ? infoMessages : validationErrors;
-        this.textField.setTextColor(valid ? normalTextColor : errorTextColor);
+        this.textField.setTextColor(ARGB.opaque(valid ? normalTextColor : errorTextColor));
         this.textField.setTooltipMessage(tooltip);
 
         if (this.validationIcon != null) {

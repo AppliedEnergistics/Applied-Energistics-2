@@ -242,6 +242,7 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
             super(emptyResource);
             this.energyFactor = energyFactor;
             this.maxAmountPerOperation = maxAmountPerOperation;
+            this.pendingSideEffect = 0D;
         }
 
         @Override

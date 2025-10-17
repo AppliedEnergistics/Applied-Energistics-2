@@ -66,6 +66,7 @@ import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 import net.neoforged.neoforge.client.event.RegisterDimensionSpecialEffectsEvent;
 import net.neoforged.neoforge.client.event.RegisterItemModelsEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
+import net.neoforged.neoforge.client.event.RegisterParticleGroupsEvent;
 import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
 import net.neoforged.neoforge.client.event.RegisterRangeSelectItemModelPropertyEvent;
 import net.neoforged.neoforge.client.event.RegisterRenderPipelinesEvent;
@@ -134,6 +135,7 @@ import appeng.client.render.effects.CraftingParticle;
 import appeng.client.render.effects.EnergyFx;
 import appeng.client.render.effects.LightningArcFX;
 import appeng.client.render.effects.LightningFX;
+import appeng.client.render.effects.LightningFXGroup;
 import appeng.client.render.effects.MatterCannonFX;
 import appeng.client.render.effects.VibrantFX;
 import appeng.client.render.model.DriveModel;
@@ -275,6 +277,7 @@ public class AppEngClient extends AppEngBase {
         modEventBus.addListener(this::registerClientExtensions);
         modEventBus.addListener(this::enqueueImcMessages);
         modEventBus.addListener(this::registerParticleFactories);
+        modEventBus.addListener(this::registerParticleGroups);
         modEventBus.addListener(this::registerBlockStateModels);
         modEventBus.addListener(this::registerStandaloneModels);
         modEventBus.addListener(this::registerRenderPipelines);
@@ -545,6 +548,7 @@ public class AppEngClient extends AppEngBase {
 
     private void registerRenderPipelines(RegisterRenderPipelinesEvent event) {
         event.registerPipeline(AERenderPipelines.LINES_BEHIND_BLOCK);
+        event.registerPipeline(AERenderPipelines.LIGHTNING_FX);
     }
 
     private void registerBlockStateModels(RegisterBlockStateModels event) {
@@ -588,6 +592,10 @@ public class AppEngClient extends AppEngBase {
         event.registerSpriteSet(ParticleTypes.LIGHTNING, LightningFX.Factory::new);
         event.registerSpriteSet(ParticleTypes.MATTER_CANNON, MatterCannonFX.Factory::new);
         event.registerSpriteSet(ParticleTypes.VIBRANT, VibrantFX.Factory::new);
+    }
+
+    public void registerParticleGroups(RegisterParticleGroupsEvent event) {
+        event.register(LightningFXGroup.GROUP, LightningFXGroup::new);
     }
 
     private void enqueueImcMessages(InterModEnqueueEvent event) {

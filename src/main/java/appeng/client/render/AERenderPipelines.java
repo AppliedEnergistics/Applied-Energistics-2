@@ -76,4 +76,11 @@ public final class AERenderPipelines {
             .withVertexFormat(DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS)
             .build();
 
+    public static final RenderPipeline LIGHTNING_FX = RenderPipeline
+            .builder(RenderPipelines.PARTICLE_SNIPPET)
+            .withLocation(AppEng.makeId("pipeline/lightning_fx"))
+            .withBlend(BlendFunction.TRANSLUCENT)
+            .withCull(false)
+            .build();
+
 }
