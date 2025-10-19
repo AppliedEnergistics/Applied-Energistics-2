@@ -20,7 +20,9 @@ class EmiItemStackConverter implements EmiStackConverter {
     @Override
     public @Nullable EmiStack toEmiStack(GenericStack stack) {
         if (stack.what() instanceof AEItemKey itemKey) {
-            return EmiStack.of(itemKey.getReadOnlyStack()).setAmount(stack.amount());
+            return EmiStack.of(itemKey.getReadOnlyStack()).setAmount(1);
+            // Always set amount to 1 for items since emi needs at least one present for ItemStacks
+            // and stack.amount() always returns 0
         }
         return null;
     }
