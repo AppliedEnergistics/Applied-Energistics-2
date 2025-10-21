@@ -31,6 +31,7 @@ import com.google.common.primitives.Ints;
 
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.core.NonNullList;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
@@ -666,6 +667,42 @@ public class MEStorageMenu extends AEBaseMenu
             itemInSlot.grow((int) extracted);
         }
         return true;
+    }
+
+    public void transferMatchingStacksToPlayer(NonNullList<ItemStack> stacks, long toPull) {
+        for (ItemStack stack : stacks) {
+            AEItemKey key = AEItemKey.of(stack);
+
+            long potentialAmount = storage.extract(key, toPull, Actionable.SIMULATE, getActionSource());
+            if (potentialAmount <= 0) {
+                continue;
+            }
+
+            var destinationSlots = getQuickMoveDestinationSlots(key.toStack());
+
+            for (var destinationSlot : destinationSlots) {
+                var amount = Math.min(toPull, getPlaceableAmount(destinationSlot, key));
+                if (amount <= 0) {
+                    continue;
+                }
+
+                var extracted = StorageHelper.poweredExtraction(powerSource, storage, key, amount, getActionSource());
+                if (extracted == 0) {
+                    break; // No items available, try next matching type
+                }
+
+                var currentItem = destinationSlot.getItem();
+                if (!currentItem.isEmpty()) {
+                    destinationSlot.setByPlayer(currentItem.copyWithCount(currentItem.getCount() + (int) extracted));
+                } else {
+                    destinationSlot.setByPlayer(key.toStack((int) extracted));
+                }
+
+                toPull -= extracted;
+            }
+
+            if (toPull <= 0) return;
+        }
     }
 
     @Nullable

@@ -50,6 +50,7 @@ import appeng.core.sync.packets.MouseWheelPacket;
 import appeng.core.sync.packets.NetworkStatusPacket;
 import appeng.core.sync.packets.PartLeftClickPacket;
 import appeng.core.sync.packets.PatternAccessTerminalPacket;
+import appeng.core.sync.packets.PullItemToPlayerPacket;
 import appeng.core.sync.packets.SwapSlotsPacket;
 import appeng.core.sync.packets.SwitchGuisPacket;
 
@@ -110,7 +111,9 @@ public class BasePacketHandler {
 
         HOTKEY(HotkeyPacket.class, HotkeyPacket::new),
 
-        CRAFTING_JOB_STATUS(CraftingJobStatusPacket.class, CraftingJobStatusPacket::new);
+        CRAFTING_JOB_STATUS(CraftingJobStatusPacket.class, CraftingJobStatusPacket::new),
+
+        PULL_ITEM(PullItemToPlayerPacket.class, PullItemToPlayerPacket::new);
 
         private final Function<FriendlyByteBuf, BasePacket> factory;
 
