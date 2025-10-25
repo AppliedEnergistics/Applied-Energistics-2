@@ -45,6 +45,7 @@ import appeng.menu.me.common.IncrementalUpdateHelper;
 public class CraftingCPUMenu extends AEBaseMenu {
 
     private static final String ACTION_CANCEL_CRAFTING = "cancelCrafting";
+    private static final String ACTION_TOGGLE_SCHEDULING = "toggleScheduling";
 
     public static final MenuType<CraftingCPUMenu> TYPE = MenuTypeBuilder
             .create(CraftingCPUMenu::new, CraftingBlockEntity.class)
@@ -62,6 +63,7 @@ public class CraftingCPUMenu extends AEBaseMenu {
     private final IGrid grid;
     private CraftingCPUCluster cpu = null;
     private final Consumer<AEKey> cpuChangeListener = incrementalUpdateHelper::addChange;
+    private boolean cachedSuspend;
 
     @GuiSync(0)
     public CpuSelectionMode schedulingMode = CpuSelectionMode.ANY;
@@ -87,6 +89,7 @@ public class CraftingCPUMenu extends AEBaseMenu {
         }
 
         registerClientAction(ACTION_CANCEL_CRAFTING, this::cancelCrafting);
+        registerClientAction(ACTION_TOGGLE_SCHEDULING, this::toggleScheduling);
     }
 
     protected void setCPU(ICraftingCPU c) {
@@ -99,6 +102,7 @@ public class CraftingCPUMenu extends AEBaseMenu {
         }
 
         this.incrementalUpdateHelper.reset();
+        this.cachedSuspend = false;
 
         if (c instanceof CraftingCPUCluster) {
             this.cpu = (CraftingCPUCluster) c;
@@ -128,6 +132,15 @@ public class CraftingCPUMenu extends AEBaseMenu {
         }
     }
 
+    public void toggleScheduling() {
+        if (isClientSide()) {
+            sendClientAction(ACTION_TOGGLE_SCHEDULING);
+        } else if (this.cpu != null) {
+            var logic = this.cpu.craftingLogic;
+            logic.setSuspended(!logic.isSuspended());
+        }
+    }
+
     @Override
     public void removed(Player player) {
         super.removed(player);
@@ -142,9 +155,11 @@ public class CraftingCPUMenu extends AEBaseMenu {
             this.schedulingMode = this.cpu.getSelectionMode();
             this.cantStoreItems = this.cpu.craftingLogic.isCantStoreItems();
 
-            if (this.incrementalUpdateHelper.hasChanges()) {
+            if (this.incrementalUpdateHelper.hasChanges()
+                    || this.cachedSuspend != this.cpu.craftingLogic.isSuspended()) {
                 CraftingStatus status = CraftingStatus.create(this.incrementalUpdateHelper, this.cpu.craftingLogic);
                 this.incrementalUpdateHelper.commitChanges();
+                this.cachedSuspend = status.isSuspended();
 
                 sendPacketToClient(new CraftingStatusPacket(containerId, status));
             }
