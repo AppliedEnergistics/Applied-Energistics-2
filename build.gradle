@@ -113,6 +113,9 @@ dependencies {
             exclude group: "net.fabricmc"
             exclude group: "net.fabricmc.fabric-api"
         }
+        modCompileOnly("dev.emi:emi-fabric:${emi_version}") {
+            exclude group: "dev.emi"
+        }
         modLocalRuntime modCompileOnly("mezz.jei:jei-${jei_minecraft_version}-fabric:${jei_version}") {
             exclude group: "mezz.jei"
         }
@@ -120,9 +123,23 @@ dependencies {
         modCompileOnly("mezz.jei:jei-${jei_minecraft_version}-fabric:${jei_version}") {
             exclude group: "mezz.jei"
         }
+        modCompileOnly("dev.emi:emi-fabric:${emi_version}") {
+            exclude group: "dev.emi"
+        }
         modLocalRuntime modCompileOnly("me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}") {
             exclude group: "net.fabricmc"
             exclude group: "net.fabricmc.fabric-api"
+        }
+    } else if (project.runtime_itemlist_mod == "emi") {
+        modCompileOnly("me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}") {
+            exclude group: "net.fabricmc"
+            exclude group: "net.fabricmc.fabric-api"
+        }
+        modCompileOnly("mezz.jei:jei-${jei_minecraft_version}-fabric:${jei_version}") {
+            exclude group: "mezz.jei"
+        }
+        modLocalRuntime modCompileOnly("dev.emi:emi-fabric:${emi_version}") {
+            exclude group: "dev.emi"
         }
     } else {
         modCompileOnly("me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}") {
@@ -245,6 +262,14 @@ allprojects {
             url "https://maven.blamejared.com"
             content {
                 includeGroup "vazkii.patchouli"
+            }
+        }
+
+        maven {
+            name = 'TerraformersMC'
+            url = "https://maven.terraformersmc.com/releases"
+            content {
+                includeGroup "dev.emi"
             }
         }
     }

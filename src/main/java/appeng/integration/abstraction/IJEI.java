@@ -21,6 +21,7 @@ package appeng.integration.abstraction;
 /**
  * Abstracts access to the JEI API functionality.
  */
+@Deprecated(forRemoval = true)
 public interface IJEI {
     default boolean isEnabled() {
         return false;

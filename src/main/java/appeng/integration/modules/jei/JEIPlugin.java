@@ -8,6 +8,8 @@ import java.util.Optional;
 
 import com.google.common.collect.ImmutableList;
 
+import org.jetbrains.annotations.NotNull;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.Rect2i;
@@ -50,6 +52,9 @@ import appeng.core.definitions.AEParts;
 import appeng.core.definitions.ItemDefinition;
 import appeng.core.localization.GuiText;
 import appeng.core.localization.ItemModText;
+import appeng.integration.abstraction.IJEI;
+import appeng.integration.abstraction.ItemListMod;
+import appeng.integration.abstraction.ItemListModAdapter;
 import appeng.integration.abstraction.JEIFacade;
 import appeng.integration.modules.jei.transfer.EncodePatternTransferHandler;
 import appeng.integration.modules.jei.transfer.UseCraftingRecipeTransfer;
@@ -68,7 +73,7 @@ public class JEIPlugin implements IModPlugin {
 
     private static final ResourceLocation ID = new ResourceLocation(AppEng.MOD_ID, "core");
 
-    private IJeiRuntime jeiRuntime;
+    private static IJeiRuntime jeiRuntime;
 
     public JEIPlugin() {
         IngredientConverters.register(new ItemIngredientConverter());
@@ -277,8 +282,9 @@ public class JEIPlugin implements IModPlugin {
     }
 
     @Override
-    public void onRuntimeAvailable(IJeiRuntime jeiRuntime) {
-        this.jeiRuntime = jeiRuntime;
+    public void onRuntimeAvailable(@NotNull IJeiRuntime jeiRuntime) {
+        JEIPlugin.jeiRuntime = jeiRuntime;
+        ItemListMod.setAdapter(new JeiItemListModAdapter(jeiRuntime));
         JEIFacade.setInstance(new JeiRuntimeAdapter(jeiRuntime));
         this.hideDebugTools(jeiRuntime);
 
@@ -286,6 +292,13 @@ public class JEIPlugin implements IModPlugin {
             jeiRuntime.getIngredientManager().removeIngredientsAtRuntime(VanillaTypes.ITEM_STACK,
                     FacadeCreativeTab.getDisplayItems());
         }
+    }
+
+    @Override
+    public void onRuntimeUnavailable() {
+        // Free memory potentially held by JEI
+        JEIFacade.setInstance(new IJEI.Stub());
+        ItemListMod.setAdapter(ItemListModAdapter.none());
     }
 
     private void hideDebugTools(IJeiRuntime jeiRuntime) {
@@ -314,5 +327,9 @@ public class JEIPlugin implements IModPlugin {
     public static void drawHoveringText(GuiGraphics guiGraphics, List<Component> textLines, int x, int y) {
         var font = Minecraft.getInstance().font;
         guiGraphics.renderTooltip(font, textLines, Optional.empty(), x, y);
+    }
+
+    public static IJeiRuntime instance() {
+        return jeiRuntime;
     }
 }
