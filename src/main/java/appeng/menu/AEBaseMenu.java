@@ -52,6 +52,7 @@ import appeng.api.implementations.menuobjects.ItemMenuHost;
 import appeng.api.networking.security.IActionHost;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.parts.IPart;
+import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
 import appeng.api.upgrades.IUpgradeInventory;
@@ -523,6 +524,35 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
             }
         }
         return false;
+    }
+
+    protected List<Slot> getQuickMoveDestinationSlots(ItemStack stackToMove) {
+        // Find potential destination slots
+        var destinationSlots = new ArrayList<Slot>();
+        for (var candidateSlot : this.slots) {
+            if (candidateSlot.container instanceof Inventory && candidateSlot.mayPlace(stackToMove)) {
+                destinationSlots.add(candidateSlot);
+            }
+        }
+
+        // Sort such that we fill existing stacks first where possible
+        destinationSlots.sort((a, b) -> Boolean.compare(b.hasItem(), a.hasItem()));
+        return destinationSlots;
+    }
+
+    protected int getPlaceableAmount(Slot s, AEItemKey what) {
+        if (!s.mayPlace(what.toStack())) {
+            return 0;
+        }
+
+        var currentItem = s.getItem();
+        if (currentItem.isEmpty()) {
+            return s.getMaxStackSize(what.getReadOnlyStack());
+        } else if (what.matches(currentItem)) {
+            return Math.max(0, s.getMaxStackSize(currentItem) - currentItem.getCount());
+        } else {
+            return 0;
+        }
     }
 
     @Override

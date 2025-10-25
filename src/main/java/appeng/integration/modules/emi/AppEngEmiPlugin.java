@@ -61,6 +61,7 @@ public class AppEngEmiPlugin implements EmiPlugin {
         registry.addGenericExclusionArea(new EmiAeBaseScreenExclusionZones());
         registry.addGenericStackProvider(new EmiAeBaseScreenStackProvider());
         registry.addGenericDragDropHandler(new EmiAeBaseScreenDragDropHandler());
+        registry.addGenericStackPuller(new EmiAeBaseScreenStackPuller());
 
         // Additional Workstations
         registerWorkstations(registry);
