@@ -38,7 +38,7 @@ class EmiChargerRecipe extends BasicEmiRecipe {
     public void addWidgets(WidgetHolder widgets) {
 
         widgets.addSlot(ingredient, 30, 7);
-        widgets.addSlot(result, 80, 7);
+        widgets.addSlot(result, 80, 7).recipeContext(this);
         widgets.addSlot(EmiStack.of(AEBlocks.CRANK), 2, 29)
                 .drawBack(false);
 

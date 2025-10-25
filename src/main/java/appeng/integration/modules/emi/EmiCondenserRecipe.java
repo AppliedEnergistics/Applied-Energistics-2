@@ -65,7 +65,7 @@ class EmiCondenserRecipe extends BasicEmiRecipe {
         }
         widgets.addTooltipText(getTooltip(type), 80, 28, 16, 16);
 
-        widgets.addSlot(output, 56, 26).drawBack(false);
+        widgets.addSlot(output, 56, 26).drawBack(false).recipeContext(this);
         widgets.addSlot(viableStorageComponents, 52, 0).drawBack(false);
 
     }

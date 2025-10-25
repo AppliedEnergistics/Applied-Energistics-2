@@ -39,7 +39,7 @@ class EmiP2PAttunementRecipe extends BasicEmiRecipe {
         widgets.addSlot(input, originX + 3, originY + 4)
                 .appendTooltip(description);
         widgets.addTexture(EmiTexture.EMPTY_ARROW, originX + 27, originY + 4);
-        widgets.addSlot(p2pTunnel, originX + 60, originY + 4);
+        widgets.addSlot(p2pTunnel, originX + 60, originY + 4).recipeContext(this);
     }
 
     @Override
