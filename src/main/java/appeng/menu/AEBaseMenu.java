@@ -46,6 +46,8 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
+import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
+
 import appeng.api.behaviors.ContainerItemStrategies;
 import appeng.api.config.Actionable;
 import appeng.api.implementations.menuobjects.ItemMenuHost;
@@ -87,7 +89,7 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
     protected final ItemMenuHost itemMenuHost;
     private final DataSynchronization dataSync = new DataSynchronization(this);
     private final Inventory playerInventory;
-    private final Set<Integer> lockedPlayerInventorySlots = new HashSet<>();
+    private final IntOpenHashSet lockedPlayerInventorySlots = new IntOpenHashSet();
     private final Map<Slot, SlotSemantic> semanticBySlot = new HashMap<>();
     private final ArrayListMultimap<SlotSemantic, Slot> slotsBySemantic = ArrayListMultimap.create();
     private final Map<String, ClientAction<?>> clientActions = new HashMap<>();
@@ -380,6 +382,8 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
         final Slot clickSlot = this.slots.get(idx);
         boolean playerSide = isPlayerSideSlot(clickSlot);
 
+        boolean shouldBroadcast = false;
+
         if (clickSlot instanceof DisabledSlot || clickSlot instanceof InaccessibleSlot) {
             return ItemStack.EMPTY;
         }
@@ -427,8 +431,7 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
                             break; // Item is already in the filter
                         } else if (destination.isEmpty()) {
                             cs.set(tis.copy());
-                            // ???
-                            this.broadcastChanges();
+                            shouldBroadcast = true;
                             break;
                         }
                     }
@@ -438,42 +441,35 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
             if (!tis.isEmpty()) {
                 // find slots to stack the item into
                 for (Slot d : selectedSlots) {
-                    if (d.mayPlace(tis) && d.hasItem() && x(clickSlot, tis, d)) {
+                    if (d.mayPlace(tis) && d.hasItem() && tryMergeItemStackToSlot(clickSlot, tis, d)) {
+                        this.broadcastChanges();
                         return ItemStack.EMPTY;
                     }
                 }
-
-                // FIXME figure out whats the difference between this and the one above ?!
-                // any match..
+                // other slots that are empty
                 for (Slot d : selectedSlots) {
-                    if (d.mayPlace(tis)) {
-                        if (d.hasItem()) {
-                            if (x(clickSlot, tis, d)) {
-                                return ItemStack.EMPTY;
-                            }
+                    if (d.mayPlace(tis) && !d.hasItem()) {
+                        int maxSize = tis.getMaxStackSize();
+                        if (maxSize > d.getMaxStackSize()) {
+                            maxSize = d.getMaxStackSize();
+                        }
+
+                        final ItemStack tmp = tis.copy();
+                        if (tmp.getCount() > maxSize) {
+                            tmp.setCount(maxSize);
+                        }
+
+                        tis.setCount(tis.getCount() - tmp.getCount());
+                        d.set(tmp);
+
+                        if (tis.getCount() <= 0) {
+                            clickSlot.set(ItemStack.EMPTY);
+                            d.setChanged();
+
+                            this.broadcastChanges();
+                            return ItemStack.EMPTY;
                         } else {
-                            int maxSize = tis.getMaxStackSize();
-                            if (maxSize > d.getMaxStackSize()) {
-                                maxSize = d.getMaxStackSize();
-                            }
-
-                            final ItemStack tmp = tis.copy();
-                            if (tmp.getCount() > maxSize) {
-                                tmp.setCount(maxSize);
-                            }
-
-                            tis.setCount(tis.getCount() - tmp.getCount());
-                            d.set(tmp);
-
-                            if (tis.getCount() <= 0) {
-                                clickSlot.set(ItemStack.EMPTY);
-                                d.setChanged();
-
-                                this.broadcastChanges();
-                                return ItemStack.EMPTY;
-                            } else {
-                                this.broadcastChanges();
-                            }
+                            shouldBroadcast = true;
                         }
                     }
                 }
@@ -482,43 +478,37 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
             clickSlot.set(!tis.isEmpty() ? tis : ItemStack.EMPTY);
         }
 
-        // ???
-        this.broadcastChanges();
+        if (shouldBroadcast) {
+            this.broadcastChanges();
+        }
         return ItemStack.EMPTY;
     }
 
-    private boolean x(Slot clickSlot, ItemStack tis, Slot d) {
-        final ItemStack t = d.getItem().copy();
+    private boolean tryMergeItemStackToSlot(Slot sourceSlot, ItemStack toTransfer, Slot destinationSlot) {
+        final ItemStack t = destinationSlot.getItem().copy();
 
-        if (ItemStack.isSameItemSameTags(t, tis)) {
+        if (ItemStack.isSameItemSameTags(t, toTransfer)) {
             int maxSize = t.getMaxStackSize();
-            if (maxSize > d.getMaxStackSize()) {
-                maxSize = d.getMaxStackSize();
+            if (maxSize > destinationSlot.getMaxStackSize()) {
+                maxSize = destinationSlot.getMaxStackSize();
             }
 
             int placeable = maxSize - t.getCount();
             if (placeable > 0) {
-                if (tis.getCount() < placeable) {
-                    placeable = tis.getCount();
+                if (toTransfer.getCount() < placeable) {
+                    placeable = toTransfer.getCount();
                 }
 
                 t.setCount(t.getCount() + placeable);
-                tis.setCount(tis.getCount() - placeable);
+                toTransfer.setCount(toTransfer.getCount() - placeable);
 
-                d.set(t);
+                destinationSlot.set(t);
 
-                if (tis.getCount() <= 0) {
-                    clickSlot.set(ItemStack.EMPTY);
-                    d.setChanged();
+                if (toTransfer.getCount() <= 0) {
+                    sourceSlot.set(ItemStack.EMPTY);
+                    destinationSlot.setChanged();
 
-                    // ???
-                    this.broadcastChanges();
-                    // ???
-                    this.broadcastChanges();
                     return true;
-                } else {
-                    // ???
-                    this.broadcastChanges();
                 }
             }
         }
