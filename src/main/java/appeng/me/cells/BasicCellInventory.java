@@ -404,25 +404,27 @@ public class BasicCellInventory implements StorageCell {
 
     @Override
     public long extract(AEKey what, long amount, Actionable mode, IActionSource source) {
-        var currentAmount = getCellItems().getLong(what);
-        if (currentAmount > 0) {
-            if (amount >= currentAmount) {
-                if (mode == Actionable.MODULATE) {
-                    getCellItems().remove(what, currentAmount);
-                    this.saveChanges();
-                }
+        var cellItems = getCellItems();
+        if (!cellItems.isEmpty()) {
+            var currentAmount = cellItems.getLong(what);
+            if (currentAmount > 0) {
+                if (amount >= currentAmount) {
+                    if (mode == Actionable.MODULATE) {
+                        cellItems.remove(what, currentAmount);
+                        this.saveChanges();
+                    }
 
-                return currentAmount;
-            } else {
-                if (mode == Actionable.MODULATE) {
-                    getCellItems().put(what, currentAmount - amount);
-                    this.saveChanges();
-                }
+                    return currentAmount;
+                } else {
+                    if (mode == Actionable.MODULATE) {
+                        cellItems.put(what, currentAmount - amount);
+                        this.saveChanges();
+                    }
 
-                return amount;
+                    return amount;
+                }
             }
         }
-
         return 0;
     }
 
