@@ -12,7 +12,7 @@ import net.minecraft.server.level.ServerLevel;
 
 import appeng.api.behaviors.ExternalStorageStrategy;
 import appeng.api.config.Actionable;
-import appeng.api.config.BlockingMode;
+import appeng.api.config.Settings;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.AEKeyType;
@@ -21,21 +21,22 @@ import appeng.capabilities.Capabilities;
 import appeng.me.storage.CompositeStorage;
 import appeng.parts.automation.StackWorldBehaviors;
 import appeng.util.BlockApiCache;
+import appeng.util.ConfigManager;
 
 class PatternProviderTargetCache {
     private final BlockApiCache<MEStorage> cache;
     private final Direction direction;
     private final IActionSource src;
     private final Map<AEKeyType, ExternalStorageStrategy> strategies;
-    private final BlockingMode blockingMode;
+    private final ConfigManager configManager;
 
     PatternProviderTargetCache(ServerLevel l, BlockPos pos, Direction direction, IActionSource src,
-            BlockingMode blockingMode) {
+            ConfigManager configManager) {
         this.cache = BlockApiCache.create(Capabilities.STORAGE, l, pos);
         this.direction = direction;
         this.src = src;
         this.strategies = StackWorldBehaviors.createExternalStorageStrategies(l, pos, direction);
-        this.blockingMode = blockingMode;
+        this.configManager = configManager;
     }
 
     @Nullable
@@ -72,7 +73,7 @@ class PatternProviderTargetCache {
 
             @Override
             public boolean containsPatternInput(Set<AEKey> patternInputs) {
-                switch (blockingMode) {
+                switch (configManager.getSetting(Settings.BLOCKING_MODE_EXTRA)) {
                     case ALL -> {
                         for (var stack : storage.getAvailableStacks()) {
                             if (stack.getKey().getId().equals(programmedCircuit))
@@ -82,8 +83,9 @@ class PatternProviderTargetCache {
                     }
                     case DEFAULT -> {
                         for (var stack : storage.getAvailableStacks()) {
-                            if (patternInputs.contains(stack.getKey().dropSecondary())
-                                    || !stack.getKey().getId().equals(programmedCircuit))
+                            if (stack.getKey().getId().equals(programmedCircuit))
+                                continue;
+                            if (patternInputs.contains(stack.getKey().dropSecondary()))
                                 return true;
                         }
                     }

@@ -510,7 +510,7 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
                     thisBe.getBlockPos().relative(side),
                     side.getOpposite(),
                     actionSource,
-                    getBlockingMode());
+                    configManager);
         }
 
         return targetCaches[side.get3DDataValue()].find();
