@@ -33,6 +33,7 @@ import appeng.core.network.serverbound.GuiActionPacket;
 import appeng.core.network.serverbound.HotkeyPacket;
 import appeng.core.network.serverbound.InventoryActionPacket;
 import appeng.core.network.serverbound.MEInteractionPacket;
+import appeng.core.network.serverbound.PullItemToPlayerPacket;
 import appeng.core.network.serverbound.MouseWheelPacket;
 import appeng.core.network.serverbound.PartLeftClickPacket;
 import appeng.core.network.serverbound.QuickMovePatternPacket;
@@ -82,6 +83,7 @@ public class InitNetwork {
         serverbound(registrar, SwapSlotsPacket.TYPE, SwapSlotsPacket.STREAM_CODEC);
         serverbound(registrar, SwitchGuisPacket.TYPE, SwitchGuisPacket.STREAM_CODEC);
         serverbound(registrar, UpdateHoldingCtrlPacket.TYPE, UpdateHoldingCtrlPacket.STREAM_CODEC);
+        serverbound(registrar, PullItemToPlayerPacket.TYPE, PullItemToPlayerPacket.STREAM_CODEC);
 
         // Bidirectional
         bidirectional(registrar, ConfigValuePacket.TYPE, ConfigValuePacket.STREAM_CODEC);
