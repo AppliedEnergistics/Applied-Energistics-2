@@ -148,6 +148,11 @@ public class CraftingCpuLogic {
             return;
         }
 
+        // Don't schedule more work while suspended
+        if (job.suspended) {
+            return;
+        }
+
         var remainingOperations = cluster.getCoProcessors() + 1 - (this.usedOps[0] + this.usedOps[1] + this.usedOps[2]);
         final var started = remainingOperations;
 
@@ -510,6 +515,16 @@ public class CraftingCpuLogic {
 
     public boolean isCantStoreItems() {
         return cantStoreItems;
+    }
+
+    public boolean isJobSuspended() {
+        return job != null && job.suspended;
+    }
+
+    public void setJobSuspended(boolean suspended) {
+        if (job != null && job.suspended != suspended) {
+            job.suspended = suspended;
+        }
     }
 
     private void notifyJobOwner(ExecutingCraftingJob job, CraftingJobStatusPacket.Status status) {
