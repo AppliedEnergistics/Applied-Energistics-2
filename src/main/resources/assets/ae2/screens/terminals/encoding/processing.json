@@ -88,6 +88,78 @@
     "processingClearPattern": {
       "left": 79,
       "bottom": 159
+    },
+    "inputLabel0": {
+      "left": 24,
+      "bottom": 158,
+      "width": 18,
+      "height": 18
+    },
+    "inputLabel1": {
+      "left": 42,
+      "bottom": 158,
+      "width": 18,
+      "height": 18
+    },
+    "inputLabel2": {
+      "left": 60,
+      "bottom": 158,
+      "width": 18,
+      "height": 18
+    },
+    "inputLabel3": {
+      "left": 24,
+      "bottom": 140,
+      "width": 18,
+      "height": 18
+    },
+    "inputLabel4": {
+      "left": 42,
+      "bottom": 140,
+      "width": 18,
+      "height": 18
+    },
+    "inputLabel5": {
+      "left": 60,
+      "bottom": 140,
+      "width": 18,
+      "height": 18
+    },
+    "inputLabel6": {
+      "left": 24,
+      "bottom": 122,
+      "width": 18,
+      "height": 18
+    },
+    "inputLabel7": {
+      "left": 42,
+      "bottom": 122,
+      "width": 18,
+      "height": 18
+    },
+    "inputLabel8": {
+      "left": 60,
+      "bottom": 122,
+      "width": 18,
+      "height": 18
+    },
+    "outputLabel0": {
+      "left": 109,
+      "bottom": 158,
+      "width": 18,
+      "height": 18
+    },
+    "outputLabel1": {
+      "left": 109,
+      "bottom": 140,
+      "width": 18,
+      "height": 18
+    },
+    "outputLabel2": {
+      "left": 109,
+      "bottom": 122,
+      "width": 18,
+      "height": 18
     }
   }
 }
