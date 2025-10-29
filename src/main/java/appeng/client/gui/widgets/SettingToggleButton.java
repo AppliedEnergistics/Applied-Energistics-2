@@ -176,6 +176,8 @@ public class SettingToggleButton<T extends Enum<T>> extends IconButton {
             registerApp(Icon.SORT_BY_AMOUNT, Settings.SORT_BY, SortOrder.AMOUNT, ButtonToolTips.SortBy,
                     ButtonToolTips.NumberOfItems);
             registerApp(Icon.SORT_BY_MOD, Settings.SORT_BY, SortOrder.MOD, ButtonToolTips.SortBy, ButtonToolTips.Mod);
+            registerApp(Icon.SORT_BY_REGISTRY, Settings.SORT_BY, SortOrder.REGISTRY, ButtonToolTips.SortBy,
+                    ButtonToolTips.Registry);
 
             registerApp(Icon.VIEW_MODE_STORED, Settings.VIEW_MODE, ViewItems.STORED, ButtonToolTips.View,
                     ButtonToolTips.StoredItems);

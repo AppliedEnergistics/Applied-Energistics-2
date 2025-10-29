@@ -261,4 +261,14 @@ public final class AEItemKey extends AEKey {
                 : stack.getItem().getClass().getName() + "(unregistered)";
         return stack.isComponentsPatchEmpty() ? idString : idString + " (with patches)";
     }
+
+    @Override
+    public int getTypeRegistryId() {
+        return Integer.MIN_VALUE;
+    }
+
+    @Override
+    public int getRegistryId() {
+        return BuiltInRegistries.ITEM.getId(stack.getItem());
+    }
 }

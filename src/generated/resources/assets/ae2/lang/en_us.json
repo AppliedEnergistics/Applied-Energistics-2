@@ -648,6 +648,7 @@
   "gui.tooltips.ae2.Read": "Extract Only",
   "gui.tooltips.ae2.ReadWrite": "Bi-Directional",
   "gui.tooltips.ae2.RedstoneMode": "Redstone Mode",
+  "gui.tooltips.ae2.Registry": "Registry ID",
   "gui.tooltips.ae2.ReportInaccessibleFluids": "Report Inaccessible Fluids",
   "gui.tooltips.ae2.ReportInaccessibleFluidsNo": "No: Only extractable fluids will be visible.",
   "gui.tooltips.ae2.ReportInaccessibleFluidsYes": "Yes: Fluids that cannot be extracted will be visible.",
