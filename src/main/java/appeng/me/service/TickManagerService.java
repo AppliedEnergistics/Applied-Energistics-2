@@ -18,7 +18,9 @@
 
 package appeng.me.service;
 
+import java.util.ArrayList;
 import java.util.IdentityHashMap;
+import java.util.List;
 import java.util.LongSummaryStatistics;
 import java.util.Map;
 import java.util.Objects;
@@ -33,7 +35,12 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.CrashReport;
 import net.minecraft.ReportedException;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
+
+import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
+import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridServiceProvider;
@@ -41,6 +48,7 @@ import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.ITickManager;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.me.GridNode;
+import appeng.me.InWorldGridNode;
 import appeng.me.service.helpers.TickTracker;
 
 public class TickManagerService implements ITickManager, IGridServiceProvider {
@@ -53,9 +61,18 @@ public class TickManagerService implements ITickManager, IGridServiceProvider {
     private final Map<IGridNode, TickTracker> alertable = new IdentityHashMap<>();
     private final Map<IGridNode, TickTracker> sleeping = new IdentityHashMap<>();
     private final Map<IGridNode, TickTracker> awake = new IdentityHashMap<>();
-    private final Map<Level, PriorityQueue<TickTracker>> upcomingTicks = new IdentityHashMap<>();
+    private final Map<Level, UpcomingTicks> upcomingTicks = new IdentityHashMap<>();
 
-    private PriorityQueue<TickTracker> currentlyTickingQueue = null;
+    private UpcomingTicks currentlyTickingQueue = null;
+
+    private static final class UpcomingTicks {
+        PriorityQueue<TickTracker> activeQueue = new PriorityQueue<>();
+        Long2ObjectMap<List<TickTracker>> pausedChunks = new Long2ObjectOpenHashMap<>();
+
+        public boolean isEmpty() {
+            return activeQueue.isEmpty() && pausedChunks.isEmpty();
+        }
+    }
 
     private long currentTick = 0;
     private final Stopwatch stopWatch = Stopwatch.createUnstarted();
@@ -72,7 +89,7 @@ public class TickManagerService implements ITickManager, IGridServiceProvider {
 
     @Override
     public void onLevelEndTick(Level level) {
-        this.tickLevelQueue(level);
+        this.tickLevelQueue((ServerLevel) level);
     }
 
     @Override
@@ -80,25 +97,48 @@ public class TickManagerService implements ITickManager, IGridServiceProvider {
         this.tickLevelQueue(null);
     }
 
-    private void tickLevelQueue(@Nullable Level level) {
-        var queue = this.upcomingTicks.get(level);
+    private void tickLevelQueue(@Nullable ServerLevel level) {
+        var upcoming = this.upcomingTicks.get(level);
 
-        if (queue != null) {
-            currentlyTickingQueue = queue;
+        if (upcoming != null) {
+            currentlyTickingQueue = upcoming;
 
             try {
-                tickQueue(queue);
+                tickQueue(level, upcoming);
             } finally {
                 currentlyTickingQueue = null;
             }
 
-            if (queue.isEmpty()) {
+            if (upcoming.isEmpty()) {
                 this.upcomingTicks.remove(level);
             }
         }
     }
 
-    private void tickQueue(PriorityQueue<TickTracker> queue) {
+    private void tickQueue(@Nullable ServerLevel level, UpcomingTicks upcomingTicks) {
+        var queue = upcomingTicks.activeQueue;
+
+        // First check if any chunks have re-entered ticking state and re-add their nodes to be ticked
+        if (level != null) {
+            var it = upcomingTicks.pausedChunks.long2ObjectEntrySet().iterator();
+            while (it.hasNext()) {
+                var entry = it.next();
+                var chunkPos = entry.getLongKey();
+                if (!level.shouldTickBlocksAt(chunkPos)) {
+                    continue; // Still paused
+                }
+
+                for (var tt : entry.getValue()) {
+                    // Note that the node _may_ have been removed entirely
+                    if (this.awake.containsKey(tt.getNode())) {
+                        // Queue already known, no need to use addToQueue() to resolve it again.
+                        queue.add(tt);
+                    }
+                }
+                it.remove();
+            }
+        }
+
         TickTracker tt;
 
         while (!queue.isEmpty()) {
@@ -111,6 +151,17 @@ public class TickManagerService implements ITickManager, IGridServiceProvider {
             if (queue.poll() != tt) {
                 throw new IllegalStateException();
             }
+
+            // For in-world grid nodes, we check if the chunk position is actually ticking or not
+            if (level != null && tt.getNode() instanceof InWorldGridNode inWorldGridNode) {
+                var chunkPos = ChunkPos.asLong(inWorldGridNode.getLocation());
+                if (!level.shouldTickBlocksAt(chunkPos)) {
+                    // Move the tick request to the suspendedTicks list
+                    var suspended = upcomingTicks.pausedChunks.computeIfAbsent(chunkPos, ignored -> new ArrayList<>());
+                    suspended.add(tt);
+                }
+            }
+
             var diff = (int) (this.currentTick - tt.getLastTick());
             currentlyTicking = tt.getNode();
             TickRateModulation mod;
@@ -315,23 +366,31 @@ public class TickManagerService implements ITickManager, IGridServiceProvider {
     /**
      * null as level could be used for virtual nodes.
      */
-    private PriorityQueue<TickTracker> getQueue(@Nullable Level level) {
-        return this.upcomingTicks.computeIfAbsent(level, (key) -> new PriorityQueue<>());
+    private UpcomingTicks getUpcomingTicks(@Nullable Level level) {
+        return this.upcomingTicks.computeIfAbsent(level, (key) -> new UpcomingTicks());
     }
 
     private void addToQueue(IGridNode node, TickTracker tt) {
-        var queue = getQueue(node.getLevel());
-        queue.add(tt);
+        var upcoming = getUpcomingTicks(node.getLevel());
+        upcoming.activeQueue.add(tt);
     }
 
     private void removeFromQueue(IGridNode node, TickTracker tt) {
         var level = node.getLevel();
-        var queue = getQueue(level);
-        queue.remove(tt);
+        var upcoming = getUpcomingTicks(level);
+        upcoming.activeQueue.remove(tt);
+
+        if (node instanceof InWorldGridNode inWorldGridNode) {
+            var chunkPos = ChunkPos.asLong(inWorldGridNode.getLocation());
+            var pausedChunk = upcoming.pausedChunks.get(chunkPos);
+            if (pausedChunk != null && pausedChunk.remove(tt) && pausedChunk.isEmpty()) {
+                upcoming.pausedChunks.remove(chunkPos);
+            }
+        }
 
         // Make sure we don't cleanup a queue we are iterating over,
         // as something might be added to it later even if it's empty now.
-        if (currentlyTickingQueue != queue && queue.isEmpty()) {
+        if (currentlyTickingQueue != upcoming && upcoming.isEmpty()) {
             this.upcomingTicks.remove(level);
         }
     }
@@ -384,7 +443,7 @@ public class TickManagerService implements ITickManager, IGridServiceProvider {
         boolean isQueued = false;
         var tickQueue = upcomingTicks.get(node.getLevel());
         if (awakeTracker != null && tickQueue != null) {
-            isQueued = Iterators.contains(tickQueue.iterator(), awakeTracker);
+            isQueued = Iterators.contains(tickQueue.activeQueue.iterator(), awakeTracker);
         }
 
         // Get the tick-request stats
