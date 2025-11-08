@@ -249,6 +249,7 @@ public enum GuiText implements LocalizationEnum {
     TankCapacity("Capacity: %d"),
     TankBucketCapacity("Can Store up to %d Buckets"),
     Terminal("Terminal"),
+    TerminalSettingsAutoPause("Pause the terminal exactly like when pressing shift, except done automatically"),
     TerminalSettingsTitle("Terminal Settings"),
     TerminalSettingsPinAutoCraftedItems("Pin auto-crafted items to first row"),
     TerminalSettingsNotifyForFinishedJobs("Notify about finished crafting jobs (requires wireless terminal)"),

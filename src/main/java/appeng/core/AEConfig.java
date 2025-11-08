@@ -549,6 +549,14 @@ public final class AEConfig {
         return CLIENT.terminalMargin.get();
     }
 
+    public boolean isAutoPauseTerminal() {
+        return CLIENT.autoPauseTerminal.get();
+    }
+
+    public void setAutoPauseTerminal(boolean autoPauseTerminal) {
+        CLIENT.autoPauseTerminal.set(autoPauseTerminal);
+    }
+
     // Setters keep visibility as low as possible.
 
     private static class ClientConfig {
@@ -572,6 +580,7 @@ public final class AEConfig {
         public final BooleanOption pinAutoCraftedItems;
         public final BooleanOption clearGridOnClose;
         public final IntegerOption terminalMargin;
+        public final BooleanOption autoPauseTerminal;
 
         // Search Settings
         public final BooleanOption searchModNameInTooltips;
@@ -616,6 +625,8 @@ public final class AEConfig {
                     "Automatically clear the crafting/encoding grid when closing the terminal");
             this.terminalMargin = client.addInt("terminalMargin", 25,
                     "The vertical margin to apply when sizing terminals. Used to make room for centered item mod search bars");
+            this.autoPauseTerminal = client.addBoolean("autoPauseTerminal", false,
+                    "Pause the terminal exactly like when pressing shift, except done automatically");
 
             // Search Settings
             var search = root.subsection("search");

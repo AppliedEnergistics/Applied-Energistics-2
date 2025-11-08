@@ -543,6 +543,10 @@
               "hideEdge": {
                 "description": "Used to hide the border around TabButtons",
                 "type": "boolean"
+              },
+              "page": {
+                "description": "Which page this widget should be on, currently only used by the TerminalSettingsScreen",
+                "type": "integer"
               }
             }
           }

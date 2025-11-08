@@ -31,6 +31,8 @@ public class WidgetStyle extends Position {
 
     private boolean hideEdge;
 
+    private int page;
+
     public int getWidth() {
         return width;
     }
@@ -53,6 +55,14 @@ public class WidgetStyle extends Position {
 
     public void setHideEdge(boolean hideEdge) {
         this.hideEdge = hideEdge;
+    }
+
+    public int getPage() {
+        return page;
+    }
+
+    public void setPage(int page) {
+        this.page = page;
     }
 
 }

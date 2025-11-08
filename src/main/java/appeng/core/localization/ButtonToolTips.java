@@ -201,7 +201,8 @@ public enum ButtonToolTips implements LocalizationEnum {
     SupportedBy("Supported by:"),
     LinkWirelessTerminal("Link Wireless Terminals here"),
     PlaceWirelessBooster("Increase range with Wireless Boosters"),
-    ;
+    NextPage("Next Page"),
+    PreviousPage("Previous Page");
 
     private final String englishText;
 

@@ -1,18 +1,27 @@
 package appeng.client.gui.me.common;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.network.chat.Component;
 
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+
+import appeng.api.config.ActionItems;
 import appeng.client.gui.AESubScreen;
+import appeng.client.gui.IPagedScreen;
 import appeng.client.gui.widgets.AECheckbox;
+import appeng.client.gui.widgets.ActionButton;
 import appeng.client.gui.widgets.TabButton;
 import appeng.core.localization.GuiText;
 import appeng.integration.abstraction.ItemListMod;
 import appeng.menu.SlotSemantics;
 import appeng.menu.me.common.MEStorageMenu;
 
-public class TerminalSettingsScreen<C extends MEStorageMenu> extends AESubScreen<C, MEStorageScreen<C>> {
+public class TerminalSettingsScreen<C extends MEStorageMenu> extends AESubScreen<C, MEStorageScreen<C>>
+        implements IPagedScreen {
+
+    private final String TEXT_SEARCH_SETTINGS_TITLE = "search_settings_title";
 
     private final AECheckbox pinAutoCraftedItemsCheckbox;
     private final AECheckbox notifyForFinishedCraftingJobsCheckbox;
@@ -26,8 +35,18 @@ public class TerminalSettingsScreen<C extends MEStorageMenu> extends AESubScreen
     private final AECheckbox syncWithExternalCheckbox;
     private final AECheckbox clearExternalCheckbox;
 
+    private final AECheckbox autoPauseTerminalCheckbox;
+
+    private final ActionButton nextPageButton;
+    private final ActionButton previousPageButton;
+
+    private final Object2IntOpenHashMap<AbstractWidget> pages = new Object2IntOpenHashMap<>();
+
+    private int page;
+
     public TerminalSettingsScreen(MEStorageScreen<C> parent) {
         super(parent, "/screens/terminals/terminal_settings.json");
+        this.page = 0;
 
         addBackButton();
 
@@ -42,30 +61,34 @@ public class TerminalSettingsScreen<C extends MEStorageMenu> extends AESubScreen
             hasExternalSearch = false;
         }
 
-        pinAutoCraftedItemsCheckbox = widgets.addCheckbox("pinAutoCraftedItemsCheckbox",
+        pinAutoCraftedItemsCheckbox = makeCheckbox("pinAutoCraftedItemsCheckbox",
                 GuiText.TerminalSettingsPinAutoCraftedItems.text(), this::save);
-        notifyForFinishedCraftingJobsCheckbox = widgets.addCheckbox("notifyForFinishedCraftingJobsCheckbox",
+        notifyForFinishedCraftingJobsCheckbox = makeCheckbox("notifyForFinishedCraftingJobsCheckbox",
                 GuiText.TerminalSettingsNotifyForFinishedJobs.text(), this::save);
-        clearGridOnCloseCheckbox = widgets.addCheckbox("clearGridOnCloseCheckbox",
+        clearGridOnCloseCheckbox = makeCheckbox("clearGridOnCloseCheckbox",
                 GuiText.TerminalSettingsClearGridOnClose.text(), this::save);
 
-        useInternalSearchRadio = widgets.addCheckbox("useInternalSearchRadio",
-                GuiText.SearchSettingsUseInternalSearch.text(), this::switchToAeSearch);
+        useInternalSearchRadio = makeCheckbox("useInternalSearchRadio", GuiText.SearchSettingsUseInternalSearch.text(),
+                this::switchToAeSearch);
         useInternalSearchRadio.setRadio(true);
-        useExternalSearchRadio = widgets.addCheckbox("useExternalSearchRadio",
+        useExternalSearchRadio = makeCheckbox("useExternalSearchRadio",
                 GuiText.SearchSettingsUseExternalSearch.text(externalSearchMod), this::switchToExternalSearch);
         useExternalSearchRadio.setRadio(true);
-        useExternalSearchRadio.active = hasExternalSearch;
+        useExternalSearchRadio.visible = hasExternalSearch;
 
-        rememberCheckbox = widgets.addCheckbox("rememberCheckbox", GuiText.SearchSettingsRememberSearch.text(),
-                this::save);
-        autoFocusCheckbox = widgets.addCheckbox("autoFocusCheckbox", GuiText.SearchSettingsAutoFocus.text(),
-                this::save);
+        rememberCheckbox = makeCheckbox("rememberCheckbox", GuiText.SearchSettingsRememberSearch.text(), this::save);
+        autoFocusCheckbox = makeCheckbox("autoFocusCheckbox", GuiText.SearchSettingsAutoFocus.text(), this::save);
 
-        syncWithExternalCheckbox = widgets.addCheckbox("syncWithExternalCheckbox",
+        syncWithExternalCheckbox = makeCheckbox("syncWithExternalCheckbox",
                 GuiText.SearchSettingsSyncWithExternal.text(externalSearchMod), this::save);
-        clearExternalCheckbox = widgets.addCheckbox("clearExternalCheckbox",
+        clearExternalCheckbox = makeCheckbox("clearExternalCheckbox",
                 GuiText.SearchSettingsClearExternal.text(externalSearchMod), this::save);
+
+        autoPauseTerminalCheckbox = makeCheckbox("autoPauseTerminalCheckbox", GuiText.TerminalSettingsAutoPause.text(),
+                this::save);
+
+        nextPageButton = addToLeftToolbar(new ActionButton(ActionItems.NEXT_PAGE, () -> setCurrentPage(page + 1)));
+        previousPageButton = addToLeftToolbar(new ActionButton(ActionItems.PREV_PAGE, () -> setCurrentPage(page - 1)));
 
         updateState();
     }
@@ -111,11 +134,26 @@ public class TerminalSettingsScreen<C extends MEStorageMenu> extends AESubScreen
         syncWithExternalCheckbox.setSelected(config.isSyncWithExternalSearch());
         clearExternalCheckbox.setSelected(config.isClearExternalSearchOnOpen());
 
-        rememberCheckbox.visible = useInternalSearchRadio.isSelected();
-        autoFocusCheckbox.visible = useInternalSearchRadio.isSelected();
-        syncWithExternalCheckbox.visible = useInternalSearchRadio.isSelected();
+        autoPauseTerminalCheckbox.setSelected(config.isAutoPauseTerminal());
 
-        clearExternalCheckbox.visible = useExternalSearchRadio.isSelected();
+        int highestPage = 0;
+        for (var entry : pages.object2IntEntrySet()) {
+            var widget = entry.getKey();
+            widget.visible = entry.getIntValue() == page;
+            highestPage = Math.max(highestPage, entry.getIntValue());
+        }
+
+        // Need to do this jank-ish stuff so it doesn't override the page
+        rememberCheckbox.visible = useInternalSearchRadio.isSelected() && useInternalSearchRadio.visible;
+        autoFocusCheckbox.visible = useInternalSearchRadio.isSelected() && useInternalSearchRadio.visible;
+        syncWithExternalCheckbox.visible = useInternalSearchRadio.isSelected() && useInternalSearchRadio.visible;
+
+        clearExternalCheckbox.visible = useExternalSearchRadio.isSelected() && useExternalSearchRadio.visible;
+
+        setTextHidden(TEXT_SEARCH_SETTINGS_TITLE, !useInternalSearchRadio.visible);
+
+        nextPageButton.visible = page < highestPage;
+        previousPageButton.visible = page > 0;
     }
 
     private void save() {
@@ -127,7 +165,25 @@ public class TerminalSettingsScreen<C extends MEStorageMenu> extends AESubScreen
         config.setPinAutoCraftedItems(pinAutoCraftedItemsCheckbox.isSelected());
         config.setNotifyForFinishedCraftingJobs(notifyForFinishedCraftingJobsCheckbox.isSelected());
         config.setClearGridOnClose(clearGridOnCloseCheckbox.isSelected());
+        config.setAutoPauseTerminal(autoPauseTerminalCheckbox.isSelected());
 
+        updateState();
+    }
+
+    private AECheckbox makeCheckbox(String id, Component text, Runnable changeListener) {
+        var checkbox = widgets.addCheckbox(id, text, changeListener);
+        pages.put(checkbox, style.getWidget(id).getPage());
+        return checkbox;
+    }
+
+    @Override
+    public int getCurrentPage() {
+        return page;
+    }
+
+    @Override
+    public void setCurrentPage(int page) {
+        this.page = page;
         updateState();
     }
 }

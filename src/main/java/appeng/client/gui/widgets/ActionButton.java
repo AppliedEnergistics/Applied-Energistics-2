@@ -83,6 +83,16 @@ public class ActionButton extends IconButton {
                 displayName = ButtonToolTips.ExportCraft;
                 displayValue = ButtonToolTips.ExportCraftTooltip;
             }
+            case NEXT_PAGE -> {
+                icon = Icon.ARROW_RIGHT;
+                displayName = ButtonToolTips.NextPage;
+                displayValue = null;
+            }
+            case PREV_PAGE -> {
+                icon = Icon.ARROW_LEFT;
+                displayName = ButtonToolTips.PreviousPage;
+                displayValue = null;
+            }
             default -> throw new IllegalArgumentException("Unknown ActionItem: " + action);
         }
 

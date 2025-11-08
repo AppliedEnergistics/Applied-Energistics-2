@@ -79,6 +79,12 @@
       "left": 10,
       "top": 160,
       "width": 150
+    },
+    "autoPauseTerminalCheckbox": {
+      "left": 10,
+      "top": 25,
+      "width": 180,
+      "page": 1
     }
   }
 }
