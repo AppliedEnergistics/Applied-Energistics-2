@@ -3,6 +3,8 @@ package appeng.api.implementations.blockentities;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
@@ -112,9 +114,8 @@ public record PatternContainerGroup(
             }
         } else {
             // Try to wrestle an item from the adjacent block entity
-            // TODO On Forge we can use pick block here
             var targetBlock = target.getBlockState().getBlock();
-            var targetItem = new ItemStack(targetBlock);
+            var targetItem = targetBlock.getCloneItemStack(target.getBlockState(), new BlockHitResult(Vec3.atCenterOf(pos), side, pos, false), level, pos, null);
             icon = AEItemKey.of(targetItem);
 
             if (target instanceof Nameable nameable && nameable.hasCustomName()) {
