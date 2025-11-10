@@ -3,8 +3,6 @@ package appeng.api.implementations.blockentities;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
@@ -16,6 +14,8 @@ import net.minecraft.world.Nameable;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.capabilities.Capabilities;
 
 import appeng.api.parts.IPartHost;
@@ -115,7 +115,8 @@ public record PatternContainerGroup(
         } else {
             // Try to wrestle an item from the adjacent block entity
             var targetBlock = target.getBlockState().getBlock();
-            var targetItem = targetBlock.getCloneItemStack(target.getBlockState(), new BlockHitResult(Vec3.atCenterOf(pos), side, pos, false), level, pos, null);
+            var targetItem = targetBlock.getCloneItemStack(target.getBlockState(),
+                    new BlockHitResult(Vec3.atCenterOf(pos), side, pos, false), level, pos, null);
             icon = AEItemKey.of(targetItem);
 
             if (target instanceof Nameable nameable && nameable.hasCustomName()) {
