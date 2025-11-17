@@ -126,6 +126,7 @@ public enum ButtonToolTips implements LocalizationEnum {
     Read("Extract Only"),
     ReadWrite("Bi-Directional"),
     RedstoneMode("Redstone Mode"),
+    Registry("Registry ID"),
     ReportInaccessibleFluids("Report Inaccessible Fluids"),
     ReportInaccessibleFluidsNo("No: Only extractable fluids will be visible."),
     ReportInaccessibleFluidsYes("Yes: Fluids that cannot be extracted will be visible."),
