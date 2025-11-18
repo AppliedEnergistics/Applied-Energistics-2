@@ -21,6 +21,7 @@ package appeng.menu.me.items;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
@@ -43,7 +44,9 @@ import it.unimi.dsi.fastutil.ints.IntArraySet;
 import it.unimi.dsi.fastutil.ints.IntSet;
 import it.unimi.dsi.fastutil.shorts.ShortSet;
 
+import appeng.api.config.Actionable;
 import appeng.api.crafting.PatternDetailsHelper;
+import appeng.api.networking.security.IActionSource;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.GenericStack;
 import appeng.client.gui.Icon;
@@ -292,8 +295,18 @@ public class PatternEncodingTermMenu extends MEStorageMenu {
 
                 // remove one, and clear the input slot.
                 blankPattern.shrink(1);
+
                 if (blankPattern.getCount() <= 0) {
-                    this.blankPatternSlot.set(ItemStack.EMPTY);
+                    long extracted = Objects.requireNonNull(this.getGridNode()).getGrid().getStorageService()
+                            .getInventory().extract(
+                                    AEItemKey.of(AEItems.BLANK_PATTERN),
+                                    1,
+                                    Actionable.MODULATE,
+                                    IActionSource.ofMachine(this.getActionHost()));
+
+                    if (extracted > 0) {
+                        this.blankPatternSlot.set(new ItemStack(AEItems.BLANK_PATTERN, (int) extracted));
+                    }
                 }
             }
 
