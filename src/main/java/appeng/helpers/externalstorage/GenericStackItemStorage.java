@@ -48,6 +48,19 @@ public class GenericStackItemStorage implements IItemHandler {
 
         var inserted = (int) inv.insert(slot, what, stack.getCount(), Actionable.ofSimulate(simulate));
 
+        if (inserted < stack.getCount()) {
+            var remaining = stack.getCount() - inserted;
+            for (int i = 0; i < inv.size() && remaining > 0; i++) {
+                if (i == slot) {
+                    continue;
+                }
+
+                var additionalInserted = (int) inv.insert(i, what, remaining, Actionable.ofSimulate(simulate));
+                inserted += additionalInserted;
+                remaining -= additionalInserted;
+            }
+        }
+
         return Platform.copyStackWithSize(stack, stack.getCount() - inserted);
     }
 
