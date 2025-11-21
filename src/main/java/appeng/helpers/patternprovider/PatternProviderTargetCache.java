@@ -12,6 +12,7 @@ import net.minecraft.server.level.ServerLevel;
 
 import appeng.api.behaviors.ExternalStorageStrategy;
 import appeng.api.config.Actionable;
+import appeng.api.config.BlockingMode;
 import appeng.api.config.Settings;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.stacks.AEKey;
@@ -23,12 +24,17 @@ import appeng.parts.automation.StackWorldBehaviors;
 import appeng.util.BlockApiCache;
 import appeng.util.ConfigManager;
 
-public class PatternProviderTargetCache {
+class PatternProviderTargetCache {
     private final BlockApiCache<MEStorage> cache;
     private final Direction direction;
     private final IActionSource src;
     private final Map<AEKeyType, ExternalStorageStrategy> strategies;
     private final ConfigManager configManager;
+    private BlockingMode blockingMode;
+
+    PatternProviderTargetCache(ServerLevel l, BlockPos pos, Direction direction, IActionSource src) {
+        this(l, pos, direction, src, null);
+    }
 
     PatternProviderTargetCache(ServerLevel l, BlockPos pos, Direction direction, IActionSource src,
             ConfigManager configManager) {
@@ -73,7 +79,11 @@ public class PatternProviderTargetCache {
 
             @Override
             public boolean containsPatternInput(Set<AEKey> patternInputs) {
-                switch (configManager.getSetting(Settings.BLOCKING_MODE_EXTRA)) {
+                var mode = blockingMode == null
+                        ? (configManager == null ? BlockingMode.DEFAULT
+                                : configManager.getSetting(Settings.BLOCKING_MODE_EXTRA))
+                        : blockingMode;
+                switch (mode) {
                     case ALL -> {
                         for (var stack : storage.getAvailableStacks()) {
                             if (stack.getKey().getId().equals(programmedCircuit))
@@ -91,14 +101,19 @@ public class PatternProviderTargetCache {
                     }
                     case SMART -> {
                         for (var stack : storage.getAvailableStacks()) {
-                            if (patternInputs.contains(stack.getKey().dropSecondary())
-                                    || stack.getKey().getId().equals(programmedCircuit))
+                            if (stack.getKey().getId().equals(programmedCircuit))
                                 continue;
-                            return true;
+                            if (!patternInputs.contains(stack.getKey().dropSecondary()))
+                                return true;
                         }
                     }
                 }
                 return false;
+            }
+
+            @Override
+            public void setBlockingMode(BlockingMode mode) {
+                blockingMode = mode;
             }
         };
     }

@@ -33,6 +33,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 import appeng.api.config.Actionable;
+import appeng.api.config.BlockingMode;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.AEKeyType;
@@ -99,4 +100,12 @@ public interface PatternProviderTarget {
     long insert(AEKey what, long amount, Actionable type);
 
     boolean containsPatternInput(Set<AEKey> patternInputs);
+
+    default boolean containsPatternInput(Set<AEKey> patternInputs, BlockingMode blockingMode) {
+        setBlockingMode(blockingMode);
+        return containsPatternInput(patternInputs);
+    }
+
+    default void setBlockingMode(BlockingMode blockingMode) {
+    }
 }
