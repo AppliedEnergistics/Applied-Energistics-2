@@ -100,13 +100,25 @@ public class PatternEncodingTermScreen<C extends PatternEncodingTermMenu> extend
             if (menu.canModifyAmountForSlot(slot)) {
                 var currentStack = GenericStack.fromItemStack(slot.getItem());
                 if (currentStack != null) {
-                    var screen = new SetProcessingPatternAmountScreen<>(
-                            this,
-                            currentStack,
-                            newStack -> NetworkHandler.instance().sendToServer(new InventoryActionPacket(
-                                    InventoryAction.SET_FILTER, slot.index,
-                                    GenericStack.wrapInItemStack(newStack))));
-                    switchToScreen(screen);
+                    if (hasControlDown()) {
+                        // Set stack name
+                        var screen = new SetProcessingPatternNameScreen<>(
+                                this,
+                                currentStack,
+                                newStack -> NetworkHandler.instance().sendToServer(new InventoryActionPacket(
+                                        InventoryAction.SET_FILTER, slot.index,
+                                        GenericStack.wrapInItemStack(newStack))));
+                        switchToScreen(screen);
+                    } else {
+                        // Set stack amount
+                        var screen = new SetProcessingPatternAmountScreen<>(
+                                this,
+                                currentStack,
+                                newStack -> NetworkHandler.instance().sendToServer(new InventoryActionPacket(
+                                        InventoryAction.SET_FILTER, slot.index,
+                                        GenericStack.wrapInItemStack(newStack))));
+                        switchToScreen(screen);
+                    }
                     return true;
                 }
             }
@@ -116,7 +128,8 @@ public class PatternEncodingTermScreen<C extends PatternEncodingTermMenu> extend
     }
 
     /**
-     * When in processing mode, show a hint in the tooltip that middle-click will open the amount entry dialog.
+     * When in processing mode, show a hint in the tooltip that middle-click will open the amount entry dialog and
+     * ctrl+middle-click will open the name modification dialog.
      */
     @Override
     protected void renderTooltip(GuiGraphics guiGraphics, int x, int y) {
@@ -127,6 +140,7 @@ public class PatternEncodingTermScreen<C extends PatternEncodingTermMenu> extend
                 itemTooltip.add(Tooltips.getAmountTooltip(ButtonToolTips.Amount, unwrapped));
             }
             itemTooltip.add(Tooltips.getSetAmountTooltip());
+            itemTooltip.add(Tooltips.getModifyNameTooltip());
             drawTooltip(guiGraphics, x, y, itemTooltip);
         } else {
             super.renderTooltip(guiGraphics, x, y);

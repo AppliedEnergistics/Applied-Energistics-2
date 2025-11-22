@@ -133,6 +133,11 @@ public final class Tooltips {
                 .withStyle(MUTED_COLOR);
     }
 
+    public static Component getModifyNameTooltip() {
+        return ButtonToolTips.ModifyNameAction.text(ButtonToolTips.CtrlMiddleClick.text())
+                .withStyle(MUTED_COLOR);
+    }
+
     public static Component getMouseButtonText(int button) {
         return switch (button) {
             case InputConstants.MOUSE_BUTTON_LEFT -> ButtonToolTips.LeftClick.text();

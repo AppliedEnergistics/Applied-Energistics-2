@@ -197,6 +197,7 @@ public enum GuiText implements LocalizationEnum {
     SCSSize("SCS Size: %sx%sx%s"),
     Scheduled("Scheduled: %s"),
     SelectAmount("Select Amount"),
+    SelectName("Select Name"),
     SelectedCraftingCPU("Crafting CPU: %s"),
     SerialNumber("Serial Number: %s"),
     Set("Set"),
