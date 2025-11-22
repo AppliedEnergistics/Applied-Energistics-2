@@ -28,6 +28,7 @@ import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
@@ -40,9 +41,11 @@ import appeng.client.Point;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.style.WidgetStyle;
 import appeng.client.gui.widgets.AECheckbox;
+import appeng.client.gui.widgets.AETextDisplayWidget;
 import appeng.client.gui.widgets.AETextField;
 import appeng.client.gui.widgets.BackgroundPanel;
 import appeng.client.gui.widgets.IResizableWidget;
+import appeng.client.gui.widgets.IntegerTextField;
 import appeng.client.gui.widgets.NumberEntryWidget;
 import appeng.client.gui.widgets.Scrollbar;
 import appeng.client.gui.widgets.TabButton;
@@ -124,6 +127,21 @@ public class WidgetContainer {
         add(id, checkbox);
         checkbox.setChangeListener(changeListener);
         return checkbox;
+    }
+
+    public AETextDisplayWidget addTextDisplay(String id, Component text) {
+        var textWidget = new AETextDisplayWidget(0, 0, 0, 0, style, text);
+        add(id, textWidget);
+        return textWidget;
+    }
+
+    public IntegerTextField addIntegerTextField(String id, Font font, int maxLength, Consumer<String> onChanged) {
+        var textField = new IntegerTextField(style, font, 0, 0, 0, font.lineHeight);
+        add(id, textField);
+        textField.setBordered(false);
+        textField.setMaxLength(maxLength);
+        textField.setResponder(onChanged);
+        return textField;
     }
 
     public NumberEntryWidget addNumberEntryWidget(String id, NumberEntryType type) {

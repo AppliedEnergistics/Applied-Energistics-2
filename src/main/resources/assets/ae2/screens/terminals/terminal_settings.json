@@ -80,11 +80,153 @@
       "top": 160,
       "width": 150
     },
+
     "autoPauseTerminalCheckbox": {
       "left": 10,
       "top": 25,
       "width": 180,
       "page": 1
+    },
+
+    "textDisplayConfig": {
+      "left": 10,
+      "top": 25,
+      "width": 180,
+      "height": 14,
+      "page": 2
+    },
+    "numberWidgetConfigInput": {
+      "left": 10,
+      "top": 55,
+      "width": 120,
+      "height": 12,
+      "page": 2
+    },
+    "textDisplayConfigBase": {
+      "left": 10,
+      "top": 83,
+      "width": 180,
+      "height": 14,
+      "page": 2
+    },
+    "saveBaseNumber1": {
+      "left": 10,
+      "top": 103,
+      "width": 42,
+      "height": 14,
+      "page": 2
+    },
+    "saveBaseNumber2": {
+      "left": 56,
+      "top": 103,
+      "width": 42,
+      "height": 14,
+      "page": 2
+    },
+    "saveBaseNumber3": {
+      "left": 102,
+      "top": 103,
+      "width": 42,
+      "height": 14,
+      "page": 2
+    },
+    "saveBaseNumber4": {
+      "left": 148,
+      "top": 103,
+      "width": 42,
+      "height": 14,
+      "page": 2
+    },
+    "loadBaseNumber1": {
+      "left": 10,
+      "top": 121,
+      "width": 42,
+      "height": 14,
+      "page": 2
+    },
+    "loadBaseNumber2": {
+      "left": 56,
+      "top": 121,
+      "width": 42,
+      "height": 14,
+      "page": 2
+    },
+    "loadBaseNumber3": {
+      "left": 102,
+      "top": 121,
+      "width": 42,
+      "height": 14,
+      "page": 2
+    },
+    "loadBaseNumber4": {
+      "left": 148,
+      "top": 121,
+      "width": 42,
+      "height": 14,
+      "page": 2
+    },
+    "textDisplayConfigAlt": {
+      "left": 10,
+      "top": 152,
+      "width": 180,
+      "height": 14,
+      "page": 2
+    },
+    "saveAltNumber1": {
+      "left": 10,
+      "top": 172,
+      "width": 42,
+      "height": 14,
+      "page": 2
+    },
+    "saveAltNumber2": {
+      "left": 56,
+      "top": 172,
+      "width": 42,
+      "height": 14,
+      "page": 2
+    },
+    "saveAltNumber3": {
+      "left": 102,
+      "top": 172,
+      "width": 42,
+      "height": 14,
+      "page": 2
+    },
+    "saveAltNumber4": {
+      "left": 148,
+      "top": 172,
+      "width": 42,
+      "height": 14,
+      "page": 2
+    },
+    "loadAltNumber1": {
+      "left": 10,
+      "top": 190,
+      "width": 42,
+      "height": 14,
+      "page": 2
+    },
+    "loadAltNumber2": {
+      "left": 56,
+      "top": 190,
+      "width": 42,
+      "height": 14,
+      "page": 2
+    },
+    "loadAltNumber3": {
+      "left": 102,
+      "top": 190,
+      "width": 42,
+      "height": 14,
+      "page": 2
+    },
+    "loadAltNumber4": {
+      "left": 148,
+      "top": 190,
+      "width": 42,
+      "height": 14,
+      "page": 2
     }
   }
 }

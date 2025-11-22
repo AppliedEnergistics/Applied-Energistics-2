@@ -557,6 +557,14 @@ public final class AEConfig {
         CLIENT.autoPauseTerminal.set(autoPauseTerminal);
     }
 
+    public int getNumberWidgetValue(int index) {
+        return CLIENT.numberWidgetValues[index].get();
+    }
+
+    public void setNumberWidgetValue(int value, int index) {
+        CLIENT.numberWidgetValues[index].set(value);
+    }
+
     // Setters keep visibility as low as possible.
 
     private static class ClientConfig {
@@ -574,6 +582,9 @@ public final class AEConfig {
         public final BooleanOption showPlacementPreview;
         public final BooleanOption notifyForFinishedCraftingJobs;
         public final BooleanOption fancyPatternTooltips;
+
+        // Number Widget Values
+        public final IntegerOption[] numberWidgetValues;
 
         // Terminal Settings
         public final EnumOption<TerminalStyle> terminalStyle;
@@ -616,6 +627,27 @@ public final class AEConfig {
                     "Show toast when long-running crafting jobs finish.");
             this.fancyPatternTooltips = client.addBoolean("fancyPatternTooltips", true,
                     "Show fancy tooltips for encoded patterns.");
+
+            var widgetNumbers = root.subsection("widgetNumbers",
+                    "Number button values in the level emitter config panel and the craft order amount picker");
+            this.numberWidgetValues = new IntegerOption[] {
+                    widgetNumbers.addInt("widgetNumberBase1", 1,
+                            "Value of the first button when not pressing shift or ctrl"),
+                    widgetNumbers.addInt("widgetNumberBase2", 10,
+                            "Value of the second button when not pressing shift or ctrl"),
+                    widgetNumbers.addInt("widgetNumberBase3", 100,
+                            "Value of the third button when not pressing shift or ctrl"),
+                    widgetNumbers.addInt("widgetNumberBase4", 1000,
+                            "Value of the fourth button when not pressing shift or ctrl"),
+                    widgetNumbers.addInt("widgetNumberAlt1", 1,
+                            "Value of the first button when pressing shift or ctrl"),
+                    widgetNumbers.addInt("widgetNumberAlt2", 16,
+                            "Value of the second button when pressing shift or ctrl"),
+                    widgetNumbers.addInt("widgetNumberAlt3", 32,
+                            "Value of the third button when pressing shift or ctrl"),
+                    widgetNumbers.addInt("widgetNumberAlt4", 64,
+                            "Value of the fourth button when pressing shift or ctrl"),
+            };
 
             var terminals = root.subsection("terminals");
             this.terminalStyle = terminals.addEnum("terminalStyle", TerminalStyle.SMALL);

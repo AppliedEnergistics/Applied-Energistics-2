@@ -1,7 +1,10 @@
 package appeng.client.gui.me.common;
 
+import java.util.function.Consumer;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.network.chat.Component;
 
@@ -11,7 +14,9 @@ import appeng.api.config.ActionItems;
 import appeng.client.gui.AESubScreen;
 import appeng.client.gui.IPagedScreen;
 import appeng.client.gui.widgets.AECheckbox;
+import appeng.client.gui.widgets.AETextDisplayWidget;
 import appeng.client.gui.widgets.ActionButton;
+import appeng.client.gui.widgets.IntegerTextField;
 import appeng.client.gui.widgets.TabButton;
 import appeng.core.localization.GuiText;
 import appeng.integration.abstraction.ItemListMod;
@@ -36,6 +41,14 @@ public class TerminalSettingsScreen<C extends MEStorageMenu> extends AESubScreen
     private final AECheckbox clearExternalCheckbox;
 
     private final AECheckbox autoPauseTerminalCheckbox;
+
+    private final IntegerTextField numberWidgetConfigInput;
+
+    private final AETextDisplayWidget textDisplayWidgetConfig;
+    private final AETextDisplayWidget textDisplayConfigBase;
+    private final AETextDisplayWidget textDisplayConfigAlt;
+
+    private final Button[] numberConfigButtons;
 
     private final ActionButton nextPageButton;
     private final ActionButton previousPageButton;
@@ -87,6 +100,53 @@ public class TerminalSettingsScreen<C extends MEStorageMenu> extends AESubScreen
         autoPauseTerminalCheckbox = makeCheckbox("autoPauseTerminalCheckbox", GuiText.TerminalSettingsAutoPause.text(),
                 this::save);
 
+        // Config for NumberEntryWidget
+        textDisplayWidgetConfig = makeTextDisplay("textDisplayConfig",
+                GuiText.TerminalSettingsNumberWidgetTitle.text());
+
+        numberWidgetConfigInput = makeIntegerTextField("numberWidgetConfigInput", 4, (text) -> {
+        });
+
+        textDisplayConfigBase = makeTextDisplay("textDisplayConfigBase",
+                GuiText.TerminalSettingsNumberWidgetBase.text());
+        textDisplayConfigAlt = makeTextDisplay("textDisplayConfigAlt", GuiText.TerminalSettingsNumberWidgetAlt.text());
+
+        numberConfigButtons = new Button[] {
+                makeButton("saveBaseNumber1", GuiText.TerminalSettingsSaveValue.text("1"),
+                        () -> this.saveConfigValue(0)),
+                makeButton("saveBaseNumber2", GuiText.TerminalSettingsSaveValue.text("2"),
+                        () -> this.saveConfigValue(1)),
+                makeButton("saveBaseNumber3", GuiText.TerminalSettingsSaveValue.text("3"),
+                        () -> this.saveConfigValue(2)),
+                makeButton("saveBaseNumber4", GuiText.TerminalSettingsSaveValue.text("4"),
+                        () -> this.saveConfigValue(3)),
+                makeButton("saveAltNumber1", GuiText.TerminalSettingsSaveValue.text("1"),
+                        () -> this.saveConfigValue(4)),
+                makeButton("saveAltNumber2", GuiText.TerminalSettingsSaveValue.text("2"),
+                        () -> this.saveConfigValue(5)),
+                makeButton("saveAltNumber3", GuiText.TerminalSettingsSaveValue.text("3"),
+                        () -> this.saveConfigValue(6)),
+                makeButton("saveAltNumber4", GuiText.TerminalSettingsSaveValue.text("4"),
+                        () -> this.saveConfigValue(7)),
+
+                makeButton("loadBaseNumber1", GuiText.TerminalSettingsLoadValue.text("1"),
+                        () -> this.loadConfigValue(0)),
+                makeButton("loadBaseNumber2", GuiText.TerminalSettingsLoadValue.text("2"),
+                        () -> this.loadConfigValue(1)),
+                makeButton("loadBaseNumber3", GuiText.TerminalSettingsLoadValue.text("3"),
+                        () -> this.loadConfigValue(2)),
+                makeButton("loadBaseNumber4", GuiText.TerminalSettingsLoadValue.text("4"),
+                        () -> this.loadConfigValue(3)),
+                makeButton("loadAltNumber1", GuiText.TerminalSettingsLoadValue.text("1"),
+                        () -> this.loadConfigValue(4)),
+                makeButton("loadAltNumber2", GuiText.TerminalSettingsLoadValue.text("2"),
+                        () -> this.loadConfigValue(5)),
+                makeButton("loadAltNumber3", GuiText.TerminalSettingsLoadValue.text("3"),
+                        () -> this.loadConfigValue(6)),
+                makeButton("loadAltNumber4", GuiText.TerminalSettingsLoadValue.text("4"),
+                        () -> this.loadConfigValue(7)),
+        };
+
         nextPageButton = addToLeftToolbar(new ActionButton(ActionItems.NEXT_PAGE, () -> setCurrentPage(page + 1)));
         previousPageButton = addToLeftToolbar(new ActionButton(ActionItems.PREV_PAGE, () -> setCurrentPage(page - 1)));
 
@@ -120,6 +180,16 @@ public class TerminalSettingsScreen<C extends MEStorageMenu> extends AESubScreen
         ItemRenderer itemRenderer = Minecraft.getInstance().getItemRenderer();
         TabButton button = new TabButton(icon, label, btn -> returnToParent());
         widgets.add("back", button);
+    }
+
+    private void loadConfigValue(int index) {
+        int value = config.getNumberWidgetValue(index);
+        numberWidgetConfigInput.setIntValue(value);
+    }
+
+    private void saveConfigValue(int index) {
+        int value = numberWidgetConfigInput.getIntValue();
+        config.setNumberWidgetValue(value, index);
     }
 
     private void updateState() {
@@ -174,6 +244,24 @@ public class TerminalSettingsScreen<C extends MEStorageMenu> extends AESubScreen
         var checkbox = widgets.addCheckbox(id, text, changeListener);
         pages.put(checkbox, style.getWidget(id).getPage());
         return checkbox;
+    }
+
+    private IntegerTextField makeIntegerTextField(String id, int maxLength, Consumer<String> onChanged) {
+        var widget = widgets.addIntegerTextField(id, font, maxLength, onChanged);
+        pages.put(widget, style.getWidget(id).getPage());
+        return widget;
+    }
+
+    private AETextDisplayWidget makeTextDisplay(String id, Component text) {
+        var widget = widgets.addTextDisplay(id, text);
+        pages.put(widget, style.getWidget(id).getPage());
+        return widget;
+    }
+
+    private Button makeButton(String id, Component text, Runnable onClicked) {
+        var button = widgets.addButton(id, text, onClicked);
+        pages.put(button, style.getWidget(id).getPage());
+        return button;
     }
 
     @Override
