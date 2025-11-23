@@ -23,7 +23,7 @@ import java.util.concurrent.CompletableFuture;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagEntry;
@@ -169,10 +169,10 @@ public class ItemTagsProvider extends BlockTagCopyingItemTagProvider implements 
                 .addOptionalTag(Tags.Items.INGOTS_COPPER)
                 .addOptionalTag(Tags.Items.INGOTS_IRON)
                 .addOptionalTag(Tags.Items.INGOTS_GOLD)
-                .addOptionalTag(ItemTags.create(ResourceLocation.parse("c:ingots/tin")))
-                .addOptionalTag(ItemTags.create(ResourceLocation.parse("c:ingots/brass")))
-                .addOptionalTag(ItemTags.create(ResourceLocation.parse("c:ingots/nickel")))
-                .addOptionalTag(ItemTags.create(ResourceLocation.parse("c:ingots/aluminium")));
+                .addOptionalTag(ItemTags.create(Identifier.parse("c:ingots/tin")))
+                .addOptionalTag(ItemTags.create(Identifier.parse("c:ingots/brass")))
+                .addOptionalTag(ItemTags.create(Identifier.parse("c:ingots/nickel")))
+                .addOptionalTag(ItemTags.create(Identifier.parse("c:ingots/aluminium")));
 
         tag(ConventionTags.PATTERN_PROVIDER)
                 .add(AEParts.PATTERN_PROVIDER.asItem())
@@ -233,7 +233,7 @@ public class ItemTagsProvider extends BlockTagCopyingItemTagProvider implements 
 
         // Manually add tags for mods that are unlikely to do it themselves since we don't want to force users to craft
         tag(ConventionTags.WRENCH)
-                .add(TagEntry.optionalElement(ResourceLocation.parse("immersiveengineering:hammer")));
+                .add(TagEntry.optionalElement(Identifier.parse("immersiveengineering:hammer")));
 
         addP2pAttunementTags();
     }
@@ -242,13 +242,13 @@ public class ItemTagsProvider extends BlockTagCopyingItemTagProvider implements 
     // Assumes that items or item tags generally have the same name as the block equivalent.
     private void copyBlockTags() {
         mirrorBlockTag(Tags.Blocks.STORAGE_BLOCKS.location());
-        mirrorBlockTag(ResourceLocation.parse("c:storage_blocks/certus_quartz"));
+        mirrorBlockTag(Identifier.parse("c:storage_blocks/certus_quartz"));
         copy(BlockTags.WALLS, ItemTags.WALLS);
         copy(Tags.Blocks.CHESTS, Tags.Items.CHESTS);
         copy(ConventionTags.GLASS_BLOCK, ConventionTags.GLASS);
     }
 
-    private void mirrorBlockTag(ResourceLocation tagName) {
+    private void mirrorBlockTag(Identifier tagName) {
         copy(TagKey.create(Registries.BLOCK, tagName), TagKey.create(Registries.ITEM, tagName));
     }
 

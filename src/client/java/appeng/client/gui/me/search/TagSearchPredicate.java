@@ -29,7 +29,7 @@ final class TagSearchPredicate implements Predicate<GridInventoryEntry> {
     private List<TagKey<?>> getTagsMatchingTerm(AEKeyType keyType) {
         return keyType.getTagNames()
                 .filter(tagKey -> {
-                    // ResourceLocations require namespace and path to already be lowercase
+                    // Identifiers require namespace and path to already be lowercase
                     var tagId = tagKey.location();
                     if (term.contains(":")) {
                         return tagId.toString().contains(term);

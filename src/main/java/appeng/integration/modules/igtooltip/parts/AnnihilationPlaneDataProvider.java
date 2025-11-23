@@ -2,8 +2,8 @@ package appeng.integration.modules.igtooltip.parts;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.enchantment.Enchantment;
 
@@ -29,7 +29,7 @@ public class AnnihilationPlaneDataProvider
             for (var enchantmentId : enchantments.keySet()) {
                 var enchantment = enchantmentRegistry.get(ResourceKey.create(
                         Registries.ENCHANTMENT,
-                        ResourceLocation.parse(enchantmentId)));
+                        Identifier.parse(enchantmentId)));
                 var level = enchantments.getIntOr(enchantmentId, 0);
                 enchantment.ifPresent(holder -> {
                     tooltip.addLine(Enchantment.getFullname(holder, level));

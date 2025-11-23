@@ -2,7 +2,7 @@ package appeng.items.tools.powered;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -46,7 +46,7 @@ public abstract class AbstractPortableCell extends PoweredContainerItem
     /**
      * Gets the recipe ID for crafting this particular cell.
      */
-    public abstract ResourceLocation getRecipeId();
+    public abstract Identifier getRecipeId();
 
     @Override
     public abstract double getChargeRate(ItemStack stack);

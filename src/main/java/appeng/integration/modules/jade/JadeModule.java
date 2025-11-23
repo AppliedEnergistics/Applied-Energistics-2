@@ -1,6 +1,6 @@
 package appeng.integration.modules.jade;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
@@ -26,7 +26,7 @@ public class JadeModule implements IWailaPlugin {
     public void register(IWailaCommonRegistration registration) {
         TooltipProviders.loadCommon(new CommonRegistration() {
             @Override
-            public <T extends BlockEntity> void addBlockEntityData(ResourceLocation id,
+            public <T extends BlockEntity> void addBlockEntityData(Identifier id,
                     Class<T> blockEntityClass,
                     ServerDataProvider<? super T> provider) {
                 var adapter = new ServerDataProviderAdapter<>(id, provider, blockEntityClass);
@@ -40,7 +40,7 @@ public class JadeModule implements IWailaPlugin {
         TooltipProviders.loadClient(new ClientRegistration() {
             @Override
             public <T extends BlockEntity> void addBlockEntityBody(Class<T> blockEntityClass,
-                    Class<? extends Block> blockClass, ResourceLocation id, BodyProvider<? super T> provider,
+                    Class<? extends Block> blockClass, Identifier id, BodyProvider<? super T> provider,
                     int priority) {
                 var adapter = new BodyProviderAdapter<>(id, priority, provider, blockEntityClass);
                 registration.registerBlockComponent(adapter, blockClass);
@@ -48,7 +48,7 @@ public class JadeModule implements IWailaPlugin {
 
             @Override
             public <T extends BlockEntity> void addBlockEntityIcon(Class<T> blockEntityClass,
-                    Class<? extends Block> blockClass, ResourceLocation id, IconProvider<? super T> provider,
+                    Class<? extends Block> blockClass, Identifier id, IconProvider<? super T> provider,
                     int priority) {
                 var adapter = new IconProviderAdapter<>(id, priority, IElementHelper.get(), provider,
                         blockEntityClass);
@@ -57,7 +57,7 @@ public class JadeModule implements IWailaPlugin {
 
             @Override
             public <T extends BlockEntity> void addBlockEntityName(Class<T> blockEntityClass,
-                    Class<? extends Block> blockClass, ResourceLocation id, NameProvider<? super T> provider,
+                    Class<? extends Block> blockClass, Identifier id, NameProvider<? super T> provider,
                     int priority) {
                 var adapter = new NameProviderAdapter<>(id, priority, provider, blockEntityClass);
                 registration.registerBlockComponent(adapter, blockClass);
@@ -65,7 +65,7 @@ public class JadeModule implements IWailaPlugin {
 
             @Override
             public <T extends BlockEntity> void addBlockEntityModName(Class<T> blockEntityClass,
-                    Class<? extends Block> blockClass, ResourceLocation id, ModNameProvider<? super T> provider,
+                    Class<? extends Block> blockClass, Identifier id, ModNameProvider<? super T> provider,
                     int priority) {
                 var adapter = new ModNameProviderAdapter<>(id, provider, blockEntityClass);
                 registration.registerBlockComponent(adapter, blockClass);

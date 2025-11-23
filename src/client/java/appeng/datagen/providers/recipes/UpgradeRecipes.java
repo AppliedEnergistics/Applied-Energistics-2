@@ -6,8 +6,8 @@ import java.util.List;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.ItemLike;
@@ -154,7 +154,7 @@ public class UpgradeRecipes extends AE2RecipeProvider {
         }
     }
 
-    private static ResourceKey<Recipe<?>> key(ResourceLocation id) {
+    private static ResourceKey<Recipe<?>> key(Identifier id) {
         return ResourceKey.create(Registries.RECIPE, id);
     }
 }

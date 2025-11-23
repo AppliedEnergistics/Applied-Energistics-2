@@ -22,23 +22,23 @@ import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.client.resources.model.ResolvableModel;
 import net.minecraft.core.BlockMath;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 
 /**
  * Extends Vanillas {@link net.minecraft.client.renderer.block.model.Variant} with rotation around the Z-axis.
  */
-public record SpinnableVariant(ResourceLocation modelLocation,
+public record SpinnableVariant(Identifier modelLocation,
         SimpleModelState modelState) implements BlockModelPart.Unbaked {
 
     public static final MapCodec<SpinnableVariant> MAP_CODEC = RecordCodecBuilder.mapCodec(
             builder -> builder.group(
-                    ResourceLocation.CODEC.fieldOf("model").forGetter(SpinnableVariant::modelLocation),
+                    Identifier.CODEC.fieldOf("model").forGetter(SpinnableVariant::modelLocation),
                     SimpleModelState.MAP_CODEC.forGetter(SpinnableVariant::modelState))
                     .apply(builder, SpinnableVariant::new));
     public static final Codec<SpinnableVariant> CODEC = MAP_CODEC.codec();
 
-    public SpinnableVariant(ResourceLocation modelLocation) {
+    public SpinnableVariant(Identifier modelLocation) {
         this(modelLocation, SimpleModelState.DEFAULT);
     }
 
@@ -58,7 +58,7 @@ public record SpinnableVariant(ResourceLocation modelLocation,
         return this.withState(this.modelState.withUvLock(uvLock));
     }
 
-    public SpinnableVariant withModel(ResourceLocation model) {
+    public SpinnableVariant withModel(Identifier model) {
         return new SpinnableVariant(model, this.modelState);
     }
 

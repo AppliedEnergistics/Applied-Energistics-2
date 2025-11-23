@@ -29,7 +29,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -182,7 +182,7 @@ public class DriveBlockEntity extends AENetworkedInvBlockEntity
             var tagName = "cell" + i;
             var cellData = data.child(tagName).orElse(null);
             if (cellData != null) {
-                var id = ResourceLocation.parse(cellData.getStringOr("id", ""));
+                var id = Identifier.parse(cellData.getStringOr("id", ""));
                 var cellStateName = cellData.getStringOr("state", "");
 
                 clientSideCellItems[i] = BuiltInRegistries.ITEM.getOptional(id).orElse(null);

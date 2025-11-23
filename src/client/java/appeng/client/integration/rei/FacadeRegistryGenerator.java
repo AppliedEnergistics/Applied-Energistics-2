@@ -25,8 +25,8 @@ import java.util.Optional;
 
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
@@ -120,7 +120,7 @@ class FacadeRegistryGenerator implements DynamicDisplayGenerator<DefaultShapedDi
         result.setCount(4);
 
         // This id should only be used within REI and not really matter
-        ResourceLocation id = AppEng.makeId("facade/" + Item.getId(textureItem.getItem()));
+        Identifier id = AppEng.makeId("facade/" + Item.getId(textureItem.getItem()));
         return new DefaultShapedDisplay(
                 new RecipeHolder<>(
                         ResourceKey.create(Registries.RECIPE, id),

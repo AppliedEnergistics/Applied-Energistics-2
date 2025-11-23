@@ -28,7 +28,7 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
@@ -829,7 +829,7 @@ public class CableBusContainer implements AEMultiBlockEntity, ICableBusContainer
     }
 
     private boolean loadPart(Direction side, ValueInput input) {
-        var itemId = input.read("id", ResourceLocation.CODEC).orElse(null);
+        var itemId = input.read("id", Identifier.CODEC).orElse(null);
         if (itemId == null) {
             return false;
         }

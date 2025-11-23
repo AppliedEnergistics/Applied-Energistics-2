@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeHolder;
@@ -76,7 +76,7 @@ import appeng.recipes.transform.TransformRecipe;
 @REIPluginClient
 public class ReiClientPlugin implements REIClientPlugin {
 
-    public static final ResourceLocation TEXTURE = AppEng.makeId("textures/guis/jei.png");
+    public static final Identifier TEXTURE = AppEng.makeId("textures/guis/jei.png");
 
     @Override
     public void registerCategories(CategoryRegistry registry) {

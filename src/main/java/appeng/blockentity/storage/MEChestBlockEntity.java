@@ -28,7 +28,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -390,7 +390,7 @@ public class MEChestBlockEntity extends AENetworkedPoweredBlockEntity
         }
 
         try {
-            this.cellItem = BuiltInRegistries.ITEM.getValue(ResourceLocation.parse(data.getStringOr("cellId", "")));
+            this.cellItem = BuiltInRegistries.ITEM.getValue(Identifier.parse(data.getStringOr("cellId", "")));
         } catch (Exception e) {
             LOG.warn("Couldn't read cell item for {} from {}", this, data);
             this.cellItem = Items.AIR;

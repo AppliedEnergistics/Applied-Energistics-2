@@ -39,7 +39,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
@@ -57,7 +57,7 @@ import appeng.core.AppEng;
 public class DriveModel implements DynamicBlockStateModel {
     private static final Logger LOG = LoggerFactory.getLogger(DriveModel.class);
 
-    private static final ResourceLocation MODEL_BASE = ResourceLocation.parse("ae2:block/drive_base");
+    private static final Identifier MODEL_BASE = Identifier.parse("ae2:block/drive_base");
     private static final Transformation[] BAY_TRANSLATIONS = buildBayTranslations();
 
     private final SimpleModelWrapper baseModel;
@@ -150,7 +150,7 @@ public class DriveModel implements DynamicBlockStateModel {
     }
 
     public record Unbaked(SpinnableVariant variant) implements CustomUnbakedBlockStateModel {
-        public static final ResourceLocation ID = AppEng.makeId("drive");
+        public static final Identifier ID = AppEng.makeId("drive");
         public static MapCodec<Unbaked> MAP_CODEC = SpinnableVariant.MAP_CODEC.xmap(Unbaked::new, Unbaked::variant);
 
         @Override
@@ -189,7 +189,7 @@ public class DriveModel implements DynamicBlockStateModel {
         }
 
         private SimpleModelWrapper @NotNull [] preBakeCellInBays(ModelBaker baker, ModelState[] bayTransforms,
-                ResourceLocation location) {
+                Identifier location) {
             // Bake each cell pre-translated into each of the bays
             var cellsInBay = new SimpleModelWrapper[BAY_TRANSLATIONS.length];
             for (int i = 0; i < bayTransforms.length; i++) {

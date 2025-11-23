@@ -21,7 +21,7 @@ package appeng.core.particles;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
-import org.joml.Vector3f;
+import org.joml.Vector3fc;
 
 import io.netty.buffer.ByteBuf;
 
@@ -34,7 +34,7 @@ import net.minecraft.util.ExtraCodecs;
 /**
  * Contains the target point of the lightning arc (the source point is inferred from the particle starting position).
  */
-public record LightningArcParticleData(Vector3f target) implements ParticleOptions {
+public record LightningArcParticleData(Vector3fc target) implements ParticleOptions {
     public static final MapCodec<LightningArcParticleData> CODEC = RecordCodecBuilder.mapCodec(builder -> builder.group(
             ExtraCodecs.VECTOR3F.fieldOf("target").forGetter(LightningArcParticleData::target))
             .apply(builder, LightningArcParticleData::new));

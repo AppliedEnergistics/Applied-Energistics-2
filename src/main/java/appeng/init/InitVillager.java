@@ -10,12 +10,12 @@ import com.google.common.collect.ImmutableSet;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.ai.village.poi.PoiType;
-import net.minecraft.world.entity.npc.VillagerProfession;
-import net.minecraft.world.entity.npc.VillagerTrades;
+import net.minecraft.world.entity.npc.villager.VillagerProfession;
+import net.minecraft.world.entity.npc.villager.VillagerTrades;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.storage.loot.LootTable;
@@ -31,7 +31,7 @@ public class InitVillager {
     private InitVillager() {
     }
 
-    public static final ResourceLocation ID = AppEng.makeId("fluix_researcher");
+    public static final Identifier ID = AppEng.makeId("fluix_researcher");
 
     public static final String NAME = "entity.minecraft.villager.ae2.fluix_researcher";
 
@@ -55,7 +55,7 @@ public class InitVillager {
     }
 
     public static void initTrades(VillagerTradesEvent event) {
-        if (!event.getType().location().equals(ID)) {
+        if (!event.getType().identifier().equals(ID)) {
             return;
         }
 

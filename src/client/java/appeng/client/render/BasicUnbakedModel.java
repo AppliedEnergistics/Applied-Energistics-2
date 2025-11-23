@@ -22,19 +22,19 @@ import java.util.Collection;
 import java.util.Collections;
 
 import net.minecraft.client.resources.model.UnbakedModel;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 /**
  * An unbaked model that has standard models as a dependency and produces a custom baked model as a result.
  */
 public interface BasicUnbakedModel extends UnbakedModel {
-    default Collection<ResourceLocation> getDependencies() {
+    default Collection<Identifier> getDependencies() {
         return Collections.emptyList();
     }
 
     @Override
     default void resolveDependencies(Resolver resolver) {
-        for (ResourceLocation dependency : getDependencies()) {
+        for (Identifier dependency : getDependencies()) {
             resolver.markDependency(dependency);
         }
     }

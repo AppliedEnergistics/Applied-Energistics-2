@@ -33,8 +33,8 @@ import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -62,7 +62,7 @@ import appeng.recipes.AERecipeTypes;
  */
 public class MatterCannonAmmo implements Recipe<RecipeInput> {
     @Deprecated(forRemoval = true, since = "1.21.1")
-    public static final ResourceLocation TYPE_ID = AppEng.makeId("matter_cannon");
+    public static final Identifier TYPE_ID = AppEng.makeId("matter_cannon");
 
     @Deprecated(forRemoval = true, since = "1.21.1")
     public static final RecipeType<MatterCannonAmmo> TYPE = AERecipeTypes.MATTER_CANNON_AMMO;
@@ -91,16 +91,16 @@ public class MatterCannonAmmo implements Recipe<RecipeInput> {
         this.weight = weight;
     }
 
-    public static void ammo(RecipeOutput consumer, ResourceLocation id, ItemLike item, float weight) {
+    public static void ammo(RecipeOutput consumer, Identifier id, ItemLike item, float weight) {
         consumer.accept(ResourceKey.create(Registries.RECIPE, id), new MatterCannonAmmo(Ingredient.of(item), weight),
                 null);
     }
 
-    public static void ammo(RecipeOutput consumer, ResourceLocation id, Ingredient ammo, float weight) {
+    public static void ammo(RecipeOutput consumer, Identifier id, Ingredient ammo, float weight) {
         consumer.accept(ResourceKey.create(Registries.RECIPE, id), new MatterCannonAmmo(ammo, weight), null);
     }
 
-    public static void ammo(HolderGetter<Item> items, RecipeOutput consumer, ResourceLocation id, TagKey<Item> tag,
+    public static void ammo(HolderGetter<Item> items, RecipeOutput consumer, Identifier id, TagKey<Item> tag,
             float weight) {
         var recipe = new MatterCannonAmmo(Ingredient.of(items.getOrThrow(tag)), weight);
         var condition = new NotCondition(new TagEmptyCondition<>(tag));

@@ -3,7 +3,7 @@ package appeng.integration.modules.rei;
 import java.util.List;
 import java.util.Optional;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.crafting.RecipeHolder;
 
 import me.shedaniel.rei.api.common.category.CategoryIdentifier;
@@ -37,8 +37,8 @@ public class TransformRecipeWrapper implements Display {
     }
 
     @Override
-    public Optional<ResourceLocation> getDisplayLocation() {
-        return Optional.of(holder.id().location());
+    public Optional<Identifier> getDisplayLocation() {
+        return Optional.of(holder.id().identifier());
     }
 
     @Override

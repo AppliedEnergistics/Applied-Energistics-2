@@ -3,7 +3,7 @@ package appeng.client.guidebook;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import guideme.Guide;
 import guideme.siteexport.AdditionalResourceExporter;
@@ -12,7 +12,7 @@ import guideme.siteexport.ResourceExporter;
 import appeng.core.AppEng;
 
 public class AEAdditionalExportData implements AdditionalResourceExporter {
-    private static final ResourceLocation DEFAULT_CONFIG_VALUES = AppEng.makeId("default-config-values");
+    private static final Identifier DEFAULT_CONFIG_VALUES = AppEng.makeId("default-config-values");
 
     @Override
     public void addResources(Guide guide, ResourceExporter exporter) {

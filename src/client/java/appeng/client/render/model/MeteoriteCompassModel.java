@@ -39,7 +39,7 @@ import net.minecraft.client.renderer.item.ItemModelResolver;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.special.SpecialModelRenderer;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.ItemOwner;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
@@ -57,7 +57,7 @@ import appeng.hooks.CompassManager;
  */
 public class MeteoriteCompassModel implements ItemModel {
 
-    private static final ResourceLocation MODEL_POINTER = ResourceLocation.parse(
+    private static final Identifier MODEL_POINTER = Identifier.parse(
             "ae2:item/meteorite_compass_pointer");
 
     private final ItemBaseModelWrapper pointer;
@@ -170,7 +170,7 @@ public class MeteoriteCompassModel implements ItemModel {
     }
 
     public record Unbaked() implements ItemModel.Unbaked {
-        public static final ResourceLocation ID = AppEng.makeId("meteorite_compass");
+        public static final Identifier ID = AppEng.makeId("meteorite_compass");
         public static final MapCodec<Unbaked> MAP_CODEC = MapCodec.unit(Unbaked::new);
 
         @Override

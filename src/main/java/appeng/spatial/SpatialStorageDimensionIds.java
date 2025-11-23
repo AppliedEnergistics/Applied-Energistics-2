@@ -18,10 +18,9 @@
 
 package appeng.spatial;
 
-import net.minecraft.client.renderer.DimensionSpecialEffects;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.chunk.ChunkGenerator;
@@ -46,7 +45,7 @@ public final class SpatialStorageDimensionIds {
     /**
      * ID of the {@link ChunkGenerator} used for the spatial storage level.
      */
-    public static final ResourceLocation CHUNK_GENERATOR_ID = AppEng.makeId("spatial_storage");
+    public static final Identifier CHUNK_GENERATOR_ID = AppEng.makeId("spatial_storage");
 
     /**
      * ID of the {@link Biome} used for the spatial storage level.
@@ -69,9 +68,9 @@ public final class SpatialStorageDimensionIds {
             AppEng.makeId("spatial_storage"));
 
     /**
-     * ID of the {@link DimensionSpecialEffects} used for the spatial storage level.
+     * ID of the {@link } used for the spatial storage level.
      */
-    public static ResourceLocation SKY_PROPERTIES_ID = AppEng.makeId("spatial_storage");
+    public static Identifier SKY_PROPERTIES_ID = AppEng.makeId("spatial_storage");
 
     private SpatialStorageDimensionIds() {
     }

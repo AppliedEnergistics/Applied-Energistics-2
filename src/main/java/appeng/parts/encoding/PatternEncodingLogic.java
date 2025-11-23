@@ -23,8 +23,8 @@ import java.util.List;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.storage.ValueInput;
@@ -259,7 +259,7 @@ public class PatternEncodingLogic implements InternalInventoryHost {
             this.setSubstitution(data.getBooleanOr("substitute", false));
             this.setFluidSubstitution(data.getBooleanOr("substituteFluids", false));
 
-            var stonecuttingRecipeId = data.read("stonecuttingRecipeId", ResourceLocation.CODEC).orElse(null);
+            var stonecuttingRecipeId = data.read("stonecuttingRecipeId", Identifier.CODEC).orElse(null);
             if (stonecuttingRecipeId != null) {
                 this.stonecuttingRecipeId = ResourceKey.create(Registries.RECIPE, stonecuttingRecipeId);
             } else {
@@ -281,7 +281,7 @@ public class PatternEncodingLogic implements InternalInventoryHost {
         output.putBoolean("substitute", this.substitute);
         output.putBoolean("substituteFluids", this.substituteFluids);
         if (this.stonecuttingRecipeId != null) {
-            output.putString("stonecuttingRecipeId", this.stonecuttingRecipeId.location().toString());
+            output.putString("stonecuttingRecipeId", this.stonecuttingRecipeId.identifier().toString());
         }
         blankPatternInv.writeToNBT(output, "blankPattern");
         encodedPatternInv.writeToNBT(output, "encodedPattern");

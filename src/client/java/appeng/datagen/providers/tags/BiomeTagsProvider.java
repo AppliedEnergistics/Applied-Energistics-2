@@ -26,6 +26,7 @@ import net.minecraft.tags.BiomeTags;
 
 import appeng.core.AppEng;
 import appeng.datagen.providers.IAE2DataProvider;
+import appeng.spatial.SpatialStorageDimensionIds;
 import appeng.worldgen.meteorite.MeteoriteStructure;
 
 public class BiomeTagsProvider extends net.minecraft.data.tags.BiomeTagsProvider implements IAE2DataProvider {
@@ -36,5 +37,6 @@ public class BiomeTagsProvider extends net.minecraft.data.tags.BiomeTagsProvider
     @Override
     protected void addTags(HolderLookup.Provider registries) {
         tag(MeteoriteStructure.BIOME_TAG_KEY).addOptionalTag(BiomeTags.IS_OVERWORLD);
+        tag(BiomeTags.WITHOUT_WANDERING_TRADER_SPAWNS).add(SpatialStorageDimensionIds.BIOME_KEY);
     }
 }

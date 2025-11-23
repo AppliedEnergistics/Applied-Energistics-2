@@ -33,8 +33,8 @@ public abstract class TestInstanceBlockEntityMixin {
     @WrapMethod(method = "getStructureTemplate")
     private static Optional<StructureTemplate> getStructureTemplate(ServerLevel level,
             ResourceKey<GameTestInstance> testInstance, Operation<Optional<StructureTemplate>> operation) {
-        if (AppEng.MOD_ID.equals(testInstance.location().getNamespace())) {
-            var testPlot = TestPlots.getById(testInstance.location());
+        if (AppEng.MOD_ID.equals(testInstance.identifier().getNamespace())) {
+            var testPlot = TestPlots.getById(testInstance.identifier());
             if (testPlot != null) {
                 return GameTestPlotAdapter.createStructure(level, testPlot);
             }
@@ -47,7 +47,7 @@ public abstract class TestInstanceBlockEntityMixin {
     private void placeStructure(ServerLevel level, StructureTemplate template, CallbackInfo ci) {
         var test = data.test();
         if (test.isPresent()) {
-            var testId = test.get().location();
+            var testId = test.get().identifier();
             if (AppEng.MOD_ID.equals(testId.getNamespace())) {
                 var testPlot = TestPlots.getById(testId);
                 if (testPlot != null) {

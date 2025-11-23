@@ -23,7 +23,7 @@ import net.minecraft.client.data.models.model.TexturedModel;
 import net.minecraft.client.renderer.block.model.Variant;
 import net.minecraft.client.renderer.block.model.VariantMutator;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.random.WeightedList;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -51,7 +51,7 @@ public abstract class ModelSubProvider {
     protected final BlockModelGenerators blockModels;
     protected final Consumer<BlockModelDefinitionGenerator> blockStateOutput;
     protected final ItemModelGenerators itemModels;
-    protected final BiConsumer<ResourceLocation, ModelInstance> modelOutput;
+    protected final BiConsumer<Identifier, ModelInstance> modelOutput;
     protected final PartModelOutput partModels;
 
     public ModelSubProvider(BlockModelGenerators blockModels, ItemModelGenerators itemModels,
@@ -89,7 +89,7 @@ public abstract class ModelSubProvider {
         // item falls back automatically to the block model
     }
 
-    protected MultiVariantGenerator createSpinnableBlock(BlockDefinition<?> block, ResourceLocation model) {
+    protected MultiVariantGenerator createSpinnableBlock(BlockDefinition<?> block, Identifier model) {
         return MultiVariantGenerator.dispatch(block.block(), plainSpinnableVariant(model))
                 .withUnbaked(createFacingSpinDispatch());
     }
@@ -198,19 +198,19 @@ public abstract class ModelSubProvider {
         return conditionBuilder.term(property, blockState.getValue(property));
     }
 
-    protected static ResourceLocation getBlockTexture(BlockDefinition<?> block) {
+    protected static Identifier getBlockTexture(BlockDefinition<?> block) {
         return TextureMapping.getBlockTexture(block.block());
     }
 
-    protected static ResourceLocation getBlockTexture(Block block) {
+    protected static Identifier getBlockTexture(Block block) {
         return TextureMapping.getBlockTexture(block);
     }
 
-    protected static ResourceLocation getBlockTexture(Block block, String suffix) {
+    protected static Identifier getBlockTexture(Block block, String suffix) {
         return TextureMapping.getBlockTexture(block, suffix);
     }
 
-    protected static ResourceLocation getBlockTexture(BlockDefinition<?> block, String suffix) {
+    protected static Identifier getBlockTexture(BlockDefinition<?> block, String suffix) {
         return TextureMapping.getBlockTexture(block.block(), suffix);
     }
 
@@ -226,7 +226,7 @@ public abstract class ModelSubProvider {
         return new MultiVariant(WeightedList.of(variant));
     }
 
-    public static MultiVariant plainSpinnableVariant(ResourceLocation model) {
+    public static MultiVariant plainSpinnableVariant(Identifier model) {
         return variant(new SpinnableVariant(model));
     }
 

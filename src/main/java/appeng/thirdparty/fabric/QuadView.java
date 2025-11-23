@@ -21,11 +21,13 @@ import org.joml.Vector2f;
 import org.joml.Vector3f;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.geom.builders.UVPair;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.FaceBakery;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
 import net.minecraft.data.AtlasIds;
+import net.neoforged.neoforge.client.model.quad.BakedColors;
+import net.neoforged.neoforge.client.model.quad.BakedNormals;
 
 /**
  * Interface for reading quad data encoded by {@link MeshBuilder}. Enables models to do analysis, re-texturing or
@@ -35,12 +37,6 @@ import net.minecraft.data.AtlasIds;
  * Only the renderer should implement or extend this interface.
  */
 public interface QuadView {
-    /** Count of integers in a conventional (un-modded) block or item vertex. */
-    int VANILLA_VERTEX_STRIDE = FaceBakery.VERTEX_INT_SIZE;
-
-    /** Count of integers in a conventional (un-modded) block or item quad. */
-    int VANILLA_QUAD_STRIDE = VANILLA_VERTEX_STRIDE * 4;
-
     /**
      * Retrieve geometric position, x coordinate.
      */
@@ -144,8 +140,8 @@ public interface QuadView {
     Direction cullFace();
 
     /**
-     * Equivalent to {@link BakedQuad#getDirection()}. This is the face used for vanilla lighting calculations and will
-     * be the block face to which the quad is most closely aligned. Always the same as cull face for quads that are on a
+     * Equivalent to {@link BakedQuad#direction()}. This is the face used for vanilla lighting calculations and will be
+     * the block face to which the quad is most closely aligned. Always the same as cull face for quads that are on a
      * block face, but never null.
      */
     @NotNull
@@ -184,17 +180,6 @@ public interface QuadView {
     void copyTo(MutableQuadView target);
 
     /**
-     * Reads baked vertex data and outputs standard {@link BakedQuad#getVertices() baked quad vertex data} in the given
-     * array and location.
-     *
-     * @param target      Target array for the baked quad data.
-     *
-     * @param targetIndex Starting position in target array - array must have at least 28 elements available at this
-     *                    index.
-     */
-    void toVanilla(int[] target, int targetIndex);
-
-    /**
      * Generates a new BakedQuad instance with texture coordinates and colors from the given sprite.
      *
      * @param sprite {@link MutableQuadView} does not serialize sprites so the sprite must be provided by the caller.
@@ -203,10 +188,32 @@ public interface QuadView {
      *         retain emissive light maps, for example, but the standard Minecraft renderer will not use them.
      */
     default BakedQuad toBakedQuad(TextureAtlasSprite sprite) {
-        int[] vertexData = new int[VANILLA_QUAD_STRIDE];
-        toVanilla(vertexData, 0);
-        // TODO material inspection: set color index to -1 if the material disables it
-        return new BakedQuad(vertexData, colorIndex(), lightFace(), sprite, hasShade(), 0, hasAmbientOcclusion());
+        return new BakedQuad(
+                copyPos(0, null),
+                copyPos(1, null),
+                copyPos(2, null),
+                copyPos(3, null),
+                UVPair.pack(u(0), v(0)),
+                UVPair.pack(u(1), v(1)),
+                UVPair.pack(u(2), v(2)),
+                UVPair.pack(u(3), v(3)),
+                colorIndex(),
+                lightFace(),
+                sprite,
+                hasShade(),
+                0 /* emission */,
+                BakedNormals.of(packedNormal(0), packedNormal(1), packedNormal(2), packedNormal(3)),
+                BakedColors.of(color(0), color(1), color(2), color(3)),
+                hasAmbientOcclusion());
+    }
+
+    private int packedNormal(int vertexIndex) {
+        var x = normalX(vertexIndex);
+        var y = normalX(vertexIndex);
+        var z = normalX(vertexIndex);
+        return ((int) (x * 127.0f) & 0xFF) |
+                (((int) (y * 127.0f) & 0xFF) << 8) |
+                (((int) (z * 127.0f) & 0xFF) << 16);
     }
 
     default BakedQuad toBlockBakedQuad() {

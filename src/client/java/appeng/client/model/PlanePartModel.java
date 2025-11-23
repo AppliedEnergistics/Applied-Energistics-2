@@ -21,7 +21,7 @@ import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.client.resources.model.QuadCollection;
 import net.minecraft.core.BlockMath;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.neoforged.neoforge.client.model.IQuadTransformer;
@@ -119,18 +119,18 @@ public class PlanePartModel implements PartModel {
     }
 
     public record Unbaked(
-            ResourceLocation frontOnTexture,
-            ResourceLocation frontOffTexture,
-            ResourceLocation sidesTexture,
-            ResourceLocation backTexture) implements PartModel.Unbaked {
+            Identifier frontOnTexture,
+            Identifier frontOffTexture,
+            Identifier sidesTexture,
+            Identifier backTexture) implements PartModel.Unbaked {
 
-        public static final ResourceLocation ID = AppEng.makeId("plane");
+        public static final Identifier ID = AppEng.makeId("plane");
 
         public static MapCodec<Unbaked> MAP_CODEC = RecordCodecBuilder.mapCodec(builder -> builder.group(
-                ResourceLocation.CODEC.fieldOf("front_on").forGetter(Unbaked::frontOnTexture),
-                ResourceLocation.CODEC.fieldOf("front_off").forGetter(Unbaked::frontOffTexture),
-                ResourceLocation.CODEC.fieldOf("sides").forGetter(Unbaked::sidesTexture),
-                ResourceLocation.CODEC.fieldOf("back").forGetter(Unbaked::backTexture)).apply(builder, Unbaked::new));
+                Identifier.CODEC.fieldOf("front_on").forGetter(Unbaked::frontOnTexture),
+                Identifier.CODEC.fieldOf("front_off").forGetter(Unbaked::frontOffTexture),
+                Identifier.CODEC.fieldOf("sides").forGetter(Unbaked::sidesTexture),
+                Identifier.CODEC.fieldOf("back").forGetter(Unbaked::backTexture)).apply(builder, Unbaked::new));
 
         @Override
         public MapCodec<? extends PartModel.Unbaked> codec() {

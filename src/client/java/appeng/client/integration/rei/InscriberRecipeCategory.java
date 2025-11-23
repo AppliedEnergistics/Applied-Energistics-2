@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import me.shedaniel.math.Point;
 import me.shedaniel.math.Rectangle;
@@ -63,7 +63,7 @@ public class InscriberRecipeCategory implements DisplayCategory<InscriberRecipeD
 
     @Override
     public List<Widget> setupDisplay(InscriberRecipeDisplay recipeDisplay, Rectangle bounds) {
-        ResourceLocation location = AppEng.makeId("textures/guis/inscriber.png");
+        Identifier location = AppEng.makeId("textures/guis/inscriber.png");
 
         List<Widget> widgets = new ArrayList<>();
         widgets.add(Widgets.createRecipeBase(bounds));

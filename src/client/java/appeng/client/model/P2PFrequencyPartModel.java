@@ -22,7 +22,7 @@ import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.core.BlockMath;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.neoforged.neoforge.client.model.QuadTransformers;
@@ -130,7 +130,7 @@ public final class P2PFrequencyPartModel implements PartModel {
     }
 
     public record Unbaked() implements PartModel.Unbaked {
-        public static final ResourceLocation ID = AppEng.makeId("p2p_tunnel_frequency");
+        public static final Identifier ID = AppEng.makeId("p2p_tunnel_frequency");
         public static final MapCodec<Unbaked> MAP_CODEC = MapCodec.unit(Unbaked::new);
 
         @Override

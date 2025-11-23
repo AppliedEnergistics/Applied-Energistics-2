@@ -26,8 +26,8 @@ import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.Heightmap;
@@ -44,7 +44,7 @@ import appeng.worldgen.meteorite.fallout.FalloutMode;
 
 public class MeteoriteStructure extends Structure {
 
-    public static final ResourceLocation ID = AppEng.makeId("meteorite");
+    public static final Identifier ID = AppEng.makeId("meteorite");
     public static final ResourceKey<StructureSet> STRUCTURE_SET_KEY = ResourceKey
             .create(Registries.STRUCTURE_SET, ID);
 

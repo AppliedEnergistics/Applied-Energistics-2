@@ -34,6 +34,12 @@ neoForge.version = project.neoforge_version
 
 sourceSets {
     main {
+        java {
+            exclude 'appeng/integration/modules/rei/**'
+            exclude 'appeng/integration/modules/jade/**'
+            exclude 'appeng/integration/modules/theoneprobe/**'
+            exclude 'appeng/integration/modules/wthit/**'
+        }
         resources {
             srcDir 'src/generated/resources'
         }

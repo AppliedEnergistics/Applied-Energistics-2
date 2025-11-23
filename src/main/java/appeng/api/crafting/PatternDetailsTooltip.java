@@ -114,7 +114,8 @@ public class PatternDetailsTooltip {
 
     public void addRecipeId(ResourceKey<Recipe<?>> recipeId) {
         this.additionalProperties.add(
-                new Property(GuiText.PatternTooltipRecipeId.text(), Component.literal(recipeId.location().toString())));
+                new Property(GuiText.PatternTooltipRecipeId.text(),
+                        Component.literal(recipeId.identifier().toString())));
     }
 
     public void addProperty(Component description) {

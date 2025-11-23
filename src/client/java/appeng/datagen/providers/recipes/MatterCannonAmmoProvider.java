@@ -22,7 +22,7 @@ import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 
@@ -121,6 +121,6 @@ public class MatterCannonAmmoProvider extends AE2RecipeProvider {
     private void tag(RecipeOutput output, String recipeId, String tagId, float weight) {
         MatterCannonAmmo.ammo(items, output,
                 AppEng.makeId("matter_cannon/" + recipeId),
-                TagKey.create(Registries.ITEM, ResourceLocation.parse(tagId)), weight);
+                TagKey.create(Registries.ITEM, Identifier.parse(tagId)), weight);
     }
 }

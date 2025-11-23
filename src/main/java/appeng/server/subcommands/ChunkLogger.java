@@ -59,7 +59,7 @@ public class ChunkLogger implements ISubCommand {
             var chunkPos = chunk.getPos();
             var center = getCenter(chunk);
             AELog.info("Loaded chunk " + chunkPos.x + "," + chunkPos.z + " [center: " + center + "] in "
-                    + level.dimension().location());
+                    + level.dimension().identifier());
             this.displayStack();
         }
     }
@@ -71,7 +71,7 @@ public class ChunkLogger implements ISubCommand {
             var chunkPos = chunk.getPos();
             var center = getCenter(chunk);
             AELog.info("Unloaded chunk " + chunkPos.x + "," + chunkPos.z + " [center: " + center + "] in "
-                    + level.dimension().location());
+                    + level.dimension().identifier());
             this.displayStack();
         }
     }

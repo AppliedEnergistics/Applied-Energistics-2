@@ -14,7 +14,7 @@ import net.minecraft.client.data.models.model.TextureSlot;
 import net.minecraft.client.renderer.item.CompositeModel;
 import net.minecraft.client.renderer.item.EmptyModel;
 import net.minecraft.client.renderer.item.ItemModel;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import net.minecraft.world.level.ItemLike;
 
@@ -276,7 +276,7 @@ public class ItemModelProvider extends ModelSubProvider {
         blockModels.itemModelOutput.accept(item.asItem(), unbaked);
     }
 
-    private static ResourceLocation makeId(String id) {
-        return id.contains(":") ? ResourceLocation.parse(id) : AppEng.makeId(id);
+    private static Identifier makeId(String id) {
+        return id.contains(":") ? Identifier.parse(id) : AppEng.makeId(id);
     }
 }

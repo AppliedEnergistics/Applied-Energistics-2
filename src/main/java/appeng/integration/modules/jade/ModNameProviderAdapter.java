@@ -3,7 +3,7 @@ package appeng.integration.modules.jade;
 import java.util.List;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import snownee.jade.api.BlockAccessor;
 import snownee.jade.api.IBlockComponentProvider;
@@ -21,7 +21,7 @@ class ModNameProviderAdapter<T> extends BaseProvider implements IBlockComponentP
 
     private final Class<T> objectClass;
 
-    public ModNameProviderAdapter(ResourceLocation id, ModNameProvider<? super T> provider, Class<T> objectClass) {
+    public ModNameProviderAdapter(Identifier id, ModNameProvider<? super T> provider, Class<T> objectClass) {
         super(id, Integer.MAX_VALUE);
         this.provider = provider;
         this.objectClass = objectClass;

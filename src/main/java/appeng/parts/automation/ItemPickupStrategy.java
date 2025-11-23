@@ -10,7 +10,7 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
@@ -40,7 +40,7 @@ import appeng.util.Platform;
 
 public class ItemPickupStrategy implements PickupStrategy {
 
-    public static final ResourceLocation TAG_BLACKLIST = AppEng.makeId(
+    public static final Identifier TAG_BLACKLIST = AppEng.makeId(
             "blacklisted/annihilation_plane");
 
     private static final TagKey<Block> BLOCK_BLACKLIST = TagKey.create(Registries.BLOCK, TAG_BLACKLIST);

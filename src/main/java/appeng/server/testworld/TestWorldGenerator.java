@@ -11,7 +11,7 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
@@ -43,7 +43,7 @@ public class TestWorldGenerator {
     private final BlockPos suitableStartPos;
 
     public TestWorldGenerator(ServerLevel level, ServerPlayer player, BlockPos origin,
-            @Nullable ResourceLocation plotId) {
+            @Nullable Identifier plotId) {
         this.level = level;
         this.origin = origin;
         this.player = player;

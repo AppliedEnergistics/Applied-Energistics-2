@@ -36,7 +36,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.PlacementInfo;
 import net.minecraft.world.item.crafting.Recipe;
@@ -78,7 +78,7 @@ public class EntropyRecipe implements Recipe<RecipeInput> {
             EntropyRecipe::new);
 
     @Deprecated(forRemoval = true, since = "1.21.1")
-    public static final ResourceLocation TYPE_ID = AppEng.makeId("entropy");
+    public static final Identifier TYPE_ID = AppEng.makeId("entropy");
 
     private final EntropyMode mode;
     private final Input input;

@@ -91,9 +91,6 @@ public interface QuadEmitter extends MutableQuadView {
     @Override
     QuadEmitter tag(int tag);
 
-    @Override
-    QuadEmitter fromVanilla(int[] quadData, int startIndex);
-
     /**
      * Tolerance for determining if the depth parameter to {@link #square(Direction, float, float, float, float, float)}
      * is effectively zero - meaning the face is a cull face.

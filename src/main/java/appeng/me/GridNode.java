@@ -782,6 +782,6 @@ public class GridNode implements IGridNode, IPathItem, IDebugExportable {
                 "id", id, "owner", machineId), writer);
 
         writer.name("level");
-        writer.value(level.dimension().location().toString());
+        writer.value(level.dimension().identifier().toString());
     }
 }

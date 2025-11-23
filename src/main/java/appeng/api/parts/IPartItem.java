@@ -26,7 +26,7 @@ package appeng.api.parts;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.ItemLike;
 
@@ -53,7 +53,7 @@ public interface IPartItem<P extends IPart> extends ItemLike {
     /**
      * @return The registry id for this item.
      */
-    static ResourceLocation getId(IPartItem<?> item) {
+    static Identifier getId(IPartItem<?> item) {
         var id = BuiltInRegistries.ITEM.getKey(item.asItem());
         if (id == BuiltInRegistries.ITEM.getDefaultKey()) {
             throw new IllegalStateException("Part item " + item + " is not registered");
@@ -76,7 +76,7 @@ public interface IPartItem<P extends IPart> extends ItemLike {
      * Retrieve a part item by its {@link #getId(IPartItem) id}.
      */
     @Nullable
-    static IPartItem<?> byId(ResourceLocation id) {
+    static IPartItem<?> byId(Identifier id) {
         var item = BuiltInRegistries.ITEM.getValue(id);
         if (item instanceof IPartItem<?> partItem) {
             return partItem;

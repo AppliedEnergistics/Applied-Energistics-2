@@ -20,16 +20,16 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
+import net.minecraft.util.Util;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -90,20 +90,20 @@ public final class TestPlots {
     private static final Logger LOG = LoggerFactory.getLogger(TestPlots.class);
 
     @Nullable
-    private static Map<ResourceLocation, Consumer<PlotBuilder>> plots;
+    private static Map<Identifier, Consumer<PlotBuilder>> plots;
 
     private TestPlots() {
     }
 
-    private static synchronized Map<ResourceLocation, Consumer<PlotBuilder>> getPlots() {
+    private static synchronized Map<Identifier, Consumer<PlotBuilder>> getPlots() {
         if (plots == null) {
             plots = scanForPlots();
         }
         return plots;
     }
 
-    private static Map<ResourceLocation, Consumer<PlotBuilder>> scanForPlots() {
-        var plots = new HashMap<ResourceLocation, Consumer<PlotBuilder>>();
+    private static Map<Identifier, Consumer<PlotBuilder>> scanForPlots() {
+        var plots = new HashMap<Identifier, Consumer<PlotBuilder>>();
 
         try {
             for (var clazz : findAllTestPlotClasses()) {
@@ -190,9 +190,9 @@ public final class TestPlots {
         return result;
     }
 
-    public static List<ResourceLocation> getPlotIds() {
+    public static List<Identifier> getPlotIds() {
         var list = new ArrayList<>(getPlots().keySet());
-        list.sort(Comparator.comparing(ResourceLocation::toString));
+        list.sort(Comparator.comparing(Identifier::toString));
         return list;
     }
 
@@ -207,7 +207,7 @@ public final class TestPlots {
     }
 
     @Nullable
-    public static Plot getById(ResourceLocation name) {
+    public static Plot getById(Identifier name) {
         var factory = getPlots().get(name);
         if (factory == null) {
             return null;

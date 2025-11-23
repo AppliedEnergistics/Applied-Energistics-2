@@ -27,7 +27,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 
 import net.minecraft.client.renderer.Rect2i;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.GsonHelper;
 
 enum BlitterDeserializer implements JsonDeserializer<Blitter> {
@@ -49,7 +49,7 @@ enum BlitterDeserializer implements JsonDeserializer<Blitter> {
 
         Blitter blitter;
         if (texture.contains(":")) {
-            blitter = new Blitter(ResourceLocation.parse(texture), textureWidth, textureHeight);
+            blitter = new Blitter(Identifier.parse(texture), textureWidth, textureHeight);
         } else {
             blitter = Blitter.texture(texture, textureWidth, textureHeight);
         }

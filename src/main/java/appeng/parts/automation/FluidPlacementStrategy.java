@@ -14,6 +14,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.FluidTags;
+import net.minecraft.world.attribute.EnvironmentAttributes;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LiquidBlockContainer;
@@ -91,7 +92,8 @@ public class FluidPlacementStrategy implements PlacementStrategy {
 
         if (type == Actionable.MODULATE) {
             // Placing water in nether voids the fluid, but plays effects
-            if (level.dimensionType().ultraWarm() && fluid.is(FluidTags.WATER)) {
+            if (level.environmentAttributes().getValue(EnvironmentAttributes.WATER_EVAPORATES, pos)
+                    && fluid.is(FluidTags.WATER)) {
                 playEvaporationEffect(level, pos);
             } else if (state.getBlock() instanceof LiquidBlockContainer liquidBlockContainer
                     && fluid == Fluids.WATER) {

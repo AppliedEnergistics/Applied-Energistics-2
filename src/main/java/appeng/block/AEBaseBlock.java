@@ -25,7 +25,7 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
@@ -105,7 +105,7 @@ public abstract class AEBaseBlock extends Block implements IOrientableBlock {
     }
 
     @Nullable
-    public ResourceLocation getRegistryName() {
+    public Identifier getRegistryName() {
         var id = BuiltInRegistries.BLOCK.getKey(this);
         return id != BuiltInRegistries.BLOCK.getDefaultKey() ? id : null;
     }

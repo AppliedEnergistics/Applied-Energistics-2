@@ -18,7 +18,7 @@
 
 package appeng.parts.reporting;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import appeng.api.parts.IPartItem;
 import appeng.core.AppEng;
@@ -37,14 +37,14 @@ import appeng.core.AppEng;
 public abstract class AbstractDisplayPart extends AbstractReportingPart {
 
     // The base chassis of all display parts
-    protected static final ResourceLocation MODEL_BASE = AppEng.makeId("part/display_base");
+    protected static final Identifier MODEL_BASE = AppEng.makeId("part/display_base");
 
     // Models that contain the status indicator light
-    protected static final ResourceLocation MODEL_STATUS_OFF = AppEng.makeId(
+    protected static final Identifier MODEL_STATUS_OFF = AppEng.makeId(
             "part/display_status_off");
-    protected static final ResourceLocation MODEL_STATUS_ON = AppEng.makeId(
+    protected static final Identifier MODEL_STATUS_ON = AppEng.makeId(
             "part/display_status_on");
-    protected static final ResourceLocation MODEL_STATUS_HAS_CHANNEL = AppEng.makeId(
+    protected static final Identifier MODEL_STATUS_HAS_CHANNEL = AppEng.makeId(
             "part/display_status_has_channel");
 
     public AbstractDisplayPart(IPartItem<?> partItem, boolean requireChannel) {

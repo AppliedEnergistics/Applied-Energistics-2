@@ -13,7 +13,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.neoforged.neoforge.model.data.ModelData;
@@ -50,15 +50,15 @@ public record StatusIndicatorPartModel(
         return activeBaked.particleIcon();
     }
 
-    public record Unbaked(ResourceLocation active, ResourceLocation powered,
-            ResourceLocation unpowered) implements PartModel.Unbaked {
+    public record Unbaked(Identifier active, Identifier powered,
+            Identifier unpowered) implements PartModel.Unbaked {
 
-        public static final ResourceLocation ID = AppEng.makeId("status_indicator");
+        public static final Identifier ID = AppEng.makeId("status_indicator");
         public static final MapCodec<Unbaked> MAP_CODEC = RecordCodecBuilder.mapCodec(
                 builder -> builder.group(
-                        ResourceLocation.CODEC.fieldOf("active").forGetter(Unbaked::active),
-                        ResourceLocation.CODEC.fieldOf("powered").forGetter(Unbaked::powered),
-                        ResourceLocation.CODEC.fieldOf("unpowered").forGetter(Unbaked::unpowered))
+                        Identifier.CODEC.fieldOf("active").forGetter(Unbaked::active),
+                        Identifier.CODEC.fieldOf("powered").forGetter(Unbaked::powered),
+                        Identifier.CODEC.fieldOf("unpowered").forGetter(Unbaked::unpowered))
                         .apply(builder, Unbaked::new));
 
         @Override

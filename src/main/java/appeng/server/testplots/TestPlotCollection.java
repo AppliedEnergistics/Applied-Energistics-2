@@ -3,16 +3,16 @@ package appeng.server.testplots;
 import java.util.Map;
 import java.util.function.Consumer;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import appeng.core.AppEng;
 import appeng.server.testworld.PlotBuilder;
 import appeng.server.testworld.PlotTestHelper;
 
 public class TestPlotCollection {
-    private final Map<ResourceLocation, Consumer<PlotBuilder>> plots;
+    private final Map<Identifier, Consumer<PlotBuilder>> plots;
 
-    public TestPlotCollection(Map<ResourceLocation, Consumer<PlotBuilder>> plots) {
+    public TestPlotCollection(Map<Identifier, Consumer<PlotBuilder>> plots) {
         this.plots = plots;
     }
 
@@ -24,11 +24,11 @@ public class TestPlotCollection {
         add(AppEng.makeId(id), builder, test);
     }
 
-    public void add(ResourceLocation id, Consumer<PlotBuilder> builder) {
+    public void add(Identifier id, Consumer<PlotBuilder> builder) {
         plots.put(id, builder);
     }
 
-    public void add(ResourceLocation id, Consumer<PlotBuilder> builder, Consumer<PlotTestHelper> test) {
+    public void add(Identifier id, Consumer<PlotBuilder> builder, Consumer<PlotTestHelper> test) {
         plots.put(id, actualBuilder -> {
             builder.accept(actualBuilder);
             actualBuilder.test(test);

@@ -3,7 +3,7 @@ package appeng.client.integration.emi;
 import java.util.List;
 
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
@@ -22,7 +22,7 @@ public class EmiAddItemUpgradeRecipe extends EmiCraftingRecipe {
                 true);
     }
 
-    private static ResourceLocation makeId(IUpgradeableItem baseItem, Item upgrade) {
+    private static Identifier makeId(IUpgradeableItem baseItem, Item upgrade) {
         var baseItemId = BuiltInRegistries.ITEM.getKey(baseItem.asItem());
         var upgradeId = BuiltInRegistries.ITEM.getKey(upgrade.asItem());
         return AppEng.makeId("/add_item_upgrade/" + baseItemId.getPath() + "/" + upgradeId.getPath());

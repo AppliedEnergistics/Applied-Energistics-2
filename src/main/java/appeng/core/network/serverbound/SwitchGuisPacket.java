@@ -32,7 +32,7 @@ public record SwitchGuisPacket(
     public static SwitchGuisPacket decode(RegistryFriendlyByteBuf stream) {
         MenuType<? extends ISubMenu> newGui = null;
         if (stream.readBoolean()) {
-            newGui = (MenuType<? extends ISubMenu>) BuiltInRegistries.MENU.getValue(stream.readResourceLocation());
+            newGui = (MenuType<? extends ISubMenu>) BuiltInRegistries.MENU.getValue(stream.readIdentifier());
         }
         return new SwitchGuisPacket(newGui);
     }
@@ -40,7 +40,7 @@ public record SwitchGuisPacket(
     public void write(RegistryFriendlyByteBuf data) {
         if (newGui != null) {
             data.writeBoolean(true);
-            data.writeResourceLocation(BuiltInRegistries.MENU.getKey(newGui));
+            data.writeIdentifier(BuiltInRegistries.MENU.getKey(newGui));
         } else {
             data.writeBoolean(false);
         }

@@ -150,7 +150,7 @@ public class StatisticsService implements IGridService, IGridServiceProvider {
         JsonStreamUtil.writeProperties(Map.<String, Object>of("chunks",
                 chunks.keySet().stream().collect(
                         Collectors.toMap(
-                                level -> level.dimension().location().toString(),
+                                level -> level.dimension().identifier().toString(),
                                 level -> chunks.get(level).elementSet().stream().map(JsonStreamUtil::toJson)
                                         .toList()))),
                 writer);

@@ -23,7 +23,7 @@ import java.util.Collection;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
@@ -43,8 +43,8 @@ public interface AppEng {
         return AppEngBase.INSTANCE;
     }
 
-    static ResourceLocation makeId(String id) {
-        return ResourceLocation.fromNamespaceAndPath(MOD_ID, id);
+    static Identifier makeId(String id) {
+        return Identifier.fromNamespaceAndPath(MOD_ID, id);
     }
 
     /**

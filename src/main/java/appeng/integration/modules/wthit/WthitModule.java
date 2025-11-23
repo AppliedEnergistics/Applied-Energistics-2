@@ -4,7 +4,7 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
@@ -35,7 +35,7 @@ public class WthitModule implements IWailaPlugin {
     public void register(IRegistrar registrar) {
         TooltipProviders.loadCommon(new CommonRegistration() {
             @Override
-            public <T extends BlockEntity> void addBlockEntityData(ResourceLocation id, Class<T> blockEntityClass,
+            public <T extends BlockEntity> void addBlockEntityData(Identifier id, Class<T> blockEntityClass,
                     ServerDataProvider<? super T> provider) {
                 registrar.addBlockData((IDataWriter data, IServerAccessor<T> accessor, IPluginConfig config) -> {
                     var obj = blockEntityClass.cast(accessor.getTarget());
@@ -46,7 +46,7 @@ public class WthitModule implements IWailaPlugin {
         TooltipProviders.loadClient(new ClientRegistration() {
             @Override
             public <T extends BlockEntity> void addBlockEntityBody(Class<T> blockEntityClass,
-                    Class<? extends Block> blockClass, ResourceLocation id, BodyProvider<? super T> provider,
+                    Class<? extends Block> blockClass, Identifier id, BodyProvider<? super T> provider,
                     int priority) {
                 registrar.addComponent(new IBlockComponentProvider() {
                     @Override
@@ -60,7 +60,7 @@ public class WthitModule implements IWailaPlugin {
 
             @Override
             public <T extends BlockEntity> void addBlockEntityIcon(Class<T> blockEntityClass,
-                    Class<? extends Block> blockClass, ResourceLocation id, IconProvider<? super T> provider,
+                    Class<? extends Block> blockClass, Identifier id, IconProvider<? super T> provider,
                     int priority) {
                 registrar.addIcon(new IBlockComponentProvider() {
                     @Override
@@ -75,7 +75,7 @@ public class WthitModule implements IWailaPlugin {
 
             @Override
             public <T extends BlockEntity> void addBlockEntityName(Class<T> blockEntityClass,
-                    Class<? extends Block> blockClass, ResourceLocation id, NameProvider<? super T> provider,
+                    Class<? extends Block> blockClass, Identifier id, NameProvider<? super T> provider,
                     int priority) {
                 registrar.addComponent(new IBlockComponentProvider() {
                     public void appendHead(ITooltip tooltip, IBlockAccessor accessor, IPluginConfig config) {
@@ -101,7 +101,7 @@ public class WthitModule implements IWailaPlugin {
 
             @Override
             public <T extends BlockEntity> void addBlockEntityModName(Class<T> blockEntityClass,
-                    Class<? extends Block> blockClass, ResourceLocation id, ModNameProvider<? super T> provider,
+                    Class<? extends Block> blockClass, Identifier id, ModNameProvider<? super T> provider,
                     int priority) {
                 registrar.addComponent(new IBlockComponentProvider() {
                     @Override

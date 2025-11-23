@@ -58,10 +58,10 @@ final class PlayerRegistryInternal extends SavedData implements IPlayerRegistry 
 
     private static final SavedDataType<PlayerRegistryInternal> TYPE = new SavedDataType<>(
             NAME,
-            context -> new PlayerRegistryInternal(context.levelOrThrow().getServer()),
-            context -> RecordCodecBuilder.create(builder -> builder.group(
+            level -> new PlayerRegistryInternal(level.getServer()),
+            level -> RecordCodecBuilder.create(builder -> builder.group(
                     PLAYER_REGISTRY_DATA_CODEC.fieldOf("players").forGetter(PlayerRegistryInternal::getData))
-                    .apply(builder, data -> new PlayerRegistryInternal(context.levelOrThrow().getServer(), data))));
+                    .apply(builder, data -> new PlayerRegistryInternal(level.getServer(), data))));
 
     private final BiMap<UUID, Integer> mapping = HashBiMap.create();
 

@@ -37,8 +37,8 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.storage.ValueInput;
 
@@ -59,12 +59,12 @@ public abstract class AEKeyType {
     public static final StreamCodec<RegistryFriendlyByteBuf, AEKeyType> STREAM_CODEC = ByteBufCodecs
             .registry(AEKeyType.REGISTRY_KEY);
 
-    private final ResourceLocation id;
+    private final Identifier id;
     private final Class<? extends AEKey> keyClass;
     private final AEKeyFilter filter;
     private final Component description;
 
-    public AEKeyType(ResourceLocation id, Class<? extends AEKey> keyClass, Component description) {
+    public AEKeyType(Identifier id, Class<? extends AEKey> keyClass, Component description) {
         Preconditions.checkArgument(!keyClass.equals(AEKey.class), "Can't register a key type for AEKey itself");
         this.id = id;
         this.keyClass = keyClass;
@@ -105,7 +105,7 @@ public abstract class AEKeyType {
     /**
      * @return The unique ID of this storage channel.
      */
-    public final ResourceLocation getId() {
+    public final Identifier getId() {
         return id;
     }
 

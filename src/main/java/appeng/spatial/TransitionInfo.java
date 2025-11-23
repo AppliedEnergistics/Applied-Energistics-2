@@ -24,22 +24,22 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.ExtraCodecs;
 
 /**
  * Defines the source level and area of a transition into the spatial storage plot.
  */
-public record TransitionInfo(ResourceLocation worldId, BlockPos min, BlockPos max, Instant timestamp) {
+public record TransitionInfo(Identifier worldId, BlockPos min, BlockPos max, Instant timestamp) {
 
     public static final Codec<TransitionInfo> CODEC = RecordCodecBuilder.create(builder -> builder.group(
-            ResourceLocation.CODEC.fieldOf("world_id").forGetter(TransitionInfo::worldId),
+            Identifier.CODEC.fieldOf("world_id").forGetter(TransitionInfo::worldId),
             BlockPos.CODEC.fieldOf("min").forGetter(TransitionInfo::min),
             BlockPos.CODEC.fieldOf("max").forGetter(TransitionInfo::max),
             ExtraCodecs.INSTANT_ISO8601.fieldOf("timestamp").forGetter(TransitionInfo::timestamp))
             .apply(builder, TransitionInfo::new));
 
-    public TransitionInfo(ResourceLocation worldId, BlockPos min, BlockPos max, Instant timestamp) {
+    public TransitionInfo(Identifier worldId, BlockPos min, BlockPos max, Instant timestamp) {
         this.worldId = worldId;
         this.min = min.immutable();
         this.max = max.immutable();

@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
@@ -86,7 +86,7 @@ public class KeyTypeSelection {
     }
 
     public void writeToNBT(ValueOutput output) {
-        var enabledKeyTypes = output.list("enabledKeyTypes", ResourceLocation.CODEC);
+        var enabledKeyTypes = output.list("enabledKeyTypes", Identifier.CODEC);
         for (var entry : keyTypes.entrySet()) {
             if (entry.getValue()) {
                 enabledKeyTypes.add(entry.getKey().getId());
@@ -98,7 +98,7 @@ public class KeyTypeSelection {
         for (var entry : keyTypes.entrySet()) {
             entry.setValue(false);
         }
-        var enabledKeyTypes = input.listOrEmpty("enabledKeyTypes", ResourceLocation.CODEC);
+        var enabledKeyTypes = input.listOrEmpty("enabledKeyTypes", Identifier.CODEC);
         for (var enabledKeyType : enabledKeyTypes) {
             try {
                 var keyType = AEKeyTypes.get(enabledKeyType);

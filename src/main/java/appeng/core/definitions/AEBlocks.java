@@ -34,8 +34,8 @@ import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -194,7 +194,7 @@ public final class AEBlocks {
     public static final BlockDefinition<CraftingUnitBlock> CRAFTING_STORAGE_256K = craftingBlock("256k Crafting Storage", AEBlockIds.CRAFTING_STORAGE_256K, p -> new CraftingUnitBlock(p, CraftingUnitType.STORAGE_256K));
     public static final BlockDefinition<CraftingMonitorBlock> CRAFTING_MONITOR = craftingBlock("Crafting Monitor", AEBlockIds.CRAFTING_MONITOR, p -> new CraftingMonitorBlock(p, CraftingUnitType.MONITOR));
 
-    private static <T extends Block> BlockDefinition<T> craftingBlock(String englishName, ResourceLocation id, Function<Properties, T> blockSupplier) {
+    private static <T extends Block> BlockDefinition<T> craftingBlock(String englishName, Identifier id, Function<Properties, T> blockSupplier) {
         return block(englishName, id, blockSupplier, CraftingBlockItem::new);
     }
 
@@ -259,14 +259,14 @@ public final class AEBlocks {
         return Collections.unmodifiableList(BLOCKS);
     }
 
-    private static <T extends Block> BlockDefinition<T> block(String englishName, ResourceLocation id,
+    private static <T extends Block> BlockDefinition<T> block(String englishName, Identifier id,
             Function<Properties, T> blockSupplier) {
         return block(englishName, id, blockSupplier, null);
     }
 
     private static <T extends Block> BlockDefinition<T> block(
             String englishName,
-            ResourceLocation id,
+            Identifier id,
             Function<Properties, T> blockSupplier,
             @Nullable BiFunction<Block, Item.Properties, BlockItem> itemFactory) {
         Preconditions.checkArgument(id.getNamespace().equals(AppEng.MOD_ID));

@@ -1,6 +1,6 @@
 package appeng.items.tools;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -15,7 +15,7 @@ import appeng.items.AEBaseItem;
  * Shows the guidebook when used.
  */
 public class GuideItem extends AEBaseItem {
-    public static final ResourceLocation GUIDE_ID = AppEng.makeId("guide");
+    public static final Identifier GUIDE_ID = AppEng.makeId("guide");
 
     public GuideItem(Properties properties) {
         super(properties);

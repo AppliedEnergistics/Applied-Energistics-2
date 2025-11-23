@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.FlowingFluid;
@@ -104,8 +104,8 @@ public class EntropyRecipeDisplay implements Display {
     }
 
     @Override
-    public Optional<ResourceLocation> getDisplayLocation() {
-        return Optional.of(holder.id().location());
+    public Optional<Identifier> getDisplayLocation() {
+        return Optional.of(holder.id().identifier());
     }
 
     private static EntryStack<?> createIngredient(Block block, Fluid fluid) {

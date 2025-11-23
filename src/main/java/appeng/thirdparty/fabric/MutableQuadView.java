@@ -258,7 +258,9 @@ public interface MutableQuadView extends QuadView {
      * <p>
      * Calling this method does not emit the quad.
      */
-    MutableQuadView fromVanilla(int[] quadData, int startIndex);
+    default MutableQuadView fromVanilla(BakedQuad quad) {
+        return fromVanilla(quad, null);
+    }
 
     /**
      * Enables bulk vertex data transfer using the standard Minecraft quad format.

@@ -7,7 +7,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.neoforged.fml.ModLoader;
@@ -22,7 +22,7 @@ import appeng.core.AppEng;
  * Registration facility for associating {@link PartRenderer} with {@link IPart} classes.
  */
 public class PartRendererDispatcher implements ResourceManagerReloadListener {
-    public static final ResourceLocation ID = AppEng.makeId("part_renderer_dispatcher");
+    public static final Identifier ID = AppEng.makeId("part_renderer_dispatcher");
     private Map<Class<?>, Registration<?>> registrations = Map.of();
 
     public PartRendererDispatcher() {

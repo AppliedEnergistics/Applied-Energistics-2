@@ -8,7 +8,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.PlacementInfo;
@@ -28,7 +28,7 @@ import appeng.recipes.AERecipeTypes;
 
 public class ChargerRecipe implements Recipe<RecipeInput> {
     @Deprecated(forRemoval = true, since = "1.21.1")
-    public static final ResourceLocation TYPE_ID = AppEng.makeId("charger");
+    public static final Identifier TYPE_ID = AppEng.makeId("charger");
     @Deprecated(forRemoval = true, since = "1.21.1")
     public static final RecipeType<ChargerRecipe> TYPE = AERecipeTypes.CHARGER;
 

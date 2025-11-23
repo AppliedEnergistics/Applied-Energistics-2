@@ -40,7 +40,7 @@ import net.minecraft.client.data.models.model.TextureMapping;
 import net.minecraft.client.data.models.model.TextureSlot;
 import net.minecraft.client.renderer.block.model.VariantMutator;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.SlabBlock;
 import net.minecraft.world.level.block.StairBlock;
 import net.minecraft.world.level.block.WallBlock;
@@ -275,7 +275,7 @@ public class DecorationModelProvider extends ModelSubProvider {
     }
 
     private MultiVariant applyAthena(MultiVariant delegate, String loader,
-            Map<String, ResourceLocation> ctmTextures) {
+            Map<String, Identifier> ctmTextures) {
         /*
          * {
          * 
@@ -291,7 +291,7 @@ public class DecorationModelProvider extends ModelSubProvider {
         return delegate;
     }
 
-    private void wall(BlockDefinition<? extends WallBlock> blockDef, ResourceLocation texture) {
+    private void wall(BlockDefinition<? extends WallBlock> blockDef, Identifier texture) {
         var block = blockDef.block();
 
         var textures = new TextureMapping().put(TextureSlot.WALL, texture);
@@ -316,7 +316,7 @@ public class DecorationModelProvider extends ModelSubProvider {
     }
 
     private void slabBlock(BlockDefinition<? extends SlabBlock> blockDef, BlockDefinition<?> doubleModelDonor,
-            ResourceLocation topTexture, ResourceLocation sideTexture, ResourceLocation bottomTexture) {
+            Identifier topTexture, Identifier sideTexture, Identifier bottomTexture) {
         var block = blockDef.block();
 
         var textures = new TextureMapping()
@@ -341,8 +341,8 @@ public class DecorationModelProvider extends ModelSubProvider {
         stairsBlock(stairsBlock, blockTexture, blockTexture, blockTexture);
     }
 
-    private void stairsBlock(BlockDefinition<? extends StairBlock> blockDef, ResourceLocation topTexture,
-            ResourceLocation sideTexture, ResourceLocation bottomTexture) {
+    private void stairsBlock(BlockDefinition<? extends StairBlock> blockDef, Identifier topTexture,
+            Identifier sideTexture, Identifier bottomTexture) {
         var block = blockDef.block();
 
         var textures = new TextureMapping()

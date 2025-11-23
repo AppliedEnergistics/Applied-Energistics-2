@@ -40,7 +40,7 @@ import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ResolvableModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.ItemOwner;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
@@ -61,7 +61,7 @@ import appeng.thirdparty.fabric.ModelHelper;
 public class FacadeItemModel implements ItemModel {
 
     // We use this to get the default item transforms and make our lives easier
-    private static final ResourceLocation MODEL_BASE = AppEng.makeId("item/facade_base");
+    private static final Identifier MODEL_BASE = AppEng.makeId("item/facade_base");
 
     private final ItemBaseModelWrapper baseModel;
     private final ItemModel missingItemModel;
@@ -175,7 +175,7 @@ public class FacadeItemModel implements ItemModel {
     }
 
     public record Unbaked() implements ItemModel.Unbaked {
-        public static final ResourceLocation ID = AppEng.makeId("facade");
+        public static final Identifier ID = AppEng.makeId("facade");
 
         public static final MapCodec<Unbaked> MAP_CODEC = MapCodec.unit(Unbaked::new);
 

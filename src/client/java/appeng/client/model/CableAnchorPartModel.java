@@ -12,7 +12,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.neoforged.neoforge.model.data.ModelData;
@@ -47,11 +47,11 @@ public class CableAnchorPartModel implements PartModel {
         return model.particleIcon();
     }
 
-    public record Unbaked(ResourceLocation model, ResourceLocation shortModel) implements PartModel.Unbaked {
-        public static final ResourceLocation ID = AppEng.makeId("cable_anchor");
+    public record Unbaked(Identifier model, Identifier shortModel) implements PartModel.Unbaked {
+        public static final Identifier ID = AppEng.makeId("cable_anchor");
         public static final MapCodec<Unbaked> MAP_CODEC = RecordCodecBuilder.mapCodec(builder -> builder.group(
-                ResourceLocation.CODEC.fieldOf("model").forGetter(Unbaked::model),
-                ResourceLocation.CODEC.fieldOf("short_model").forGetter(Unbaked::shortModel))
+                Identifier.CODEC.fieldOf("model").forGetter(Unbaked::model),
+                Identifier.CODEC.fieldOf("short_model").forGetter(Unbaked::shortModel))
                 .apply(builder, Unbaked::new));
 
         @Override

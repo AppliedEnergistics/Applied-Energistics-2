@@ -32,8 +32,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.Recipe;
 import net.neoforged.neoforge.network.codec.NeoForgeStreamCodecs;
 
@@ -51,7 +51,7 @@ public class SynchronizedField<T> {
         CODECS.put(String.class, ByteBufCodecs.STRING_UTF8.apply(AECodecs::nullable));
         CODECS.put(Component.class, ComponentSerialization.TRUSTED_STREAM_CODEC.apply(AECodecs::nullable));
         CODECS.put(GenericStack.class, GenericStack.STREAM_CODEC.apply(AECodecs::nullable));
-        CODECS.put(ResourceLocation.class, ResourceLocation.STREAM_CODEC.apply(AECodecs::nullable));
+        CODECS.put(Identifier.class, Identifier.STREAM_CODEC.apply(AECodecs::nullable));
         CODECS.put(int.class, ByteBufCodecs.INT);
         CODECS.put(Integer.class, ByteBufCodecs.INT.apply(AECodecs::nullable));
         CODECS.put(long.class, ByteBufCodecs.LONG);
@@ -119,7 +119,7 @@ public class SynchronizedField<T> {
     public static SynchronizedField<?> create(Object source, Field field) {
         Class<?> fieldType = field.getType();
 
-        // Special handling for ResourceKey<Recipe> since it's the only type that switched away from ResourceLocation
+        // Special handling for ResourceKey<Recipe> since it's the only type that switched away from Identifier
         if (ResourceKey.class.isAssignableFrom(fieldType)
                 && field.getGenericType() instanceof ParameterizedType parameterizedType) {
             var objectType = parameterizedType.getActualTypeArguments()[0];

@@ -19,7 +19,6 @@ import static appeng.thirdparty.fabric.EncodingFormat.HEADER_BITS;
 import static appeng.thirdparty.fabric.EncodingFormat.HEADER_COLOR_INDEX;
 import static appeng.thirdparty.fabric.EncodingFormat.HEADER_STRIDE;
 import static appeng.thirdparty.fabric.EncodingFormat.HEADER_TAG;
-import static appeng.thirdparty.fabric.EncodingFormat.QUAD_STRIDE;
 import static appeng.thirdparty.fabric.EncodingFormat.VERTEX_COLOR;
 import static appeng.thirdparty.fabric.EncodingFormat.VERTEX_LIGHTMAP;
 import static appeng.thirdparty.fabric.EncodingFormat.VERTEX_NORMAL;
@@ -257,20 +256,5 @@ public class QuadViewImpl implements QuadView {
     @Override
     public boolean hasAmbientOcclusion() {
         return EncodingFormat.ambientOcclusion(data[baseIndex + HEADER_BITS]);
-    }
-
-    @Override
-    public final void toVanilla(int[] target, int targetIndex) {
-        System.arraycopy(data, baseIndex + HEADER_STRIDE, target, targetIndex, QUAD_STRIDE);
-
-        // The color is the fourth integer in each vertex.
-        // EncodingFormat.VERTEX_COLOR is not used because it also
-        // contains the header size; vanilla quads do not have a header.
-        int colorIndex = targetIndex + 3;
-
-        for (int i = 0; i < 4; i++) {
-            target[colorIndex] = ColorHelper.toVanillaColor(target[colorIndex]);
-            colorIndex += VANILLA_VERTEX_STRIDE;
-        }
     }
 }

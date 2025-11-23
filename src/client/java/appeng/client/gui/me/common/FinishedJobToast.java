@@ -8,7 +8,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.toasts.Toast;
 import net.minecraft.client.gui.components.toasts.ToastManager;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.FormattedCharSequence;
 
 import appeng.api.stacks.AEKey;
@@ -19,7 +19,7 @@ import appeng.core.localization.GuiText;
  * A Minecraft toast for a finished crafting job.
  */
 public class FinishedJobToast implements Toast {
-    private static final ResourceLocation BACKGROUND_SPRITE = ResourceLocation.parse("toast/recipe");
+    private static final Identifier BACKGROUND_SPRITE = Identifier.parse("toast/recipe");
 
     private static final long TIME_VISIBLE = 2500;
     private static final int TITLE_COLOR = 0xFF500050;

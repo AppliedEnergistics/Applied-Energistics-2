@@ -33,7 +33,7 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.renderer.block.model.SimpleModelWrapper;
 import net.minecraft.client.resources.model.ModelBakery;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.client.model.standalone.StandaloneModelKey;
@@ -46,11 +46,11 @@ import appeng.core.AppEng;
  */
 public final class StorageCellModels {
 
-    private static final ResourceLocation MODEL_CELL_DEFAULT = AppEng.makeId("block/drive_cell");
+    private static final Identifier MODEL_CELL_DEFAULT = AppEng.makeId("block/drive_cell");
     private static final StandaloneModelKey<SimpleModelWrapper> MODEL_CELL_DEFAULT_STANDALONE = new StandaloneModelKey<>(
             MODEL_CELL_DEFAULT::toString);
 
-    private static final Map<Item, ResourceLocation> registry = new IdentityHashMap<>();
+    private static final Map<Item, Identifier> registry = new IdentityHashMap<>();
     private static final Map<Item, StandaloneModelKey<SimpleModelWrapper>> standaloneRegistry = new IdentityHashMap<>();
 
     private StorageCellModels() {
@@ -59,7 +59,7 @@ public final class StorageCellModels {
     /**
      * Register a new model for a storage cell item.
      * <p>
-     * This method only maps an {@link Item} to a {@link ResourceLocation} which can be looked up from the
+     * This method only maps an {@link Item} to a {@link Identifier} which can be looked up from the
      * {@link ModelBakery}. No validation about missing models will be done.
      * <p>
      * Will throw an exception in case a model is already registered for an item.
@@ -67,9 +67,9 @@ public final class StorageCellModels {
      * For examples look at our cell part models within the drive model directory.
      *
      * @param itemLike The cell item
-     * @param model    The {@link ResourceLocation} representing the model.
+     * @param model    The {@link Identifier} representing the model.
      */
-    public synchronized static void registerModel(ItemLike itemLike, ResourceLocation model) {
+    public synchronized static void registerModel(ItemLike itemLike, Identifier model) {
         Objects.requireNonNull(itemLike, "itemLike");
         var item = Objects.requireNonNull(itemLike.asItem(), "item.asItem()");
         Objects.requireNonNull(model, "model");
@@ -80,14 +80,14 @@ public final class StorageCellModels {
     }
 
     /**
-     * The {@link ResourceLocation} of the model used to render the given storage cell {@link Item} when inserted into a
-     * drive or similar.
+     * The {@link Identifier} of the model used to render the given storage cell {@link Item} when inserted into a drive
+     * or similar.
      *
      * @param itemLike
      * @return null, if no model is registered.
      */
     @Nullable
-    public synchronized static ResourceLocation model(ItemLike itemLike) {
+    public synchronized static Identifier model(ItemLike itemLike) {
         Objects.requireNonNull(itemLike, "itemLike");
         var item = Objects.requireNonNull(itemLike.asItem(), "itemLike.asItem()");
 
@@ -113,7 +113,7 @@ public final class StorageCellModels {
     /**
      * A copy of all registered mappings.
      */
-    public synchronized static Map<Item, ResourceLocation> models() {
+    public synchronized static Map<Item, Identifier> models() {
         return new IdentityHashMap<>(registry);
     }
 
@@ -127,7 +127,7 @@ public final class StorageCellModels {
     /**
      * Returns the default model, which can be used when no explicit model is registered.
      */
-    public static ResourceLocation getDefaultModel() {
+    public static Identifier getDefaultModel() {
         return MODEL_CELL_DEFAULT;
     }
 

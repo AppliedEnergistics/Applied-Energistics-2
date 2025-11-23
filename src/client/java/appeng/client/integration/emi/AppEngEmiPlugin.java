@@ -6,7 +6,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
@@ -48,7 +48,7 @@ import appeng.recipes.game.StorageCellUpgradeRecipe;
 
 @EmiEntrypoint
 public class AppEngEmiPlugin implements EmiPlugin {
-    static final ResourceLocation TEXTURE = AppEng.makeId("textures/guis/jei.png");
+    static final Identifier TEXTURE = AppEng.makeId("textures/guis/jei.png");
 
     @Override
     public void register(EmiRegistry registry) {
@@ -135,7 +135,7 @@ public class AppEngEmiPlugin implements EmiPlugin {
         return new EmiCraftingRecipe(
                 List.of(cellStack, EmiStack.of(recipe.getInputComponent())),
                 EmiStack.of(recipe.getResultCell()),
-                holder.id().location(),
+                holder.id().identifier(),
                 true) {
             @Override
             public boolean supportsRecipeTree() {

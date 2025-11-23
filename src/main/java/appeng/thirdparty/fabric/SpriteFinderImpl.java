@@ -21,7 +21,7 @@ import java.util.function.Consumer;
 import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 /**
  * Indexes an atlas sprite to allow fast lookup of Sprites from baked vertex coordinates. Implementation is a
@@ -33,7 +33,7 @@ public class SpriteFinderImpl implements SpriteFinder {
     private final Node root;
     private final TextureAtlas spriteAtlasTexture;
 
-    public SpriteFinderImpl(Map<ResourceLocation, TextureAtlasSprite> sprites, TextureAtlas spriteAtlasTexture) {
+    public SpriteFinderImpl(Map<Identifier, TextureAtlasSprite> sprites, TextureAtlas spriteAtlasTexture) {
         root = new Node(0.5f, 0.5f, 0.25f);
         this.spriteAtlasTexture = spriteAtlasTexture;
         sprites.values().forEach(root::add);

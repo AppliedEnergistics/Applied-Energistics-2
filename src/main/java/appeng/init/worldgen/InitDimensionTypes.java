@@ -1,13 +1,15 @@
 package appeng.init.worldgen;
 
-import java.util.Optional;
-import java.util.OptionalLong;
-
 import org.jetbrains.annotations.NotNull;
 
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.TimelineTags;
 import net.minecraft.util.valueproviders.ConstantInt;
+import net.minecraft.world.attribute.BedRule;
+import net.minecraft.world.attribute.EnvironmentAttributeMap;
+import net.minecraft.world.attribute.EnvironmentAttributes;
 import net.minecraft.world.level.dimension.DimensionType;
 
 import appeng.spatial.SpatialStorageChunkGenerator;
@@ -18,30 +20,34 @@ public final class InitDimensionTypes {
     }
 
     public static void init(BootstrapContext<DimensionType> context) {
-        DimensionType dimensionType = createSpatialDimensionType();
+        DimensionType dimensionType = createSpatialDimensionType(context);
 
         context.register(SpatialStorageDimensionIds.DIMENSION_TYPE_ID,
                 dimensionType);
     }
 
     @NotNull
-    private static DimensionType createSpatialDimensionType() {
+    private static DimensionType createSpatialDimensionType(BootstrapContext<DimensionType> context) {
+        var timelines = context.lookup(Registries.TIMELINE);
+
         return new DimensionType(
-                OptionalLong.of(12000), // fixedTime
+                true, // fixedTime
                 false, // hasSkylight
                 false, // hasCeiling
-                false, // ultraWarm
-                false, // natural
                 1.0, // coordinateScale
-                false, // bedWorks
-                false, // respawnAnchorWorks
                 SpatialStorageChunkGenerator.MIN_Y, // minY
                 SpatialStorageChunkGenerator.HEIGHT, // height
                 SpatialStorageChunkGenerator.HEIGHT, // logicalHeight
                 BlockTags.INFINIBURN_OVERWORLD, // infiniburn
-                SpatialStorageDimensionIds.SKY_PROPERTIES_ID, // effectsLocation
                 1.0f, // ambientLight
-                Optional.empty(),
-                new DimensionType.MonsterSettings(false, false, ConstantInt.of(0), 0));
+                new DimensionType.MonsterSettings(ConstantInt.of(0), 0),
+                DimensionType.Skybox.NONE,
+                DimensionType.CardinalLightType.DEFAULT,
+                EnvironmentAttributeMap.builder()
+                        .set(EnvironmentAttributes.BED_RULE, BedRule.EXPLODES)
+                        .set(EnvironmentAttributes.RESPAWN_ANCHOR_WORKS, false)
+                        // TODO 1.21.11: environmental effects SpatialStorageDimensionIds.SKY_PROPERTIES_ID
+                        .build(),
+                timelines.getOrThrow(TimelineTags.UNIVERSAL));
     }
 }

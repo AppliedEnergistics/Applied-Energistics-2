@@ -24,7 +24,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.SingleItemRecipeBuilder;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Block;
 
@@ -111,8 +111,8 @@ public class DecorationRecipes extends AE2RecipeProvider {
 
     }
 
-    protected final String prefix(String prefix, ResourceLocation id) {
-        return ResourceLocation.fromNamespaceAndPath(
+    protected final String prefix(String prefix, Identifier id) {
+        return Identifier.fromNamespaceAndPath(
                 id.getNamespace(),
                 prefix + id.getPath()).toString();
     }

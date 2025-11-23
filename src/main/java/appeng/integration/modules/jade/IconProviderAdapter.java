@@ -2,7 +2,7 @@ package appeng.integration.modules.jade;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 import snownee.jade.api.BlockAccessor;
@@ -21,7 +21,7 @@ class IconProviderAdapter<T extends BlockEntity> extends BaseProvider implements
 
     private final Class<T> objectClass;
 
-    public IconProviderAdapter(ResourceLocation id, int priority, IElementHelper elementHelper,
+    public IconProviderAdapter(Identifier id, int priority, IElementHelper elementHelper,
             IconProvider<? super T> iconProvider, Class<T> objectClass) {
         super(id, priority);
         this.elementHelper = elementHelper;

@@ -24,7 +24,7 @@ import java.util.Set;
 import java.util.function.Consumer;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.ItemStack;
@@ -63,7 +63,7 @@ public class PortableCellItem extends AbstractPortableCell implements IBasicCell
     }
 
     @Override
-    public ResourceLocation getRecipeId() {
+    public Identifier getRecipeId() {
         return AppEng.makeId("tools/" + Objects.requireNonNull(getRegistryName()).getPath());
     }
 

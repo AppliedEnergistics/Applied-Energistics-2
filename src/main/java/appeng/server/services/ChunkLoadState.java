@@ -38,10 +38,10 @@ class ChunkLoadState extends SavedData {
 
     private static final SavedDataType<ChunkLoadState> TYPE = new SavedDataType<>(
             AppEng.MOD_ID + "_chunk_load_state",
-            context -> new ChunkLoadState(context.levelOrThrow()),
-            context -> RecordCodecBuilder.create(builder -> builder.group(
+            ChunkLoadState::new,
+            level -> RecordCodecBuilder.create(builder -> builder.group(
                     ForcedChunk.CODEC.listOf().fieldOf("forcedChunks").forGetter(ChunkLoadState::getForcedChunks))
-                    .apply(builder, data -> new ChunkLoadState(context.levelOrThrow(), data))));
+                    .apply(builder, data -> new ChunkLoadState(level, data))));
 
     public static ChunkLoadState get(ServerLevel level) {
         return level.getDataStorage().computeIfAbsent(TYPE);

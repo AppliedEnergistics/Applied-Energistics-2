@@ -21,7 +21,7 @@ package appeng.core.definitions;
 import java.util.function.Supplier;
 
 import net.minecraft.core.Holder;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
@@ -45,7 +45,7 @@ public class ItemDefinition<T extends Item> implements ItemLike, Supplier<T> {
         return englishName;
     }
 
-    public ResourceLocation id() {
+    public Identifier id() {
         return this.item.getId();
     }
 

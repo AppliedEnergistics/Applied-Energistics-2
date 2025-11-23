@@ -86,7 +86,7 @@ public class BlockDropProvider extends BlockLootSubProvider {
                 .stream()
                 .filter(entry -> {
                     var lootTable = entry.getLootTable().orElse(null);
-                    return lootTable != null && lootTable.location().getNamespace().equals(AppEng.MOD_ID);
+                    return lootTable != null && lootTable.identifier().getNamespace().equals(AppEng.MOD_ID);
                 })
                 .toList();
     }

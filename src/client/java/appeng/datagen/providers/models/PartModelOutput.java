@@ -2,7 +2,7 @@ package appeng.datagen.providers.models;
 
 import java.util.List;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.ItemLike;
 
 import appeng.api.parts.IPartItem;
@@ -18,7 +18,7 @@ public interface PartModelOutput {
 
     void copy(IPartItem<?> item1, IPartItem<?> item2);
 
-    default void staticModel(ItemLike part, ResourceLocation model) {
+    default void staticModel(ItemLike part, Identifier model) {
         if (!(part.asItem() instanceof IPartItem<?> partItem)) {
             throw new IllegalArgumentException("Can only register parts for items that implement IPartItem<?>");
         }

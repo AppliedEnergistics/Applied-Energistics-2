@@ -12,7 +12,7 @@ import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import appeng.api.config.PowerUnit;
 import appeng.core.definitions.AEBlocks;
@@ -81,7 +81,7 @@ public class LocalizationProvider implements IAE2DataProvider {
         addJadeProviderDisplayName(TooltipIds.PART_TOOLTIP, "AE2 Part Tooltip");
     }
 
-    private void addJadeProviderDisplayName(ResourceLocation providerId, String name) {
+    private void addJadeProviderDisplayName(Identifier providerId, String name) {
         add("config.jade.plugin_" + providerId.getNamespace() + "." + providerId.getPath(), name);
     }
 

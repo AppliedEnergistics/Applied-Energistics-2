@@ -26,7 +26,7 @@ package appeng.api.stacks;
 import java.util.Objects;
 import java.util.Set;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 /**
  * AE2's registry of all known {@link AEKeyType key types}.
@@ -66,7 +66,7 @@ public final class AEKeyTypes {
      * @throws IllegalArgumentException when fetching an unregistered channel.
      */
 
-    public static AEKeyType get(ResourceLocation id) {
+    public static AEKeyType get(Identifier id) {
         var result = AEKeyTypesInternal.getRegistry().getValue(id);
         if (result == null) {
             throw new IllegalArgumentException("No key type registered for id " + id);

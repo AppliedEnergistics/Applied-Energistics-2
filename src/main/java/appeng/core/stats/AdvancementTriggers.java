@@ -21,7 +21,7 @@ package appeng.core.stats;
 import java.util.Optional;
 
 import net.minecraft.advancements.Criterion;
-import net.minecraft.advancements.critereon.PlayerTrigger;
+import net.minecraft.advancements.criterion.PlayerTrigger;
 
 public class AdvancementTriggers {
     /**

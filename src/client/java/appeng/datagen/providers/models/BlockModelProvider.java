@@ -28,7 +28,7 @@ import net.minecraft.client.renderer.block.model.VariantMutator;
 import net.minecraft.client.renderer.item.EmptyModel;
 import net.minecraft.client.renderer.item.RangeSelectItemModel;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.neoforged.neoforge.client.model.block.CustomUnbakedBlockStateModel;
@@ -443,7 +443,7 @@ public class BlockModelProvider extends ModelSubProvider {
                     new ConditionBuilder().term(BlockStateProperties.FACING, facing),
                     variant(applyOrientation(plainModel(chassis), facing)));
 
-            BiConsumer<ResourceLocation, WirelessAccessPointBlock.State> addModel = (modelFile, state) -> builder.with(
+            BiConsumer<Identifier, WirelessAccessPointBlock.State> addModel = (modelFile, state) -> builder.with(
                     new ConditionBuilder().term(BlockStateProperties.FACING, facing)
                             .term(WirelessAccessPointBlock.STATE, state),
                     variant(applyOrientation(plainModel(modelFile), facing)));
@@ -460,7 +460,7 @@ public class BlockModelProvider extends ModelSubProvider {
         itemModels.declareCustomModelItem(AEBlocks.WIRELESS_ACCESS_POINT.asItem());
     }
 
-    private static final ResourceLocation MACHINE_BOTTOM = AppEng.makeId("block/generics/bottom");
+    private static final Identifier MACHINE_BOTTOM = AppEng.makeId("block/generics/bottom");
 
     private void vibrationChamber() {
         var block = AEBlocks.VIBRATION_CHAMBER.block();
@@ -588,7 +588,7 @@ public class BlockModelProvider extends ModelSubProvider {
 
         var energyLevelDispatch = PropertyDispatch.initial(EnergyCellBlock.ENERGY_STORAGE);
 
-        var models = new ArrayList<ResourceLocation>();
+        var models = new ArrayList<Identifier>();
         for (var i = 0; i < 5; i++) {
             var textures = TextureMapping.cube(getBlockTexture(block, "_" + i));
             var model = ModelTemplates.CUBE_ALL.createWithSuffix(block, "_" + i, textures, modelOutput);

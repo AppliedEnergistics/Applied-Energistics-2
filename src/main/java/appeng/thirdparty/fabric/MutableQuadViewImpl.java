@@ -18,7 +18,6 @@ package appeng.thirdparty.fabric;
 import static appeng.thirdparty.fabric.EncodingFormat.EMPTY;
 import static appeng.thirdparty.fabric.EncodingFormat.HEADER_BITS;
 import static appeng.thirdparty.fabric.EncodingFormat.HEADER_COLOR_INDEX;
-import static appeng.thirdparty.fabric.EncodingFormat.HEADER_STRIDE;
 import static appeng.thirdparty.fabric.EncodingFormat.HEADER_TAG;
 import static appeng.thirdparty.fabric.EncodingFormat.VERTEX_COLOR;
 import static appeng.thirdparty.fabric.EncodingFormat.VERTEX_LIGHTMAP;
@@ -29,6 +28,7 @@ import static appeng.thirdparty.fabric.EncodingFormat.VERTEX_X;
 
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.client.model.geom.builders.UVPair;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
@@ -173,28 +173,30 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
     }
 
     @Override
-    public final MutableQuadViewImpl fromVanilla(int[] quadData, int startIndex) {
-        System.arraycopy(quadData, startIndex, data, baseIndex + HEADER_STRIDE, VANILLA_QUAD_STRIDE);
+    public final MutableQuadViewImpl fromVanilla(BakedQuad quad, @Nullable Direction cullFace) {
         isGeometryInvalid = true;
 
-        int colorIndex = baseIndex + VERTEX_COLOR;
-
         for (int i = 0; i < 4; i++) {
-            data[colorIndex] = ColorHelper.fromVanillaColor(data[colorIndex]);
-            colorIndex += VERTEX_STRIDE;
+            var pos = quad.position(i);
+            pos(i, pos.x(), pos.y(), pos.z());
+            var packedNormal = quad.bakedNormals().normals(i);
+            color(i, quad.bakedColors().color(i));
+
+            float nx = ((byte) (packedNormal & 0xFF)) / 127.0f;
+            float ny = ((byte) ((packedNormal >> 8) & 0xFF)) / 127.0f;
+            float nz = ((byte) ((packedNormal >> 16) & 0xFF)) / 127.0f;
+            normal(i, nx, ny, nz);
+
+            var packedUV = quad.packedUV(i);
+            uv(i, UVPair.unpackU(packedUV), UVPair.unpackV(packedUV));
         }
 
-        return this;
-    }
-
-    @Override
-    public final MutableQuadViewImpl fromVanilla(BakedQuad quad, @Nullable Direction cullFace) {
-        fromVanilla(quad.vertices(), 0);
         data[baseIndex + HEADER_BITS] = EncodingFormat.cullFace(0, cullFace);
         nominalFace(quad.direction());
         colorIndex(quad.tintIndex());
         shade(quad.shade());
         ambientOcclusion(quad.hasAmbientOcclusion());
+        // TODO: 1.21.11 light emission
 
         tag(0);
         return this;

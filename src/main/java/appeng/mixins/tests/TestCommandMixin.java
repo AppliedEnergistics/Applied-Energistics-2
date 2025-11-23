@@ -7,7 +7,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.gametest.framework.TestCommand;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import appeng.server.testplots.TestPlots;
 
@@ -15,7 +15,7 @@ import appeng.server.testplots.TestPlots;
 public class TestCommandMixin {
 
     @Inject(method = "verifyStructureExists", at = @At("HEAD"), cancellable = true)
-    private static void verifyStructureExists(CommandSourceStack sourceStack, ResourceLocation id,
+    private static void verifyStructureExists(CommandSourceStack sourceStack, Identifier id,
             CallbackInfoReturnable<Boolean> cri) {
         var testPlot = TestPlots.getById(id);
         if (testPlot != null) {

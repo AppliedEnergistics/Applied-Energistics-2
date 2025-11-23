@@ -41,7 +41,7 @@ import net.minecraft.client.resources.model.ResolvableModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.TriState;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
@@ -74,8 +74,8 @@ public class FacadeBuilder {
 
     public static final ModelBaker.SharedOperationKey<FacadeBuilder> SHARED_KEY = FacadeBuilder::new;
 
-    private static final ResourceLocation ANCHOR_STILT = AppEng.makeId("part/cable_anchor_short");;
-    private static final ResourceLocation TRANSLUCENT_FACADE_MODEL = AppEng.makeId("part/translucent_facade");
+    private static final Identifier ANCHOR_STILT = AppEng.makeId("part/cable_anchor_short");;
+    private static final Identifier TRANSLUCENT_FACADE_MODEL = AppEng.makeId("part/translucent_facade");
 
     private final Renderer renderer = Renderer.getInstance();
 

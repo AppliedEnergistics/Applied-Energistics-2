@@ -23,7 +23,7 @@ import java.util.Set;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.advancements.critereon.PlayerTrigger;
+import net.minecraft.advancements.criterion.PlayerTrigger;
 import net.minecraft.nbt.CompoundTag;
 
 import appeng.api.features.IPlayerRegistry;

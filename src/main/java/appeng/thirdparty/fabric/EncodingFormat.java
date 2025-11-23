@@ -16,10 +16,7 @@ package appeng.thirdparty.fabric;
  */
 
 import com.google.common.base.Preconditions;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.VertexFormat;
 
-import net.minecraft.client.renderer.block.model.FaceBakery;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
 
@@ -51,7 +48,6 @@ public abstract class EncodingFormat {
     public static final int TOTAL_STRIDE;
 
     static {
-        final VertexFormat format = DefaultVertexFormat.BLOCK;
         VERTEX_X = HEADER_STRIDE + 0;
         VERTEX_Y = HEADER_STRIDE + 1;
         VERTEX_Z = HEADER_STRIDE + 2;
@@ -60,17 +56,10 @@ public abstract class EncodingFormat {
         VERTEX_V = VERTEX_U + 1;
         VERTEX_LIGHTMAP = HEADER_STRIDE + 6;
         VERTEX_NORMAL = HEADER_STRIDE + 7;
-        VERTEX_STRIDE = FaceBakery.VERTEX_INT_SIZE;
+        VERTEX_STRIDE = 8;
         QUAD_STRIDE = VERTEX_STRIDE * 4;
         QUAD_STRIDE_BYTES = QUAD_STRIDE * 4;
         TOTAL_STRIDE = HEADER_STRIDE + QUAD_STRIDE;
-
-        Preconditions.checkState(VERTEX_STRIDE == QuadView.VANILLA_VERTEX_STRIDE,
-                "Indigo vertex stride (%s) mismatched with rendering API (%s)", VERTEX_STRIDE,
-                QuadView.VANILLA_VERTEX_STRIDE);
-        Preconditions.checkState(QUAD_STRIDE == QuadView.VANILLA_QUAD_STRIDE,
-                "Indigo quad stride (%s) mismatched with rendering API (%s)", QUAD_STRIDE,
-                QuadView.VANILLA_QUAD_STRIDE);
     }
 
     /** used for quick clearing of quad buffers. */

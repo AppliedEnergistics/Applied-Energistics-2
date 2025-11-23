@@ -20,7 +20,7 @@ package appeng.parts.reporting;
 
 import java.util.List;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
@@ -38,7 +38,7 @@ public class CraftingTerminalPart extends AbstractTerminalPart {
     /**
      * A sub-inventory that contains crafting ingredients used in the crafting grid.
      */
-    public static final ResourceLocation INV_CRAFTING = AppEng.makeId("crafting_terminal_crafting");
+    public static final Identifier INV_CRAFTING = AppEng.makeId("crafting_terminal_crafting");
 
     private final AppEngInternalInventory craftingGrid = new AppEngInternalInventory(this, 9);
 
@@ -80,7 +80,7 @@ public class CraftingTerminalPart extends AbstractTerminalPart {
     }
 
     @Override
-    public InternalInventory getSubInventory(ResourceLocation id) {
+    public InternalInventory getSubInventory(Identifier id) {
         if (id.equals(INV_CRAFTING)) {
             return craftingGrid;
         } else {

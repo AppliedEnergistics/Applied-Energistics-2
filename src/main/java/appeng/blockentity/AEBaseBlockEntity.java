@@ -50,7 +50,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.Clearable;
@@ -434,7 +434,7 @@ public class AEBaseBlockEntity extends BlockEntity
     @Override
     @Nullable
     @MustBeInvokedByOverriders
-    public InternalInventory getSubInventory(ResourceLocation id) {
+    public InternalInventory getSubInventory(Identifier id) {
         return null;
     }
 
@@ -514,7 +514,7 @@ public class AEBaseBlockEntity extends BlockEntity
         var ops = registries.createSerializationContext(JsonOps.INSTANCE);
         JsonStreamUtil.writeProperties(Map.of(
                 "blockState", BlockState.CODEC.encodeStart(ops, getBlockState()).getOrThrow(),
-                "level", level.dimension().location().toString(),
+                "level", level.dimension().identifier().toString(),
                 "pos", getBlockPos(),
                 "data", CompoundTag.CODEC.encodeStart(ops, data).getOrThrow()), writer);
     }

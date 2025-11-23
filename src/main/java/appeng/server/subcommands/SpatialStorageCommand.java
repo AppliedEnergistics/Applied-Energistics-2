@@ -43,7 +43,7 @@ import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.contents.objects.PlayerSprite;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
@@ -188,7 +188,7 @@ public class SpatialStorageCommand implements ISubCommand {
         sendKeyValuePair(source, PlayerMessages.Size.text(), formatBlockPos(plot.getSize(), "x"));
 
         // Show the plot's origin and make it clickable to teleport directly to it
-        String teleportToPlotCommand = getTeleportCommand(SpatialStorageDimensionIds.WORLD_ID.location(),
+        String teleportToPlotCommand = getTeleportCommand(SpatialStorageDimensionIds.WORLD_ID.identifier(),
                 plot.getOrigin());
         sendKeyValuePair(source, PlayerMessages.Origin.text(), Component.literal(formatBlockPos(plot.getOrigin(), ","))
                 .withStyle(makeCommandLink(teleportToPlotCommand, PlayerMessages.ClickToTeleport.text())));
@@ -220,7 +220,7 @@ public class SpatialStorageCommand implements ISubCommand {
     private static void teleportToPlot(CommandSourceStack source, int plotId) throws CommandSyntaxException {
         SpatialStoragePlot plot = getPlot(plotId);
 
-        String teleportCommand = getTeleportCommand(SpatialStorageDimensionIds.WORLD_ID.location(),
+        String teleportCommand = getTeleportCommand(SpatialStorageDimensionIds.WORLD_ID.identifier(),
                 plot.getOrigin());
 
         runCommandFor(source, teleportCommand);
@@ -318,7 +318,7 @@ public class SpatialStorageCommand implements ISubCommand {
         commandManager.performPrefixedCommand(source, command);
     }
 
-    private static String getTeleportCommand(ResourceLocation worldId, BlockPos pos) {
+    private static String getTeleportCommand(Identifier worldId, BlockPos pos) {
         return "/execute in " + worldId + " run tp @s " + pos.getX() + " " + (pos.getY() + 1) + " " + pos.getZ();
     }
 

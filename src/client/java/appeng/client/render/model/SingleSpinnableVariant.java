@@ -11,7 +11,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ResolvableModel;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
@@ -40,7 +40,7 @@ public class SingleSpinnableVariant implements BlockStateModel {
     }
 
     public record Unbaked(SpinnableVariant variant) implements CustomUnbakedBlockStateModel {
-        public static final ResourceLocation ID = AppEng.makeId("spinnable_variant");
+        public static final Identifier ID = AppEng.makeId("spinnable_variant");
         public static final MapCodec<Unbaked> MAP_CODEC = SpinnableVariant.MAP_CODEC.xmap(Unbaked::new,
                 Unbaked::variant);
         public static final Codec<Unbaked> CODEC = MAP_CODEC.codec();

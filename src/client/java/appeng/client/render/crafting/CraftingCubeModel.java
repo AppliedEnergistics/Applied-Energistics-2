@@ -34,7 +34,7 @@ import net.minecraft.client.resources.model.QuadCollection;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
@@ -255,7 +255,7 @@ public abstract class CraftingCubeModel implements DynamicBlockStateModel {
     }
 
     public record Unbaked(CraftingUnitType type) implements CustomUnbakedBlockStateModel {
-        public static final ResourceLocation ID = AppEng.makeId("crafting_cube");
+        public static final Identifier ID = AppEng.makeId("crafting_cube");
         public static final MapCodec<CraftingCubeModel.Unbaked> MAP_CODEC = RecordCodecBuilder
                 .mapCodec(instance -> instance.group(
                         CraftingUnitType.CODEC.fieldOf("unit_type").forGetter(Unbaked::type))

@@ -22,7 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.inventory.MenuType;
 
 import appeng.menu.implementations.CellWorkbenchMenu;
@@ -62,7 +62,7 @@ import appeng.menu.me.networktool.NetworkStatusMenu;
 import appeng.menu.me.networktool.NetworkToolMenu;
 
 public final class InitMenuTypes {
-    private static final Map<ResourceLocation, MenuType<?>> REGISTRATION_QUEUE = new HashMap<>();
+    private static final Map<Identifier, MenuType<?>> REGISTRATION_QUEUE = new HashMap<>();
 
     private InitMenuTypes() {
     }
@@ -126,7 +126,7 @@ public final class InitMenuTypes {
         }
     }
 
-    public static void queueRegistration(ResourceLocation id, MenuType<?> menuType) {
+    public static void queueRegistration(Identifier id, MenuType<?> menuType) {
         if (REGISTRATION_QUEUE.put(id, menuType) != null) {
             throw new IllegalStateException("Duplicate menu id: " + id);
         }

@@ -35,7 +35,7 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.crafting.RecipeMap;
@@ -185,27 +185,27 @@ import appeng.util.Platform;
 @Mod(value = AppEng.MOD_ID, dist = Dist.CLIENT)
 public class AppEngClient extends AppEngBase {
     private static final Logger LOG = LoggerFactory.getLogger(AppEngClient.class);
-    public static final ResourceLocation MODEL_CELL_ITEMS_1K = ResourceLocation.parse(
+    public static final Identifier MODEL_CELL_ITEMS_1K = Identifier.parse(
             "ae2:block/drive_1k_item_cell");
-    public static final ResourceLocation MODEL_CELL_ITEMS_4K = ResourceLocation.parse(
+    public static final Identifier MODEL_CELL_ITEMS_4K = Identifier.parse(
             "ae2:block/drive_4k_item_cell");
-    public static final ResourceLocation MODEL_CELL_ITEMS_16K = ResourceLocation.parse(
+    public static final Identifier MODEL_CELL_ITEMS_16K = Identifier.parse(
             "ae2:block/drive_16k_item_cell");
-    public static final ResourceLocation MODEL_CELL_ITEMS_64K = ResourceLocation.parse(
+    public static final Identifier MODEL_CELL_ITEMS_64K = Identifier.parse(
             "ae2:block/drive_64k_item_cell");
-    public static final ResourceLocation MODEL_CELL_ITEMS_256K = ResourceLocation.parse(
+    public static final Identifier MODEL_CELL_ITEMS_256K = Identifier.parse(
             "ae2:block/drive_256k_item_cell");
-    public static final ResourceLocation MODEL_CELL_FLUIDS_1K = ResourceLocation.parse(
+    public static final Identifier MODEL_CELL_FLUIDS_1K = Identifier.parse(
             "ae2:block/drive_1k_fluid_cell");
-    public static final ResourceLocation MODEL_CELL_FLUIDS_4K = ResourceLocation.parse(
+    public static final Identifier MODEL_CELL_FLUIDS_4K = Identifier.parse(
             "ae2:block/drive_4k_fluid_cell");
-    public static final ResourceLocation MODEL_CELL_FLUIDS_16K = ResourceLocation.parse(
+    public static final Identifier MODEL_CELL_FLUIDS_16K = Identifier.parse(
             "ae2:block/drive_16k_fluid_cell");
-    public static final ResourceLocation MODEL_CELL_FLUIDS_64K = ResourceLocation.parse(
+    public static final Identifier MODEL_CELL_FLUIDS_64K = Identifier.parse(
             "ae2:block/drive_64k_fluid_cell");
-    public static final ResourceLocation MODEL_CELL_FLUIDS_256K = ResourceLocation.parse(
+    public static final Identifier MODEL_CELL_FLUIDS_256K = Identifier.parse(
             "ae2:block/drive_256k_fluid_cell");
-    public static final ResourceLocation MODEL_CELL_CREATIVE = ResourceLocation.parse(
+    public static final Identifier MODEL_CELL_CREATIVE = Identifier.parse(
             "ae2:block/drive_creative_cell");
 
     /**
@@ -612,10 +612,10 @@ public class AppEngClient extends AppEngBase {
         for (var cellModelKey : StorageCellModels.standaloneModels().values()) {
             // TODO 1.21.8 Investigate what model debug name vs. model key vs. resource location is
             event.register(cellModelKey,
-                    SimpleUnbakedStandaloneModel.simpleModelWrapper(ResourceLocation.parse(cellModelKey.getName())));
+                    SimpleUnbakedStandaloneModel.simpleModelWrapper(Identifier.parse(cellModelKey.getName())));
         }
         event.register(StorageCellModels.getDefaultStandaloneModel(), SimpleUnbakedStandaloneModel
-                .simpleModelWrapper(ResourceLocation.parse(StorageCellModels.getDefaultStandaloneModel().getName())));
+                .simpleModelWrapper(Identifier.parse(StorageCellModels.getDefaultStandaloneModel().getName())));
     }
 
     private void registerItemModelProperties(RegisterRangeSelectItemModelPropertyEvent event) {
@@ -631,7 +631,7 @@ public class AppEngClient extends AppEngBase {
 
     private void registerDimensionSpecialEffects(RegisterDimensionSpecialEffectsEvent event) {
         event.register(
-                SpatialStorageDimensionIds.DIMENSION_TYPE_ID.location(),
+                SpatialStorageDimensionIds.DIMENSION_TYPE_ID.identifier(),
                 SpatialStorageSkyProperties.INSTANCE);
     }
 

@@ -10,14 +10,14 @@ import java.util.regex.Pattern;
 import com.google.common.base.Preconditions;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 
 public class Plot implements PlotBuilder {
-    private final ResourceLocation id;
+    private final Identifier id;
 
     private final List<BuildAction> buildActions = new ArrayList<>();
     private final List<PostBuildAction> postBuildActions = new ArrayList<>();
@@ -36,11 +36,11 @@ public class Plot implements PlotBuilder {
 
     private static final Pattern RANGE = Pattern.compile("\\[(-?\\d+),(-?\\d+)]");
 
-    public Plot(ResourceLocation id) {
+    public Plot(Identifier id) {
         this.id = id;
     }
 
-    public ResourceLocation getId() {
+    public Identifier getId() {
         return id;
     }
 

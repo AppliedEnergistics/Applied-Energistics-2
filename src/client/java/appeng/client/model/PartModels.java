@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory;
 import net.minecraft.client.resources.model.ResolvableModel;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.FileToIdConverter;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
 import net.minecraft.util.ExtraCodecs;
@@ -32,12 +32,12 @@ import appeng.client.api.model.parts.RegisterPartModelsEvent;
 public final class PartModels {
     private static final Logger LOG = LoggerFactory.getLogger(PartModels.class);
 
-    private static final ExtraCodecs.LateBoundIdMapper<ResourceLocation, MapCodec<? extends PartModel.Unbaked>> PART_MODEL_IDS = new ExtraCodecs.LateBoundIdMapper<>();
-    private static final MapCodec<PartModel.Unbaked> MAP_CODEC = PART_MODEL_IDS.codec(ResourceLocation.CODEC)
+    private static final ExtraCodecs.LateBoundIdMapper<Identifier, MapCodec<? extends PartModel.Unbaked>> PART_MODEL_IDS = new ExtraCodecs.LateBoundIdMapper<>();
+    private static final MapCodec<PartModel.Unbaked> MAP_CODEC = PART_MODEL_IDS.codec(Identifier.CODEC)
             .dispatchMap(PartModel.Unbaked::codec, c -> c);
     public static final Codec<PartModel.Unbaked> CODEC = MAP_CODEC.codec();
 
-    private Map<ResourceLocation, ClientPart> clientParts = null;
+    private Map<Identifier, ClientPart> clientParts = null;
 
     public PartModels() {
         ModLoader.postEvent(new RegisterPartModelsEvent(PART_MODEL_IDS));
@@ -46,7 +46,7 @@ public final class PartModels {
     public CompletableFuture<Void> reload(ResourceManager resourceManager, Executor executor) {
         var fileToIdConverter = FileToIdConverter.json("ae2/parts");
         return CompletableFuture.supplyAsync(() -> {
-            var clientParts = new HashMap<ResourceLocation, ClientPart>();
+            var clientParts = new HashMap<Identifier, ClientPart>();
             SimpleJsonResourceReloadListener.scanDirectory(
                     resourceManager,
                     fileToIdConverter,
@@ -66,7 +66,7 @@ public final class PartModels {
                                 continue;
                             }
 
-                            var itemId = entry.getKey().location();
+                            var itemId = entry.getKey().identifier();
                             var modelId = fileToIdConverter.idToFile(itemId);
                             if (!this.clientParts.containsKey(itemId)) {
                                 LOG.warn("No part model loaded for part item ID {}. Expected at {}", itemId, modelId);
@@ -77,7 +77,7 @@ public final class PartModels {
     }
 
     @Nullable
-    public PartModel.Unbaked getPartModel(ResourceLocation id) {
+    public PartModel.Unbaked getPartModel(Identifier id) {
         var clientPart = clientParts.get(id);
         return clientPart != null ? clientPart.model() : null;
     }
@@ -87,7 +87,7 @@ public final class PartModels {
 
         for (var entry : BuiltInRegistries.ITEM.entrySet()) {
             if (entry.getValue() instanceof IPartItem<?> partItem) {
-                var model = getPartModel(entry.getKey().location());
+                var model = getPartModel(entry.getKey().identifier());
                 if (model != null) {
                     result.put(partItem, model);
                 }

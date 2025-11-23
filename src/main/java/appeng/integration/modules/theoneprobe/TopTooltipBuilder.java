@@ -1,7 +1,7 @@
 package appeng.integration.modules.theoneprobe;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import mcjty.theoneprobe.api.IProbeInfo;
 
@@ -20,7 +20,7 @@ public class TopTooltipBuilder implements TooltipBuilder {
     }
 
     @Override
-    public void addLine(Component line, ResourceLocation id) {
+    public void addLine(Component line, Identifier id) {
         probeInfo.mcText(line);
     }
 }

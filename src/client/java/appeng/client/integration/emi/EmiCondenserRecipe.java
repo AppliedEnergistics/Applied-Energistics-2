@@ -8,7 +8,7 @@ import java.util.Locale;
 import com.google.common.base.Splitter;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 
@@ -97,7 +97,7 @@ class EmiCondenserRecipe extends BasicEmiRecipe {
         }
     }
 
-    private static ResourceLocation getRecipeId(CondenserOutput type) {
+    private static Identifier getRecipeId(CondenserOutput type) {
         return AppEng.makeId("/" + type.name().toLowerCase(Locale.ROOT));
     }
 

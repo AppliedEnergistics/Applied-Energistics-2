@@ -110,7 +110,7 @@ class ServerBlockEntityRepo {
             var level = levelEntry.getKey();
             String levelName = level.toString();
             if (level instanceof ServerLevel serverLevel) {
-                levelName = serverLevel.dimension().location().toString();
+                levelName = serverLevel.dimension().identifier().toString();
             }
 
             result.add(Component.literal(levelName).withStyle(ChatFormatting.BOLD));

@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 import com.google.common.base.Splitter;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import me.shedaniel.math.Point;
 import me.shedaniel.math.Rectangle;
@@ -72,10 +72,10 @@ class CondenserCategory implements DisplayCategory<CondenserOutputDisplay> {
 
         Point origin = new Point(bounds.x + PADDING, bounds.y + PADDING);
 
-        ResourceLocation location = AppEng.makeId("textures/guis/condenser.png");
+        Identifier location = AppEng.makeId("textures/guis/condenser.png");
         widgets.add(Widgets.createTexturedWidget(location, origin.x, origin.y, 50, 25, 94, 48));
 
-        ResourceLocation statesLocation = AppEng.makeId("textures/guis/states.png");
+        Identifier statesLocation = AppEng.makeId("textures/guis/states.png");
         widgets.add(Widgets.createTexturedWidget(statesLocation, origin.x + 2, origin.y + 28, 241, 81, 14, 14));
         widgets.add(Widgets.createTexturedWidget(statesLocation, origin.x + 78, origin.y + 28, 240, 240, 16, 16));
 

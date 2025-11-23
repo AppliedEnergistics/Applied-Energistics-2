@@ -1,7 +1,7 @@
 package appeng.datagen.providers;
 
 import net.minecraft.data.PackOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.client.data.ParticleDescriptionProvider;
 
 import appeng.core.AppEng;
@@ -14,12 +14,12 @@ public class AE2ParticleDescriptionProvider extends ParticleDescriptionProvider 
 
     @Override
     protected void addDescriptions() {
-        this.spriteSet(ParticleTypes.CRAFTING, ResourceLocation.withDefaultNamespace("generic_0"));
+        this.spriteSet(ParticleTypes.CRAFTING, Identifier.withDefaultNamespace("generic_0"));
         this.spriteSet(ParticleTypes.ENERGY, AppEng.makeId("energy"));
-        this.spriteSet(ParticleTypes.LIGHTNING_ARC, ResourceLocation.withDefaultNamespace("generic_0"));
-        this.spriteSet(ParticleTypes.LIGHTNING, ResourceLocation.withDefaultNamespace("generic_0"));
+        this.spriteSet(ParticleTypes.LIGHTNING_ARC, Identifier.withDefaultNamespace("generic_0"));
+        this.spriteSet(ParticleTypes.LIGHTNING, Identifier.withDefaultNamespace("generic_0"));
         this.spriteSet(ParticleTypes.MATTER_CANNON, AppEng.makeId("matter_cannon"));
-        this.spriteSet(ParticleTypes.VIBRANT, ResourceLocation.withDefaultNamespace("generic_0"));
+        this.spriteSet(ParticleTypes.VIBRANT, Identifier.withDefaultNamespace("generic_0"));
 
     }
 }

@@ -120,7 +120,7 @@ public final class AE2ModelProvider extends ModelProvider implements IAE2DataPro
             var missingPartModels = knownItems.get()
                     .filter(holder -> holder.value() instanceof IPartItem<?> partItem && !isCable(partItem)
                             && !this.parts.containsKey(partItem))
-                    .map(holder -> holder.unwrapKey().orElseThrow().location())
+                    .map(holder -> holder.unwrapKey().orElseThrow().identifier())
                     .toList();
             if (!missingPartModels.isEmpty()) {
                 throw new IllegalStateException("Missing part model definitions for: " + missingPartModels);

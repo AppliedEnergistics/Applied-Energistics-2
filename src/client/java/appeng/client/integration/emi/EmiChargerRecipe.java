@@ -24,7 +24,7 @@ class EmiChargerRecipe extends BasicEmiRecipe {
     private final EmiStack result;
 
     public EmiChargerRecipe(RecipeHolder<ChargerRecipe> holder) {
-        super(CATEGORY, holder.id().location(), 130, 50);
+        super(CATEGORY, holder.id().identifier(), 130, 50);
         recipe = holder.value();
         this.ingredient = EmiIngredient.of(recipe.getIngredient());
         inputs.add(this.ingredient);

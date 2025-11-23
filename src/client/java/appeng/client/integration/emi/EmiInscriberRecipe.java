@@ -1,6 +1,6 @@
 package appeng.client.integration.emi;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.crafting.RecipeHolder;
 
 import dev.emi.emi.api.recipe.BasicEmiRecipe;
@@ -20,7 +20,7 @@ class EmiInscriberRecipe extends BasicEmiRecipe {
     private final InscriberRecipe recipe;
 
     public EmiInscriberRecipe(RecipeHolder<InscriberRecipe> holder) {
-        super(CATEGORY, holder.id().location(), 105, 54);
+        super(CATEGORY, holder.id().identifier(), 105, 54);
 
         recipe = holder.value();
 
@@ -44,7 +44,7 @@ class EmiInscriberRecipe extends BasicEmiRecipe {
 
     @Override
     public void addWidgets(WidgetHolder widgets) {
-        ResourceLocation background = AppEng.makeId("textures/guis/inscriber.png");
+        Identifier background = AppEng.makeId("textures/guis/inscriber.png");
 
         widgets.addTexture(background, 0, 0, 105, 54, 36, 20);
 

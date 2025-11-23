@@ -40,7 +40,7 @@ public class EmiEntropyRecipe extends BasicEmiRecipe {
     private final boolean inputConsumed;
 
     public EmiEntropyRecipe(RecipeHolder<EntropyRecipe> holder) {
-        super(CATEGORY, holder.id().location(), 130, 50);
+        super(CATEGORY, holder.id().identifier(), 130, 50);
         recipe = holder.value();
 
         // In-World Block/Fluid input

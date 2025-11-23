@@ -18,7 +18,7 @@
 
 package appeng.parts.reporting;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import appeng.api.parts.IPartItem;
 import appeng.api.util.AEColor;
@@ -36,7 +36,7 @@ import appeng.core.AppEng;
  */
 public abstract class AbstractPanelPart extends AbstractReportingPart {
 
-    public static final ResourceLocation MODEL_BASE = AppEng.makeId("part/monitor_base");
+    public static final Identifier MODEL_BASE = AppEng.makeId("part/monitor_base");
 
     public AbstractPanelPart(IPartItem<?> partItem) {
         super(partItem, false);

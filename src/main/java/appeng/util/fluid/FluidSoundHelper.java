@@ -21,7 +21,6 @@ package appeng.util.fluid;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.common.SoundActions;
@@ -67,8 +66,9 @@ public final class FluidSoundHelper {
      * @see net.neoforged.neoforge.fluids.FluidUtil#tryFillContainer(ItemStack, IFluidHandler, int, Player, boolean)
      */
     private static void playSound(Player player, SoundEvent fillSound) {
+        // TODO 1.21.11: This now plays it for everyone.
         // This should just play the sound for the player themselves
-        player.playNotifySound(fillSound, SoundSource.PLAYERS, 1.0F, 1.0F);
+        player.playSound(fillSound);
     }
 
 }

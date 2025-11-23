@@ -26,7 +26,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.inventory.TransientCraftingContainer;
@@ -79,7 +79,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkedInvBlockEntity
     /**
      * Identifies the sub-inventory used by molecular assemblers to store the input items for the crafting process.
      */
-    public static final ResourceLocation INV_MAIN = AppEng.makeId("molecular_assembler");
+    public static final Identifier INV_MAIN = AppEng.makeId("molecular_assembler");
 
     private final CraftingContainer craftingInv;
     private final AppEngInternalInventory gridInv = new AppEngInternalInventory(this, 9 + 1, 1);
@@ -321,7 +321,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkedInvBlockEntity
     }
 
     @Override
-    public InternalInventory getSubInventory(ResourceLocation id) {
+    public InternalInventory getSubInventory(Identifier id) {
         if (id.equals(ISegmentedInventory.UPGRADES)) {
             return this.upgrades;
         } else if (id.equals(INV_MAIN)) {

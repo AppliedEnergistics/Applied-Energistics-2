@@ -24,8 +24,8 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.InteractionHand;
@@ -114,7 +114,7 @@ public class ReplicatorCardItem extends AEBaseItem {
                     tag.putInt("y", y);
                     tag.putInt("z", z);
                     tag.putInt("side", side.ordinal());
-                    tag.putString("w", level.dimension().location().toString());
+                    tag.putString("w", level.dimension().identifier().toString());
                     tag.putInt("r", 0);
                 });
 
@@ -131,7 +131,7 @@ public class ReplicatorCardItem extends AEBaseItem {
                 final int src_side = ish.getIntOr("side", 0);
                 final String worldId = ish.getStringOr("w", "");
                 final Level src_w = level.getServer()
-                        .getLevel(ResourceKey.create(Registries.DIMENSION, ResourceLocation.parse(worldId)));
+                        .getLevel(ResourceKey.create(Registries.DIMENSION, Identifier.parse(worldId)));
                 final int replications = ish.getIntOr("r", 0) + 1;
 
                 var gh = GridHelper.getNodeHost(src_w, new BlockPos(src_x, src_y, src_z));

@@ -11,7 +11,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.neoforged.neoforge.model.data.ModelData;
@@ -50,10 +50,10 @@ public class StaticPartModel implements PartModel {
         return model.particleIcon();
     }
 
-    public record Unbaked(ResourceLocation model) implements PartModel.Unbaked {
-        public static final ResourceLocation ID = AppEng.makeId("model");
+    public record Unbaked(Identifier model) implements PartModel.Unbaked {
+        public static final Identifier ID = AppEng.makeId("model");
         public static final MapCodec<Unbaked> MAP_CODEC = RecordCodecBuilder.mapCodec(builder -> builder.group(
-                ResourceLocation.CODEC.fieldOf("model").forGetter(Unbaked::model)).apply(builder, Unbaked::new));
+                Identifier.CODEC.fieldOf("model").forGetter(Unbaked::model)).apply(builder, Unbaked::new));
 
         @Override
         public MapCodec<? extends PartModel.Unbaked> codec() {

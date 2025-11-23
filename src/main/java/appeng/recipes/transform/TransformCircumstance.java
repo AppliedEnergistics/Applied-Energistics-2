@@ -17,7 +17,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
@@ -53,7 +53,7 @@ public class TransformCircumstance {
         if (type.equals("explosion"))
             return explosion();
         else if (type.equals("fluid")) {
-            return fluid(TagKey.create(Registries.FLUID, ResourceLocation.parse(obj.get("tag").getAsString())));
+            return fluid(TagKey.create(Registries.FLUID, Identifier.parse(obj.get("tag").getAsString())));
         } else
             throw new JsonParseException("Invalid transform recipe type " + type);
     }
@@ -63,7 +63,7 @@ public class TransformCircumstance {
         if (type.equals("explosion"))
             return explosion();
         else if (type.equals("fluid")) {
-            return fluid(TagKey.create(Registries.FLUID, buf.readResourceLocation()));
+            return fluid(TagKey.create(Registries.FLUID, buf.readIdentifier()));
         } else
             throw new DecoderException("Invalid transform recipe type " + type);
     }
@@ -152,7 +152,7 @@ public class TransformCircumstance {
         @Override
         void toNetwork(FriendlyByteBuf buf) {
             super.toNetwork(buf);
-            buf.writeResourceLocation(fluidTag.location());
+            buf.writeIdentifier(fluidTag.location());
         }
 
         @Override

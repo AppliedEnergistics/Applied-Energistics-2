@@ -36,7 +36,7 @@ import net.minecraft.client.resources.model.QuadCollection;
 import net.minecraft.client.resources.model.SpriteGetter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
@@ -93,7 +93,7 @@ public class PaintSplotchesModel implements DynamicBlockStateModel {
     public record Unbaked() implements CustomUnbakedBlockStateModel {
         public static final MapCodec<Unbaked> MAP_CODEC = MapCodec.unit(Unbaked::new);
 
-        public static final ResourceLocation ID = AppEng.makeId("paint_splotches");
+        public static final Identifier ID = AppEng.makeId("paint_splotches");
 
         @Override
         public MapCodec<Unbaked> codec() {

@@ -17,7 +17,7 @@ import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.client.RenderTypeHelper;
@@ -29,7 +29,7 @@ import appeng.core.AppEng;
 
 public class CrankRenderer implements BlockEntityRenderer<CrankBlockEntity, CrankRenderState> {
 
-    public static final ResourceLocation HANDLE_MODEL_ID = AppEng.makeId("block/crank_handle");
+    public static final Identifier HANDLE_MODEL_ID = AppEng.makeId("block/crank_handle");
     public static final StandaloneModelKey<SimpleModelWrapper> HANDLE_MODEL = new StandaloneModelKey<>(
             HANDLE_MODEL_ID::toString);
 

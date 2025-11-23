@@ -6,7 +6,7 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -56,7 +56,7 @@ public class MissingContentItem extends Item {
             AEKeyType keyType = null;
             try {
                 var keyTypeString = brokenDataTag.getStringOr(AEKey.TYPE_FIELD, "");
-                keyType = AEKeyTypesInternal.getRegistry().getValue(ResourceLocation.parse(keyTypeString));
+                keyType = AEKeyTypesInternal.getRegistry().getValue(Identifier.parse(keyTypeString));
                 if (keyType == null) {
                     missingId.append(" (").append(keyTypeString).append(")");
                 }

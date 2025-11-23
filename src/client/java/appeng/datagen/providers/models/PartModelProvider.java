@@ -14,7 +14,7 @@ import net.minecraft.client.data.models.model.ModelLocationUtils;
 import net.minecraft.client.data.models.model.ModelTemplates;
 import net.minecraft.client.data.models.model.TextureMapping;
 import net.minecraft.client.data.models.model.TextureSlot;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.ItemLike;
 
 import appeng.api.util.AEColor;
@@ -177,14 +177,14 @@ public class PartModelProvider extends ModelSubProvider {
                         new AEColorItemTintSource(color, AEColorVariant.MEDIUM_BRIGHT)));
     }
 
-    private static StatusIndicatorPartModel.Unbaked partStatusIndicator(ResourceLocation baseModel) {
+    private static StatusIndicatorPartModel.Unbaked partStatusIndicator(Identifier baseModel) {
         return new StatusIndicatorPartModel.Unbaked(
                 baseModel.withSuffix("_has_channel"),
                 baseModel.withSuffix("_on"),
                 baseModel.withSuffix("_off"));
     }
 
-    private void terminal(ItemLike part, ResourceLocation modelBase) {
+    private void terminal(ItemLike part, Identifier modelBase) {
         partModels.composite(part,
                 new StaticPartModel.Unbaked(makeId("part/display_base")),
                 new StatusIndicatorPartModel.Unbaked(

@@ -24,7 +24,7 @@ import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.resources.model.SpriteGetter;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import appeng.core.AppEng;
 
@@ -34,7 +34,7 @@ import appeng.core.AppEng;
 public class SmartCableTextures {
 
     public static final Material[] SMART_CHANNELS_TEXTURES = Arrays
-            .stream(new ResourceLocation[] { AppEng.makeId("part/cable/smart/channels_00"), //
+            .stream(new Identifier[] { AppEng.makeId("part/cable/smart/channels_00"), //
                     AppEng.makeId("part/cable/smart/channels_01"), //
                     AppEng.makeId("part/cable/smart/channels_02"), //
                     AppEng.makeId("part/cable/smart/channels_03"), //
@@ -52,7 +52,7 @@ public class SmartCableTextures {
     private final TextureAtlasSprite[] textures;
 
     public static final Material[] DENSE_SMART_CHANNELS_TEXTURES = Arrays
-            .stream(new ResourceLocation[] { AppEng.makeId("part/cable/dense_smart/channels_00"), //
+            .stream(new Identifier[] { AppEng.makeId("part/cable/dense_smart/channels_00"), //
                     AppEng.makeId("part/cable/dense_smart/channels_01"), //
                     AppEng.makeId("part/cable/dense_smart/channels_02"), //
                     AppEng.makeId("part/cable/dense_smart/channels_03"), //

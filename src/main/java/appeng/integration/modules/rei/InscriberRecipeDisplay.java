@@ -24,7 +24,7 @@ import java.util.Optional;
 
 import com.google.common.collect.ImmutableList;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.crafting.RecipeHolder;
 
 import me.shedaniel.rei.api.common.category.CategoryIdentifier;
@@ -65,7 +65,7 @@ public class InscriberRecipeDisplay implements Display {
     }
 
     @Override
-    public Optional<ResourceLocation> getDisplayLocation() {
-        return Optional.of(holder.id().location());
+    public Optional<Identifier> getDisplayLocation() {
+        return Optional.of(holder.id().identifier());
     }
 }

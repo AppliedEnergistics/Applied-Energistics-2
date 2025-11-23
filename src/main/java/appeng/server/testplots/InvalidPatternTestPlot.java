@@ -2,8 +2,8 @@ package appeng.server.testplots;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.Blocks;
 
@@ -29,7 +29,7 @@ public class InvalidPatternTestPlot {
             pattern.set(AEComponents.ENCODED_CRAFTING_PATTERN, new EncodedCraftingPattern(
                     encodedPattern.inputs(),
                     encodedPattern.result(),
-                    ResourceKey.create(Registries.RECIPE, ResourceLocation.parse("invalid")),
+                    ResourceKey.create(Registries.RECIPE, Identifier.parse("invalid")),
                     encodedPattern.canSubstitute(),
                     encodedPattern.canSubstituteFluids()));
             chest.getInternalInventory().addItems(pattern);

@@ -10,7 +10,7 @@ import net.minecraft.client.renderer.item.ItemModel;
 import net.minecraft.client.renderer.item.ItemModelResolver;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.resources.model.ResolvableModel;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import net.minecraft.world.entity.ItemOwner;
 import net.minecraft.world.item.ItemDisplayContext;
@@ -57,13 +57,13 @@ public class ColorApplicatorItemModel implements ItemModel {
         }
     }
 
-    public record Unbaked(ResourceLocation uncoloredModel, ResourceLocation coloredModel) implements ItemModel.Unbaked {
-        public static final ResourceLocation ID = AppEng.makeId("color_applicator");
+    public record Unbaked(Identifier uncoloredModel, Identifier coloredModel) implements ItemModel.Unbaked {
+        public static final Identifier ID = AppEng.makeId("color_applicator");
 
         public static final MapCodec<Unbaked> MAP_CODEC = RecordCodecBuilder.mapCodec(
                 builder -> builder.group(
-                        ResourceLocation.CODEC.fieldOf("uncolored_model").forGetter(Unbaked::uncoloredModel),
-                        ResourceLocation.CODEC.fieldOf("colored_model").forGetter(Unbaked::coloredModel))
+                        Identifier.CODEC.fieldOf("uncolored_model").forGetter(Unbaked::uncoloredModel),
+                        Identifier.CODEC.fieldOf("colored_model").forGetter(Unbaked::coloredModel))
                         .apply(builder, Unbaked::new));
 
         @Override

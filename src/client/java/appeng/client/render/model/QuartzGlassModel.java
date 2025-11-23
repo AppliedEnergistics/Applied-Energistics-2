@@ -40,7 +40,7 @@ import net.minecraft.client.resources.model.QuadCollection;
 import net.minecraft.client.resources.model.SpriteGetter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockAndTintGetter;
@@ -65,13 +65,13 @@ public class QuartzGlassModel implements DynamicBlockStateModel {
 
     // Alternating textures based on position
     static final Material TEXTURE_A = new Material(TextureAtlas.LOCATION_BLOCKS,
-            ResourceLocation.parse("ae2:block/glass/quartz_glass_a"));
+            Identifier.parse("ae2:block/glass/quartz_glass_a"));
     static final Material TEXTURE_B = new Material(TextureAtlas.LOCATION_BLOCKS,
-            ResourceLocation.parse("ae2:block/glass/quartz_glass_b"));
+            Identifier.parse("ae2:block/glass/quartz_glass_b"));
     static final Material TEXTURE_C = new Material(TextureAtlas.LOCATION_BLOCKS,
-            ResourceLocation.parse("ae2:block/glass/quartz_glass_c"));
+            Identifier.parse("ae2:block/glass/quartz_glass_c"));
     static final Material TEXTURE_D = new Material(TextureAtlas.LOCATION_BLOCKS,
-            ResourceLocation.parse("ae2:block/glass/quartz_glass_d"));
+            Identifier.parse("ae2:block/glass/quartz_glass_d"));
 
     // Frame texture
     static final Material[] TEXTURES_FRAME = generateTexturesFrame();
@@ -79,7 +79,7 @@ public class QuartzGlassModel implements DynamicBlockStateModel {
     // Generates the required textures for the frame
     private static Material[] generateTexturesFrame() {
         return IntStream.range(1, 16).mapToObj(Integer::toBinaryString).map(s -> Strings.padStart(s, 4, '0'))
-                .map(s -> ResourceLocation.parse("ae2:block/glass/quartz_glass_frame" + s))
+                .map(s -> Identifier.parse("ae2:block/glass/quartz_glass_frame" + s))
                 .map(rl -> new Material(TextureAtlas.LOCATION_BLOCKS, rl)).toArray(Material[]::new);
     }
 
@@ -271,7 +271,7 @@ public class QuartzGlassModel implements DynamicBlockStateModel {
     }
 
     public record Unbaked() implements CustomUnbakedBlockStateModel {
-        public static final ResourceLocation ID = AppEng.makeId("quartz_glass");
+        public static final Identifier ID = AppEng.makeId("quartz_glass");
         public static final MapCodec<QuartzGlassModel.Unbaked> MAP_CODEC = MapCodec.unit(Unbaked::new);
 
         @Override

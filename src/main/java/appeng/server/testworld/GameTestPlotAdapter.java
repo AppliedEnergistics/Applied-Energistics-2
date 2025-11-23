@@ -20,7 +20,7 @@ import net.minecraft.nbt.IntTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
@@ -31,16 +31,16 @@ import appeng.util.Platform;
 
 public class GameTestPlotAdapter extends GameTestInstance {
 
-    private final ResourceLocation plotId;
+    private final Identifier plotId;
 
     public static final MapCodec<GameTestPlotAdapter> CODEC = RecordCodecBuilder.mapCodec(
             builder -> builder.group(
                     TestData.CODEC.fieldOf("testData").forGetter(i -> i.info()),
-                    ResourceLocation.CODEC.fieldOf("plotId").forGetter(GameTestPlotAdapter::plotId))
+                    Identifier.CODEC.fieldOf("plotId").forGetter(GameTestPlotAdapter::plotId))
                     .apply(builder, GameTestPlotAdapter::new));
 
     protected GameTestPlotAdapter(TestData<Holder<TestEnvironmentDefinition>> testData,
-            ResourceLocation plotId) {
+            Identifier plotId) {
         super(testData);
         this.plotId = plotId;
     }
@@ -64,11 +64,11 @@ public class GameTestPlotAdapter extends GameTestInstance {
                 origin);
     }
 
-    public ResourceLocation plotId() {
+    public Identifier plotId() {
         return plotId;
     }
 
-    public static void registerAll(BiConsumer<ResourceLocation, GameTestInstance> register) {
+    public static void registerAll(BiConsumer<Identifier, GameTestInstance> register) {
         for (var plot : TestPlots.createPlots()) {
             var test = plot.getTest();
             if (test == null) {

@@ -16,14 +16,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.entity.EntityTypeTest;
+import net.minecraft.world.level.gamerules.GameRules;
 import net.minecraft.world.level.levelgen.FlatLevelSource;
 import net.neoforged.neoforge.common.NeoForge;
 
@@ -57,7 +57,7 @@ public class SetupTestWorldCommand implements ISubCommand {
         setupTestWorld(srv, sender, null);
     }
 
-    private void setupTestWorld(MinecraftServer srv, CommandSourceStack sender, @Nullable ResourceLocation plotId) {
+    private void setupTestWorld(MinecraftServer srv, CommandSourceStack sender, @Nullable Identifier plotId) {
         var sw = Stopwatch.createStarted();
         try {
             var player = sender.getPlayerOrException();
@@ -135,17 +135,17 @@ public class SetupTestWorldCommand implements ISubCommand {
     }
 
     private static void makeAlwaysDaytime(MinecraftServer srv) {
-        srv.getGameRules().getRule(GameRules.RULE_DAYLIGHT).set(false, srv);
+        srv.getWorldData().getGameRules().set(GameRules.ADVANCE_TIME, false, srv);
         srv.overworld().setDayTime(1000);
     }
 
     private static void disableWeather(MinecraftServer srv) {
-        srv.getGameRules().getRule(GameRules.RULE_WEATHER_CYCLE).set(false, srv);
+        srv.getWorldData().getGameRules().set(GameRules.ADVANCE_WEATHER, false, srv);
         srv.overworld().setWeatherParameters(9999, 0, false, false);
     }
 
     private static void disableMobSpawning(MinecraftServer srv) {
-        srv.getGameRules().getRule(GameRules.RULE_DOMOBSPAWNING).set(false, srv);
+        srv.getWorldData().getGameRules().set(GameRules.SPAWN_MOBS, false, srv);
     }
 
     private static boolean isSuperflatWorld(ServerLevel level) {

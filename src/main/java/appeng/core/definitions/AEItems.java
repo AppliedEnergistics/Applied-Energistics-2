@@ -31,8 +31,8 @@ import com.google.common.base.Preconditions;
 
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
@@ -153,12 +153,12 @@ public final class AEItems {
     ///
     /// PORTABLE CELLS
     ///
-    private static ItemDefinition<PortableCellItem> makePortableItemCell(ResourceLocation id, StorageTier tier) {
+    private static ItemDefinition<PortableCellItem> makePortableItemCell(Identifier id, StorageTier tier) {
         var name = tier.namePrefix() + " Portable Item Cell";
         return item(name, id, p -> new PortableCellItem(AEKeyType.items(), 63 - tier.index() * 9, MEStorageMenu.PORTABLE_ITEM_CELL_TYPE, tier, p.stacksTo(1), 0x80caff));
     }
 
-    private static ItemDefinition<PortableCellItem> makePortableFluidCell(ResourceLocation id, StorageTier tier) {
+    private static ItemDefinition<PortableCellItem> makePortableFluidCell(Identifier id, StorageTier tier) {
         var name = tier.namePrefix() + " Portable Fluid Cell";
         return item(name, id, p -> new PortableCellItem(AEKeyType.fluids(), 18, MEStorageMenu.PORTABLE_FLUID_CELL_TYPE, tier, p.stacksTo(1), 0x80caff));
     }
@@ -292,7 +292,7 @@ public final class AEItems {
     }
 
     private static <T extends Item> ColoredItemDefinition<T> createColoredItems(String name,
-            Map<AEColor, ResourceLocation> ids,
+            Map<AEColor, Identifier> ids,
             BiFunction<Item.Properties, AEColor, T> factory) {
         var colors = new ColoredItemDefinition<T>();
         for (var entry : ids.entrySet()) {
@@ -308,12 +308,12 @@ public final class AEItems {
         return colors;
     }
 
-    static <T extends Item> ItemDefinition<T> item(String name, ResourceLocation id,
+    static <T extends Item> ItemDefinition<T> item(String name, Identifier id,
             Function<Item.Properties, T> factory) {
         return item(name, id, factory, AECreativeTabIds.MAIN);
     }
 
-    static ItemDefinition<Item> standardItem(String name, ResourceLocation id,
+    static ItemDefinition<Item> standardItem(String name, Identifier id,
             Consumer<Item.Properties> customizer,
             @Nullable ResourceKey<CreativeModeTab> group) {
         return item(name, id, p -> {
@@ -322,7 +322,7 @@ public final class AEItems {
         }, group);
     }
 
-    static <T extends Item> ItemDefinition<T> item(String name, ResourceLocation id,
+    static <T extends Item> ItemDefinition<T> item(String name, Identifier id,
             Function<Item.Properties, T> factory,
             @Nullable ResourceKey<CreativeModeTab> group) {
 

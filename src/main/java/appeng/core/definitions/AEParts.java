@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 
 import appeng.api.ids.AEPartIds;
@@ -115,7 +115,7 @@ public final class AEParts {
 
     private static <T extends IPart> ItemDefinition<PartItem<T>> createPart(
             String englishName,
-            ResourceLocation id,
+            Identifier id,
             Class<T> partClass,
             Function<IPartItem<T>, T> factory) {
 
@@ -124,7 +124,7 @@ public final class AEParts {
 
     private static <T extends IPart> ItemDefinition<PartItem<T>> createCustomPartItem(
             String englishName,
-            ResourceLocation id,
+            Identifier id,
             Class<T> partClass,
             Function<Item.Properties, PartItem<T>> factory) {
 

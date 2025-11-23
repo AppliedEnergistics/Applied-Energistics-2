@@ -38,7 +38,7 @@ import net.minecraft.client.resources.model.QuadCollection;
 import net.minecraft.client.resources.model.SpriteGetter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.Block;
@@ -52,8 +52,8 @@ import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
 
 public class QnbFormedModel implements DynamicBlockStateModel {
-    private static final ResourceLocation MODEL_RING = AppEng.makeId("block/quantum_ring");
-    private static final ResourceLocation MODEL_LINK = AppEng.makeId("block/quantum_link");
+    private static final Identifier MODEL_RING = AppEng.makeId("block/quantum_ring");
+    private static final Identifier MODEL_LINK = AppEng.makeId("block/quantum_link");
 
     private static final Material TEXTURE_LINK = new Material(TextureAtlas.LOCATION_BLOCKS,
             AppEng.makeId("block/quantum_link"));
@@ -77,8 +77,8 @@ public class QnbFormedModel implements DynamicBlockStateModel {
     private static final float CENTER_POWERED_RENDER_MIN = -0.01f;
     private static final float CENTER_POWERED_RENDER_MAX = 16.01f;
 
-    private final SimpleModelWrapper unformedRing;
-    private final SimpleModelWrapper unformedLink;
+    private final BlockModelPart unformedRing;
+    private final BlockModelPart unformedLink;
 
     private final Block linkBlock;
 
@@ -89,7 +89,7 @@ public class QnbFormedModel implements DynamicBlockStateModel {
     private final TextureAtlasSprite lightTexture;
     private final TextureAtlasSprite lightCornerTexture;
 
-    public QnbFormedModel(SimpleModelWrapper unformedRing, SimpleModelWrapper unformedLink,
+    public QnbFormedModel(BlockModelPart unformedRing, BlockModelPart unformedLink,
             SpriteGetter bakedTextureGetter) {
         this.unformedLink = unformedLink;
         ModelDebugName debugName = QnbFormedModel.class::toString;
@@ -231,13 +231,13 @@ public class QnbFormedModel implements DynamicBlockStateModel {
     }
 
     public record Unbaked() implements CustomUnbakedBlockStateModel {
-        public static final ResourceLocation ID = AppEng.makeId("qnb_formed");
+        public static final Identifier ID = AppEng.makeId("qnb_formed");
         public static final MapCodec<Unbaked> MAP_CODEC = MapCodec.unit(Unbaked::new);
 
         @Override
         public BlockStateModel bake(ModelBaker baker) {
-            var ring = SimpleModelWrapper.bake(baker, MODEL_RING, BlockModelRotation.X0_Y0);
-            var link = SimpleModelWrapper.bake(baker, MODEL_LINK, BlockModelRotation.X0_Y0);
+            var ring = SimpleModelWrapper.bake(baker, MODEL_RING, BlockModelRotation.IDENTITY);
+            var link = SimpleModelWrapper.bake(baker, MODEL_LINK, BlockModelRotation.IDENTITY);
 
             return new QnbFormedModel(ring, link, baker.sprites());
         }

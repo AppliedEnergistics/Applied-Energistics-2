@@ -132,7 +132,7 @@ public class SpatialStorageCellItem extends AEBaseItem implements ISpatialStorag
         }
 
         // Store some information about this transition in the plot
-        TransitionInfo info = new TransitionInfo(level.dimension().location(), min, max, Instant.now());
+        TransitionInfo info = new TransitionInfo(level.dimension().identifier(), min, max, Instant.now());
         manager.setLastTransition(plot.getId(), info);
 
         try {

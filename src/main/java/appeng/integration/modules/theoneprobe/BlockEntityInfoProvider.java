@@ -25,7 +25,7 @@ import java.util.List;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -66,7 +66,7 @@ public final class BlockEntityInfoProvider implements IProbeInfoProvider, IBlock
     public BlockEntityInfoProvider() {
         TooltipProviders.loadCommon(new CommonRegistration() {
             @Override
-            public <T extends BlockEntity> void addBlockEntityData(ResourceLocation id, Class<T> blockEntityClass,
+            public <T extends BlockEntity> void addBlockEntityData(Identifier id, Class<T> blockEntityClass,
                     ServerDataProvider<? super T> provider) {
                 dataCollectors.add((blockEntity, player, serverData) -> {
                     if (blockEntityClass.isInstance(blockEntity)) {
@@ -79,28 +79,28 @@ public final class BlockEntityInfoProvider implements IProbeInfoProvider, IBlock
         TooltipProviders.loadClient(new ClientRegistration() {
             @Override
             public <T extends BlockEntity> void addBlockEntityBody(Class<T> blockEntityClass,
-                    Class<? extends Block> blockClass, ResourceLocation id, BodyProvider<? super T> provider,
+                    Class<? extends Block> blockClass, Identifier id, BodyProvider<? super T> provider,
                     int priority) {
                 bodyCustomizers.add(new BodyCustomizer<>(blockEntityClass, provider, priority));
             }
 
             @Override
             public <T extends BlockEntity> void addBlockEntityIcon(Class<T> blockEntityClass,
-                    Class<? extends Block> blockClass, ResourceLocation id, IconProvider<? super T> provider,
+                    Class<? extends Block> blockClass, Identifier id, IconProvider<? super T> provider,
                     int priority) {
                 iconCustomizers.add(new IconCustomizer<>(blockEntityClass, provider, priority));
             }
 
             @Override
             public <T extends BlockEntity> void addBlockEntityName(Class<T> blockEntityClass,
-                    Class<? extends Block> blockClass, ResourceLocation id, NameProvider<? super T> provider,
+                    Class<? extends Block> blockClass, Identifier id, NameProvider<? super T> provider,
                     int priority) {
                 nameCustomizers.add(new NameCustomizer<>(blockEntityClass, provider, priority));
             }
 
             @Override
             public <T extends BlockEntity> void addBlockEntityModName(Class<T> blockEntityClass,
-                    Class<? extends Block> blockClass, ResourceLocation id, ModNameProvider<? super T> provider,
+                    Class<? extends Block> blockClass, Identifier id, ModNameProvider<? super T> provider,
                     int priority) {
                 modNameCustomizers.add(new ModNameCustomizer<>(blockEntityClass, provider, priority));
             }
@@ -113,7 +113,7 @@ public final class BlockEntityInfoProvider implements IProbeInfoProvider, IBlock
     }
 
     @Override
-    public ResourceLocation getID() {
+    public Identifier getID() {
         return AppEng.makeId("block-entity");
     }
 

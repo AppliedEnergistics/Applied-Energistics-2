@@ -26,7 +26,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.data.AtlasIds;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 
 import appeng.client.Point;
@@ -297,8 +297,8 @@ public class Scrollbar implements IScrollSource, ICompositeWidget {
     }
 
     public static final Style DEFAULT = Style.create(
-            ResourceLocation.fromNamespaceAndPath("minecraft", "container/creative_inventory/scroller"),
-            ResourceLocation.fromNamespaceAndPath("minecraft", "container/creative_inventory/scroller_disabled"));
+            Identifier.fromNamespaceAndPath("minecraft", "container/creative_inventory/scroller"),
+            Identifier.fromNamespaceAndPath("minecraft", "container/creative_inventory/scroller_disabled"));
 
     public static final Style BIG = Style.create(
             AppEng.makeId("big_scroller"),
@@ -309,11 +309,11 @@ public class Scrollbar implements IScrollSource, ICompositeWidget {
             AppEng.makeId("small_scroller_disabled"));
 
     public record Style(
-            ResourceLocation enabledSprite,
-            ResourceLocation disabledSprite) {
+            Identifier enabledSprite,
+            Identifier disabledSprite) {
         public static Style create(
-                ResourceLocation enabledSprite,
-                ResourceLocation disabledSprite) {
+                Identifier enabledSprite,
+                Identifier disabledSprite) {
             return new Style(enabledSprite, disabledSprite);
         }
 

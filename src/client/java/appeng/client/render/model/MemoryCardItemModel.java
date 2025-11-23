@@ -23,7 +23,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.resources.model.ModelDebugName;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import net.minecraft.world.entity.ItemOwner;
 import net.minecraft.world.item.ItemDisplayContext;
@@ -103,14 +103,14 @@ public class MemoryCardItemModel implements ItemModel {
         return quads;
     }
 
-    public record Unbaked(ResourceLocation baseModel,
-            ResourceLocation colorOverlaySprite) implements ItemModel.Unbaked {
-        public static final ResourceLocation ID = AppEng.makeId("memory_card_identity");
+    public record Unbaked(Identifier baseModel,
+            Identifier colorOverlaySprite) implements ItemModel.Unbaked {
+        public static final Identifier ID = AppEng.makeId("memory_card_identity");
 
         public static final MapCodec<Unbaked> MAP_CODEC = RecordCodecBuilder.mapCodec(
                 builder -> builder.group(
-                        ResourceLocation.CODEC.fieldOf("base_model").forGetter(Unbaked::baseModel),
-                        ResourceLocation.CODEC.fieldOf("color_overlay_sprite").forGetter(Unbaked::colorOverlaySprite))
+                        Identifier.CODEC.fieldOf("base_model").forGetter(Unbaked::baseModel),
+                        Identifier.CODEC.fieldOf("color_overlay_sprite").forGetter(Unbaked::colorOverlaySprite))
                         .apply(builder, Unbaked::new));
 
         @Override

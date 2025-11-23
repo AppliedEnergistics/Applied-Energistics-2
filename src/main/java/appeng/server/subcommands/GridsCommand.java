@@ -210,7 +210,7 @@ public class GridsCommand implements ISubCommand {
             for (var entry : chunksByLevel.entrySet()) {
                 var level = entry.getKey();
                 var chunks = entry.getValue();
-                var baseName = sanitizeName(level.dimension().location().toString());
+                var baseName = sanitizeName(level.dimension().identifier().toString());
                 for (var chunk : chunks) {
                     var serializedChunk = SerializableChunkData.copyOf(level, level.getChunk(chunk.x, chunk.z)).write();
                     zipOut.putNextEntry(new ZipEntry("chunks/" + baseName + "_" + chunk.x + "_" + chunk.z + ".nbt"));
