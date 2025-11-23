@@ -617,7 +617,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
     }
 
     @Override
-    public void renderSlot(GuiGraphics guiGraphics, Slot s) {
+    public void renderSlot(GuiGraphics guiGraphics, Slot s, int mouseX, int mouseY) {
         if (s instanceof RepoSlot repoSlot) {
             if (this.menu.getLinkStatus().connected()) {
                 GridInventoryEntry entry = repoSlot.getEntry();
@@ -654,7 +654,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
             return;
         }
 
-        super.renderSlot(guiGraphics, s);
+        super.renderSlot(guiGraphics, s, mouseX, mouseY);
     }
 
     /**

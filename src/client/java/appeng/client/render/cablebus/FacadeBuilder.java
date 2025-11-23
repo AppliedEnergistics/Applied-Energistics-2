@@ -91,9 +91,9 @@ public class FacadeBuilder {
             new AABB(1.0 - THIN_THICKNESS, 0.0, 0.0, 1.0, 1.0, 1.0) };
 
     // Pre-rotated transparent facade quads
-    private final Map<Direction, SimpleModelWrapper> transparentFacadeModels;
+    private final Map<Direction, BlockModelPart> transparentFacadeModels;
 
-    private final Map<Direction, SimpleModelWrapper> cableAnchorStilts;
+    private final Map<Direction, BlockModelPart> cableAnchorStilts;
 
     public FacadeBuilder(ModelBaker baker) {
         cableAnchorStilts = new EnumMap<>(Direction.class);
@@ -242,7 +242,7 @@ public class FacadeBuilder {
                         }
 
                         for (AABB box : holeStrips) {
-                            emitter.fromVanilla(quad.vertices(), 0);
+                            emitter.fromVanilla(quad);
                             // Keep the cull-face for faces that are flush with the outer block-face on the
                             // side the facade is attached to, but clear it for anything that faces inwards
                             emitter.cullFace(cullFace == side ? side : null);

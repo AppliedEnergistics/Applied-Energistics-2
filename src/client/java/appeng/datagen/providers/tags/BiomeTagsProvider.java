@@ -23,6 +23,7 @@ import java.util.concurrent.CompletableFuture;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.tags.BiomeTags;
+import net.minecraft.tags.TagEntry;
 
 import appeng.core.AppEng;
 import appeng.datagen.providers.IAE2DataProvider;
@@ -37,6 +38,7 @@ public class BiomeTagsProvider extends net.minecraft.data.tags.BiomeTagsProvider
     @Override
     protected void addTags(HolderLookup.Provider registries) {
         tag(MeteoriteStructure.BIOME_TAG_KEY).addOptionalTag(BiomeTags.IS_OVERWORLD);
-        tag(BiomeTags.WITHOUT_WANDERING_TRADER_SPAWNS).add(SpatialStorageDimensionIds.BIOME_KEY);
+        tag(BiomeTags.WITHOUT_WANDERING_TRADER_SPAWNS)
+                .add(TagEntry.element(SpatialStorageDimensionIds.BIOME_KEY.identifier()));
     }
 }

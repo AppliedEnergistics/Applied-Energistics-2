@@ -149,10 +149,6 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
     public AEBaseScreen(T menu, Inventory playerInventory, Component title, ScreenStyle style) {
         super(menu, playerInventory, title);
 
-        // Pre-initialize these fields since they're used in our constructors, but Vanilla only initializes them
-        // in the init method
-        this.font = Minecraft.getInstance().font;
-
         this.style = Objects.requireNonNull(style, "style");
         this.widgets = new WidgetContainer(style);
         this.verticalToolbar = new VerticalButtonBar();
@@ -825,19 +821,19 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
      * This overrides the base-class method through some access transformer hackery...
      */
     @Override
-    public void renderSlot(GuiGraphics guiGraphics, Slot s) {
+    public void renderSlot(GuiGraphics guiGraphics, Slot s, int mouseX, int mouseY) {
         if (s instanceof AppEngSlot appEngSlot) {
             try {
-                renderAppEngSlot(guiGraphics, appEngSlot);
+                renderAppEngSlot(guiGraphics, appEngSlot, mouseX, mouseY);
             } catch (Exception err) {
                 AELog.warn("[AppEng] AE prevented crash while drawing slot: " + err);
             }
         } else {
-            super.renderSlot(guiGraphics, s);
+            super.renderSlot(guiGraphics, s, mouseX, mouseY);
         }
     }
 
-    private void renderAppEngSlot(GuiGraphics guiGraphics, AppEngSlot s) {
+    private void renderAppEngSlot(GuiGraphics guiGraphics, AppEngSlot s, int mouseX, int mouseY) {
         var is = s.getItem();
 
         // If the slot has a background icon, render it, but only if the slot is empty
@@ -854,7 +850,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
             guiGraphics.fill(s.x, s.y, 16 + s.x, 16 + s.y, 0x66ff6666);
         }
 
-        super.renderSlot(guiGraphics, s);
+        super.renderSlot(guiGraphics, s, mouseX, mouseY);
     }
 
     @Override

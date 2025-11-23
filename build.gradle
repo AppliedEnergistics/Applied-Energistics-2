@@ -34,6 +34,7 @@ neoForge.version = project.neoforge_version
 
 sourceSets {
     main {
+        // TODO 1.21.11
         java {
             exclude 'appeng/integration/modules/rei/**'
             exclude 'appeng/integration/modules/jade/**'
@@ -47,6 +48,12 @@ sourceSets {
     client {
         compileClasspath += main.output
         runtimeClasspath += main.output
+
+        // TODO 1.21.11
+        java {
+            exclude 'appeng/client/integration/rei/**'
+            exclude 'appeng/client/integration/emi/**'
+        }
     }
     test {
         compileClasspath += client.output

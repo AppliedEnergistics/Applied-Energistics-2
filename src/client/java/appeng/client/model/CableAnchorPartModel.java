@@ -22,10 +22,10 @@ import appeng.core.AppEng;
 import appeng.parts.automation.PartModelData;
 
 public class CableAnchorPartModel implements PartModel {
-    private final SimpleModelWrapper model;
-    private final SimpleModelWrapper shortModel;
+    private final BlockModelPart model;
+    private final BlockModelPart shortModel;
 
-    public CableAnchorPartModel(SimpleModelWrapper model, SimpleModelWrapper shortModel) {
+    public CableAnchorPartModel(BlockModelPart model, BlockModelPart shortModel) {
         this.model = model;
         this.shortModel = shortModel;
     }

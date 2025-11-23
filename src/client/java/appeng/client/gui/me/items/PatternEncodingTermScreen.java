@@ -154,8 +154,8 @@ public class PatternEncodingTermScreen<C extends PatternEncodingTermMenu> extend
     }
 
     @Override
-    public void renderSlot(GuiGraphics guiGraphics, Slot s) {
-        super.renderSlot(guiGraphics, s);
+    public void renderSlot(GuiGraphics guiGraphics, Slot s, int mouseX, int mouseY) {
+        super.renderSlot(guiGraphics, s, mouseX, mouseY);
 
         if (shouldShowCraftableIndicatorForSlot(s)) {
             guiGraphics.nextStratum();

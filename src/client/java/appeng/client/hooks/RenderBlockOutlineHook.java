@@ -9,6 +9,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.ShapeRenderer;
 import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.state.BlockOutlineRenderState;
 import net.minecraft.client.renderer.state.LevelRenderState;
 import net.minecraft.core.Direction;
@@ -208,7 +209,7 @@ public class RenderBlockOutlineHook {
             List<AABB> boxes,
             boolean preview,
             boolean insideBlock) {
-        RenderType renderType = insideBlock ? AERenderTypes.LINES_BEHIND_BLOCK : RenderType.lines();
+        RenderType renderType = insideBlock ? AERenderTypes.LINES_BEHIND_BLOCK : RenderTypes.lines();
         var buffer = buffers.getBuffer(renderType);
         float alpha = insideBlock ? 0.2f : preview ? 0.6f : 0.4f;
 
@@ -225,7 +226,8 @@ public class RenderBlockOutlineHook {
                     ARGB.colorFromFloat(alpha,
                             preview ? 1 : 0,
                             preview ? 1 : 0,
-                            preview ? 1 : 0));
+                            preview ? 1 : 0),
+                    7 /* line width */);
         }
     }
 }

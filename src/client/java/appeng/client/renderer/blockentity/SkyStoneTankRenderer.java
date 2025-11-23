@@ -27,7 +27,7 @@ import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
-import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.data.AtlasIds;
@@ -89,7 +89,7 @@ public final class SkyStoneTankRenderer
          */
 
         // From Modern Industrialization
-        nodes.submitCustomGeometry(poseStack, RenderType.translucentMovingBlock(), (pose, consumer) -> {
+        nodes.submitCustomGeometry(poseStack, RenderTypes.translucentMovingBlock(), (pose, consumer) -> {
             var fill = state.fill;
             var color = state.color;
 

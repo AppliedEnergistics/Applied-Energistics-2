@@ -18,6 +18,9 @@
 
 package appeng.client.renderer.blockentity;
 
+import java.util.List;
+import java.util.function.Function;
+
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import org.jetbrains.annotations.Nullable;
@@ -40,6 +43,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.client.RenderTypeHelper;
+import net.neoforged.neoforge.client.model.quad.QuadTransforms;
 
 import appeng.api.client.StorageCellModels;
 import appeng.api.orientation.BlockOrientation;
@@ -118,13 +122,14 @@ public class MEChestRenderer implements BlockEntityRenderer<MEChestBlockEntity, 
         // we need to move them into place for the slot on the ME chest
         poseStack.translate(5 / 16.0, 4 / 16.0, 0);
 
-        var rotatedModelQuads = rotateQuadCullFaces(cellModel.quads(), state.blockOrientation);
-        var renderType = RenderTypeHelper.getEntityRenderType(cellModel.renderType());
+        var rotatedModelQuads = rotateQuadCullFaces(cellModel::getQuads, state.blockOrientation);
+        var chunkSectionLayer = cellModel.getRenderType(state.blockState);
+        var renderType = RenderTypeHelper.getEntityRenderType(chunkSectionLayer);
         nodes.submitBlockModel(
                 poseStack,
                 renderType,
                 new SingleVariant(new SimpleModelWrapper(rotatedModelQuads, cellModel.useAmbientOcclusion(),
-                        cellModel.particleIcon(), cellModel.renderType())),
+                        cellModel.particleIcon(), chunkSectionLayer)),
                 1, 1, 1,
                 state.frontLightCoords,
                 OverlayTexture.NO_OVERLAY,
@@ -142,7 +147,8 @@ public class MEChestRenderer implements BlockEntityRenderer<MEChestBlockEntity, 
      * The actual vertex data will be transformed using the matrix stack, but the faces will not be correctly rotated so
      * the incorrect lighting data would be used to apply diffuse lighting and the lightmap texture.
      */
-    private static QuadCollection rotateQuadCullFaces(QuadCollection quadCollection, BlockOrientation r) {
+    private static QuadCollection rotateQuadCullFaces(Function<Direction, List<BakedQuad>> quadCollection,
+            BlockOrientation r) {
         var rotated = new QuadCollection.Builder();
         for (int cullFaceIdx = 0; cullFaceIdx <= ModelHelper.NULL_FACE_ID; cullFaceIdx++) {
             Direction cullFace = ModelHelper.faceFromIndex(cullFaceIdx);
@@ -150,10 +156,10 @@ public class MEChestRenderer implements BlockEntityRenderer<MEChestBlockEntity, 
                 cullFace = r.resultingRotate(cullFace); // This fixes the incorrect lightmap position
             }
 
-            var quads = quadCollection.getQuads(cullFace);
+            var quads = quadCollection.apply(cullFace);
             for (var quad : quads) {
-                var rotatedQuad = new BakedQuad(quad.vertices(), quad.tintIndex(), r.rotate(quad.direction()),
-                        quad.sprite(), quad.shade(), quad.lightEmission());
+                // TODO 1.21.11: QuadTransforms at this point does not rotate direction
+                var rotatedQuad = QuadTransforms.applyTransformation(quad, r.getTransformation());
                 if (cullFace == null) {
                     rotated.addUnculledFace(rotatedQuad);
                 } else {

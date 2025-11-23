@@ -209,8 +209,8 @@ public interface QuadView {
 
     private int packedNormal(int vertexIndex) {
         var x = normalX(vertexIndex);
-        var y = normalX(vertexIndex);
-        var z = normalX(vertexIndex);
+        var y = normalY(vertexIndex);
+        var z = normalZ(vertexIndex);
         return ((int) (x * 127.0f) & 0xFF) |
                 (((int) (y * 127.0f) & 0xFF) << 8) |
                 (((int) (z * 127.0f) & 0xFF) << 16);

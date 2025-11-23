@@ -143,7 +143,6 @@ import appeng.client.render.model.MemoryCardItemModel;
 import appeng.client.render.model.MeteoriteCompassModel;
 import appeng.client.render.model.QuartzGlassModel;
 import appeng.client.render.model.SingleSpinnableVariant;
-import appeng.client.renderer.SpatialStorageSkyProperties;
 import appeng.client.renderer.blockentity.CableBusRenderer;
 import appeng.client.renderer.blockentity.ChargerRenderer;
 import appeng.client.renderer.blockentity.CraftingMonitorRenderer;
@@ -176,7 +175,6 @@ import appeng.helpers.IMouseWheelItem;
 import appeng.items.storage.StorageCellTooltipComponent;
 import appeng.parts.reporting.ConversionMonitorPart;
 import appeng.parts.reporting.StorageMonitorPart;
-import appeng.spatial.SpatialStorageDimensionIds;
 import appeng.util.Platform;
 
 /**
@@ -630,9 +628,9 @@ public class AppEngClient extends AppEngBase {
     }
 
     private void registerDimensionSpecialEffects(RegisterDimensionSpecialEffectsEvent event) {
-        event.register(
-                SpatialStorageDimensionIds.DIMENSION_TYPE_ID.identifier(),
-                SpatialStorageSkyProperties.INSTANCE);
+        // TODO 1.21.11: event.register(
+        // TODO 1.21.11: SpatialStorageDimensionIds.DIMENSION_TYPE_ID.identifier(),
+        // TODO 1.21.11: SpatialStorageSkyProperties.INSTANCE);
     }
 
     private void registerItemTintSources(RegisterColorHandlersEvent.ItemTintSources event) {

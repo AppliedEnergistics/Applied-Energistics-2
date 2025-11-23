@@ -4,11 +4,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.UnaryOperator;
 
 import com.mojang.math.Transformation;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
+import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.BlockModelPart;
 import net.minecraft.client.renderer.block.model.SimpleModelWrapper;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
@@ -24,8 +26,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockAndTintGetter;
-import net.neoforged.neoforge.client.model.IQuadTransformer;
-import net.neoforged.neoforge.client.model.QuadTransformers;
+import net.neoforged.neoforge.client.model.quad.QuadTransforms;
 import net.neoforged.neoforge.model.data.ModelData;
 
 import appeng.client.api.model.parts.PartModel;
@@ -52,7 +53,8 @@ public class PlanePartModel implements PartModel {
         this.frontOnSprite = frontOnSprite;
         this.frontOffSprite = frontOffSprite;
 
-        var quadTransformer = QuadTransformers.applying(BlockMath.blockCenterToCorner(transformation));
+        UnaryOperator<BakedQuad> quadTransformer = q -> QuadTransforms.applyTransformation(q,
+                BlockMath.blockCenterToCorner(transformation));
 
         onParts = new HashMap<>(PlaneConnections.PERMUTATIONS.size());
         offParts = new HashMap<>(PlaneConnections.PERMUTATIONS.size());
@@ -75,13 +77,10 @@ public class PlanePartModel implements PartModel {
             TextureAtlasSprite sidesSprite,
             TextureAtlasSprite backSprite,
             PlaneConnections permutation,
-            IQuadTransformer quadTransformer) {
+            UnaryOperator<BakedQuad> quadTransformer) {
         var quads = new QuadCollection.Builder();
 
-        var builder = new CubeBuilder(quad -> {
-            quadTransformer.processInPlace(quad);
-            quads.addUnculledFace(quad);
-        });
+        var builder = new CubeBuilder(quad -> quads.addUnculledFace(quadTransformer.apply(quad)));
 
         builder.setTextures(sidesSprite, sidesSprite, frontSprite, backSprite, sidesSprite, sidesSprite);
 

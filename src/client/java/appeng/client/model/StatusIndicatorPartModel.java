@@ -26,9 +26,9 @@ import appeng.parts.automation.PartModelData;
  * Adds model parts based on the status of the parts main grid node.
  */
 public record StatusIndicatorPartModel(
-        SimpleModelWrapper activeBaked,
-        SimpleModelWrapper poweredBaked,
-        SimpleModelWrapper unpoweredBaked,
+        BlockModelPart activeBaked,
+        BlockModelPart poweredBaked,
+        BlockModelPart unpoweredBaked,
         Transformation transformation) implements PartModel {
 
     @Override

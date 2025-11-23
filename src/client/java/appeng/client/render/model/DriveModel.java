@@ -60,15 +60,15 @@ public class DriveModel implements DynamicBlockStateModel {
     private static final Identifier MODEL_BASE = Identifier.parse("ae2:block/drive_base");
     private static final Transformation[] BAY_TRANSLATIONS = buildBayTranslations();
 
-    private final SimpleModelWrapper baseModel;
+    private final BlockModelPart baseModel;
 
     // Indices are the bay indices
-    private final SimpleModelWrapper[] defaultCellModels;
-    private final Map<Item, SimpleModelWrapper[]> cellModels;
+    private final BlockModelPart[] defaultCellModels;
+    private final Map<Item, BlockModelPart[]> cellModels;
 
-    public DriveModel(SimpleModelWrapper baseModel,
-            Map<Item, SimpleModelWrapper[]> cellModels,
-            SimpleModelWrapper[] defaultCellModels) {
+    public DriveModel(BlockModelPart baseModel,
+            Map<Item, BlockModelPart[]> cellModels,
+            BlockModelPart[] defaultCellModels) {
         this.baseModel = baseModel;
         this.defaultCellModels = defaultCellModels;
         this.cellModels = cellModels;
@@ -135,7 +135,7 @@ public class DriveModel implements DynamicBlockStateModel {
 
     // Determine which drive chassis to show based on the used cell
     @Nullable
-    public SimpleModelWrapper getCellChassisModel(Item cell, int row, int col) {
+    public BlockModelPart getCellChassisModel(Item cell, int row, int col) {
         if (cell == null) {
             return null;
         }
@@ -160,7 +160,7 @@ public class DriveModel implements DynamicBlockStateModel {
 
         @Override
         public BlockStateModel bake(ModelBaker baker) {
-            final Map<Item, SimpleModelWrapper[]> cellModels = new IdentityHashMap<>();
+            final Map<Item, BlockModelPart[]> cellModels = new IdentityHashMap<>();
             var modelState = variant.modelState().asModelState();
 
             ModelState[] bayTransforms = new ModelState[BAY_TRANSLATIONS.length];
@@ -188,10 +188,10 @@ public class DriveModel implements DynamicBlockStateModel {
             return new DriveModel(baseModel, cellModels, defaultCells);
         }
 
-        private SimpleModelWrapper @NotNull [] preBakeCellInBays(ModelBaker baker, ModelState[] bayTransforms,
+        private BlockModelPart @NotNull [] preBakeCellInBays(ModelBaker baker, ModelState[] bayTransforms,
                 Identifier location) {
             // Bake each cell pre-translated into each of the bays
-            var cellsInBay = new SimpleModelWrapper[BAY_TRANSLATIONS.length];
+            var cellsInBay = new BlockModelPart[BAY_TRANSLATIONS.length];
             for (int i = 0; i < bayTransforms.length; i++) {
                 cellsInBay[i] = SimpleModelWrapper.bake(baker, location, bayTransforms[i]);
             }

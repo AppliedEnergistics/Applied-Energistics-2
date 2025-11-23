@@ -25,7 +25,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockAndTintGetter;
-import net.neoforged.neoforge.client.model.QuadTransformers;
+import net.neoforged.neoforge.client.model.quad.QuadTransforms;
 import net.neoforged.neoforge.model.data.ModelData;
 
 import appeng.api.util.AEColor;
@@ -76,11 +76,8 @@ public final class P2PFrequencyPartModel implements PartModel {
     private BlockModelPart buildFrequencyPart(short frequency, boolean active) {
         var colors = Platform.p2p().toColors(frequency);
         var quads = new ArrayList<BakedQuad>(4 * 4);
-        var quadTransformer = QuadTransformers.applying(transformation);
-        quadTransformer.processInPlace(quads);
         var cb = new CubeBuilder(q -> {
-            quadTransformer.processInPlace(q);
-            quads.add(q);
+            quads.add(QuadTransforms.applyTransformation(q, transformation));
         });
 
         cb.setTexture(this.texture);

@@ -28,7 +28,7 @@ import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
-import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlas;
@@ -90,7 +90,7 @@ public class SkyStoneChestRenderer implements BlockEntityRenderer<SkyStoneChestB
         lidAngle = 1.0F - lidAngle;
         lidAngle = 1.0F - lidAngle * lidAngle * lidAngle;
 
-        var renderType = state.material.renderType(RenderType::entityCutout);
+        var renderType = state.material.renderType(RenderTypes::entityCutout);
         var sprite = materialSet.get(state.material);
 
         nodes.submitModel(model, lidAngle, poseStack, renderType, state.lightCoords, OverlayTexture.NO_OVERLAY, -1,

@@ -19,15 +19,15 @@
 package appeng.client.render;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Consumer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.serialization.MapCodec;
 
 import org.jetbrains.annotations.Nullable;
-import org.joml.Vector3f;
+import org.joml.Vector3fc;
 
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.SubmitNodeCollector;
@@ -143,7 +143,7 @@ public class FacadeItemModel implements ItemModel {
                             brightness[2] = shade;
                             brightness[3] = shade;
                             consumer.putBulkData(
-                                    pose, quad, brightness, 1f, 1f, 1f, 1f, lightmap, packedOverlay, false);
+                                    pose, quad, brightness, 1f, 1f, 1f, 1f, lightmap, packedOverlay);
                         }
                     }
                 });
@@ -151,8 +151,10 @@ public class FacadeItemModel implements ItemModel {
         }
 
         @Override
-        public void getExtents(Set<Vector3f> extents) {
-            Collections.addAll(extents, baseModel.extents().get());
+        public void getExtents(Consumer<Vector3fc> extents) {
+            for (var point : baseModel.extents().get()) {
+                extents.accept(point);
+            }
         }
 
         private float getShade(Direction side) {

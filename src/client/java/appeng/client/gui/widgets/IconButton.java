@@ -59,7 +59,7 @@ public abstract class IconButton extends Button implements ITooltip {
     }
 
     @Override
-    public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partial) {
+    public void renderContents(GuiGraphics guiGraphics, int mouseX, int mouseY, float partial) {
 
         if (this.visible) {
             var icon = this.getIcon();

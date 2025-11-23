@@ -19,7 +19,6 @@
 package appeng.client.gui.style;
 
 import java.util.Objects;
-import java.util.function.Function;
 
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 
@@ -31,15 +30,12 @@ import net.minecraft.client.gui.render.TextureSetup;
 import net.minecraft.client.gui.render.state.BlitRenderState;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.client.renderer.RenderStateShard;
-import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.data.AtlasIds;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
-import net.minecraft.util.Util;
 
 import appeng.core.AppEng;
 import appeng.util.Icon;
@@ -52,15 +48,6 @@ public final class Blitter {
             .withLocation(AppEng.makeId("pipeline/gui_textured_opaque"))
             .withoutBlend()
             .build();
-
-    public static final Function<Identifier, RenderType> GUI_TEXTURED_OPAQUE_TYPE = Util.memoize(
-            textureId -> RenderType.create(
-                    "ae2:gui_textured_opaque",
-                    1536,
-                    GUI_TEXTURED_OPAQUE,
-                    RenderType.CompositeState.builder()
-                            .setTextureState(new RenderStateShard.TextureStateShard(textureId, false))
-                            .createCompositeState(false)));
 
     // This assumption is obviously bogus, but currently all textures are this size,
     // and it's impossible to get the texture size from an already loaded texture.
@@ -329,10 +316,10 @@ public final class Blitter {
         }
 
         var pipeline = blending ? RenderPipelines.GUI_TEXTURED : GUI_TEXTURED_OPAQUE;
-        var textureView = Minecraft.getInstance().getTextureManager().getTexture(this.texture).getTextureView();
+        var texture = Minecraft.getInstance().getTextureManager().getTexture(this.texture);
         guiGraphics.submitGuiElementRenderState(new BlitRenderState(
                 pipeline,
-                TextureSetup.singleTexture(textureView),
+                TextureSetup.singleTexture(texture.getTextureView(), texture.getSampler()),
                 new Matrix3x2f(guiGraphics.pose()),
                 (int) x1, (int) y1,
                 (int) x2, (int) y2,

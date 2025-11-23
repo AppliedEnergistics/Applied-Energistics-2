@@ -19,7 +19,8 @@
 package appeng.client.render.model;
 
 import java.util.Objects;
-import java.util.Set;
+import java.util.function.Consumer;
+import java.util.function.UnaryOperator;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Transformation;
@@ -29,11 +30,12 @@ import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 import org.joml.Vector2f;
-import org.joml.Vector3f;
+import org.joml.Vector3fc;
 
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.item.ItemModel;
 import net.minecraft.client.renderer.item.ItemModelResolver;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
@@ -45,7 +47,7 @@ import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.client.model.QuadTransformers;
+import net.neoforged.neoforge.client.model.quad.QuadTransforms;
 
 import appeng.client.render.ItemBaseModelWrapper;
 import appeng.core.AppEng;
@@ -148,19 +150,20 @@ public class MeteoriteCompassModel implements ItemModel {
             var transformation = new Matrix4f();
             transformation.rotateAround(quaternion, 0.5f, 0.5f, 0.5f);
 
-            var transformer = QuadTransformers.applying(new Transformation(transformation));
+            UnaryOperator<BakedQuad> transformer = q -> QuadTransforms.applyTransformation(q,
+                    new Transformation(transformation));
 
             var renderType = Objects.requireNonNullElse(pointer.renderType(), Sheets.translucentItemSheet());
             nodes.submitCustomGeometry(poseStack, renderType, (pose, buffer) -> {
                 for (var bakedQuad : this.pointer.quads()) {
-                    bakedQuad = transformer.process(bakedQuad);
+                    bakedQuad = transformer.apply(bakedQuad);
                     buffer.putBulkData(pose, bakedQuad, 1f, 1f, 1f, 1f, packedLight, packedOverlay);
                 }
             });
         }
 
         @Override
-        public void getExtents(Set<Vector3f> extents) {
+        public void getExtents(Consumer<Vector3fc> extents) {
         }
 
         @Override

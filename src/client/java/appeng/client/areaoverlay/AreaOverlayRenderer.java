@@ -79,7 +79,7 @@ public class AreaOverlayRenderer {
 
         poseStack.pushPose();
 
-        Vec3 projectedView = minecraft.gameRenderer.getMainCamera().getPosition();
+        Vec3 projectedView = minecraft.gameRenderer.getMainCamera().position();
         Quaternionf rotation = new Quaternionf(minecraft.gameRenderer.getMainCamera().rotation());
         rotation.invert();
         poseStack.mulPose(rotation);

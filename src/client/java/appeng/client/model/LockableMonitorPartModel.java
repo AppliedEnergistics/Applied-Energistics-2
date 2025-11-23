@@ -21,10 +21,10 @@ import appeng.client.api.model.parts.PartModel;
 import appeng.core.AppEng;
 import appeng.parts.automation.PartModelData;
 
-public record LockableMonitorPartModel(SimpleModelWrapper unpoweredUnlockedModel,
-        SimpleModelWrapper poweredUnlockedModel,
-        SimpleModelWrapper unpoweredLockedModel,
-        SimpleModelWrapper poweredLockedModel) implements PartModel {
+public record LockableMonitorPartModel(BlockModelPart unpoweredUnlockedModel,
+        BlockModelPart poweredUnlockedModel,
+        BlockModelPart unpoweredLockedModel,
+        BlockModelPart poweredLockedModel) implements PartModel {
 
     @Override
     public void collectParts(BlockAndTintGetter level, BlockPos pos, ModelData partModelData, RandomSource random,

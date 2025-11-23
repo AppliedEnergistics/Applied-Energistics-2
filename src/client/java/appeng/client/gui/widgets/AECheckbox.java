@@ -80,7 +80,7 @@ public class AECheckbox extends AbstractButton {
     }
 
     @Override
-    public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+    public void renderContents(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         Blitter icon;
         if (isRadio()) {
             if (isMouseOver(mouseX, mouseY)) {

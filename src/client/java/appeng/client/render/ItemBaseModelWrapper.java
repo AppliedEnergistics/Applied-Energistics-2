@@ -8,7 +8,7 @@ import java.util.function.Supplier;
 import com.google.common.base.Suppliers;
 
 import org.jetbrains.annotations.Nullable;
-import org.joml.Vector3f;
+import org.joml.Vector3fc;
 
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -23,7 +23,7 @@ import net.neoforged.neoforge.client.model.NeoForgeModelProperties;
 
 public record ItemBaseModelWrapper(
         List<BakedQuad> quads,
-        Supplier<Vector3f[]> extents,
+        Supplier<Vector3fc[]> extents,
         ModelRenderProperties renderProperties,
         @Nullable RenderType renderType) {
     public static ItemBaseModelWrapper bake(ModelBaker modelBaker, Identifier id) {
@@ -31,11 +31,11 @@ public record ItemBaseModelWrapper(
 
         var baseModelTextures = baseModel.getTopTextureSlots();
         List<BakedQuad> baseModelQuads = baseModel
-                .bakeTopGeometry(baseModelTextures, modelBaker, BlockModelRotation.X0_Y0).getAll();
+                .bakeTopGeometry(baseModelTextures, modelBaker, BlockModelRotation.IDENTITY).getAll();
 
         var modelRenderProperties = ModelRenderProperties.fromResolvedModel(modelBaker, baseModel, baseModelTextures);
         var renderTypeGroup = baseModel.getTopAdditionalProperties().getOptional(NeoForgeModelProperties.RENDER_TYPE);
-        var renderType = renderTypeGroup == null ? null : renderTypeGroup.entity();
+        var renderType = renderTypeGroup == null ? null : renderTypeGroup.entityItem();
         var extents = Suppliers.memoize(() -> computeExtents(baseModelQuads));
 
         return new ItemBaseModelWrapper(baseModelQuads, extents, modelRenderProperties, renderType);

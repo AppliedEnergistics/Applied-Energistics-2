@@ -10,7 +10,7 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.data.AtlasIds;
@@ -69,8 +69,8 @@ public class FluidKeyRenderer implements AEKeyRenderer<AEFluidKey, FluidKeyRende
         var sprite = state.sprite;
 
         // We have to use "solid" here because we don't actually want to alpha blend
-        // the semi-transprent fluid textures onto a fake screen.
-        nodes.submitCustomGeometry(poseStack, RenderType.solid(), (pose, buffer) -> {
+        // the semi-transparent fluid textures onto a fake screen.
+        nodes.submitCustomGeometry(poseStack, RenderTypes.entitySolid(state.sprite.atlasLocation()), (pose, buffer) -> {
             buffer.addVertex(pose, x0, y1, 0)
                     .setColor(color)
                     .setUv(sprite.getU0(), sprite.getV1())

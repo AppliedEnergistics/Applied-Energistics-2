@@ -102,7 +102,7 @@ public class CraftingParticle extends SingleQuadParticle {
         // I believe this particle is same as breaking particle, but should not exit the
         // original block it was
         // spawned in (which is encased in glass)
-        Vec3 camPos = camera.getPosition();
+        Vec3 camPos = camera.position();
         offX -= camPos.x;
         offY -= camPos.y;
         offZ -= camPos.z;
@@ -212,7 +212,7 @@ public class CraftingParticle extends SingleQuadParticle {
             // I believe this particle is same as breaking particle, but should not exit the
             // original block it was
             // spawned in (which is encased in glass)
-            Vec3 camPos = camera.getPosition();
+            Vec3 camPos = camera.position();
             offX -= camPos.x;
             offY -= camPos.y;
             offZ -= camPos.z;

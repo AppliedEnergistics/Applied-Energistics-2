@@ -7,7 +7,7 @@ import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
-import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 
 public class SkyStoneChestModel extends Model<Float> {
     private static final String BOTTOM = "bottom";
@@ -17,7 +17,7 @@ public class SkyStoneChestModel extends Model<Float> {
     private final ModelPart lock;
 
     public SkyStoneChestModel(ModelPart root) {
-        super(root, RenderType::entitySolid);
+        super(root, RenderTypes::entitySolid);
         this.lid = root.getChild(LID);
         this.lock = root.getChild(LOCK);
     }

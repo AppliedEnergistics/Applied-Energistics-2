@@ -18,46 +18,26 @@
 
 package appeng.client.renderer;
 
-import org.joml.Matrix4f;
-
-import net.minecraft.client.CloudStatus;
-import net.minecraft.client.renderer.DimensionSpecialEffects;
-import net.minecraft.client.renderer.DimensionSpecialEffects.SkyType;
-import net.minecraft.client.renderer.state.LevelRenderState;
-import net.minecraft.client.renderer.state.SkyRenderState;
-import net.minecraft.world.phys.Vec3;
-
 /**
  * Defines properties for how the sky in the spatial storage level is rendered.
  */
 public class SpatialStorageSkyProperties {
 
     // See the fabric version of this to get any idea what its doing
-    public static final DimensionSpecialEffects INSTANCE = new DimensionSpecialEffects(
-            SkyType.NONE /* we use a custom render mixin */, false, false) {
-
-        @Override
-        public Vec3 getBrightnessDependentFogColor(Vec3 fogColor, float brightness) {
-            return Vec3.ZERO;
-        }
-
-        @Override
-        public boolean isFoggyAt(int x, int y) {
-            return false;
-        }
-
-        @Override
-        public boolean renderSky(LevelRenderState levelRenderState, SkyRenderState skyRenderState,
-                Matrix4f modelViewMatrix, Runnable setupFog) {
-            SpatialSkyRender.getInstance().render(modelViewMatrix);
-            return true;
-        }
-
-        @Override
-        public boolean renderClouds(LevelRenderState levelRenderState, Vec3 camPos, CloudStatus cloudStatus,
-                int cloudColor, float cloudHeight, Matrix4f modelViewMatrix) {
-            return true; // Disable clouds
-        }
-    };
+// TODO 1.21.11    public static final DimensionSpecialEffects INSTANCE = new DimensionSpecialEffects() {
+// TODO 1.21.11
+// TODO 1.21.11        @Override
+// TODO 1.21.11        public boolean renderSky(LevelRenderState levelRenderState, SkyRenderState skyRenderState,
+// TODO 1.21.11                Matrix4f modelViewMatrix, Runnable setupFog) {
+// TODO 1.21.11            SpatialSkyRender.getInstance().render(modelViewMatrix);
+// TODO 1.21.11            return true;
+// TODO 1.21.11        }
+// TODO 1.21.11
+// TODO 1.21.11        @Override
+// TODO 1.21.11        public boolean renderClouds(LevelRenderState levelRenderState, Vec3 camPos, CloudStatus cloudStatus,
+// TODO 1.21.11                int cloudColor, float cloudHeight, Matrix4f modelViewMatrix) {
+// TODO 1.21.11            return true; // Disable clouds
+// TODO 1.21.11        }
+// TODO 1.21.11    };
 
 }

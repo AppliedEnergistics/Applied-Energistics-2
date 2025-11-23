@@ -26,7 +26,8 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 
 /**
- * Extends Vanillas {@link net.minecraft.client.renderer.block.model.Variant} with rotation around the Z-axis.
+ * Extends Vanillas {@link net.minecraft.client.renderer.block.model.Variant} with rotation around the Z-axis. TODO
+ * 1.21.11: This entire thing can be yeeted since Vanilla now has z-rotation support.
  */
 public record SpinnableVariant(Identifier modelLocation,
         SimpleModelState modelState) implements BlockModelPart.Unbaked {
@@ -99,7 +100,7 @@ public record SpinnableVariant(Identifier modelLocation,
                 for (var yRot : quadrants) {
                     // Reuse existing states from Vanilla
                     int baseIdx = indexFromAngles(xRot, yRot, Quadrant.R0);
-                    var blockModelRotation = BlockModelRotation.by(xRot, yRot);
+                    var blockModelRotation = BlockModelRotation.get(Quadrant.fromXYAngles(xRot, yRot));
                     if (uvLocked) {
                         result[baseIdx] = blockModelRotation.withUvLock();
                     } else {

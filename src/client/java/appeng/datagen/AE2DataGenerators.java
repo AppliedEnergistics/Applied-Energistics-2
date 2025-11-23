@@ -29,6 +29,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.advancements.AdvancementProvider;
+import net.minecraft.data.registries.RegistryPatchGenerator;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.common.data.DatapackBuiltinEntriesProvider;
@@ -63,12 +64,14 @@ public class AE2DataGenerators {
     @SubscribeEvent
     public static void onGatherData(GatherDataEvent.Client event) {
         var generator = event.getGenerator();
-        var registries = event.getLookupProvider();
+        var registries = RegistryPatchGenerator.createLookup(event.getLookupProvider(), createDatapackEntriesBuilder())
+                .thenApply(RegistrySetBuilder.PatchedRegistries::full);
+
         var localization = new LocalizationProvider(generator);
         var pack = generator.getVanillaPack(true);
 
         // Worldgen et al
-        pack.addProvider(output -> new DatapackBuiltinEntriesProvider(output, registries,
+        pack.addProvider(output -> new DatapackBuiltinEntriesProvider(output, event.getLookupProvider(),
                 createDatapackEntriesBuilder(), Set.of(AppEng.MOD_ID)));
 
         // Loot

@@ -27,8 +27,8 @@ import appeng.parts.automation.PartModelData;
  * Adds model parts based on the status of the level emitter.
  */
 public record LevelEmitterPartModel(
-        SimpleModelWrapper onBaked,
-        SimpleModelWrapper offBaked,
+        BlockModelPart onBaked,
+        BlockModelPart offBaked,
         Transformation transformation) implements PartModel {
 
     @Override

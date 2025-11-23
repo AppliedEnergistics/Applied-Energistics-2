@@ -1,5 +1,7 @@
 package appeng.client.model;
 
+import com.mojang.math.Quadrant;
+
 import net.minecraft.client.resources.model.BlockModelRotation;
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.core.Direction;
@@ -15,12 +17,12 @@ public final class FacingModelState {
 
     public static ModelState fromFacing(Direction facing) {
         return switch (facing) {
-            case DOWN -> BlockModelRotation.X90_Y0;
-            case UP -> BlockModelRotation.X270_Y0;
-            case NORTH -> BlockModelRotation.X0_Y0;
-            case SOUTH -> BlockModelRotation.X0_Y180;
-            case WEST -> BlockModelRotation.X0_Y270;
-            case EAST -> BlockModelRotation.X0_Y90;
+            case DOWN -> BlockModelRotation.get(Quadrant.fromXYZAngles(Quadrant.R90, Quadrant.R0, Quadrant.R0));
+            case UP -> BlockModelRotation.get(Quadrant.fromXYZAngles(Quadrant.R270, Quadrant.R0, Quadrant.R0));
+            case NORTH -> BlockModelRotation.get(Quadrant.fromXYZAngles(Quadrant.R0, Quadrant.R0, Quadrant.R0));
+            case SOUTH -> BlockModelRotation.get(Quadrant.fromXYZAngles(Quadrant.R0, Quadrant.R180, Quadrant.R0));
+            case WEST -> BlockModelRotation.get(Quadrant.fromXYZAngles(Quadrant.R0, Quadrant.R270, Quadrant.R0));
+            case EAST -> BlockModelRotation.get(Quadrant.fromXYZAngles(Quadrant.R0, Quadrant.R90, Quadrant.R0));
         };
     }
 }

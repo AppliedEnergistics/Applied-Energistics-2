@@ -33,9 +33,9 @@ import appeng.core.AppEng;
  * </dl>
  */
 public class StaticPartModel implements PartModel {
-    private final SimpleModelWrapper model;
+    private final BlockModelPart model;
 
-    public StaticPartModel(SimpleModelWrapper model) {
+    public StaticPartModel(BlockModelPart model) {
         this.model = model;
     }
 
