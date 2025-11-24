@@ -16,12 +16,13 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.client.renderer;
+package appeng.client.renderer.spatialstorage;
 
 import java.util.OptionalDouble;
 import java.util.OptionalInt;
 
 import com.mojang.blaze3d.buffers.GpuBuffer;
+import com.mojang.blaze3d.buffers.GpuBufferSlice;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.ByteBufferBuilder;
@@ -32,31 +33,27 @@ import com.mojang.blaze3d.vertex.VertexFormat;
 
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
+import org.joml.Vector3f;
+import org.joml.Vector4f;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.state.LevelRenderState;
+import net.minecraft.client.renderer.state.SkyRenderState;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
+import net.neoforged.neoforge.client.CustomSkyboxRenderer;
 
 import appeng.client.render.AERenderPipelines;
 import appeng.client.render.AERenderTypes;
 
-public class SpatialSkyRender implements AutoCloseable {
+public class SpatialStorageSkyRenderer implements CustomSkyboxRenderer, AutoCloseable {
 
     private static final int MAX_SPARKLE_QUADS = 50;
-
-    private static final SpatialSkyRender INSTANCE = new SpatialSkyRender();
 
     private final RandomSource random = RandomSource.create();
     private long cycle = 0;
     private GpuBuffer sparklesVertices;
     private int sparklesQuads;
-
-    public SpatialSkyRender() {
-    }
-
-    public static SpatialSkyRender getInstance() {
-        return INSTANCE;
-    }
 
     private static final Quaternionf[] SKYBOX_SIDE_ROTATIONS = { new Quaternionf(),
             new Quaternionf().rotationX(Mth.DEG_TO_RAD * 90.0F),
@@ -64,7 +61,9 @@ public class SpatialSkyRender implements AutoCloseable {
             new Quaternionf().rotationZ(Mth.DEG_TO_RAD * 90.0F),
             new Quaternionf().rotationZ(Mth.DEG_TO_RAD * -90.0F), };
 
-    public void render(Matrix4f modelViewMatrix) {
+    @Override
+    public boolean renderSky(LevelRenderState levelRenderState, SkyRenderState skyRenderState, Matrix4f modelViewMatrix,
+            Runnable setupFog) {
         var poseStack = new PoseStack();
         poseStack.mulPose(modelViewMatrix);
 
@@ -89,18 +88,21 @@ public class SpatialSkyRender implements AutoCloseable {
         final long now = System.currentTimeMillis();
         if (sparklesVertices == null || now - this.cycle > 2000) {
             this.cycle = now;
+            this.rebuildSparkles(1);
         }
+
         float fade = now - this.cycle;
         fade /= 1000;
         fade = 0.25f * (1.0f - Math.abs((fade - 1.0f) * (fade - 1.0f)));
 
-        this.rebuildSparkles(fade);
-        renderSparkles(sparklesVertices, modelViewMatrix);
+        renderSparkles(sparklesVertices, modelViewMatrix, fade);
+
+        return true;
     }
 
-    private void renderSparkles(GpuBuffer sparklesVertices, Matrix4f modelViewMatrix) {
-        RenderSystem.getModelViewStack().pushMatrix();
-        RenderSystem.getModelViewStack().set(modelViewMatrix);
+    private void renderSparkles(GpuBuffer sparklesVertices, Matrix4f modelViewMatrix, float fade) {
+        GpuBufferSlice dynamicTransforms = RenderSystem.getDynamicUniforms()
+                .writeTransform(modelViewMatrix, new Vector4f(fade, fade, fade, 1.0F), new Vector3f(), new Matrix4f());
 
         var renderTarget = Minecraft.getInstance().getMainRenderTarget();
         var colorBuffer = renderTarget.getColorTextureView();
@@ -112,13 +114,13 @@ public class SpatialSkyRender implements AutoCloseable {
                 .createCommandEncoder()
                 .createRenderPass(() -> "spatial sky", colorBuffer, OptionalInt.empty(), depthBuffer,
                         OptionalDouble.empty())) {
+            RenderSystem.bindDefaultUniforms(pass);
+            pass.setUniform("DynamicTransforms", dynamicTransforms);
             pass.setPipeline(AERenderPipelines.SPATIAL_SKYBOX_SPARKLES);
             pass.setVertexBuffer(0, sparklesVertices);
             pass.setIndexBuffer(indexBuffer, autoIndexBuffer.type());
             pass.drawIndexed(0, 0, sparklesQuads * 4, 1);
         }
-
-        RenderSystem.getModelViewStack().popMatrix();
     }
 
     private void rebuildSparkles(float fade) {

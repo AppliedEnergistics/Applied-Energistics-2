@@ -68,9 +68,10 @@ public final class SpatialStorageDimensionIds {
             AppEng.makeId("spatial_storage"));
 
     /**
-     * ID of the {@link } used for the spatial storage level.
+     * ID of the {@link net.neoforged.neoforge.client.event.RegisterCustomEnvironmentEffectRendererEvent} used for the
+     * spatial storage level.
      */
-    public static Identifier SKY_PROPERTIES_ID = AppEng.makeId("spatial_storage");
+    public static Identifier CUSTOM_RENDERER_ID = AppEng.makeId("spatial_storage");
 
     private SpatialStorageDimensionIds() {
     }

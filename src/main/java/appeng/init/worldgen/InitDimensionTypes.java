@@ -41,7 +41,7 @@ public final class InitDimensionTypes {
                 BlockTags.INFINIBURN_OVERWORLD, // infiniburn
                 1.0f, // ambientLight
                 new DimensionType.MonsterSettings(ConstantInt.of(0), 0),
-                DimensionType.Skybox.NONE,
+                DimensionType.Skybox.OVERWORLD,
                 DimensionType.CardinalLightType.DEFAULT,
                 EnvironmentAttributeMap.builder()
                         .set(EnvironmentAttributes.BED_RULE, BedRule.EXPLODES)

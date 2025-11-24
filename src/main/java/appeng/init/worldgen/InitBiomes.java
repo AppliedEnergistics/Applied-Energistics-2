@@ -24,6 +24,7 @@ import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeGenerationSettings;
 import net.minecraft.world.level.biome.BiomeSpecialEffects;
 import net.minecraft.world.level.biome.MobSpawnSettings;
+import net.neoforged.neoforge.common.world.NeoForgeEnvironmentAttributes;
 
 import appeng.spatial.SpatialStorageDimensionIds;
 
@@ -50,6 +51,12 @@ public final class InitBiomes {
                 .temperature(0.5F).downfall(0.5F)
                 .specialEffects(specialEffects)
                 .mobSpawnSettings(new MobSpawnSettings.Builder().build())
+                .setAttribute(NeoForgeEnvironmentAttributes.CUSTOM_WEATHER_EFFECTS,
+                        SpatialStorageDimensionIds.CUSTOM_RENDERER_ID)
+                .setAttribute(NeoForgeEnvironmentAttributes.CUSTOM_CLOUDS,
+                        SpatialStorageDimensionIds.CUSTOM_RENDERER_ID)
+                .setAttribute(NeoForgeEnvironmentAttributes.CUSTOM_SKYBOX,
+                        SpatialStorageDimensionIds.CUSTOM_RENDERER_ID)
                 .build();
 
         context.register(SpatialStorageDimensionIds.BIOME_KEY, biome);

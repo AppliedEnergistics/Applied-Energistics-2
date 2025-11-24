@@ -1,4 +1,9 @@
 {
+  "attributes": {
+    "neoforge:custom_clouds": "ae2:spatial_storage",
+    "neoforge:custom_skybox": "ae2:spatial_storage",
+    "neoforge:custom_weather_effects": "ae2:spatial_storage"
+  },
   "carvers": [],
   "downfall": 0.5,
   "effects": {

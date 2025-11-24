@@ -18,6 +18,5 @@
   "min_y": 0,
   "monster_spawn_block_light_limit": 0,
   "monster_spawn_light_level": 0,
-  "skybox": "none",
   "timelines": "#minecraft:universal"
 }

@@ -63,7 +63,7 @@ import net.neoforged.neoforge.client.event.RegisterBlockStateModels;
 import net.neoforged.neoforge.client.event.RegisterClientCommandsEvent;
 import net.neoforged.neoforge.client.event.RegisterClientTooltipComponentFactoriesEvent;
 import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
-import net.neoforged.neoforge.client.event.RegisterDimensionSpecialEffectsEvent;
+import net.neoforged.neoforge.client.event.RegisterCustomEnvironmentEffectRendererEvent;
 import net.neoforged.neoforge.client.event.RegisterItemModelsEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.client.event.RegisterParticleGroupsEvent;
@@ -159,6 +159,9 @@ import appeng.client.renderer.keytypes.FluidKeyRenderer;
 import appeng.client.renderer.keytypes.ItemKeyRenderer;
 import appeng.client.renderer.part.MonitorRenderer;
 import appeng.client.renderer.parts.PartRendererDispatcher;
+import appeng.client.renderer.spatialstorage.SpatialStorageCloudsRenderer;
+import appeng.client.renderer.spatialstorage.SpatialStorageSkyRenderer;
+import appeng.client.renderer.spatialstorage.SpatialStorageWeatherEffectsRenderer;
 import appeng.core.AEConfig;
 import appeng.core.AppEng;
 import appeng.core.AppEngBase;
@@ -175,6 +178,7 @@ import appeng.helpers.IMouseWheelItem;
 import appeng.items.storage.StorageCellTooltipComponent;
 import appeng.parts.reporting.ConversionMonitorPart;
 import appeng.parts.reporting.StorageMonitorPart;
+import appeng.spatial.SpatialStorageDimensionIds;
 import appeng.util.Platform;
 
 /**
@@ -235,6 +239,8 @@ public class AppEngClient extends AppEngBase {
 
     private final Guide guide;
 
+    private SpatialStorageSkyRenderer spatialStorageSkyRenderer;
+
     public AppEngClient(IEventBus modEventBus, ModContainer container) {
         super(modEventBus, container);
 
@@ -281,7 +287,7 @@ public class AppEngClient extends AppEngBase {
         modEventBus.addListener(this::registerRenderPipelines);
         modEventBus.addListener(this::registerItemModelProperties);
         modEventBus.addListener(this::registerItemModels);
-        modEventBus.addListener(this::registerDimensionSpecialEffects);
+        modEventBus.addListener(this::registerEnvironmentalEffectRenderers);
         modEventBus.addListener(this::registerItemTintSources);
         modEventBus.addListener(this::registerBlockColors);
 
@@ -627,10 +633,15 @@ public class AppEngClient extends AppEngBase {
         event.register(MeteoriteCompassModel.Unbaked.ID, MeteoriteCompassModel.Unbaked.MAP_CODEC);
     }
 
-    private void registerDimensionSpecialEffects(RegisterDimensionSpecialEffectsEvent event) {
-        // TODO 1.21.11: event.register(
-        // TODO 1.21.11: SpatialStorageDimensionIds.DIMENSION_TYPE_ID.identifier(),
-        // TODO 1.21.11: SpatialStorageSkyProperties.INSTANCE);
+    private void registerEnvironmentalEffectRenderers(RegisterCustomEnvironmentEffectRendererEvent event) {
+        if (spatialStorageSkyRenderer == null) {
+            spatialStorageSkyRenderer = new SpatialStorageSkyRenderer();
+        }
+
+        event.registerCloudRenderer(SpatialStorageDimensionIds.CUSTOM_RENDERER_ID, new SpatialStorageCloudsRenderer());
+        event.registerSkyboxRenderer(SpatialStorageDimensionIds.CUSTOM_RENDERER_ID, spatialStorageSkyRenderer);
+        event.registerWeatherEffectRenderer(SpatialStorageDimensionIds.CUSTOM_RENDERER_ID,
+                new SpatialStorageWeatherEffectsRenderer());
     }
 
     private void registerItemTintSources(RegisterColorHandlersEvent.ItemTintSources event) {
