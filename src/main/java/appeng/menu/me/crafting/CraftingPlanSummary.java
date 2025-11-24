@@ -36,11 +36,38 @@ import appeng.api.stacks.AEKey;
 
 /**
  * A crafting plan intended to be sent to the client.
- *
- * @param usedBytes
- * @param simulation
  */
-public record CraftingPlanSummary(long usedBytes, boolean simulation, List<CraftingPlanSummaryEntry> entries) {
+public class CraftingPlanSummary {
+
+    /**
+     * @see ICraftingPlan#bytes()
+     */
+    private final long usedBytes;
+
+    /**
+     * @see ICraftingPlan#simulation()
+     */
+    private final boolean simulation;
+
+    private final List<CraftingPlanSummaryEntry> entries;
+
+    public CraftingPlanSummary(long usedBytes, boolean simulation, List<CraftingPlanSummaryEntry> entries) {
+        this.usedBytes = usedBytes;
+        this.simulation = simulation;
+        this.entries = entries;
+    }
+
+    public long getUsedBytes() {
+        return usedBytes;
+    }
+
+    public boolean isSimulation() {
+        return simulation;
+    }
+
+    public List<CraftingPlanSummaryEntry> getEntries() {
+        return entries;
+    }
 
     public void write(FriendlyByteBuf buffer) {
         buffer.writeVarLong(usedBytes);
@@ -105,7 +132,7 @@ public record CraftingPlanSummary(long usedBytes, boolean simulation, List<Craft
 
         var storage = grid.getStorageService().getInventory();
         var crafting = grid.getCraftingService();
-        var cached = grid.getStorageService().getCachedInventory();
+        var cached = grid.getStorageService().getCachedInventory(); // TODO: Fix this, still kinda broken
 
         for (var out : plan.entrySet()) {
             long missingAmount;
@@ -120,6 +147,7 @@ public record CraftingPlanSummary(long usedBytes, boolean simulation, List<Craft
             }
             availableAmount = cached.get(out.getKey());
             long craftAmount = out.getValue().crafting;
+
             entries.add(new CraftingPlanSummaryEntry(
                     out.getKey(),
                     missingAmount,

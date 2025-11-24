@@ -28,15 +28,48 @@ import appeng.api.stacks.AEKey;
  * Describes an entry in the crafting plan which describes how many items of one type are missing, already stored in the
  * network, or have to be crafted.
  */
-public record CraftingPlanSummaryEntry(AEKey what, long missingAmount, long storedAmount,
-        long craftAmount, long availableAmount) implements Comparable<CraftingPlanSummaryEntry> {
-
+public class CraftingPlanSummaryEntry implements Comparable<CraftingPlanSummaryEntry> {
     private static final Comparator<CraftingPlanSummaryEntry> COMPARATOR = Comparator
-            .comparing(CraftingPlanSummaryEntry::missingAmount)
-            .thenComparing(CraftingPlanSummaryEntry::craftAmount)
-            .thenComparing(CraftingPlanSummaryEntry::storedAmount)
-            .thenComparing(CraftingPlanSummaryEntry::availableAmount)
+            .comparing(CraftingPlanSummaryEntry::getMissingAmount)
+            .thenComparing(CraftingPlanSummaryEntry::getCraftAmount)
+            .thenComparing(CraftingPlanSummaryEntry::getStoredAmount)
+            .thenComparing(CraftingPlanSummaryEntry::getAvailableAmount)
             .reversed();
+
+    private final AEKey what;
+    private final long missingAmount;
+    private final long storedAmount;
+    private final long craftAmount;
+    private final long availableAmount;
+
+    public CraftingPlanSummaryEntry(AEKey what, long missingAmount, long storedAmount, long craftAmount,
+            long availableAmount) {
+        this.what = what;
+        this.missingAmount = missingAmount;
+        this.storedAmount = storedAmount;
+        this.craftAmount = craftAmount;
+        this.availableAmount = availableAmount;
+    }
+
+    public AEKey getWhat() {
+        return what;
+    }
+
+    public long getMissingAmount() {
+        return missingAmount;
+    }
+
+    public long getStoredAmount() {
+        return storedAmount;
+    }
+
+    public long getCraftAmount() {
+        return craftAmount;
+    }
+
+    public long getAvailableAmount() {
+        return availableAmount;
+    }
 
     @Override
     public int compareTo(final CraftingPlanSummaryEntry o) {

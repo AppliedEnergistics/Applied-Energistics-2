@@ -356,7 +356,7 @@
   "gui.ae2.Fuzzy": "Fuzzy",
   "gui.ae2.Gray": "Gray",
   "gui.ae2.Green": "Green",
-  "gui.ae2.Highlight": "%sClick to show the location of this craft",
+  "gui.ae2.Highlight": "%sClick to highlight",
   "gui.ae2.IOBuses": "ME Import/Export Bus",
   "gui.ae2.IOPort": "ME IO Port",
   "gui.ae2.ImportBus": "ME Import Bus",

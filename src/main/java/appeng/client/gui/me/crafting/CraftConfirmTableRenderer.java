@@ -40,26 +40,26 @@ public class CraftConfirmTableRenderer extends AbstractTableRenderer<CraftingPla
     @Override
     protected List<Component> getEntryDescription(CraftingPlanSummaryEntry entry) {
         List<Component> lines = new ArrayList<>(3);
-        if (entry.storedAmount() > 0) {
-            String amount = entry.what().formatAmount(entry.storedAmount(), AmountFormat.SLOT);
+        if (entry.getStoredAmount() > 0) {
+            String amount = entry.getWhat().formatAmount(entry.getStoredAmount(), AmountFormat.SLOT);
             lines.add(GuiText.FromStorage.text(amount));
         }
 
-        if (entry.missingAmount() > 0) {
-            String amount = entry.what().formatAmount(entry.missingAmount(), AmountFormat.SLOT);
+        if (entry.getMissingAmount() > 0) {
+            String amount = entry.getWhat().formatAmount(entry.getMissingAmount(), AmountFormat.SLOT);
             lines.add(GuiText.Missing.text(amount));
         }
 
-        if (entry.craftAmount() > 0) {
-            String amount = entry.what().formatAmount(entry.craftAmount(), AmountFormat.SLOT);
+        if (entry.getCraftAmount() > 0) {
+            String amount = entry.getWhat().formatAmount(entry.getCraftAmount(), AmountFormat.SLOT);
             lines.add(GuiText.ToCraft.text(amount));
         }
         // Same check as above because we want the percentage to be the last element
-        if (entry.storedAmount() > 0) {
+        if (entry.getStoredAmount() > 0) {
             var percentage = NumberUtil.createPercentageComponent(
-                    entry.missingAmount() == 0 ? entry.storedAmount() : entry.missingAmount(),
-                    entry.availableAmount(),
-                    entry.missingAmount() > 0);
+                    entry.getMissingAmount() == 0 ? entry.getStoredAmount() : entry.getMissingAmount(),
+                    entry.getAvailableAmount(),
+                    entry.getMissingAmount() > 0);
             lines.add(GuiText.UsedAmount.text().withStyle(percentage.getStyle()).append(percentage));
         }
         return lines;
@@ -67,32 +67,32 @@ public class CraftConfirmTableRenderer extends AbstractTableRenderer<CraftingPla
 
     @Override
     protected AEKey getEntryStack(CraftingPlanSummaryEntry entry) {
-        return entry.what();
+        return entry.getWhat();
     }
 
     @Override
     protected List<Component> getEntryTooltip(CraftingPlanSummaryEntry entry) {
-        List<Component> lines = AEKeyRendering.getTooltip(entry.what());
+        List<Component> lines = AEKeyRendering.getTooltip(entry.getWhat());
         // The tooltip compares the unabbreviated amounts
-        if (entry.storedAmount() > 0) {
+        if (entry.getStoredAmount() > 0) {
             lines.add(GuiText.FromStorage
-                    .text(entry.what().formatAmount(entry.storedAmount(), AmountFormat.FULL)));
+                    .text(entry.getWhat().formatAmount(entry.getStoredAmount(), AmountFormat.FULL)));
         }
-        if (entry.missingAmount() > 0) {
+        if (entry.getMissingAmount() > 0) {
             lines.add(GuiText.Missing.text(
-                    entry.what().formatAmount(entry.missingAmount(), AmountFormat.FULL)));
+                    entry.getWhat().formatAmount(entry.getMissingAmount(), AmountFormat.FULL)));
         }
 
-        if (entry.craftAmount() > 0) {
+        if (entry.getCraftAmount() > 0) {
             lines.add(GuiText.ToCraft
-                    .text(entry.what().formatAmount(entry.craftAmount(), AmountFormat.FULL)));
+                    .text(entry.getWhat().formatAmount(entry.getCraftAmount(), AmountFormat.FULL)));
         }
         // Same check as above because we want the percentage to be the last element
-        if (entry.storedAmount() > 0) {
+        if (entry.getStoredAmount() > 0) {
             var percentage = NumberUtil.createPercentageComponent(
-                    entry.missingAmount() == 0 ? entry.storedAmount() : entry.missingAmount(),
-                    entry.availableAmount(),
-                    entry.missingAmount() > 0);
+                    entry.getMissingAmount() == 0 ? entry.getStoredAmount() : entry.getMissingAmount(),
+                    entry.getAvailableAmount(),
+                    entry.getMissingAmount() > 0);
             lines.add(GuiText.UsedAmount.text().withStyle(percentage.getStyle()).append(percentage));
         }
 
@@ -101,7 +101,7 @@ public class CraftConfirmTableRenderer extends AbstractTableRenderer<CraftingPla
 
     @Override
     protected int getEntryOverlayColor(CraftingPlanSummaryEntry entry) {
-        return entry.missingAmount() > 0 ? 0x1AFF0000 : 0;
+        return entry.getMissingAmount() > 0 ? 0x1AFF0000 : 0;
     }
 
 }

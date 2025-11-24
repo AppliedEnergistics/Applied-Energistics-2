@@ -91,7 +91,7 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmMenu> {
         this.selectCPU.setMessage(getNextCpuButtonLabel());
 
         CraftingPlanSummary plan = menu.getPlan();
-        boolean planIsStartable = plan != null && !plan.simulation();
+        boolean planIsStartable = plan != null && !plan.isSimulation();
         var start = !this.menu.hasNoCPU() && planIsStartable;
         this.start.active = start;
         this.startWithFollow.active = start;
@@ -102,10 +102,10 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmMenu> {
         Component planDetails = GuiText.CalculatingWait.text();
         Component cpuDetails = Component.empty();
         if (plan != null) {
-            String byteUsed = NumberUtil.formatNumber(plan.usedBytes());
+            String byteUsed = NumberUtil.formatNumber(plan.getUsedBytes());
             planDetails = GuiText.BytesUsed.text(byteUsed);
 
-            if (plan.simulation()) {
+            if (plan.isSimulation()) {
                 cpuDetails = GuiText.PartialPlan.text();
             } else if (this.menu.getCpuAvailableBytes() > 0) {
                 cpuDetails = GuiText.ConfirmCraftCpuStatus.text(
@@ -119,7 +119,7 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmMenu> {
         setTextContent(TEXT_ID_DIALOG_TITLE, GuiText.CraftingPlan.text(planDetails));
         setTextContent("cpu_status", cpuDetails);
 
-        final int size = plan != null ? plan.entries().size() : 0;
+        final int size = plan != null ? plan.getEntries().size() : 0;
         scrollbar.setRange(0, this.table.getScrollableRows(size), 1);
     }
 
@@ -144,7 +144,7 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmMenu> {
 
         CraftingPlanSummary plan = menu.getPlan();
         if (plan != null) {
-            this.table.render(guiGraphics, mouseX, mouseY, plan.entries(), scrollbar.getCurrentScroll());
+            this.table.render(guiGraphics, mouseX, mouseY, plan.getEntries(), scrollbar.getCurrentScroll());
         }
 
     }
@@ -186,19 +186,19 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmMenu> {
         cpuStats.addProperty("isFollowing", menu.isFollowing);
         cpuStats.addProperty("availableBytes", menu.getCpuAvailableBytes());
         cpuStats.addProperty("coProcessors", menu.getCpuCoProcessors());
-        cpuStats.addProperty("usedBytes", plan.usedBytes());
+        cpuStats.addProperty("usedBytes", plan.getUsedBytes());
         exportObject.add("cpu", cpuStats);
         var entryArray = new JsonArray();
-        for (var entry : plan.entries()) {
+        for (var entry : plan.getEntries()) {
             var entryObject = new JsonObject();
-            entryObject.addProperty("what", entry.what().getId().toString());
-            entryObject.addProperty("missingAmount", entry.missingAmount());
-            entryObject.addProperty("storedAmount", entry.storedAmount());
-            entryObject.addProperty("craftAmount", entry.craftAmount());
-            entryObject.addProperty("availableAmount", entry.availableAmount());
+            entryObject.addProperty("what", entry.getWhat().getId().toString());
+            entryObject.addProperty("missingAmount", entry.getMissingAmount());
+            entryObject.addProperty("storedAmount", entry.getStoredAmount());
+            entryObject.addProperty("craftAmount", entry.getCraftAmount());
+            entryObject.addProperty("availableAmount", entry.getAvailableAmount());
             entryArray.add(entryObject);
         }
-        exportObject.add("entries", entryArray);
+        exportObject.add("getEntries", entryArray);
         CraftExporter.exportCraft(exportObject, getPlayer(), CraftExporter.ExportType.CRAFTING_PLAN);
     }
 }

@@ -255,7 +255,7 @@ public class CraftConfirmMenu extends AEBaseMenu implements ISubMenu {
         if (this.plan == null) {
             return true;
         }
-        return c.getAvailableStorage() >= this.plan.usedBytes() && !c.isBusy();
+        return c.getAvailableStorage() >= this.plan.getUsedBytes() && !c.isBusy();
     }
 
     public void startJob() {
