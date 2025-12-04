@@ -196,10 +196,13 @@ public abstract class ExternalStorageFacade implements MEStorage {
                     // size > maxSize, even if we request more. So even if it returns a valid stack, it might have more
                     // stuff.
                     int totalExtracted = 0;
-                    while (itemKey.matches(handler.getStackInSlot(slot))) {
+                    while (true) {
                         int extracted = wrapHandlerExtract(handler, slot, maxExtract - totalExtracted, false);
                         if (extracted > 0) {
                             totalExtracted += extracted;
+                            if (!itemKey.matches(handler.getStackInSlot(slot))) {
+                                break;
+                            }
                         } else {
                             break;
                         }
