@@ -746,12 +746,19 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
             return groups.iterator().next();
         }
 
+        // If nothing is adjacent, just use itself
+        var icon = this.host.getTerminalIcon();
         List<Component> tooltip = List.of();
         // If there are multiple groups, show that in the tooltip
         if (groups.size() > 1) {
             tooltip = new ArrayList<>();
             tooltip.add(GuiText.AdjacentToDifferentMachines.text().withStyle(ChatFormatting.BOLD));
+            // If all groups share the same icon use that
+            icon = groups.getFirst().icon();
             for (var group : groups) {
+                if (!icon.getId().equals(group.icon().getId())) {
+                    icon = this.host.getTerminalIcon();
+                }
                 tooltip.add(group.name());
                 for (var line : group.tooltip()) {
                     tooltip.add(Component.literal("  ").append(line));
@@ -759,11 +766,9 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
             }
         }
 
-        // If nothing is adjacent, just use itself
-        var hostIcon = this.host.getTerminalIcon();
         return new PatternContainerGroup(
-                hostIcon,
-                hostIcon.getDisplayName(),
+                icon,
+                icon.getDisplayName(),
                 tooltip);
     }
 
