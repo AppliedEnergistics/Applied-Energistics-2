@@ -3,6 +3,7 @@ package appeng.crafting.simulation.helpers;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.world.item.Item;
@@ -118,7 +119,7 @@ public class ProcessingPatternBuilder {
             }
 
             @Override
-            public String getAuthor() {
+            public @NotNull String getAuthor() {
                 return "Dev";
             }
         };

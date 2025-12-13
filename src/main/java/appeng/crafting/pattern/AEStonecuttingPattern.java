@@ -22,6 +22,7 @@ import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.NonNullList;
@@ -129,7 +130,7 @@ public class AEStonecuttingPattern implements IPatternDetails, IMolecularAssembl
     }
 
     @Override
-    public String getAuthor() {
+    public @NotNull String getAuthor() {
         return author;
     }
 

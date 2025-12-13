@@ -82,6 +82,11 @@ public class CraftingCpuLogic {
     }
 
     public ICraftingSubmitResult trySubmitJob(IGrid grid, ICraftingPlan plan, IActionSource src,
+            @Nullable ICraftingRequester requester) {
+        return trySubmitJob(grid, plan, src, requester, false);
+    }
+
+    public ICraftingSubmitResult trySubmitJob(IGrid grid, ICraftingPlan plan, IActionSource src,
             @Nullable ICraftingRequester requester, boolean isFollowing) {
         // Already have a job.
         if (this.job != null)

@@ -49,6 +49,15 @@ public final class PendingCraftingJobs {
             long requestedAmount,
             long remainingAmount,
             long elapsedTime,
+            CraftingJobStatusPacket.Status status) {
+        jobStatus(id, what, requestedAmount, remainingAmount, elapsedTime, false, status);
+    }
+
+    public static void jobStatus(UUID id,
+            AEKey what,
+            long requestedAmount,
+            long remainingAmount,
+            long elapsedTime,
             boolean isFollowing,
             CraftingJobStatusPacket.Status status) {
 

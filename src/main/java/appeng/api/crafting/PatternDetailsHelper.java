@@ -91,6 +91,10 @@ public final class PatternDetailsHelper {
         return null;
     }
 
+    public static ItemStack encodeProcessingPattern(GenericStack[] in, GenericStack[] out) {
+        return encodeProcessingPattern(in, out, "");
+    }
+
     /**
      * Encodes a processing pattern which represents the ability to convert the given inputs into the given outputs
      * using some process external to the ME system.
@@ -101,6 +105,11 @@ public final class PatternDetailsHelper {
      */
     public static ItemStack encodeProcessingPattern(GenericStack[] in, GenericStack[] out, String author) {
         return AEItems.PROCESSING_PATTERN.asItem().encode(in, out, author);
+    }
+
+    public static ItemStack encodeProcessingPattern(CraftingRecipe recipe, ItemStack[] in,
+            ItemStack out, boolean allowSubstitutes, boolean allowFluidSubstitutes) {
+        return encodeCraftingPattern(recipe, in, out, allowSubstitutes, allowFluidSubstitutes, "");
     }
 
     /**
@@ -121,6 +130,11 @@ public final class PatternDetailsHelper {
                 author);
     }
 
+    public static ItemStack encodeStonecuttingPattern(StonecutterRecipe recipe, AEItemKey in, AEItemKey out,
+            boolean allowSubstitutes) {
+        return encodeStonecuttingPattern(recipe, in, out, allowSubstitutes, "");
+    }
+
     /**
      * Encodes a stonecutting pattern which represents a Vanilla Stonecutter recipe.
      *
@@ -138,6 +152,15 @@ public final class PatternDetailsHelper {
         Preconditions.checkNotNull(in, "in");
         Preconditions.checkNotNull(out, "out");
         return AEItems.STONECUTTING_PATTERN.asItem().encode(recipe, in, out, allowSubstitutes, author);
+    }
+
+    public static ItemStack encodeSmithingTablePattern(SmithingRecipe recipe,
+            AEItemKey template,
+            AEItemKey base,
+            AEItemKey addition,
+            AEItemKey out,
+            boolean allowSubstitutes) {
+        return encodeSmithingTablePattern(recipe, template, base, addition, out, allowSubstitutes, "");
     }
 
     /**

@@ -20,6 +20,7 @@ package appeng.crafting.pattern;
 
 import java.util.Objects;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.NonNullList;
@@ -160,7 +161,7 @@ public class AESmithingTablePattern implements IPatternDetails, IMolecularAssemb
     }
 
     @Override
-    public String getAuthor() {
+    public @NotNull String getAuthor() {
         return author;
     }
 

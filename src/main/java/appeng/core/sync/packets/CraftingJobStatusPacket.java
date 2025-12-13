@@ -42,6 +42,11 @@ public class CraftingJobStatusPacket extends BasePacket {
     }
 
     public CraftingJobStatusPacket(UUID jobId, AEKey what, long requestedAmount, long remainingAmount,
+            long elapsedTime, Status status) {
+        this(jobId, what, requestedAmount, remainingAmount, elapsedTime, false, status);
+    }
+
+    public CraftingJobStatusPacket(UUID jobId, AEKey what, long requestedAmount, long remainingAmount,
             long elapsedTime, boolean isFollowing, Status status) {
         var data = new FriendlyByteBuf(Unpooled.buffer());
         data.writeInt(getPacketID());

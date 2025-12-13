@@ -204,6 +204,11 @@ public final class CraftingCPUCluster implements IAECluster, ICraftingCPU {
     }
 
     public ICraftingSubmitResult submitJob(IGrid g, ICraftingPlan plan, IActionSource src,
+            ICraftingRequester requestingMachine) {
+        return submitJob(g, plan, src, requestingMachine, false);
+    }
+
+    public ICraftingSubmitResult submitJob(IGrid g, ICraftingPlan plan, IActionSource src,
             ICraftingRequester requestingMachine, boolean isFollowing) {
         return craftingLogic.trySubmitJob(g, plan, src, requestingMachine, isFollowing);
     }

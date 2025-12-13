@@ -98,6 +98,10 @@ public class CraftAmountMenu extends AEBaseMenu implements ISubMenu {
         this.craftingItem.set(GenericStack.wrapInItemStack(whatToCraft, initialAmount));
     }
 
+    public void confirm(long amount, boolean craftMissingAmount, boolean autoStart) {
+        confirm(amount, craftMissingAmount, autoStart, false);
+    }
+
     /**
      * Confirms the craft request. If called client-side, automatically sends a packet to the server to perform the
      * action there instead.

@@ -67,6 +67,11 @@ public class ExecutingCraftingJob {
     }
 
     ExecutingCraftingJob(ICraftingPlan plan, CraftingDifferenceListener postCraftingDifference, CraftingLink link,
+            @Nullable Integer playerId) {
+        this(plan, postCraftingDifference, link, playerId, false);
+    }
+
+    ExecutingCraftingJob(ICraftingPlan plan, CraftingDifferenceListener postCraftingDifference, CraftingLink link,
             @Nullable Integer playerId, boolean isFollowing) {
         this.finalOutput = plan.finalOutput();
         this.remainingAmount = this.finalOutput.amount();

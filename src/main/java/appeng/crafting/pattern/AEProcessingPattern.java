@@ -20,6 +20,7 @@ package appeng.crafting.pattern;
 
 import java.util.Objects;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.world.level.Level;
@@ -84,7 +85,7 @@ public class AEProcessingPattern implements IPatternDetails {
     }
 
     @Override
-    public String getAuthor() {
+    public @NotNull String getAuthor() {
         return author;
     }
 

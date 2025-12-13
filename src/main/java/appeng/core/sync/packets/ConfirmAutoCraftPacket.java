@@ -40,6 +40,10 @@ public class ConfirmAutoCraftPacket extends BasePacket {
         this.isFollowing = stream.readBoolean();
     }
 
+    public ConfirmAutoCraftPacket(long craftAmt, boolean craftMissingAmount, boolean autoStart) {
+        this(craftAmt, craftMissingAmount, autoStart, false);
+    }
+
     public ConfirmAutoCraftPacket(long craftAmt, boolean craftMissingAmount, boolean autoStart, boolean isFollowing) {
         this.amount = craftAmt;
         this.craftMissingAmount = craftMissingAmount;

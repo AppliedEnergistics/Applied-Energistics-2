@@ -23,6 +23,7 @@
 
 package appeng.api.crafting;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.world.item.crafting.Recipe;
@@ -67,7 +68,10 @@ public interface IPatternDetails {
 
     /**
      * The user who encoded this pattern.
+     * 
+     * @apiNote if you override this, you should return an empty string and not null
      */
+    @NotNull
     String getAuthor();
 
     /**
