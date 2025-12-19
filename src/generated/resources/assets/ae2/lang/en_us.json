@@ -563,6 +563,7 @@
   "gui.tooltips.ae2.CpuStatusCraftedIn": "Crafted %s in %s",
   "gui.tooltips.ae2.CpuStatusCrafting": "Crafting %s",
   "gui.tooltips.ae2.CpuStatusStorage": "%s Storage",
+  "gui.tooltips.ae2.CpuStatusSuspended": "Suspended",
   "gui.tooltips.ae2.Craft": "Crafting Behavior",
   "gui.tooltips.ae2.CraftEither": "Use stocked items, or craft items while exporting.",
   "gui.tooltips.ae2.CraftOnly": "Do not use stocked items, only craft items while exporting.",

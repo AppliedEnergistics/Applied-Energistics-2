@@ -213,6 +213,7 @@ public enum Icon {
     S_STORAGE(208, 224, 10, 10),
     S_PROCESSOR(208, 234, 10, 10),
     S_CRAFT(208, 244, 10, 10),
+    S_SUSPENDED(192, 244, 10, 10),
     S_TERMINAL(192, 224, 10, 10),
     S_MACHINE(192, 234, 10, 10);
 

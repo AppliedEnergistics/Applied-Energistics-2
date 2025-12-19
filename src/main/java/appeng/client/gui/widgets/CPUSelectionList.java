@@ -117,6 +117,9 @@ public class CPUSelectionList implements ICompositeWidget {
                                 Tooltips.ofPercent(cpu.progress()),
                                 Tooltips.ofDuration(cpu.elapsedTimeNanos(), TimeUnit.NANOSECONDS)));
             }
+            if (cpu.isSuspended()) {
+                tooltipLines.add(ButtonToolTips.CpuStatusSuspended.text().withStyle(ChatFormatting.YELLOW));
+            }
             return new Tooltip(tooltipLines);
         }
         return null;
@@ -210,6 +213,8 @@ public class CPUSelectionList implements ICompositeWidget {
                 var craftAmt = currentJob.what().formatAmount(currentJob.amount(), AmountFormat.SLOT);
                 infoBar.add(craftAmt, textColor.toARGB(), 0.666f, x + 14, y + 13);
                 infoBar.add(currentJob.what(), 0.666f, x + 55, y + 9);
+                if (cpu.isSuspended())
+                    infoBar.add(Icon.S_SUSPENDED, 0.7f, x + 58, y + 1);
 
                 // Draw a bar at the bottom of the button to indicate job progress
                 var progress = (int) (cpu.progress() * (buttonBg.getSrcWidth() - 1));
