@@ -233,7 +233,8 @@ public class CPUSelectionList implements ICompositeWidget {
 
                 if (cpu.coProcessors() > 0) {
                     infoBar.add(Icon.BLOCKING_MODE_NO, 0.6f);
-                    String coProcessorCount = String.valueOf(cpu.coProcessors());
+                    Tooltips.Amount ProcessorCount = Tooltips.getAmount(cpu.coProcessors());
+                    String coProcessorCount = ProcessorCount.digit() + ProcessorCount.unit();
                     infoBar.add(coProcessorCount, textColor.toARGB(), 0.6f);
                     infoBar.addSpace(1);
                 }
@@ -251,7 +252,8 @@ public class CPUSelectionList implements ICompositeWidget {
     }
 
     private String formatStorage(CraftingStatusMenu.CraftingCpuListEntry cpu) {
-        return (cpu.storage() / 1024) + "k";
+        Tooltips.Amount storageAmount = Tooltips.getByteAmount(cpu.storage());
+        return storageAmount.digit() + storageAmount.unit();
     }
 
     private Component getCpuName(CraftingStatusMenu.CraftingCpuListEntry cpu) {
