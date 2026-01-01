@@ -54,9 +54,11 @@ public class SimulationEnv {
     private final KeyCounter networkStorage = new KeyCounter();
 
     public IPatternDetails addPattern(IPatternDetails pattern) {
-        var output = pattern.getPrimaryOutput();
-        patterns.computeIfAbsent(output.what(), s -> new ArrayList<>()).add(pattern);
-        craftableItemsList.add(output.what(), 1);
+        var outputs = pattern.getOutputs();
+        for (var output : outputs) {
+            patterns.computeIfAbsent(output.what(), s -> new ArrayList<>()).add(pattern);
+            craftableItemsList.add(output.what(), 1);
+        }
         return pattern;
     }
 
