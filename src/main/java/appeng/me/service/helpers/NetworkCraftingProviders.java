@@ -200,7 +200,6 @@ public class NetworkCraftingProviders {
                 for (var output : outputs) {
                     methods.craftableItemsList.add(output.what(), 1);
 
-
                     methods.craftableItemsList.add(output.what(), 1);
 
                     var patternsForKey = methods.craftableItems.computeIfAbsent(output.what(),
