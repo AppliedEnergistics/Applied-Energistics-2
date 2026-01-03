@@ -48,7 +48,7 @@ public class ChargerCategory implements DisplayCategory<ChargerDisplay> {
 
         var x = bounds.x;
         var y = bounds.y;
-        widgets.add(Widgets.createRecipeBase(bounds));
+        widgets.add(Widgets.wrapRenderer(bounds, new BackgroundRenderer(getDisplayWidth(display), getDisplayHeight())));
 
         var recipe = display.holder().value();
 

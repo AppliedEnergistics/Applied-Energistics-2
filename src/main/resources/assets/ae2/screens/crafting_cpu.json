@@ -14,6 +14,12 @@
     }
   },
   "widgets": {
+    "suspend": {
+      "left": 103,
+      "bottom": 25,
+      "width": 50,
+      "height": 20
+    },
     "cancel": {
       "left": 163,
       "bottom": 25,

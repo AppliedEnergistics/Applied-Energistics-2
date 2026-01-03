@@ -88,8 +88,8 @@ public final class StonecuttingEncodingPanel extends EncodingModePanel {
                 blitter = BG_SLOT_HOVER;
             }
 
-            var renderX = bounds.getX() + slotBounds.getX() - 7;
-            var renderY = bounds.getY() + slotBounds.getY() + 5;
+            var renderX = bounds.getX() + slotBounds.getX();
+            var renderY = bounds.getY() + slotBounds.getY();
             blitter.dest(renderX, renderY).blit(guiGraphics);
             ItemStack resultItem = recipe.value().getResultItem(getRegistryAccess());
             if (selected || mouse.isIn(slotBounds)) {
@@ -148,8 +148,8 @@ public final class StonecuttingEncodingPanel extends EncodingModePanel {
     private Rect2i getRecipeBounds(int index) {
         var col = index % COLS;
         var row = index / COLS;
-        int slotX = x + 33 + col * BG_SLOT.getSrcWidth();
-        int slotY = y + 7 + row * BG_SLOT.getSrcHeight();
+        int slotX = x + 26 + col * BG_SLOT.getSrcWidth();
+        int slotY = y + 12 + row * BG_SLOT.getSrcHeight();
         return new Rect2i(slotX, slotY, BG_SLOT.getSrcWidth(), BG_SLOT.getSrcHeight());
     }
 

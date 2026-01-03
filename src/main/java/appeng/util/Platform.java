@@ -87,7 +87,7 @@ public class Platform {
      */
     @Nullable
     private static final Class<?> ponderLevelClass = findPonderLevelClass(
-            "com.simibubi.create.foundation.ponder.PonderWorld");
+            "net.createmod.ponder.api.level.PonderLevel");
 
     // This hack is used to allow tests and the guidebook to provide a recipe manager before the client loads a world
     public static RecipeManager fallbackClientRecipeManager;
@@ -112,6 +112,10 @@ public class Platform {
     private static Class<?> findPonderLevelClass(String className) {
         if (!hasClientClasses()) {
             return null; // Don't attempt this on a dedicated server
+        }
+
+        if (!ModList.get().isLoaded("ponder")) {
+            return null;
         }
 
         try {

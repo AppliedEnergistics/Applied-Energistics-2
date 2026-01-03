@@ -48,7 +48,8 @@ public final class TooltipProviders implements TooltipProvider {
 
     private static final Logger LOG = LoggerFactory.getLogger(TooltipProviders.class);
 
-    public static final ServiceLoader<TooltipProvider> LOADER = ServiceLoader.load(TooltipProvider.class);
+    public static final ServiceLoader<TooltipProvider> LOADER = ServiceLoader.load(TooltipProvider.class,
+            TooltipProviders.class.getClassLoader());
 
     static {
         // We just have to do this once

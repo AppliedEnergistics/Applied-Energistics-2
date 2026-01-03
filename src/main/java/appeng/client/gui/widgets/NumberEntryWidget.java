@@ -40,6 +40,7 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 
@@ -60,7 +61,10 @@ import appeng.core.localization.GuiText;
  */
 public class NumberEntryWidget implements ICompositeWidget {
 
-    private static final long[] STEPS = new long[] { 1, 10, 100, 1000 };
+    private static final long[] STEPS_1000 = new long[] { 1, 10, 100, 1000 };
+    private static final long[] STEPS_64 = new long[] { 1, 16, 32, 64 };
+    private final Component[] components1000;
+    private final Component[] components64;
     private static final Component PLUS = Component.literal("+");
     private static final Component MINUS = Component.literal("-");
     private static final int UNIT_PADDING = 3;
@@ -87,6 +91,8 @@ public class NumberEntryWidget implements ICompositeWidget {
 
     private Rect2i textFieldBounds = Rects.ZERO;
     private Point currentScreenOrigin = Point.ZERO;
+
+    private List<Button> amountButtons = List.of();
 
     public NumberEntryWidget(ScreenStyle style, NumberEntryType type) {
         this.errorTextColor = style.getColor(PaletteColor.TEXTFIELD_ERROR).toARGB();
@@ -117,6 +123,27 @@ public class NumberEntryWidget implements ICompositeWidget {
             }
         });
         validate();
+
+        components1000 = new Component[] {
+                makeLabel(PLUS, 0, true),
+                makeLabel(PLUS, 1, true),
+                makeLabel(PLUS, 2, true),
+                makeLabel(PLUS, 3, true),
+                makeLabel(MINUS, 0, true),
+                makeLabel(MINUS, 1, true),
+                makeLabel(MINUS, 2, true),
+                makeLabel(MINUS, 3, true),
+        };
+        components64 = new Component[] {
+                makeLabel(PLUS, 0, false),
+                makeLabel(PLUS, 1, false),
+                makeLabel(PLUS, 2, false),
+                makeLabel(PLUS, 3, false),
+                makeLabel(MINUS, 0, false),
+                makeLabel(MINUS, 1, false),
+                makeLabel(MINUS, 2, false),
+                makeLabel(MINUS, 3, false),
+        };
     }
 
     public void setOnConfirm(Runnable callback) {
@@ -194,10 +221,14 @@ public class NumberEntryWidget implements ICompositeWidget {
 
         List<Button> buttons = new ArrayList<>(9);
 
-        buttons.add(new AE2Button(left, top, 22, 20, makeLabel(PLUS, STEPS[0]), btn -> addQty(STEPS[0])));
-        buttons.add(new AE2Button(left + 28, top, 28, 20, makeLabel(PLUS, STEPS[1]), btn -> addQty(STEPS[1])));
-        buttons.add(new AE2Button(left + 62, top, 32, 20, makeLabel(PLUS, STEPS[2]), btn -> addQty(STEPS[2])));
-        buttons.add(new AE2Button(left + 100, top, 38, 20, makeLabel(PLUS, STEPS[3]), btn -> addQty(STEPS[3])));
+        buttons.add(new AE2Button(left, top, 22, 20, components1000[0],
+                btn -> addQty(hasShiftOrControlDown() ? STEPS_64[0] : STEPS_1000[0])));
+        buttons.add(new AE2Button(left + 28, top, 28, 20, components1000[1],
+                btn -> addQty(hasShiftOrControlDown() ? STEPS_64[1] : STEPS_1000[1])));
+        buttons.add(new AE2Button(left + 62, top, 32, 20, components1000[2],
+                btn -> addQty(hasShiftOrControlDown() ? STEPS_64[2] : STEPS_1000[2])));
+        buttons.add(new AE2Button(left + 100, top, 38, 20, components1000[3],
+                btn -> addQty(hasShiftOrControlDown() ? STEPS_64[3] : STEPS_1000[3])));
 
         // Need to add these now for sensible tab-order
         buttons.forEach(addWidget);
@@ -208,10 +239,18 @@ public class NumberEntryWidget implements ICompositeWidget {
         screen.setInitialFocus(this.textField);
         addWidget.accept(this.textField);
 
-        buttons.add(new AE2Button(left, top + 42, 22, 20, makeLabel(MINUS, STEPS[0]), btn -> addQty(-STEPS[0])));
-        buttons.add(new AE2Button(left + 28, top + 42, 28, 20, makeLabel(MINUS, STEPS[1]), btn -> addQty(-STEPS[1])));
-        buttons.add(new AE2Button(left + 62, top + 42, 32, 20, makeLabel(MINUS, STEPS[2]), btn -> addQty(-STEPS[2])));
-        buttons.add(new AE2Button(left + 100, top + 42, 38, 20, makeLabel(MINUS, STEPS[3]), btn -> addQty(-STEPS[3])));
+        buttons.add(new AE2Button(left, top + 42, 22, 20, components1000[4],
+                btn -> addQty(hasShiftOrControlDown() ? -STEPS_64[0] : -STEPS_1000[0])));
+        buttons.add(new AE2Button(left + 28, top + 42, 28, 20, components1000[5],
+                btn -> addQty(hasShiftOrControlDown() ? -STEPS_64[1] : -STEPS_1000[1])));
+        buttons.add(new AE2Button(left + 62, top + 42, 32, 20, components1000[6],
+                btn -> addQty(hasShiftOrControlDown() ? -STEPS_64[2] : -STEPS_1000[2])));
+        buttons.add(new AE2Button(left + 100, top + 42, 38, 20, components1000[7],
+                btn -> addQty(hasShiftOrControlDown() ? -STEPS_64[3] : -STEPS_1000[3])));
+
+        // copy plus and minus buttons here to modify them easily when switching to different step size
+        // this will break if any other buttons are added beforehand
+        amountButtons = List.copyOf(buttons);
 
         // This element is not focusable
         if (!hideValidationIcon) {
@@ -229,6 +268,18 @@ public class NumberEntryWidget implements ICompositeWidget {
         // we need to re-validate because the icon may now be present and needs it's
         // initial state
         this.validate();
+    }
+
+    @Override
+    public void updateBeforeRender() {
+        Component[] messages = hasShiftOrControlDown() ? components64 : components1000;
+        for (int i = 0; i < amountButtons.size(); i++) {
+            amountButtons.get(i).setMessage(messages[i]);
+        }
+    }
+
+    private static boolean hasShiftOrControlDown() {
+        return Screen.hasShiftDown() || Screen.hasControlDown();
     }
 
     /**
@@ -297,7 +348,7 @@ public class NumberEntryWidget implements ICompositeWidget {
             newValue = minimum;
         } else if (newValue.compareTo(maximum) > 0) {
             newValue = maximum;
-        } else if (currentValue.compareTo(BigDecimal.ONE) == 0 && delta > 0 && delta % 10 == 0) {
+        } else if (currentValue.compareTo(BigDecimal.ONE) == 0 && delta > 1) {
             newValue = newValue.subtract(BigDecimal.ONE);
         }
         setValueInternal(newValue);
@@ -368,8 +419,9 @@ public class NumberEntryWidget implements ICompositeWidget {
         }
     }
 
-    private Component makeLabel(Component prefix, long amount) {
-        return prefix.plainCopy().append(decimalFormat.format(amount));
+    private Component makeLabel(Component prefix, int amountIndex, boolean useDecimalSteps) {
+        return prefix.plainCopy()
+                .append(decimalFormat.format(useDecimalSteps ? STEPS_1000[amountIndex] : STEPS_64[amountIndex]));
     }
 
     public void setHideValidationIcon(boolean hideValidationIcon) {

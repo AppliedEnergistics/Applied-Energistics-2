@@ -19,13 +19,6 @@ import appeng.items.parts.PartItem;
  * Special part item for {@link AnnihilationPlanePart} to handle enchants and extended tooltips.
  */
 public class AnnihilationPlanePartItem extends PartItem<AnnihilationPlanePart> {
-    /**
-     * Workaround to make annihilation planes combinable in anvils.
-     * <p>
-     * null = false, non-null = true
-     */
-    public static final ThreadLocal<Object> CALLING_DAMAGEABLE_FROM_ANVIL = ThreadLocal.withInitial(() -> null);
-
     public AnnihilationPlanePartItem(Properties properties) {
         super(properties, AnnihilationPlanePart.class, AnnihilationPlanePart::new);
     }
@@ -43,11 +36,6 @@ public class AnnihilationPlanePartItem extends PartItem<AnnihilationPlanePart> {
     @Override
     public boolean isBookEnchantable(ItemStack stack, ItemStack book) {
         return true;
-    }
-
-    @Override
-    public int getMaxDamage(ItemStack stack) {
-        return CALLING_DAMAGEABLE_FROM_ANVIL.get() != null ? 1 : super.getMaxDamage(stack);
     }
 
     @Override

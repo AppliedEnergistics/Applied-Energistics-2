@@ -157,7 +157,7 @@ public class DecorationBlockRecipes extends AE2RecipeProvider {
                 .pattern("bab")
                 .pattern("aba")
                 .define('a', ConventionTags.ALL_QUARTZ_DUST)
-                .define('b', ConventionTags.GLASS)
+                .define('b', ConventionTags.GLASS_CHEAP)
                 .unlockedBy("has_quartz_dust", has(ConventionTags.ALL_QUARTZ_DUST))
                 .save(consumer, AppEng.makeId("decorative/quartz_glass"));
 

@@ -54,7 +54,7 @@ public class TransformCategory implements DisplayCategory<TransformRecipeWrapper
     public List<Widget> setupDisplay(TransformRecipeWrapper display, Rectangle bounds) {
 
         List<Widget> widgets = new ArrayList<>();
-        widgets.add(Widgets.createRecipeBase(bounds));
+        widgets.add(Widgets.wrapRenderer(bounds, new BackgroundRenderer(getDisplayWidth(display), getDisplayHeight())));
 
         // First column contains ingredients
         int col1 = bounds.x + 10;

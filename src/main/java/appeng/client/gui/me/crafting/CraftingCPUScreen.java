@@ -26,6 +26,8 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang3.time.DurationFormatUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
@@ -51,9 +53,12 @@ import appeng.menu.me.crafting.CraftingStatusEntry;
  */
 public class CraftingCPUScreen<T extends CraftingCPUMenu> extends AEBaseScreen<T> {
 
+    private static final Logger LOG = LoggerFactory.getLogger(CraftingCPUScreen.class);
+
     private final CraftingStatusTableRenderer table;
 
     private final Button cancel;
+    private final Button suspend;
 
     private final Scrollbar scrollbar;
 
@@ -69,6 +74,7 @@ public class CraftingCPUScreen<T extends CraftingCPUMenu> extends AEBaseScreen<T
         this.scrollbar = widgets.addScrollBar("scrollbar", Scrollbar.BIG);
 
         this.cancel = this.widgets.addButton("cancel", GuiText.Cancel.text(), menu::cancelCrafting);
+        this.suspend = this.widgets.addButton("suspend", GuiText.Suspend.text(), menu::toggleScheduling);
 
         this.schedulingModeButton = new ServerSettingToggleButton<>(Settings.CPU_SELECTION_MODE,
                 CpuSelectionMode.ANY);
@@ -118,6 +124,7 @@ public class CraftingCPUScreen<T extends CraftingCPUMenu> extends AEBaseScreen<T
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float btn) {
         this.cancel.active = !getVisualEntries().isEmpty();
+        this.suspend.active = this.cancel.active;
 
         super.render(guiGraphics, mouseX, mouseY, btn);
     }
@@ -169,6 +176,10 @@ public class CraftingCPUScreen<T extends CraftingCPUMenu> extends AEBaseScreen<T
                         entry.getStoredAmount(),
                         entry.getActiveAmount(),
                         entry.getPendingAmount()));
+            } else if (entry.getWhat() == null) {
+                LOG.warn("Received an updated crafting status entry {}, but no current entry exists. {}",
+                        entry,
+                        status.isFullStatus());
             } else {
                 entries.put(entry.getSerial(), entry);
             }
@@ -181,7 +192,9 @@ public class CraftingCPUScreen<T extends CraftingCPUMenu> extends AEBaseScreen<T
                 status.getElapsedTime(),
                 status.getRemainingItemCount(),
                 status.getStartItemCount(),
-                sortedEntries);
+                sortedEntries,
+                status.isSuspended());
+        this.suspend.setMessage(status.isSuspended() ? GuiText.Resume.text() : GuiText.Suspend.text());
     }
 
 }
