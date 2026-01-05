@@ -45,6 +45,20 @@ import appeng.crafting.inv.ICraftingInventory;
  */
 public class CraftingTreeNode {
 
+    // Thread-local pool to avoid repeated allocations in multi-branch crafting.
+    private static final ThreadLocal<ChildCraftingSimulationState> POOLED_CHILD_STATE = new ThreadLocal<>();
+
+    private static ChildCraftingSimulationState acquireChildState(ICraftingInventory parent) {
+        ChildCraftingSimulationState state = POOLED_CHILD_STATE.get();
+        if (state == null) {
+            state = new ChildCraftingSimulationState(parent);
+            POOLED_CHILD_STATE.set(state);
+        } else {
+            state.reinitialize(parent);
+        }
+        return state;
+    }
+
     /**
      * what input this node is for. Null for the top-level node.
      */
@@ -79,11 +93,11 @@ public class CraftingTreeNode {
     }
 
     private AEKey findCraftedStack(ICraftingService cc, AEKey wat) {
-        if (cc.canEmitFor(wat)) {
+        if (this.job.canEmitFor(wat)) {
             return wat; // if we can emit for something, use that.
         }
 
-        var patterns = cc.getCraftingFor(wat);
+        var patterns = this.job.getCachedCraftingFor(wat);
 
         if (patterns.isEmpty() && parentInput != null) {
             // No pattern for the exact encoded input. Try to find a pattern for a substitute ingredient. ;)
@@ -123,7 +137,7 @@ public class CraftingTreeNode {
             if (gridNode != null) {
                 var craftingService = gridNode.getGrid().getCraftingService();
 
-                for (var details : craftingService.getCraftingFor(this.what)) {
+                for (var details : this.job.getCachedCraftingFor(this.what)) {
                     if (this.parent == null || this.parent.notRecursive(details)) {
                         this.nodes.add(new CraftingTreeProcess(craftingService, job, details, this));
                     }
@@ -248,13 +262,25 @@ public class CraftingTreeNode {
                 }
             }
         } else if (this.nodes.size() > 1) {
-            // Multiple branches: try as much as possible of one branch before moving to the next one.
+            // Multiple branches: use exponential probing to batch requests efficiently.
             for (CraftingTreeProcess pro : this.nodes) {
-                try {
-                    while (pro.possible && totalRequestedItems > 0) {
-                        final ChildCraftingSimulationState child = new ChildCraftingSimulationState(inv);
-                        // craft one by one, using the sub inventory as target
-                        pro.request(child, 1);
+                if (!pro.possible || totalRequestedItems <= 0) {
+                    continue;
+                }
+
+                long probeSize = 1;
+                var craftedPerPattern = pro.getOutputCount(this.what);
+
+                while (pro.possible && totalRequestedItems > 0) {
+                    long testAmount = Math.min(probeSize,
+                            (totalRequestedItems + craftedPerPattern - 1) / craftedPerPattern);
+                    if (testAmount <= 0) {
+                        testAmount = 1;
+                    }
+
+                    final ChildCraftingSimulationState child = acquireChildState(inv);
+                    try {
+                        pro.request(child, testAmount);
 
                         // by now we have succeeded, as request throws an exception in case of failure
                         var available = child.extract(this.what, totalRequestedItems, Actionable.MODULATE);
@@ -267,13 +293,21 @@ public class CraftingTreeNode {
                             if (totalRequestedItems <= 0) {
                                 return;
                             }
+
+                            probeSize = Math.min(probeSize * 2,
+                                    (totalRequestedItems + craftedPerPattern - 1) / craftedPerPattern);
+                            if (probeSize <= 0) {
+                                probeSize = 1;
+                            }
                         } else {
                             pro.possible = false; // ;P
                         }
+                    } catch (CraftBranchFailure fail) {
+                        if (testAmount == 1) {
+                            break;
+                        }
+                        probeSize = Math.max(1, probeSize / 2);
                     }
-                } catch (CraftBranchFailure fail) {
-                    // TODO: why try again after a failure? just in case we receive the right inputs by chance?
-                    pro.possible = true;
                 }
             }
         }

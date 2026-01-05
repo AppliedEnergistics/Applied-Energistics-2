@@ -22,10 +22,15 @@ import appeng.api.config.Actionable;
 import appeng.api.stacks.AEKey;
 
 public class ChildCraftingSimulationState extends CraftingSimulationState {
-    private final ICraftingInventory parent;
+    private ICraftingInventory parent;
 
     public ChildCraftingSimulationState(ICraftingInventory parent) {
         this.parent = parent;
+    }
+
+    public void reinitialize(ICraftingInventory newParent) {
+        resetState();
+        this.parent = newParent;
     }
 
     @Override

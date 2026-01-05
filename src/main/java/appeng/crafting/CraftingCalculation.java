@@ -19,7 +19,10 @@
 package appeng.crafting;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import com.google.common.base.Stopwatch;
@@ -29,9 +32,11 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.world.level.Level;
 
+import appeng.api.crafting.IPatternDetails;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.crafting.CalculationStrategy;
 import appeng.api.networking.crafting.ICraftingPlan;
+import appeng.api.networking.crafting.ICraftingService;
 import appeng.api.networking.crafting.ICraftingSimulationRequester;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
@@ -43,6 +48,8 @@ import appeng.crafting.inv.NetworkCraftingSimulationState;
 import appeng.hooks.ticking.TickHandler;
 
 public class CraftingCalculation {
+    private static final int PAUSE_CHECK_INTERVAL = 1000;
+
     private final NetworkCraftingSimulationState networkInv;
     private final Level level;
     private final KeyCounter missing = new KeyCounter();
@@ -61,6 +68,9 @@ public class CraftingCalculation {
     private int incTime = Integer.MAX_VALUE;
     private final List<CraftAttempt> attempts = AELog.isCraftingLogEnabled() ? new ArrayList<>() : null;
 
+    private final ICraftingService craftingService;
+    private final Map<AEKey, Collection<IPatternDetails>> patternCache = new HashMap<>();
+
     public CraftingCalculation(Level level, IGrid grid, ICraftingSimulationRequester simRequester,
             GenericStack output, CalculationStrategy strategy) {
         this.level = level;
@@ -70,10 +80,18 @@ public class CraftingCalculation {
         this.simRequester = simRequester;
 
         var storage = grid.getStorageService();
-        var craftingService = grid.getCraftingService();
+        this.craftingService = grid.getCraftingService();
         this.networkInv = new NetworkCraftingSimulationState(storage, simRequester.getActionSource());
 
         this.tree = new CraftingTreeNode(craftingService, this, this.output, 1, null, -1);
+    }
+
+    Collection<IPatternDetails> getCachedCraftingFor(AEKey what) {
+        return patternCache.computeIfAbsent(what, craftingService::getCraftingFor);
+    }
+
+    boolean canEmitFor(AEKey what) {
+        return craftingService.canEmitFor(what);
     }
 
     void addMissing(AEKey what, long amount) {
@@ -104,25 +122,40 @@ public class CraftingCalculation {
         }
 
         if (strategy == CalculationStrategy.CRAFT_LESS) {
-            // Try crafting less if possible using binary search.
-            long successfulAmount = 0;
-            ICraftingPlan successfulPlan = null;
-            for (long increment = Long.highestOneBit(requestedAmount); increment > 0; increment /= 2) {
-                long testAmount = successfulAmount + increment;
-                if (testAmount < requestedAmount) {
-                    var plan = runCraftAttempt(false, testAmount);
-                    if (plan != null) {
-                        // Success! :)
-                        successfulAmount = testAmount;
-                        successfulPlan = plan;
-                    }
+            // Exponential search to find upper bound, then binary search.
+            long upperBound = 1;
+            ICraftingPlan lastSuccessful = null;
+
+            while (upperBound < requestedAmount) {
+                var plan = runCraftAttempt(false, upperBound);
+                if (plan != null) {
+                    lastSuccessful = plan;
+                    upperBound *= 2;
+                } else {
+                    break;
                 }
             }
 
-            // Found a successful plan! :)
-            if (successfulPlan != null) {
-                return successfulPlan;
+            if (lastSuccessful == null) {
+                return runCraftAttempt(true, requestedAmount);
             }
+
+            long low = lastSuccessful.finalOutput().amount();
+            long high = Math.min(upperBound, requestedAmount - 1);
+            ICraftingPlan bestPlan = lastSuccessful;
+
+            while (low < high) {
+                long mid = low + (high - low + 1) / 2;
+                var plan = runCraftAttempt(false, mid);
+                if (plan != null) {
+                    bestPlan = plan;
+                    low = mid;
+                } else {
+                    high = mid - 1;
+                }
+            }
+
+            return bestPlan;
         }
 
         // Couldn't find a successful plan -> simulate.
@@ -169,7 +202,7 @@ public class CraftingCalculation {
     }
 
     void handlePausing() throws InterruptedException {
-        if (this.incTime > 100) {
+        if (this.incTime > PAUSE_CHECK_INTERVAL) {
             this.incTime = 0;
 
             synchronized (this.monitor) {

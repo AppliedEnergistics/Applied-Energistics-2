@@ -67,6 +67,15 @@ public abstract class CraftingSimulationState implements ICraftingSimulationStat
         this.requiredExtract = new KeyCounter();
     }
 
+    protected void resetState() {
+        this.unmodifiedCache.clear();
+        this.modifiableCache.clear();
+        this.emittedItems.clear();
+        this.requiredExtract.clear();
+        this.bytes = 0;
+        this.crafts.clear();
+    }
+
     protected abstract long simulateExtractParent(AEKey what, long amount);
 
     protected abstract Iterable<AEKey> findFuzzyParent(AEKey input);
@@ -167,16 +176,20 @@ public abstract class CraftingSimulationState implements ICraftingSimulationStat
         }
 
         for (var entry : modifiableCache) {
-            var unmodified = unmodifiedCache.get(entry.getKey());
-            long sizeDelta = entry.getLongValue() - unmodified;
+            var key = entry.getKey();
+            long modified = entry.getLongValue();
+            long unmodified = unmodifiedCache.get(key);
+            long sizeDelta = modified - unmodified;
+
+            if (sizeDelta == 0) {
+                continue;
+            }
 
             if (sizeDelta > 0) {
-                parent.insert(entry.getKey(), sizeDelta, Actionable.MODULATE);
-            } else if (sizeDelta < 0) {
-                long newStackSize = -sizeDelta;
-                var reallyExtracted = parent.extract(entry.getKey(), newStackSize, Actionable.MODULATE);
-
-                if (reallyExtracted != -sizeDelta) {
+                parent.insert(key, sizeDelta, Actionable.MODULATE);
+            } else {
+                long extracted = parent.extract(key, -sizeDelta, Actionable.MODULATE);
+                if (extracted != -sizeDelta) {
                     throw new IllegalStateException("Failed to extract from parent. This is a bug!");
                 }
             }
