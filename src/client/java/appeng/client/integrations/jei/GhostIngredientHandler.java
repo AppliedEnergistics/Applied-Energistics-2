@@ -79,6 +79,46 @@ class GhostIngredientHandler implements IGhostIngredientHandler<AEBaseScreen> {
     public void onComplete() {
     }
 
+    @Override
+    public <I> boolean quickMove(AEBaseScreen gui, ITypedIngredient<I> ingredient) {
+        var wrapped = wrapDraggedItem(ingredient.getType(), ingredient.getIngredient());
+        if (wrapped == null) {
+            return true;
+        }
+
+        int index = -1;
+        GenericStack ingredientStack = GenericStack.fromItemStack(wrapped);
+
+        for (var slot : gui.getMenu().slots) {
+            if (slot.isActive() && slot instanceof FakeSlot fakeSlot) {
+                // Use the standard inventory function to test if the dragged stack would in theory be accepted
+                if (!fakeSlot.canSetFilterTo(wrapped)) {
+                    continue;
+                }
+
+                // Remember first free slot index if we later want to insert the ghost item
+                if (!fakeSlot.hasItem() && index == -1) {
+                    index = slot.index;
+                }
+
+                // Ghost item already in one of the slots?
+                ItemStack is = fakeSlot.getItem();
+                GenericStack slotStack = GenericStack.fromItemStack(is);
+
+                if (slotStack != null && ingredientStack != null && slotStack.what().matches(ingredientStack)) {
+                    return true;
+                }
+            }
+        }
+
+        if (index > -1) {
+            ClientPacketDistributor.sendToServer(new InventoryActionPacket(InventoryAction.SET_FILTER,
+                    index, wrapped));
+        }
+
+        return true;
+    }
+
     private static class ItemSlotTarget<I> implements Target<I> {
         private final IIngredientType<I> type;
         private final AppEngSlot slot;
