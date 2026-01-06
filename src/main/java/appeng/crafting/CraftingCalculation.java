@@ -122,40 +122,25 @@ public class CraftingCalculation {
         }
 
         if (strategy == CalculationStrategy.CRAFT_LESS) {
-            // Exponential search to find upper bound, then binary search.
-            long upperBound = 1;
-            ICraftingPlan lastSuccessful = null;
-
-            while (upperBound < requestedAmount) {
-                var plan = runCraftAttempt(false, upperBound);
-                if (plan != null) {
-                    lastSuccessful = plan;
-                    upperBound *= 2;
-                } else {
-                    break;
+            // Try crafting less if possible using binary search.
+            long successfulAmount = 0;
+            ICraftingPlan successfulPlan = null;
+            for (long increment = Long.highestOneBit(requestedAmount); increment > 0; increment /= 2) {
+                long testAmount = successfulAmount + increment;
+                if (testAmount < requestedAmount) {
+                    var plan = runCraftAttempt(false, testAmount);
+                    if (plan != null) {
+                        // Success! :)
+                        successfulAmount = testAmount;
+                        successfulPlan = plan;
+                    }
                 }
             }
 
-            if (lastSuccessful == null) {
-                return runCraftAttempt(true, requestedAmount);
+            // Found a successful plan! :)
+            if (successfulPlan != null) {
+                return successfulPlan;
             }
-
-            long low = lastSuccessful.finalOutput().amount();
-            long high = Math.min(upperBound, requestedAmount - 1);
-            ICraftingPlan bestPlan = lastSuccessful;
-
-            while (low < high) {
-                long mid = low + (high - low + 1) / 2;
-                var plan = runCraftAttempt(false, mid);
-                if (plan != null) {
-                    bestPlan = plan;
-                    low = mid;
-                } else {
-                    high = mid - 1;
-                }
-            }
-
-            return bestPlan;
         }
 
         // Couldn't find a successful plan -> simulate.
