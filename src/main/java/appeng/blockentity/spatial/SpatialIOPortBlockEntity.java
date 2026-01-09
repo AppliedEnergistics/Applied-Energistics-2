@@ -170,7 +170,7 @@ public class SpatialIOPortBlockEntity extends AENetworkedInvBlockEntity {
                 if (!evt.isTransitionPrevented()) {
                     int playerId = node.getOwningPlayerId();
 
-                    boolean success = sc.doSpatialTransition(cell, serverLevel, spc.getMin(), spc.getMax(),
+                    boolean success = sc.doSpatialTransition(cell, spc.getLevel(), spc.getMin(), spc.getMax(),
                             playerId);
                     if (success) {
                         energy.extractAEPower(req, Actionable.MODULATE, PowerMultiplier.CONFIG);
