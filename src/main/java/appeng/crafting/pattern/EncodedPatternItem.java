@@ -220,6 +220,10 @@ public abstract class EncodedPatternItem extends AEBaseItem {
         lines.addAll(keyRenderer);
     }
 
+    protected static Component getStackComponent(GenericStack stack) {
+        return getStackComponent(stack, false);
+    }
+
     protected static Component getStackComponent(GenericStack stack, boolean isInput) {
         var type = stack.what().getType();
         var what = stack.what();

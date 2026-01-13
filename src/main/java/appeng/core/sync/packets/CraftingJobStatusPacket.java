@@ -41,6 +41,10 @@ public class CraftingJobStatusPacket extends BasePacket {
         this.isFollowing = stream.readBoolean();
     }
 
+    public CraftingJobStatusPacket(UUID jobId, AEKey what, long requestedAmount, long remainingAmount, Status status) {
+        this(jobId, what, requestedAmount, remainingAmount, 0L, status);
+    }
+
     public CraftingJobStatusPacket(UUID jobId, AEKey what, long requestedAmount, long remainingAmount,
             long elapsedTime, Status status) {
         this(jobId, what, requestedAmount, remainingAmount, elapsedTime, false, status);

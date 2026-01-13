@@ -5,6 +5,7 @@ import java.util.function.Consumer;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.Component;
 
+import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.GenericStack;
 import appeng.client.gui.AESubScreen;
 import appeng.client.gui.widgets.TabButton;
@@ -48,9 +49,13 @@ public class SetProcessingPatternNameScreen<C extends PatternEncodingTermMenu>
 
     private void setName() {
         String newName = name.getValue();
-        var itemStack = currentStack.what().wrapForDisplayOrFilter();
+        long amount = currentStack.amount();
+        var itemStack = ((AEItemKey) currentStack.what()).toStack();
         itemStack.setHoverName(Component.literal(newName));
-        setter.accept(GenericStack.fromItemStack(itemStack));
+
+        AEItemKey newKey = AEItemKey.of(itemStack);
+
+        setter.accept(new GenericStack(newKey, amount));
         returnToParent();
     }
 }

@@ -33,6 +33,7 @@ import net.minecraft.world.item.ItemStack;
 import appeng.api.behaviors.ContainerItemStrategies;
 import appeng.api.behaviors.EmptyingAction;
 import appeng.api.config.ActionItems;
+import appeng.api.stacks.AEKeyType;
 import appeng.api.stacks.GenericStack;
 import appeng.client.gui.me.common.MEStorageScreen;
 import appeng.client.gui.me.common.StackSizeRenderer;
@@ -101,14 +102,16 @@ public class PatternEncodingTermScreen<C extends PatternEncodingTermMenu> extend
                 var currentStack = GenericStack.fromItemStack(slot.getItem());
                 if (currentStack != null) {
                     if (hasControlDown()) {
-                        // Set stack name
-                        var screen = new SetProcessingPatternNameScreen<>(
-                                this,
-                                currentStack,
-                                newStack -> NetworkHandler.instance().sendToServer(new InventoryActionPacket(
-                                        InventoryAction.SET_FILTER, slot.index,
-                                        GenericStack.wrapInItemStack(newStack))));
-                        switchToScreen(screen);
+                        if (currentStack.what().getType().equals(AEKeyType.items())) {
+                            // Set stack name
+                            var screen = new SetProcessingPatternNameScreen<>(
+                                    this,
+                                    currentStack,
+                                    newStack -> NetworkHandler.instance().sendToServer(new InventoryActionPacket(
+                                            InventoryAction.SET_FILTER, slot.index,
+                                            GenericStack.wrapInItemStack(newStack))));
+                            switchToScreen(screen);
+                        }
                     } else {
                         // Set stack amount
                         var screen = new SetProcessingPatternAmountScreen<>(

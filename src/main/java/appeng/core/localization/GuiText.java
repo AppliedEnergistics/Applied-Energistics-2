@@ -280,6 +280,7 @@ public enum GuiText implements LocalizationEnum {
     Wireless("Wireless Access Point"),
     WirelessRange("Range: %s m"),
     WirelessTerminal("Wireless Term"),
+    With("with"),
     Yellow("Yellow"),
     Yes("Yes"),
     inWorldCraftingPresses(

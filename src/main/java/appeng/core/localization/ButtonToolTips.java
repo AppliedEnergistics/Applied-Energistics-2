@@ -199,7 +199,7 @@ public enum ButtonToolTips implements LocalizationEnum {
     StoreAction("%s: Store %s"),
     SetAction("%s: Set %s"),
     ModifyAmountAction("%s: Modify Amount"),
-    ModifyNameAction("%s: Modify Name"),
+    ModifyNameAction("%s: Modify Name (only available for items)"),
     SupportedBy("Supported by:"),
     LinkWirelessTerminal("Link Wireless Terminals here"),
     PlaceWirelessBooster("Increase range with Wireless Boosters"),

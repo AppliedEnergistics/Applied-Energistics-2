@@ -38,6 +38,10 @@ public class ProcessingPatternItem extends EncodedPatternItem {
         }
     }
 
+    public ItemStack encode(GenericStack[] sparseInputs, GenericStack[] sparseOutputs) {
+        return encode(sparseInputs, sparseOutputs, "");
+    }
+
     public ItemStack encode(GenericStack[] sparseInputs, GenericStack[] sparseOutputs, String author) {
         if (Arrays.stream(sparseInputs).noneMatch(Objects::nonNull)) {
             throw new IllegalArgumentException("At least one input must be non-null.");
