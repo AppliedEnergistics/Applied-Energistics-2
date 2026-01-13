@@ -81,20 +81,19 @@ import appeng.me.service.helpers.NetworkCraftingProviders;
 public class CraftingService implements ICraftingService, IGridServiceProvider {
 
     /**
-     * Sorts Crafting CPUs by Co-Processors in descending order ("fast first"), and storage in ascending order (to
-     * minimize the storage waste for jobs.).
+     * Sorts Crafting CPUs by Storage in ascending order (to minimize the storage waste for jobs), and Co-Processors in
+     * ascending order (player requests always try to get the most).
      */
     private static final Comparator<CraftingCPUCluster> FAST_FIRST_COMPARATOR = Comparator
-            .comparingInt(CraftingCPUCluster::getCoProcessors)
-            .reversed()
-            .thenComparingLong(CraftingCPUCluster::getAvailableStorage);
+            .comparingLong(CraftingCPUCluster::getAvailableStorage)
+            .thenComparing(Comparator.comparingInt(CraftingCPUCluster::getCoProcessors).reversed());
     /**
-     * Sorts Crafting CPUs by Co-Processors in ascending order ("fast last"), and storage in ascending order (to
-     * minimize the storage waste for jobs.).
+     * Sorts Crafting CPUs by Storage in ascending order (to minimize the storage waste for jobs), and Co-Processors in
+     * ascending order (machine requests always try to get the least).
      */
     private static final Comparator<CraftingCPUCluster> FAST_LAST_COMPARATOR = Comparator
-            .comparingInt(CraftingCPUCluster::getCoProcessors)
-            .thenComparingLong(CraftingCPUCluster::getAvailableStorage);
+            .comparingLong(CraftingCPUCluster::getAvailableStorage)
+            .thenComparingInt(CraftingCPUCluster::getCoProcessors);
 
     private static final ExecutorService CRAFTING_POOL;
 
