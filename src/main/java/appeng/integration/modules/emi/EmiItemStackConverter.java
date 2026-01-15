@@ -20,9 +20,10 @@ class EmiItemStackConverter implements EmiStackConverter {
     @Override
     public @Nullable EmiStack toEmiStack(GenericStack stack) {
         if (stack.what() instanceof AEItemKey itemKey) {
-            return EmiStack.of(itemKey.getReadOnlyStack()).setAmount(1);
-            // Always set amount to 1 for items since emi needs at least one present for ItemStacks
-            // and stack.amount() always returns 0
+            return EmiStack.of(itemKey.getReadOnlyStack()).setAmount(stack.amount() == 0 ? 1 : stack.amount());
+            // The {@link appeng.api.stacks.GenericStack} taken from the craft confirm/status screens,
+            // always returns a stack size of 0 for items making the stack unable to be favorited
+            // Hence why we do this check
         }
         return null;
     }
