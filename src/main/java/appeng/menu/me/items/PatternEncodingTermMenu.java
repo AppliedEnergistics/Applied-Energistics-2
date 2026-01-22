@@ -311,13 +311,13 @@ public class PatternEncodingTermMenu extends MEStorageMenu {
             clearPattern();
         }
     }
-    
+
     @Override
     public void setFilter(int slotIndex, ItemStack item) {
         super.setFilter(slotIndex, item);
         this.refillBlank();
     }
-    
+
     /**
      * Refills the blank pattern slot if it is empty by pulling one from the grid storage
      */
@@ -329,7 +329,7 @@ public class PatternEncodingTermMenu extends MEStorageMenu {
                             1,
                             Actionable.MODULATE,
                             IActionSource.ofMachine(this.getActionHost()));
-            
+
             if (extracted > 0) {
                 this.blankPatternSlot.set(new ItemStack(AEItems.BLANK_PATTERN, (int) extracted));
             } else {
