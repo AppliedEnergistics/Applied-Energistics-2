@@ -8,13 +8,13 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import org.apache.commons.lang3.mutable.MutableBoolean;
 
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CraftingRecipe;
@@ -34,20 +34,20 @@ import appeng.core.definitions.AEItems;
 
 public class QuartzCuttingRecipe implements CraftingRecipe {
     public static final MapCodec<QuartzCuttingRecipe> CODEC = RecordCodecBuilder.mapCodec((builder) -> builder.group(
-            ItemStack.STRICT_CODEC.fieldOf("result").forGetter(QuartzCuttingRecipe::getResult),
-            Ingredient.CODEC.listOf().fieldOf("ingredients").forGetter(QuartzCuttingRecipe::getIngredients))
+            ItemStackTemplate.CODEC.fieldOf("result").forGetter(QuartzCuttingRecipe::result),
+            Ingredient.CODEC.listOf().fieldOf("ingredients").forGetter(QuartzCuttingRecipe::ingredients))
             .apply(builder, QuartzCuttingRecipe::new));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, QuartzCuttingRecipe> STREAM_CODEC = StreamCodec.composite(
-            ItemStack.STREAM_CODEC, QuartzCuttingRecipe::getResult,
-            Ingredient.CONTENTS_STREAM_CODEC.apply(ByteBufCodecs.list()), QuartzCuttingRecipe::getIngredients,
+            ItemStackTemplate.STREAM_CODEC, QuartzCuttingRecipe::result,
+            Ingredient.CONTENTS_STREAM_CODEC.apply(ByteBufCodecs.list()), QuartzCuttingRecipe::ingredients,
             QuartzCuttingRecipe::new);
 
-    final ItemStack result;
+    final ItemStackTemplate result;
     final List<Ingredient> ingredients;
     private final boolean isSimple;
 
-    public QuartzCuttingRecipe(ItemStack result, List<Ingredient> ingredients) {
+    public QuartzCuttingRecipe(ItemStackTemplate result, List<Ingredient> ingredients) {
         this.result = result;
         this.ingredients = ingredients;
         this.isSimple = ingredients.stream().allMatch(Ingredient::isSimple);
@@ -61,11 +61,11 @@ public class QuartzCuttingRecipe implements CraftingRecipe {
         return CraftingBookCategory.MISC;
     }
 
-    public ItemStack getResultItem(HolderLookup.Provider registries) {
+    public ItemStackTemplate result() {
         return this.result;
     }
 
-    public List<Ingredient> getIngredients() {
+    public List<Ingredient> ingredients() {
         return this.ingredients;
     }
 
@@ -89,12 +89,9 @@ public class QuartzCuttingRecipe implements CraftingRecipe {
         }
     }
 
-    public ItemStack assemble(CraftingInput input, HolderLookup.Provider registries) {
-        return this.result.copy();
-    }
-
-    private ItemStack getResult() {
-        return result;
+    @Override
+    public ItemStack assemble(CraftingInput input) {
+        return this.result.create();
     }
 
     @Override
@@ -134,8 +131,8 @@ public class QuartzCuttingRecipe implements CraftingRecipe {
                     }
                 }
                 remainingItems.set(i, broken.getValue() ? ItemStack.EMPTY : result);
-            } else if (!item.getCraftingRemainder().isEmpty()) {
-                remainingItems.set(i, item.getCraftingRemainder());
+            } else if (item.getCraftingRemainder() != null) {
+                remainingItems.set(i, item.getCraftingRemainder().create());
             }
         }
 

@@ -135,7 +135,7 @@ public class EntropyManipulatorCategory extends ViewBasedCategory<RecipeHolder<E
                 for (var drop : recipe.getDrops()) {
                     var output = builder.addSlot(RecipeIngredientRole.OUTPUT, x, 15)
                             .setBackground(slotBackground, -1, -1);
-                    output.add(drop);
+                    output.add(drop.create());
                     x += 18;
                 }
             }
@@ -177,7 +177,7 @@ public class EntropyManipulatorCategory extends ViewBasedCategory<RecipeHolder<E
 
     @Override
     public Component getTitle() {
-        return AEItems.ENTROPY_MANIPULATOR.asItem().getName();
+        return AEItems.ENTROPY_MANIPULATOR.getName();
     }
 
     @Override

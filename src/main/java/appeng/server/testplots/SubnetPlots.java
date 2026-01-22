@@ -18,14 +18,13 @@ import appeng.server.testworld.PlotBuilder;
  */
 @TestPlotClass
 public final class SubnetPlots {
-
-    private static final AEItemKey STICK = AEItemKey.of(Items.STICK);
-
     private SubnetPlots() {
     }
 
     @TestPlot("subnet")
     public static void subnet(PlotBuilder plot) {
+        AEItemKey STICK = AEItemKey.of(Items.STICK);
+
         var origin = BlockPos.ZERO;
         plot.creativeEnergyCell(origin.below());
         plot.cable(origin)
@@ -126,7 +125,7 @@ public final class SubnetPlots {
     /**
      * Multiple storage buses should show a combined inventory.
      */
-    @TestPlot(value = "multi_storage_bus")
+    @TestPlot(value = "multi_storage_bus", skyAccess = true)
     public static void multi_storage_bus(PlotBuilder plot) {
         var origin = BlockPos.ZERO;
 
@@ -172,7 +171,7 @@ public final class SubnetPlots {
                         helper.assertNetworkContains(subnetOrigin, Items.BLUE_CONCRETE);
                     })
                     .thenSucceed();
-        }).withSkyAccess();
+        });
     }
 
     private static double getLocalStoredPower(EnergyService service) {

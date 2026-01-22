@@ -141,10 +141,10 @@ public class AreaOverlayRenderer {
         float z1 = 0f;
         float z2 = 16f;
 
-        boolean noNorth = !allChunks.contains(new ChunkPos(pos.x, pos.z - 1));
-        boolean noSouth = !allChunks.contains(new ChunkPos(pos.x, pos.z + 1));
-        boolean noWest = !allChunks.contains(new ChunkPos(pos.x - 1, pos.z));
-        boolean noEast = !allChunks.contains(new ChunkPos(pos.x + 1, pos.z));
+        boolean noNorth = !allChunks.contains(new ChunkPos(pos.x(), pos.z() - 1));
+        boolean noSouth = !allChunks.contains(new ChunkPos(pos.x(), pos.z() + 1));
+        boolean noWest = !allChunks.contains(new ChunkPos(pos.x() - 1, pos.z()));
+        boolean noEast = !allChunks.contains(new ChunkPos(pos.x() + 1, pos.z()));
 
         if (noNorth) {
             // Face North, Edge Bottom

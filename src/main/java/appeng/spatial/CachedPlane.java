@@ -28,6 +28,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.core.SectionPos;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ThreadedLevelLightEngine;
@@ -36,7 +37,6 @@ import net.minecraft.world.entity.ai.village.poi.PoiType;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.chunk.LevelChunkSection;
@@ -353,7 +353,7 @@ public class CachedPlane {
     private void attemptRecovery(int x, int y, int z, BlockEntityMoveRecord moveRecord, Column c) {
         var pos = new BlockPos(x, y, z);
         var type = moveRecord.blockEntity().getType();
-        AELog.debug("Trying to recover BE %s @ %s", BlockEntityType.getKey(type), pos);
+        AELog.debug("Trying to recover BE %s @ %s", BuiltInRegistries.BLOCK_ENTITY_TYPE.getKey(type), pos);
 
         // attempt recovery, but do not reuse the same TE instance since we did destroy it
         var blockState = moveRecord.blockEntity().getBlockState();
@@ -364,7 +364,7 @@ public class CachedPlane {
             c.c.addAndRegisterBlockEntity(recoveredEntity);
             this.level.sendBlockUpdated(pos, this.level.getBlockState(pos), this.level.getBlockState(pos), z);
         } else {
-            AELog.warn("Failed to recover BE %s @ %s", BlockEntityType.getKey(type), pos);
+            AELog.warn("Failed to recover BE %s @ %s", BuiltInRegistries.BLOCK_ENTITY_TYPE.getKey(type), pos);
         }
     }
 

@@ -44,9 +44,9 @@ public class SetupTestWorldCommand implements ISubCommand {
 
     @Override
     public void addArguments(LiteralArgumentBuilder<CommandSourceStack> builder) {
-        for (var plotId : TestPlots.getPlotIds()) {
-            builder.then(literal(plotId.toString()).executes(ctx -> {
-                setupTestWorld(ctx.getSource().getServer(), ctx.getSource(), plotId);
+        for (var plot : TestPlots.getPlots()) {
+            builder.then(literal(plot.toString()).executes(ctx -> {
+                setupTestWorld(ctx.getSource().getServer(), ctx.getSource(), plot.id());
                 return 1;
             }));
         }
@@ -136,7 +136,10 @@ public class SetupTestWorldCommand implements ISubCommand {
 
     private static void makeAlwaysDaytime(MinecraftServer srv) {
         srv.getWorldData().getGameRules().set(GameRules.ADVANCE_TIME, false, srv);
-        srv.overworld().setDayTime(1000);
+        var clock = srv.overworld().dimensionType().defaultClock();
+        if (clock.isPresent()) {
+            srv.clockManager().setTotalTicks(clock.get(), 1000);
+        }
     }
 
     private static void disableWeather(MinecraftServer srv) {

@@ -287,7 +287,7 @@ public class InscriberBlockEntity extends AENetworkedPoweredBlockEntity
         var task = this.getTask();
         if (task != null) {
             // Only process if the result would fit.
-            return sideItemHandler.insertItem(1, task.getResultItem().copy(), true).isEmpty();
+            return sideItemHandler.insertItem(1, task.result().create(), true).isEmpty();
         }
 
         this.setProcessingTime(0);
@@ -316,7 +316,7 @@ public class InscriberBlockEntity extends AENetworkedPoweredBlockEntity
             if (this.finalStep == 8) {
                 final InscriberRecipe out = this.getTask();
                 if (out != null) {
-                    final ItemStack outputCopy = out.getResultItem().copy();
+                    final ItemStack outputCopy = out.result().create();
 
                     if (this.sideItemHandler.insertItem(1, outputCopy, false).isEmpty()) {
                         this.setProcessingTime(0);
@@ -365,7 +365,7 @@ public class InscriberBlockEntity extends AENetworkedPoweredBlockEntity
                 this.setProcessingTime(this.getMaxProcessingTime());
                 final InscriberRecipe out = this.getTask();
                 if (out != null) {
-                    final ItemStack outputCopy = out.getResultItem().copy();
+                    final ItemStack outputCopy = out.result().create();
                     if (this.sideItemHandler.insertItem(1, outputCopy, true).isEmpty()) {
                         this.setSmash(true);
                         this.finalStep = 0;

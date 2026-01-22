@@ -60,15 +60,15 @@ public class AERecipeExporter implements RecipeExporter {
         recipe.getTopOptional().ifPresent(exporter::referenceIngredient);
         exporter.referenceIngredient(recipe.getMiddleInput());
         recipe.getBottomOptional().ifPresent(exporter::referenceIngredient);
-        exporter.referenceItem(recipe.getResultItem());
+        exporter.referenceItem(recipe.result().create());
 
-        var resultItem = recipe.getResultItem();
+        var resultItem = recipe.result();
         return Map.of(
                 "top", unwrapIngredient(recipe.getTopOptional()),
                 "middle", recipe.getMiddleInput(),
                 "bottom", unwrapIngredient(recipe.getBottomOptional()),
-                "resultItem", resultItem.getItem(),
-                "resultCount", resultItem.getCount(),
+                "resultItem", resultItem.item().value(),
+                "resultCount", resultItem.count(),
                 "consumesTopAndBottom", recipe.getProcessType() == InscriberProcessType.PRESS);
     }
 
@@ -76,8 +76,8 @@ public class AERecipeExporter implements RecipeExporter {
         for (var fluid : recipe.circumstance.getFluidsForRendering()) {
             exporter.referenceFluid(fluid);
         }
-        recipe.getIngredients().forEach(exporter::referenceIngredient);
-        exporter.referenceItem(recipe.getResultItem());
+        recipe.ingredients().forEach(exporter::referenceIngredient);
+        exporter.referenceItem(recipe.result().create());
 
         Map<String, Object> circumstanceJson = new HashMap<>();
         var circumstance = recipe.circumstance;
@@ -97,8 +97,8 @@ public class AERecipeExporter implements RecipeExporter {
         }
 
         return Map.of(
-                "resultItem", recipe.getResultItem(),
-                "ingredients", recipe.getIngredients(),
+                "resultItem", recipe.result(),
+                "ingredients", recipe.ingredients(),
                 "circumstance", circumstanceJson);
     }
 
@@ -116,12 +116,12 @@ public class AERecipeExporter implements RecipeExporter {
     }
 
     private Map<String, Object> exportRecipe(ResourceExporter exporter, ChargerRecipe recipe) {
-        exporter.referenceIngredient(recipe.getIngredient());
-        exporter.referenceItem(recipe.getResultItem());
+        exporter.referenceIngredient(recipe.ingredient());
+        exporter.referenceItem(recipe.result().create());
 
         return Map.of(
-                "resultItem", recipe.getResultItem(),
-                "ingredient", recipe.getIngredient());
+                "resultItem", recipe.result(),
+                "ingredient", recipe.ingredient());
     }
 
     private Object unwrapIngredient(Optional<Ingredient> ingredient) {

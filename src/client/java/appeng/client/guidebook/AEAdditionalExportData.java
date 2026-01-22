@@ -12,7 +12,7 @@ import guideme.siteexport.ResourceExporter;
 import appeng.core.AppEng;
 
 public class AEAdditionalExportData implements AdditionalResourceExporter {
-    private static final Identifier DEFAULT_CONFIG_VALUES = AppEng.makeId("default-config-values");
+    static final Identifier DEFAULT_CONFIG_VALUES = AppEng.makeId("default-config-values");
 
     @Override
     public void addResources(Guide guide, ResourceExporter exporter) {

@@ -34,15 +34,12 @@ import com.google.common.cache.Weigher;
 import com.mojang.serialization.MapCodec;
 
 import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.BlockModelPart;
 import net.minecraft.client.renderer.block.model.BlockStateModel;
 import net.minecraft.client.renderer.block.model.SimpleModelWrapper;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
-import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.QuadCollection;
@@ -54,7 +51,6 @@ import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.client.model.DynamicBlockStateModel;
 import net.neoforged.neoforge.client.model.block.CustomUnbakedBlockStateModel;
-import net.neoforged.neoforge.model.data.ModelData;
 
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartItem;
@@ -62,7 +58,6 @@ import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
 import appeng.block.networking.CableBusRenderState;
 import appeng.block.networking.CableCoreType;
-import appeng.blockentity.AEModelData;
 import appeng.client.AppEngClient;
 import appeng.client.api.model.parts.PartModel;
 import appeng.client.model.FacingModelState;
@@ -73,24 +68,8 @@ import appeng.core.AppEng;
  */
 public class CableBusModel implements DynamicBlockStateModel {
 
-    private static final Logger LOG = LoggerFactory.getLogger(CableBusModel.class);
-
     // The number of quads overall that will be cached
     private static final int CACHE_QUAD_COUNT = 5000;
-
-    /**
-     * Lookup table to match the spin of a part with an up direction.
-     * <p>
-     * DUNSWE for the facing index, 4 spin values per facing.
-     */
-    private static final Direction[] SPIN_TO_DIRECTION = new Direction[] {
-            Direction.NORTH, Direction.WEST, Direction.SOUTH, Direction.EAST, // DOWN
-            Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST, // UP
-            Direction.UP, Direction.WEST, Direction.DOWN, Direction.EAST, // NORTH
-            Direction.UP, Direction.EAST, Direction.DOWN, Direction.WEST, // SOUTH
-            Direction.UP, Direction.SOUTH, Direction.DOWN, Direction.NORTH, // WEST
-            Direction.UP, Direction.NORTH, Direction.DOWN, Direction.SOUTH // EAST
-    };
 
     private final LoadingCache<CableBusRenderState, SimpleModelWrapper> cableModelCache;
 
@@ -134,7 +113,7 @@ public class CableBusModel implements DynamicBlockStateModel {
         }
 
         // The core parts of the cable will only be rendered in the CUTOUT layer.
-        // Facades will add themselves to what ever the block would be rendered with,
+        // Facades will add themselves to whatever the block would be rendered with,
         // except when transparent facades are enabled, they are forced to TRANSPARENT.
 
         // First, handle the cable at the center of the cable bus
@@ -206,15 +185,6 @@ public class CableBusModel implements DynamicBlockStateModel {
         final AECableType secondType = sides.get(firstSide.getOpposite());
 
         return firstType == secondType && cableType == firstType && cableType == secondType;
-    }
-
-    private static int getPartSpin(ModelData partModelData) {
-        var spin = partModelData.get(AEModelData.SPIN);
-        if (spin != null) {
-            return spin;
-        }
-
-        return 0;
     }
 
     private SimpleModelWrapper createCableModel(CableBusRenderState renderState) {
@@ -364,19 +334,12 @@ public class CableBusModel implements DynamicBlockStateModel {
             var side = entry.getKey();
             var partState = entry.getValue();
             var modelsBySide = partModels.get(partState.partItem());
-            if (modelsBySide == null) {
-                continue; // TODO How to handle this?
+            if (modelsBySide != null) {
+                result.add(modelsBySide[side.ordinal()].particleIcon());
             }
-
-            var model = modelsBySide[side.ordinal()];
-            // TODO model.particleTexture();
         }
 
         return result;
-    }
-
-    private boolean isMissingTexture(TextureAtlasSprite particleTexture) {
-        return particleTexture.contents().name().equals(MissingTextureAtlasSprite.getLocation());
     }
 
     public record Unbaked() implements CustomUnbakedBlockStateModel {

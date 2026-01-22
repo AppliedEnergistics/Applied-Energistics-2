@@ -103,11 +103,11 @@ public class TransformCategory extends ViewBasedCategory<RecipeHolder<TransformR
 
                 var y = 5;
                 var x = 5;
-                if (recipe.getIngredients().size() < 3) {
+                if (recipe.ingredients().size() < 3) {
                     // so ingredients lists with less than two rows get centered vertically
-                    y += (3 - recipe.getIngredients().size()) * 18 / 2;
+                    y += (3 - recipe.ingredients().size()) * 18 / 2;
                 }
-                for (var input : recipe.getIngredients()) {
+                for (var input : recipe.ingredients()) {
                     builder.addSlot(RecipeIngredientRole.INPUT, x + 1, y + 1)
                             .setSlotName("input" + (slotIndex++))
                             .setBackground(slotBackground, -1, -1)
@@ -142,7 +142,7 @@ public class TransformCategory extends ViewBasedCategory<RecipeHolder<TransformR
                 builder.addSlot(RecipeIngredientRole.OUTPUT, 105 + 1, yOffset + 1)
                         .setSlotName("output")
                         .setBackground(slotBackground, -1, -1)
-                        .add(recipe.getResultItem());
+                        .add(recipe.result().create());
             }
         };
     }

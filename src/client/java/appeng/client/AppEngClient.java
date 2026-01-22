@@ -444,12 +444,13 @@ public class AppEngClient extends AppEngBase {
         // This should asynchronously update the chunk meshes and as part of that use the new facade render mode
         var viewDistance = (int) Math.ceil(mc.levelRenderer.getLastViewDistance());
         ChunkPos.rangeClosed(mc.player.chunkPosition(), viewDistance).forEach(chunkPos -> {
-            var chunk = mc.level.getChunkSource().getChunkNow(chunkPos.x, chunkPos.z);
+            var chunk = mc.level.getChunkSource().getChunkNow(chunkPos.x(), chunkPos.z());
             if (chunk != null) {
                 for (var i = 0; i < chunk.getSectionsCount(); i++) {
                     var section = chunk.getSection(i);
                     if (section.maybeHas(state -> state.is(AEBlocks.CABLE_BUS.block()))) {
-                        mc.levelRenderer.setSectionDirty(chunkPos.x, chunk.getSectionYFromSectionIndex(i), chunkPos.z);
+                        mc.levelRenderer.setSectionDirty(chunkPos.x(), chunk.getSectionYFromSectionIndex(i),
+                                chunkPos.z());
                     }
                 }
             }

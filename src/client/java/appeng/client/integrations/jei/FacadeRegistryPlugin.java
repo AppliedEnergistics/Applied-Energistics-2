@@ -10,6 +10,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeHolder;
@@ -109,7 +110,7 @@ class FacadeRegistryPlugin implements IRecipeManagerPlugin {
         Identifier id = AppEng.makeId("facade/" + Item.getId(textureItem.getItem()));
         return new RecipeHolder<>(
                 ResourceKey.create(Registries.RECIPE, id),
-                new ShapedRecipe("", CraftingBookCategory.MISC, pattern, result));
+                new ShapedRecipe("", CraftingBookCategory.MISC, pattern, ItemStackTemplate.fromNonEmptyStack(result)));
     }
 
     @Override

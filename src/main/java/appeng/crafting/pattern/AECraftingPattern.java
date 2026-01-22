@@ -108,7 +108,7 @@ public class AECraftingPattern implements IPatternDetails, IMolecularAssemblerSu
             throw new IllegalStateException("The recipe " + recipe + " no longer matches the encoded input.");
         }
 
-        this.output = this.recipe.assemble(positionedPattern.input(), level.registryAccess());
+        this.output = this.recipe.assemble(positionedPattern.input());
         if (this.output.isEmpty()) {
             throw new IllegalStateException(
                     "The recipe " + encodedPattern.recipeId() + " produced an empty item stack result.");
@@ -277,7 +277,7 @@ public class AECraftingPattern implements IPatternDetails, IMolecularAssemblerSu
         var testCraftingInput = makeCraftingInputWithReplacedSlot(slot, key);
 
         var newResult = recipe.matches(testCraftingInput.input(), level)
-                && ItemStack.matches(output, recipe.assemble(testCraftingInput.input(), level.registryAccess()));
+                && ItemStack.matches(output, recipe.assemble(testCraftingInput.input()));
 
         setTestResult(slot, key, newResult);
 
@@ -417,7 +417,7 @@ public class AECraftingPattern implements IPatternDetails, IMolecularAssemblerSu
             }
 
             var testInput = CraftingInput.of(CRAFTING_GRID_DIMENSION, CRAFTING_GRID_DIMENSION, items);
-            return recipe.assemble(testInput, level.registryAccess());
+            return recipe.assemble(testInput);
         }
 
         for (int i = 0; i < sparseInputs.size(); i++) {

@@ -46,7 +46,6 @@ import appeng.block.crafting.CraftingUnitType;
 import appeng.blockentity.crafting.CraftingCubeModelData;
 import appeng.client.render.CubeBuilder;
 import appeng.core.AppEng;
-import appeng.thirdparty.fabric.ModelHelper;
 import appeng.util.Platform;
 
 /**
@@ -77,11 +76,8 @@ public abstract class CraftingCubeModel implements DynamicBlockStateModel {
 
         // TODO: Redesign this by allowing a CubeBuilder to directly emit to a QuadCollection with correct cull faces
         var quadCollection = new QuadCollection.Builder();
-        for (int cullFaceIdx = 0; cullFaceIdx < ModelHelper.NULL_FACE_ID; cullFaceIdx++) {
-            Direction cullFace = ModelHelper.faceFromIndex(cullFaceIdx);
-
+        for (var cullFace : Direction.values()) {
             CubeBuilder builder = new CubeBuilder(quad -> quadCollection.addCulledFace(cullFace, quad));
-
             builder.setDrawFaces(EnumSet.of(cullFace));
 
             // Add the quads for the ring that frames the entire multi-block structure

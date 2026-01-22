@@ -18,12 +18,16 @@
 
 package appeng.core.definitions;
 
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import net.minecraft.core.Holder;
+import net.minecraft.core.component.DataComponentPatch;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.registries.DeferredItem;
 
@@ -57,12 +61,34 @@ public class ItemDefinition<T extends Item> implements ItemLike, Supplier<T> {
         return new ItemStack((ItemLike) item, stackSize);
     }
 
+    public ItemStackTemplate template() {
+        return template(1);
+    }
+
+    public ItemStackTemplate template(int stackSize) {
+        return new ItemStackTemplate(item, stackSize);
+    }
+
+    public ItemStackTemplate template(Consumer<DataComponentPatch.Builder> customizer) {
+        return template(1, customizer);
+    }
+
+    public ItemStackTemplate template(int stackSize, Consumer<DataComponentPatch.Builder> customizer) {
+        var patch = DataComponentPatch.builder();
+        customizer.accept(patch);
+        return new ItemStackTemplate(item, stackSize, patch.build());
+    }
+
     public GenericStack genericStack(long stackSize) {
         return new GenericStack(AEItemKey.of(item), stackSize);
     }
 
     public Holder<Item> holder() {
         return item;
+    }
+
+    public Component getName() {
+        return item.get().getName(item.get().getDefaultInstance());
     }
 
     /**

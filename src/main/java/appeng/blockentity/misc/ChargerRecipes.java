@@ -18,7 +18,7 @@ public class ChargerRecipes {
     @Nullable
     public static ChargerRecipe findRecipe(ServerLevel level, ItemStack input) {
         for (var recipe : getRecipes(level)) {
-            if (recipe.value().ingredient.test(input)) {
+            if (recipe.value().ingredient().test(input)) {
                 return recipe.value();
             }
         }

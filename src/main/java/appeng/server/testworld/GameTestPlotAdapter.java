@@ -52,7 +52,7 @@ public class GameTestPlotAdapter extends GameTestInstance {
 
         var boundingbox = StructureUtils.getStructureBoundingBox(pos, size, Rotation.NONE);
         boundingbox.intersectingChunks().forEach(cp -> {
-            level.setChunkForced(cp.x, cp.z, true);
+            level.setChunkForced(cp.x(), cp.z(), true);
         });
 
         var bounds = plot.getBounds();
@@ -69,8 +69,8 @@ public class GameTestPlotAdapter extends GameTestInstance {
     }
 
     public static void registerAll(BiConsumer<Identifier, GameTestInstance> register) {
-        for (var plot : TestPlots.createPlots()) {
-            var test = plot.getTest();
+        for (var plot : TestPlots.getPlots()) {
+            var test = plot.testInfo();
             if (test == null) {
                 continue;
             }
@@ -78,19 +78,20 @@ public class GameTestPlotAdapter extends GameTestInstance {
             Holder<TestEnvironmentDefinition<?>> environment = Holder.direct(new TestEnvironmentDefinition.AllOf());
             var testData = new TestData<>(
                     environment,
-                    plot.getId(),
-                    test.maxTicks,
-                    test.setupTicks,
+                    plot.id(),
+                    test.maxTicks(),
+                    test.setupTicks(),
                     true,
                     Rotation.NONE,
                     false,
                     1,
                     1,
-                    test.skyAccess);
+                    test.skyAccess(),
+                    test.padding());
 
-            var instance = new GameTestPlotAdapter(testData, plot.getId());
+            var instance = new GameTestPlotAdapter(testData, plot.id());
 
-            register.accept(plot.getId(), instance);
+            register.accept(plot.id(), instance);
         }
     }
 
@@ -105,7 +106,7 @@ public class GameTestPlotAdapter extends GameTestInstance {
             throw helper.assertionException("Plot " + plotId + " has no test");
         }
 
-        test.getTestFunction().accept(new PlotTestHelper(
+        test.accept(new PlotTestHelper(
                 getPlotTranslation(plot.getBounds()),
                 helper.testInfo));
     }

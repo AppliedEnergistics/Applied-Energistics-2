@@ -158,15 +158,15 @@ public class TestWorldGenerator {
     }
 
     private void buildPlatform() {
-        var from = new ChunkPos(
+        var from = ChunkPos.containing(
                 new BlockPos(overallBounds.minX() - OUTER_PADDING, 0, overallBounds.minZ() - OUTER_PADDING));
-        var to = new ChunkPos(
+        var to = ChunkPos.containing(
                 new BlockPos(overallBounds.maxX() + OUTER_PADDING, 0, overallBounds.maxZ() + OUTER_PADDING));
 
         var state = AEBlocks.SKY_STONE_BRICK.block().defaultBlockState();
         var pos = new BlockPos.MutableBlockPos();
         ChunkPos.rangeClosed(from, to).forEach(chunkPos -> {
-            var chunk = level.getChunk(chunkPos.x, chunkPos.z);
+            var chunk = level.getChunk(chunkPos.x(), chunkPos.z());
             for (var x = 0; x < 16; x++) {
                 pos.setX(chunkPos.getMinBlockX() + x);
                 for (var z = 0; z < 16; z++) {
@@ -181,13 +181,13 @@ public class TestWorldGenerator {
     }
 
     private void clearLevel() {
-        var from = new ChunkPos(
+        var from = ChunkPos.containing(
                 new BlockPos(overallBounds.minX() - OUTER_PADDING, 0, overallBounds.minZ() - OUTER_PADDING));
-        var to = new ChunkPos(
+        var to = ChunkPos.containing(
                 new BlockPos(overallBounds.maxX() + OUTER_PADDING, 0, overallBounds.maxZ() + OUTER_PADDING));
 
         ChunkPos.rangeClosed(from, to).forEach(chunkPos -> {
-            var chunk = level.getChunk(chunkPos.x, chunkPos.z);
+            var chunk = level.getChunk(chunkPos.x(), chunkPos.z());
             if (!chunk.isEmpty()) {
                 clearChunk(chunk);
             }

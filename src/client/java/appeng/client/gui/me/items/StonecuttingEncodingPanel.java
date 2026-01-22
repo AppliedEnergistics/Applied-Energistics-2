@@ -91,7 +91,7 @@ public final class StonecuttingEncodingPanel extends EncodingModePanel {
             var renderX = bounds.getX() + slotBounds.getX();
             var renderY = bounds.getY() + slotBounds.getY();
             blitter.dest(renderX, renderY).blit(guiGraphics);
-            ItemStack resultItem = recipe.value().result();
+            ItemStack resultItem = recipe.value().result().create();
 
             if (selected || mouse.isIn(slotBounds)) {
                 guiGraphics.renderItem(resultItem, renderX + 2, renderY + 3);
@@ -121,7 +121,7 @@ public final class StonecuttingEncodingPanel extends EncodingModePanel {
     public Tooltip getTooltip(int mouseX, int mouseY) {
         var recipe = getRecipeAt(new Point(mouseX, mouseY));
         if (recipe != null) {
-            var lines = screen.getTooltipFromContainerItem(recipe.value().result());
+            var lines = screen.getTooltipFromContainerItem(recipe.value().result().create());
 
             return new Tooltip(lines);
         }

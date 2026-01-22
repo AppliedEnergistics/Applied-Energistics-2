@@ -70,7 +70,7 @@ public class MeteoriteStructure extends Structure {
     @Override
     public Optional<GenerationStub> findGenerationPoint(GenerationContext context) {
         var worldgenRandom = new WorldgenRandom(new LegacyRandomSource(0L));
-        worldgenRandom.setLargeFeatureSeed(context.seed(), context.chunkPos().x, context.chunkPos().z);
+        worldgenRandom.setLargeFeatureSeed(context.seed(), context.chunkPos().x(), context.chunkPos().z());
         if (!worldgenRandom.nextBoolean()) {
             return Optional.empty();
         }

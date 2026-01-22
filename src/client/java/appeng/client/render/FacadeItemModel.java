@@ -52,7 +52,7 @@ import appeng.api.implementations.items.IFacadeItem;
 import appeng.client.render.cablebus.FacadeBuilder;
 import appeng.core.AppEng;
 import appeng.items.parts.FacadeItem;
-import appeng.thirdparty.fabric.ModelHelper;
+import appeng.util.Platform;
 
 /**
  * The model class for facades. Since facades wrap existing models, they don't declare any dependencies here other than
@@ -134,8 +134,7 @@ public class FacadeItemModel implements ItemModel {
                 var renderType = RenderTypeHelper.getEntityRenderType(blockModelPart.getRenderType(blockState));
 
                 nodes.submitCustomGeometry(poseStack, renderType, (pose, consumer) -> {
-                    for (int cullFaceIdx = 0; cullFaceIdx <= ModelHelper.NULL_FACE_ID; cullFaceIdx++) {
-                        var cullFace = ModelHelper.faceFromIndex(cullFaceIdx);
+                    for (var cullFace : Platform.CULL_FACES) {
                         for (var quad : blockModelPart.getQuads(cullFace)) {
                             var shade = (quad.shade() && quad.direction() != null) ? getShade(quad.direction()) : 1f;
                             brightness[0] = shade;

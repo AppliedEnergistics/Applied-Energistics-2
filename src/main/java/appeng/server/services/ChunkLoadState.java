@@ -60,7 +60,7 @@ class ChunkLoadState extends SavedData {
         for (var forcedChunk : forcedChunks) {
             var chunkPos = new ChunkPos(forcedChunk.cx, forcedChunk.cz);
             var blockSet = new HashSet<>(forcedChunk.blocks);
-            forceLoadedChunks.put(chunkPos.toLong(), blockSet);
+            forceLoadedChunks.put(chunkPos.pack(), blockSet);
         }
     }
 
@@ -79,23 +79,23 @@ class ChunkLoadState extends SavedData {
      * @param sourcePos Source of the chunk load request.
      */
     public void forceChunk(ChunkPos chunkPos, BlockPos sourcePos) {
-        long chunk = chunkPos.toLong();
+        long chunk = chunkPos.pack();
         forceLoadedChunks.computeIfAbsent(chunk, pos -> new HashSet<>()).add(sourcePos.immutable());
 
-        level.setChunkForced(chunkPos.x, chunkPos.z, true);
+        level.setChunkForced(chunkPos.x(), chunkPos.z(), true);
         setDirty();
     }
 
     public void releaseChunk(ChunkPos chunkPos, BlockPos sourcePos) {
-        var map = forceLoadedChunks.get(chunkPos.toLong());
+        var map = forceLoadedChunks.get(chunkPos.pack());
         if (map == null) {
             return;
         }
 
         map.remove(sourcePos);
         if (map.isEmpty()) {
-            forceLoadedChunks.remove(chunkPos.toLong());
-            level.setChunkForced(chunkPos.x, chunkPos.z, false);
+            forceLoadedChunks.remove(chunkPos.pack());
+            level.setChunkForced(chunkPos.x(), chunkPos.z(), false);
         }
         setDirty();
     }
@@ -108,7 +108,7 @@ class ChunkLoadState extends SavedData {
                 .toArray();
 
         for (var chunk : relevantChunks) {
-            releaseChunk(new ChunkPos(chunk), sourcePos);
+            releaseChunk(ChunkPos.unpack(chunk), sourcePos);
         }
     }
 
@@ -123,6 +123,6 @@ class ChunkLoadState extends SavedData {
     }
 
     public boolean isForceLoaded(int cx, int cz) {
-        return forceLoadedChunks.containsKey(ChunkPos.asLong(cx, cz));
+        return forceLoadedChunks.containsKey(ChunkPos.pack(cx, cz));
     }
 }

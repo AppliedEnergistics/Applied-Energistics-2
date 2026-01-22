@@ -26,6 +26,7 @@ import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.SimpleCookingRecipeBuilder;
 import net.minecraft.data.recipes.SingleItemRecipeBuilder;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.CookingBookCategory;
 import net.minecraft.world.item.crafting.Ingredient;
 
 import appeng.core.ConventionTags;
@@ -96,7 +97,8 @@ public class DecorationBlockRecipes extends AE2RecipeProvider {
                 .save(output, makeId("decorative/chiseled_quartz_block"));
 
         SimpleCookingRecipeBuilder
-                .smelting(Ingredient.of(AEBlocks.CUT_QUARTZ_BLOCK), RecipeCategory.MISC, AEBlocks.SMOOTH_QUARTZ_BLOCK,
+                .smelting(Ingredient.of(AEBlocks.CUT_QUARTZ_BLOCK), RecipeCategory.MISC, CookingBookCategory.BLOCKS,
+                        AEBlocks.SMOOTH_QUARTZ_BLOCK,
                         .1f, 200)
                 .unlockedBy(criterionName(AEBlocks.CUT_QUARTZ_BLOCK), has(AEBlocks.CUT_QUARTZ_BLOCK))
                 .save(output, makeId("decorative/smooth_quartz_block"));

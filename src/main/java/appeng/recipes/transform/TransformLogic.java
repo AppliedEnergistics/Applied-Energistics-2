@@ -112,7 +112,7 @@ public final class TransformLogic {
                     }
                 }
                 var recipeInput = new TransformRecipeInput(items);
-                var craftResult = recipe.assemble(recipeInput, level.registryAccess());
+                var craftResult = recipe.assemble(recipeInput);
 
                 var random = level.getRandom();
                 final double x = Math.floor(entity.getX()) + .25d + random.nextDouble() * .5;

@@ -4,11 +4,9 @@ import com.mojang.serialization.MapCodec;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingInput;
@@ -17,15 +15,12 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
 
 import appeng.api.upgrades.IUpgradeableItem;
-import appeng.core.AppEng;
 
 /**
  * Allows adding upgrades to upgradable items.
  */
 public class RemoveItemUpgradeRecipe extends CustomRecipe {
     public static final RemoveItemUpgradeRecipe INSTANCE = new RemoveItemUpgradeRecipe();
-
-    public static final Identifier SERIALIZER_ID = AppEng.makeId("remove_item_upgrade");
 
     private RemoveItemUpgradeRecipe() {
         super(CraftingBookCategory.MISC);
@@ -71,7 +66,7 @@ public class RemoveItemUpgradeRecipe extends CustomRecipe {
      * Assemble returns the extracted upgrade.
      */
     @Override
-    public ItemStack assemble(CraftingInput input, HolderLookup.Provider registries) {
+    public ItemStack assemble(CraftingInput input) {
         var result = attemptRemoval(input);
         return result != null ? result.upgrade() : ItemStack.EMPTY;
     }

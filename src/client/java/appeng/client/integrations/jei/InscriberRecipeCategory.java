@@ -84,7 +84,7 @@ class InscriberRecipeCategory implements IRecipeCategory<RecipeHolder<InscriberR
         builder.addSlot(RecipeIngredientRole.OUTPUT, 69, 24)
                 .setSlotName("output")
                 .setOutputSlotBackground()
-                .add(recipe.getResultItem());
+                .add(recipe.result().create());
     }
 
     @Override

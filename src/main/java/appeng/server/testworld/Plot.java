@@ -23,7 +23,7 @@ public class Plot implements PlotBuilder {
     private final List<PostBuildAction> postBuildActions = new ArrayList<>();
     private final List<PostBuildAction> postInitActions = new ArrayList<>();
 
-    private Test test;
+    private Consumer<PlotTestHelper> test;
 
     public BoundingBox getBounds() {
         if (buildActions.isEmpty()) {
@@ -119,13 +119,12 @@ public class Plot implements PlotBuilder {
         }
     }
 
-    public Test getTest() {
+    public Consumer<PlotTestHelper> getTest() {
         return test;
     }
 
     @Override
-    public Test test(Consumer<PlotTestHelper> testFunction) {
-        this.test = new Test(testFunction);
-        return this.test;
+    public void test(Consumer<PlotTestHelper> testFunction) {
+        this.test = testFunction;
     }
 }

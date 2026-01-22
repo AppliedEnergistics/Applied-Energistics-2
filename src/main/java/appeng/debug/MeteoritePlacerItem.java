@@ -128,8 +128,8 @@ public class MeteoritePlacerItem extends AEBaseItem {
         // The placer will not send chunks to the player since it's used as part
         // of world-gen normally, so we'll have to do it ourselves. Since this
         // is a debug tool, we'll not care about being terribly efficient here
-        ChunkPos.rangeClosed(new ChunkPos(spawned.getPos()), 1).forEach(cp -> {
-            LevelChunk c = level.getChunk(cp.x, cp.z);
+        ChunkPos.rangeClosed(ChunkPos.containing(spawned.getPos()), 1).forEach(cp -> {
+            LevelChunk c = level.getChunk(cp.x(), cp.z());
             player.connection.send(Platform.getFullChunkPacket(c));
         });
 

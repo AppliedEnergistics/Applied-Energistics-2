@@ -42,12 +42,12 @@ public final class CompassManager {
     }
 
     public void postResult(ChunkPos requestedPos, @Nullable BlockPos closestMeteorite) {
-        this.requests.put(requestedPos.toLong(), new CachedResult(closestMeteorite, System.currentTimeMillis()));
+        this.requests.put(requestedPos.pack(), new CachedResult(closestMeteorite, System.currentTimeMillis()));
     }
 
     @Nullable
     public BlockPos getClosestMeteorite(BlockPos pos, boolean prefetch) {
-        return getClosestMeteorite(new ChunkPos(pos), prefetch);
+        return getClosestMeteorite(ChunkPos.containing(pos), prefetch);
     }
 
     @Nullable
@@ -67,7 +67,7 @@ public final class CompassManager {
         BlockPos result = null;
         boolean request;
 
-        var cached = this.requests.get(chunkPos.toLong());
+        var cached = this.requests.get(chunkPos.pack());
         if (cached != null) {
             result = cached.closestMeteoritePos();
             var age = now - cached.received();
@@ -82,7 +82,7 @@ public final class CompassManager {
         }
 
         if (request) {
-            this.requests.put(chunkPos.toLong(), new CachedResult(result, now));
+            this.requests.put(chunkPos.pack(), new CachedResult(result, now));
             ClientPacketDistributor.sendToServer(new RequestClosestMeteoritePacket(chunkPos));
         }
 
@@ -92,7 +92,7 @@ public final class CompassManager {
             for (int i = 0; i < 3; i++) {
                 for (int j = 0; j < 3; j++) {
                     if (i != 0 || j != 0) {
-                        getClosestMeteorite(new ChunkPos(chunkPos.x + i, chunkPos.z + j), false);
+                        getClosestMeteorite(new ChunkPos(chunkPos.x() + i, chunkPos.z() + j), false);
                     }
                 }
             }

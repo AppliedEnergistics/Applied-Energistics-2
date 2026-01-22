@@ -210,15 +210,15 @@ public class SpatialStorageHelper {
     // Force-loads entity-chunks that are not currently loaded and returns the chunks
     // that we loaded explicitly (to allow unloading them)
     private LongSet loadEntityChunksSynchronously(ServerLevel level, AABB box) {
-        var minChunk = new ChunkPos(new BlockPos((int) box.minX, 0, (int) box.minZ));
-        var maxChunk = new ChunkPos(new BlockPos((int) Math.ceil(box.maxX), 0, (int) Math.ceil(box.maxZ)));
+        var minChunk = ChunkPos.containing(new BlockPos((int) box.minX, 0, (int) box.minZ));
+        var maxChunk = ChunkPos.containing(new BlockPos((int) Math.ceil(box.maxX), 0, (int) Math.ceil(box.maxZ)));
 
         var chunksLoaded = new LongOpenHashSet();
         var entityManager = level.entityManager;
         ChunkPos.rangeClosed(minChunk, maxChunk).forEach(chunkPos -> {
-            var status = entityManager.chunkVisibility.get(chunkPos.toLong());
+            var status = entityManager.chunkVisibility.get(chunkPos.pack());
             if (!status.isAccessible()) {
-                chunksLoaded.add(chunkPos.toLong());
+                chunksLoaded.add(chunkPos.pack());
                 entityManager.updateChunkStatus(chunkPos, Visibility.TRACKED);
             }
         });
@@ -232,7 +232,7 @@ public class SpatialStorageHelper {
     // Marks chunks previously loaded by loadEntityChunksSynchronously as unloadable
     private static void unloadEntityChunks(ServerLevel srcLevel, LongSet loadedSrcChunks) {
         loadedSrcChunks.forEach(chunkPos -> {
-            srcLevel.entityManager.updateChunkStatus(new ChunkPos(chunkPos), Visibility.HIDDEN);
+            srcLevel.entityManager.updateChunkStatus(ChunkPos.unpack(chunkPos), Visibility.HIDDEN);
         });
     }
 

@@ -90,7 +90,7 @@ public class TestMeteoritesCommand implements ISubCommand {
             centerBlock = level.getRespawnData().pos();
         }
 
-        ChunkPos center = new ChunkPos(centerBlock);
+        ChunkPos center = ChunkPos.containing(centerBlock);
 
         var structures = level.registryAccess().lookupOrThrow(Registries.STRUCTURE);
         var structure = structures.getValueOrThrow(MeteoriteStructure.KEY);
@@ -102,8 +102,8 @@ public class TestMeteoritesCommand implements ISubCommand {
         // Find all meteorites in the given rectangle
         List<PlacedMeteoriteSettings> found = new ArrayList<>();
         int chunksChecked = 0;
-        for (int cx = center.x - radius; cx <= center.x + radius; cx++) {
-            for (int cz = center.z - radius; cz <= center.z + radius; cz++) {
+        for (int cx = center.x() - radius; cx <= center.x() + radius; cx++) {
+            for (int cz = center.z() - radius; cz <= center.z() + radius; cz++) {
                 chunksChecked++;
                 if (!generatorState.hasStructureChunkInRange(structureSet, cx, cz, 0)) {
                     continue;

@@ -53,7 +53,7 @@ public class ProcessingPatternBuilder {
             @Override
             public AEKey getRemainingKey(AEKey template) {
                 if (containerItems && template instanceof AEItemKey itemKey
-                        && !itemKey.getItem().getCraftingRemainder(itemKey.getReadOnlyStack()).isEmpty()) {
+                        && itemKey.getItem().getCraftingRemainder(itemKey.getReadOnlyStack()) != null) {
                     return AEItemKey.of(itemKey.getItem().getCraftingRemainder(itemKey.getReadOnlyStack()));
                 }
                 return null;

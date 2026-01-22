@@ -266,7 +266,7 @@ public class FormationPlanePart extends UpgradeablePart implements IStorageProvi
 
         @Override
         public Component getDescription() {
-            return getPartItem().asItem().getName();
+            return getPartItem().asItem().getDefaultInstance().getItemName();
         }
     }
 

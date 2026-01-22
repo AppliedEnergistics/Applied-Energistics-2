@@ -5,7 +5,6 @@ import java.util.List;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -101,7 +100,7 @@ public class StorageCellUpgradeRecipe extends CustomRecipe {
     }
 
     @Override
-    public ItemStack assemble(CraftingInput container, HolderLookup.Provider registries) {
+    public ItemStack assemble(CraftingInput container) {
         ItemStack foundCell = ItemStack.EMPTY;
         var componentsFound = 0;
 
@@ -140,7 +139,8 @@ public class StorageCellUpgradeRecipe extends CustomRecipe {
                 // We replace the cell with the component since it is unstackable and forced to be in match
                 remainder.set(i, new ItemStack(resultComponent));
             } else {
-                remainder.set(i, stack.getCraftingRemainder());
+                var stackRemainder = stack.getCraftingRemainder();
+                remainder.set(i, stackRemainder != null ? stackRemainder.create() : ItemStack.EMPTY);
             }
         }
 

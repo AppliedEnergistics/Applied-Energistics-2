@@ -92,7 +92,7 @@ final class CompassRegion extends SavedData {
     public static CompassRegion get(ServerLevel level, ChunkPos chunkPos) {
         Objects.requireNonNull(chunkPos, "chunkPos");
 
-        return get(level, chunkPos.x, chunkPos.z);
+        return get(level, chunkPos.x(), chunkPos.z());
     }
 
     /**

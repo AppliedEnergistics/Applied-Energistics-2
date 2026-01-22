@@ -200,7 +200,7 @@ public class TickHandler {
         var chunk = ev.getChunk();
 
         if (!level.isClientSide()) {
-            this.blockEntities.removeChunk(level, chunk.getPos().toLong());
+            this.blockEntities.removeChunk(level, chunk.getPos().pack());
         }
     }
 
@@ -375,7 +375,7 @@ public class TickHandler {
                 var chunkQueue = levelQueue.remove(packedChunkPos);
                 if (chunkQueue == null) {
                     AELog.warn("Chunk %s was unloaded while we were readying block entities",
-                            new ChunkPos(packedChunkPos));
+                            ChunkPos.unpack(packedChunkPos));
                     continue; // This should never happen, chunk unloaded under our noses
                 }
 

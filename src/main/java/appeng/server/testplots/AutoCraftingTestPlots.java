@@ -37,7 +37,7 @@ public final class AutoCraftingTestPlots {
     private AutoCraftingTestPlots() {
     }
 
-    @TestPlot("autocrafting_testplot")
+    @TestPlot(value = "autocrafting_testplot", gameTest = false)
     public static void create(PlotBuilder plot) {
         plot.creativeEnergyCell("4 -1 4");
 

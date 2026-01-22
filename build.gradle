@@ -367,6 +367,21 @@ spotless {
     }
 }
 
+//////////////// Add static site export
+tasks.named('runGuideexport').configure {
+    outputs.dir('build/guide')
+}
+
+tasks.register('createStaticSite', JavaExec) {
+    inputs.dir('build/guide')
+    outputs.dir('build/website')
+    group = 'mod development'
+    //dependsOn runGuideexport
+    classpath.from(sourceSets.client.runtimeClasspath)
+    mainClass = 'guideme.internal.web.StaticSiteGenerator'
+    args '--data', 'build/guide', '--output', 'build/website'
+}
+
 ////////////////
 check.dependsOn tasks.register('validateResources', JavaExec) {
     group = "verification"

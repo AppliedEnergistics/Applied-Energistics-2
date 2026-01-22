@@ -26,7 +26,7 @@ public class ChunkMapMixin {
     @Inject(at = @At("RETURN"), method = "anyPlayerCloseEnoughForSpawning", cancellable = true)
     private void spatialAnchorEnableRandomTicks(ChunkPos pos, CallbackInfoReturnable<Boolean> ci) {
         if (AEConfig.instance().isSpatialAnchorEnablesRandomTicks()) {
-            if (!ci.getReturnValue() && ChunkLoadingService.getInstance().isChunkForced(level, pos.x, pos.z)) {
+            if (!ci.getReturnValue() && ChunkLoadingService.getInstance().isChunkForced(level, pos.x(), pos.z())) {
                 ci.setReturnValue(true);
             }
         }

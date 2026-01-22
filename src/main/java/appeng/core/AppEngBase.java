@@ -328,7 +328,7 @@ public abstract class AppEngBase implements AppEng {
     }
 
     private void registerTests(RegisterGameTestsEvent e) {
-        if ("true".equals(System.getProperty("appeng.tests"))) {
+        if (Boolean.getBoolean("appeng.tests")) {
             GameTestPlotAdapter.registerAll(e::registerTest);
         }
     }

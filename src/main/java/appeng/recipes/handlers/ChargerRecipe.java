@@ -5,11 +5,11 @@ import java.util.List;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
-import net.minecraft.core.HolderLookup;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.PlacementInfo;
 import net.minecraft.world.item.crafting.Recipe;
@@ -32,24 +32,24 @@ public class ChargerRecipe implements Recipe<RecipeInput> {
     @Deprecated(forRemoval = true, since = "1.21.1")
     public static final RecipeType<ChargerRecipe> TYPE = AERecipeTypes.CHARGER;
 
-    public final Ingredient ingredient;
-    public final ItemStack result;
+    private final Ingredient ingredient;
+    private final ItemStackTemplate result;
 
     public static final MapCodec<ChargerRecipe> CODEC = RecordCodecBuilder.mapCodec(
             builder -> builder
                     .group(
-                            Ingredient.CODEC.fieldOf("ingredient").forGetter(ChargerRecipe::getIngredient),
-                            ItemStack.CODEC.fieldOf("result").forGetter(cr -> cr.result))
+                            Ingredient.CODEC.fieldOf("ingredient").forGetter(ChargerRecipe::ingredient),
+                            ItemStackTemplate.CODEC.fieldOf("result").forGetter(cr -> cr.result))
                     .apply(builder, ChargerRecipe::new));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, ChargerRecipe> STREAM_CODEC = StreamCodec.composite(
             Ingredient.CONTENTS_STREAM_CODEC,
-            ChargerRecipe::getIngredient,
-            ItemStack.STREAM_CODEC,
-            ChargerRecipe::getResultItem,
+            ChargerRecipe::ingredient,
+            ItemStackTemplate.STREAM_CODEC,
+            ChargerRecipe::result,
             ChargerRecipe::new);
 
-    public ChargerRecipe(Ingredient ingredient, ItemStack result) {
+    public ChargerRecipe(Ingredient ingredient, ItemStackTemplate result) {
         this.ingredient = ingredient;
         this.result = result;
     }
@@ -60,11 +60,15 @@ public class ChargerRecipe implements Recipe<RecipeInput> {
     }
 
     @Override
-    public ItemStack assemble(RecipeInput container, HolderLookup.Provider registries) {
-        return null;
+    public ItemStack assemble(RecipeInput container) {
+        return ItemStack.EMPTY;
     }
 
-    public ItemStack getResultItem() {
+    public Ingredient ingredient() {
+        return ingredient;
+    }
+
+    public ItemStackTemplate result() {
         return result;
     }
 
@@ -76,10 +80,6 @@ public class ChargerRecipe implements Recipe<RecipeInput> {
     @Override
     public RecipeType<ChargerRecipe> getType() {
         return TYPE;
-    }
-
-    public Ingredient getIngredient() {
-        return ingredient;
     }
 
     @Override

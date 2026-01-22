@@ -5,7 +5,6 @@ import java.util.List;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -103,7 +102,7 @@ public class CraftingUnitTransformRecipe implements Recipe<RecipeInput> {
     }
 
     @Override
-    public ItemStack assemble(RecipeInput input, HolderLookup.Provider registries) {
+    public ItemStack assemble(RecipeInput input) {
         return ItemStack.EMPTY;
     }
 

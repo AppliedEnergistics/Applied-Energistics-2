@@ -8,6 +8,7 @@ import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 
@@ -53,8 +54,7 @@ public class InscriberRecipeBuilder {
     }
 
     public void save(RecipeOutput consumer, Identifier id) {
-        var result = output.asItem().getDefaultInstance();
-        result.setCount(count);
+        var result = new ItemStackTemplate(output.asItem(), count);
 
         var recipe = new InscriberRecipe(
                 middleInput, result, topOptional, bottomOptional, mode);

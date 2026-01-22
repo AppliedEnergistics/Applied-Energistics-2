@@ -137,7 +137,7 @@ public final class InscriberRenderer implements BlockEntityRenderer<InscriberBlo
                     // The "PRESS" type will consume the presses so they should not render after
                     // completing the press animation
                     renderPresses = ir.getProcessType() == InscriberProcessType.INSCRIBE;
-                    middleItem = ir.getResultItem().copy();
+                    middleItem = ir.result().create();
                 }
             }
         } else {

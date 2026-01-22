@@ -94,7 +94,7 @@ public class MeteoriteCompassModel implements ItemModel {
     public static Float getAnimatedRotation(Vec3 pos, Vec3 viewVector) {
 
         // Only query for a meteor position if we know our own position
-        var ourChunkPos = new ChunkPos(BlockPos.containing(pos));
+        var ourChunkPos = ChunkPos.containing(BlockPos.containing(pos));
         var closestMeteorite = CompassManager.INSTANCE.getClosestMeteorite(ourChunkPos, true);
 
         // No close meteorite was found -> spin slowly

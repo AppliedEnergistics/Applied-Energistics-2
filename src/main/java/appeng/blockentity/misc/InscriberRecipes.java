@@ -25,6 +25,7 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
@@ -114,7 +115,7 @@ public final class InscriberRecipes {
 
         final InscriberProcessType type = InscriberProcessType.INSCRIBE;
 
-        return new InscriberRecipe(startingItem, renamedItem,
+        return new InscriberRecipe(startingItem, ItemStackTemplate.fromNonEmptyStack(renamedItem),
                 plateA.isEmpty() ? Optional.empty() : Optional.of(Ingredient.of(plateA.getItem())),
                 plateB.isEmpty() ? Optional.empty() : Optional.of(Ingredient.of(plateB.getItem())), type);
     }

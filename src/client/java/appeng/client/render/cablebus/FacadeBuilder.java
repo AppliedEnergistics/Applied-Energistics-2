@@ -37,6 +37,7 @@ import net.minecraft.client.renderer.block.model.SimpleModelWrapper;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.ModelBaker;
+import net.minecraft.client.resources.model.QuadCollection;
 import net.minecraft.client.resources.model.ResolvableModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -47,6 +48,7 @@ import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.SingleThreadedRandomSource;
 import net.minecraft.world.phys.AABB;
+import net.neoforged.neoforge.client.model.quad.MutableQuad;
 
 import appeng.api.parts.IPart;
 import appeng.api.parts.PartHelper;
@@ -60,10 +62,7 @@ import appeng.thirdparty.codechicken.lib.model.pipeline.transformers.QuadCornerK
 import appeng.thirdparty.codechicken.lib.model.pipeline.transformers.QuadFaceStripper;
 import appeng.thirdparty.codechicken.lib.model.pipeline.transformers.QuadReInterpolator;
 import appeng.thirdparty.codechicken.lib.model.pipeline.transformers.QuadTinter;
-import appeng.thirdparty.fabric.MeshBuilder;
-import appeng.thirdparty.fabric.ModelHelper;
-import appeng.thirdparty.fabric.QuadEmitter;
-import appeng.thirdparty.fabric.Renderer;
+import appeng.util.Platform;
 
 /**
  * The FacadeBuilder builds for facades..
@@ -76,8 +75,6 @@ public class FacadeBuilder {
 
     private static final Identifier ANCHOR_STILT = AppEng.makeId("part/cable_anchor_short");;
     private static final Identifier TRANSLUCENT_FACADE_MODEL = AppEng.makeId("part/translucent_facade");
-
-    private final Renderer renderer = Renderer.getInstance();
 
     // Slightly smaller than a pixel to never show the beginning of the second row of pixels of the block's texture.
     public static final double THIN_THICKNESS = 1D / 16D - 2e-3;
@@ -130,6 +127,7 @@ public class FacadeBuilder {
             BlockPos pos,
             Consumer<BlockModelPart> partConsumer) {
         BlockColors blockColors = Minecraft.getInstance().getBlockColors();
+        var quad = new MutableQuad();
 
         for (var side : IPart.ATTACHMENT_POINTS) {
             var blockState = facadeGetter.apply(side);
@@ -213,12 +211,10 @@ public class FacadeBuilder {
 
             // Transform each part emitted by the block model
             for (var part : parts) {
-                MeshBuilder meshBuilder = renderer.meshBuilder();
-                QuadEmitter emitter = meshBuilder.getEmitter();
+                quad.reset();
+                var builder = new QuadCollection.Builder();
 
-                for (int cullFaceIdx = 0; cullFaceIdx <= ModelHelper.NULL_FACE_ID; cullFaceIdx++) {
-                    Direction cullFace = ModelHelper.faceFromIndex(cullFaceIdx);
-
+                for (var cullFace : Platform.CULL_FACES) {
                     // Ignore quad if it's not supposed to connect to the adjacent block.
                     if (cullFace != null) {
                         BlockPos adjPos = pos.relative(cullFace);
@@ -232,85 +228,91 @@ public class FacadeBuilder {
                         }
                     }
 
-                    for (BakedQuad quad : part.getQuads(cullFace)) {
+                    for (var originalQuad : part.getQuads(cullFace)) {
                         QuadTinter quadTinter = null;
 
                         // Prebake the color tint into the quad
-                        if (quad.tintIndex() != -1) {
+                        if (originalQuad.tintIndex() != -1) {
                             quadTinter = new QuadTinter(
-                                    blockColors.getColor(blockState, level, pos, quad.tintIndex()));
+                                    blockColors.getColor(blockState, level, pos, originalQuad.tintIndex()));
                         }
 
                         for (AABB box : holeStrips) {
-                            emitter.fromVanilla(quad);
+                            quad.setFrom(originalQuad);
                             // Keep the cull-face for faces that are flush with the outer block-face on the
                             // side the facade is attached to, but clear it for anything that faces inwards
-                            emitter.cullFace(cullFace == side ? side : null);
-                            emitter.nominalFace(quad.direction());
-                            emitter.shade(quad.shade());
-                            emitter.ambientOcclusion(quad.hasAmbientOcclusion());
-                            interpolator.setInputQuad(emitter);
+                            quad.setDirection(originalQuad.direction());
+                            quad.setShade(originalQuad.shade());
+                            quad.setHasAmbientOcclusion(originalQuad.hasAmbientOcclusion());
+                            interpolator.setInputQuad(quad);
 
                             QuadClamper clamper = new QuadClamper(box);
-                            if (!clamper.transform(emitter)) {
+                            if (!clamper.transform(quad)) {
                                 continue;
                             }
 
                             // Strips faces if they match a mask.
-                            if (!faceStripper.transform(emitter)) {
+                            if (!faceStripper.transform(quad)) {
                                 continue;
                             }
 
                             // Kicks the edge inner corners in, solves Z fighting
-                            if (!kicker.transform(emitter)) {
+                            if (!kicker.transform(quad)) {
                                 continue;
                             }
 
-                            interpolator.transform(emitter);
+                            interpolator.transform(quad);
 
                             // Tints the quad if we need it to. Disabled by default.
                             if (quadTinter != null) {
-                                quadTinter.transform(emitter);
+                                quadTinter.transform(quad);
                             }
 
-                            emitter.emit();
+                            if (cullFace == side) {
+                                builder.addCulledFace(side, quad.toBakedQuad());
+                            } else {
+                                builder.addUnculledFace(quad.toBakedQuad());
+                            }
                         }
                     }
                 }
 
                 // Build a new quad collection
-                var unculledQuads = new ArrayList<>(meshBuilder.build().toBakedBlockQuads());
-                if (!unculledQuads.isEmpty()) {
-                    partConsumer.accept(new BlockModelPart() {
-                        @Override
-                        public List<BakedQuad> getQuads(@Nullable Direction side) {
-                            return side == null ? unculledQuads : List.of();
-                        }
-
-                        @Override
-                        public boolean useAmbientOcclusion() {
-                            return part.useAmbientOcclusion();
-                        }
-
-                        @Override
-                        public TriState ambientOcclusion() {
-                            return part.ambientOcclusion();
-                        }
-
-                        @Override
-                        public TextureAtlasSprite particleIcon() {
-                            return part.particleIcon();
-                        }
-
-                        @Override
-                        public ChunkSectionLayer getRenderType(BlockState state) {
-                            return part.getRenderType(blockState);
-                        }
-                    });
+                var quads = builder.build();
+                if (!quads.getAll().isEmpty()) {
+                    partConsumer.accept(new FacadeBlockModelPart(quads, part));
                 }
             }
         }
 
+    }
+
+    record FacadeBlockModelPart(QuadCollection quadCollection, BlockModelPart originalPart) implements BlockModelPart {
+        @Override
+        public List<BakedQuad> getQuads(@Nullable Direction side) {
+            return quadCollection.getQuads(side);
+        }
+
+        @SuppressWarnings("deprecation")
+        @Override
+        public boolean useAmbientOcclusion() {
+            return originalPart.useAmbientOcclusion();
+        }
+
+        @Override
+        public TriState ambientOcclusion() {
+            return originalPart.ambientOcclusion();
+        }
+
+        @Override
+        public TextureAtlasSprite particleIcon() {
+            return originalPart.particleIcon();
+        }
+
+        @Override
+        public ChunkSectionLayer getRenderType(BlockState state) {
+            return originalPart.getRenderType(state);
+        }
     }
 
     /**

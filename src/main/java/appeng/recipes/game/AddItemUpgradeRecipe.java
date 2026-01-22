@@ -2,7 +2,6 @@ package appeng.recipes.game;
 
 import com.mojang.serialization.MapCodec;
 
-import net.minecraft.core.HolderLookup;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
@@ -70,7 +69,7 @@ public class AddItemUpgradeRecipe extends CustomRecipe {
     }
 
     @Override
-    public ItemStack assemble(CraftingInput container, HolderLookup.Provider registries) {
+    public ItemStack assemble(CraftingInput container) {
         return attemptUpgrade(container);
     }
 

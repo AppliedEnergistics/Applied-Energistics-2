@@ -19,7 +19,7 @@ public class LytInscriberRecipe extends LytBox {
         append(topSlot = new LytSlot(recipe.getTopOptional()));
         append(middleSlot = new LytSlot(recipe.getMiddleInput()));
         append(bottomSlot = new LytSlot(recipe.getBottomOptional()));
-        append(resultSlot = new LytSlot(recipe.getResultItem()));
+        append(resultSlot = new LytSlot(recipe.result().create()));
         resultSlot.setLargeSlot(true);
     }
 

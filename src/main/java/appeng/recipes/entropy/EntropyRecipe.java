@@ -29,7 +29,6 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.FriendlyByteBuf;
@@ -37,6 +36,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.PlacementInfo;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeBookCategories;
@@ -96,7 +96,7 @@ public class EntropyRecipe implements Recipe<RecipeInput> {
     }
 
     @Override
-    public ItemStack assemble(RecipeInput inv, HolderLookup.Provider registries) {
+    public ItemStack assemble(RecipeInput inv) {
         return ItemStack.EMPTY;
     }
 
@@ -134,7 +134,7 @@ public class EntropyRecipe implements Recipe<RecipeInput> {
         return output.fluid().map(fluidOutput -> fluidOutput.apply(originalFluidState)).orElse(null);
     }
 
-    public List<ItemStack> getDrops() {
+    public List<ItemStackTemplate> getDrops() {
         return this.output.drops();
     }
 
@@ -238,12 +238,12 @@ public class EntropyRecipe implements Recipe<RecipeInput> {
                 FluidInput::new);
     }
 
-    public record Output(Optional<BlockOutput> block, Optional<FluidOutput> fluid, List<ItemStack> drops) {
+    public record Output(Optional<BlockOutput> block, Optional<FluidOutput> fluid, List<ItemStackTemplate> drops) {
 
         public static Codec<Output> CODEC = RecordCodecBuilder.create(builder -> builder.group(
                 BlockOutput.CODEC.optionalFieldOf("block").forGetter(Output::block),
                 FluidOutput.CODEC.optionalFieldOf("fluid").forGetter(Output::fluid),
-                ItemStack.CODEC.listOf().optionalFieldOf("drops", List.of()).forGetter(Output::drops))
+                ItemStackTemplate.CODEC.listOf().optionalFieldOf("drops", List.of()).forGetter(Output::drops))
                 .apply(builder, Output::new));
 
         public static StreamCodec<RegistryFriendlyByteBuf, Output> STREAM_CODEC = StreamCodec.composite(
@@ -251,7 +251,7 @@ public class EntropyRecipe implements Recipe<RecipeInput> {
                 Output::block,
                 FluidOutput.STREAM_CODEC.apply(ByteBufCodecs::optional),
                 Output::fluid,
-                ItemStack.OPTIONAL_LIST_STREAM_CODEC,
+                ItemStackTemplate.STREAM_CODEC.apply(ByteBufCodecs.list()),
                 Output::drops,
                 Output::new);
     }

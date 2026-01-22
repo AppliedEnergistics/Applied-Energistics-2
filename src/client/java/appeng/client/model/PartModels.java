@@ -62,7 +62,7 @@ public final class PartModels {
                         var item = entry.getValue();
                         if (item instanceof IPartItem<?> partItem) {
                             // Skip cables, those are special
-                            if (partItem.createPart() instanceof ICablePart) {
+                            if (ICablePart.class.isAssignableFrom(partItem.getPartClass())) {
                                 continue;
                             }
 

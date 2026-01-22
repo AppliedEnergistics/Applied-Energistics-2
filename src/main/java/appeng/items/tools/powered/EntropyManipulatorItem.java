@@ -237,7 +237,7 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
                 return false;
             }
 
-            ItemStack result = recipe.get().assemble(tempInv, level.registryAccess());
+            ItemStack result = recipe.get().assemble(tempInv);
             if (result.getItem() instanceof BlockItem) {
                 Block smeltedBlock = Block.byItem(result.getItem());
                 if (smeltedBlock == block) {
@@ -305,7 +305,7 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
 
         if (!level.isClientSide()) {
             for (var drop : recipe.getDrops()) {
-                Containers.dropItemStack(level, pos.getX(), pos.getY(), pos.getZ(), drop.copy());
+                Containers.dropItemStack(level, pos.getX(), pos.getY(), pos.getZ(), drop.create());
             }
         }
 

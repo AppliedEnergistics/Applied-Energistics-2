@@ -67,11 +67,11 @@ public class ChargerCategory extends ViewBasedCategory<RecipeHolder<ChargerRecip
             public void buildSlots(IRecipeLayoutBuilder builder) {
                 builder.addSlot(RecipeIngredientRole.INPUT, 31, 8)
                         .setBackground(slotBackground, -1, -1)
-                        .add(recipe.getIngredient());
+                        .add(recipe.ingredient());
 
                 builder.addSlot(RecipeIngredientRole.OUTPUT, 81, 8)
                         .setBackground(slotBackground, -1, -1)
-                        .add(recipe.getResultItem());
+                        .add(recipe.result().create());
 
                 builder.addSlot(RecipeIngredientRole.RENDER_ONLY, 3, 30)
                         .add(AEBlocks.CRANK.stack());

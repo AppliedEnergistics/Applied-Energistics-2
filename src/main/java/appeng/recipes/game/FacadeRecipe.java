@@ -18,7 +18,6 @@
 
 package appeng.recipes.game;
 
-import net.minecraft.core.HolderLookup;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingInput;
@@ -65,7 +64,7 @@ public final class FacadeRecipe extends CustomRecipe {
     }
 
     @Override
-    public ItemStack assemble(CraftingInput inv, HolderLookup.Provider registryAccess) {
+    public ItemStack assemble(CraftingInput inv) {
         return this.getOutput(inv, true);
     }
 

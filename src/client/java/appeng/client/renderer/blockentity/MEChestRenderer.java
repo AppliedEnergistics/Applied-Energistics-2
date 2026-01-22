@@ -49,7 +49,7 @@ import appeng.api.client.StorageCellModels;
 import appeng.api.orientation.BlockOrientation;
 import appeng.blockentity.storage.MEChestBlockEntity;
 import appeng.client.render.AERenderTypes;
-import appeng.thirdparty.fabric.ModelHelper;
+import appeng.util.Platform;
 
 /**
  * The block entity renderer for ME chests takes care of rendering the right model for the inserted cell, as well as the
@@ -150,8 +150,7 @@ public class MEChestRenderer implements BlockEntityRenderer<MEChestBlockEntity, 
     private static QuadCollection rotateQuadCullFaces(Function<Direction, List<BakedQuad>> quadCollection,
             BlockOrientation r) {
         var rotated = new QuadCollection.Builder();
-        for (int cullFaceIdx = 0; cullFaceIdx <= ModelHelper.NULL_FACE_ID; cullFaceIdx++) {
-            Direction cullFace = ModelHelper.faceFromIndex(cullFaceIdx);
+        for (var cullFace : Platform.CULL_FACES) {
             if (cullFace != null) {
                 cullFace = r.resultingRotate(cullFace); // This fixes the incorrect lightmap position
             }

@@ -20,7 +20,7 @@ package appeng.datagen.providers.recipes;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.material.Fluids;
@@ -43,7 +43,7 @@ public class EntropyRecipes extends AE2RecipeProvider {
 
         EntropyRecipeBuilder.cool()
                 .setInputFluid(Fluids.FLOWING_WATER)
-                .setDrops(new ItemStack(Items.SNOWBALL))
+                .setDrops(new ItemStackTemplate(Items.SNOWBALL))
                 .save(output, AppEng.makeId("entropy/cool/flowing_water_snowball"));
 
         EntropyRecipeBuilder.cool()

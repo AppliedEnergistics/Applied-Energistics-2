@@ -77,7 +77,8 @@ public class ExternalEnergyTestPlots {
                 .thenSucceed());
     }
 
-    @TestPlot("fe_charger")
+    // due to the chargers randomness, this can take longer than the default time
+    @TestPlot(value = "fe_charger", maxTicks = 15 * 20)
     public static void testCharger(PlotBuilder plot) {
         placeForgeEnergyGenerator(plot);
         // Insert an uncharged crystal to test it gets charged
@@ -92,9 +93,7 @@ public class ExternalEnergyTestPlots {
                 })
                 // Ensure that after 1 second, the grid still has no energy
                 .thenExecuteAfter(20, () -> checkGridHasNoEnergy(helper))
-                .thenSucceed())
-                // due to the chargers randomness, this can take longer than the default time
-                .maxTicks(15 * 20);
+                .thenSucceed());
     }
 
     @TestPlot("fe_growth_accelerator")

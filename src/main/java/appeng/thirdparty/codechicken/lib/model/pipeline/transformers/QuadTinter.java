@@ -18,13 +18,12 @@
 
 package appeng.thirdparty.codechicken.lib.model.pipeline.transformers;
 
-import appeng.thirdparty.fabric.MutableQuadView;
-import appeng.thirdparty.fabric.RenderContext;
+import net.neoforged.neoforge.client.model.quad.MutableQuad;
 
 /**
  * This transformer tints quads.
  */
-public class QuadTinter implements RenderContext.QuadTransform {
+public class QuadTinter implements QuadTransform {
 
     private final int argb;
 
@@ -33,13 +32,13 @@ public class QuadTinter implements RenderContext.QuadTransform {
     }
 
     @Override
-    public boolean transform(MutableQuadView quad) {
+    public boolean transform(MutableQuad quad) {
         // Nuke tintIndex.
-        quad.colorIndex(-1);
+        quad.setTintIndex(-1);
         for (int i = 0; i < 4; i++) {
             int color = quad.color(i);
             color = multiplyColor(color, argb);
-            quad.color(i, color);
+            quad.setColor(i, color);
         }
         return true;
     }

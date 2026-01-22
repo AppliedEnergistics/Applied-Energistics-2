@@ -19,7 +19,6 @@
     "client.GuiGraphicsMixin",
     "client.WrappedGenericStackTooltipModIdMixin",
     "client.PickColorMixin",
-    "client.TextureAtlasMixin",
     "client.PonderWorldMixin",
     "client.PartModelLoaderMixin"
   ],

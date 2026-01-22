@@ -33,6 +33,7 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemDisplayContext;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.phys.Vec3;
 
 import appeng.blockentity.crafting.MolecularAssemblerBlockEntity;
@@ -86,7 +87,10 @@ public class MolecularAssemblerRenderer
                     status.setTicksUntilParticles(4);
 
                     for (int x = 0; x < (int) Math.ceil(status.getSpeed() / 5.0); x++) {
-                        level.addParticle(new ItemParticleOption(ParticleTypes.CRAFTING, is), centerX, centerY, centerZ,
+                        level.addParticle(
+                                new ItemParticleOption(ParticleTypes.CRAFTING, ItemStackTemplate.fromNonEmptyStack(is)),
+                                centerX,
+                                centerY, centerZ,
                                 0,
                                 0, 0);
                     }

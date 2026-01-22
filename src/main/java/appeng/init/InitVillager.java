@@ -17,7 +17,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.ai.village.poi.PoiType;
 import net.minecraft.world.entity.npc.villager.VillagerProfession;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.trading.TradeCost;
 import net.minecraft.world.item.trading.TradeSet;
@@ -152,7 +152,7 @@ public class InitVillager {
                 key,
                 new VillagerTrade(
                         new TradeCost(soldItem, numberOfItems),
-                        new ItemStack(Items.EMERALD),
+                        new ItemStackTemplate(Items.EMERALD),
                         maxUses,
                         xp,
                         0.05F,
@@ -167,7 +167,7 @@ public class InitVillager {
                 key,
                 new VillagerTrade(
                         new TradeCost(Items.EMERALD, emeraldCost),
-                        new ItemStack(boughtItem),
+                        new ItemStackTemplate(boughtItem.asItem()),
                         numberOfItems,
                         xp,
                         0.05F,

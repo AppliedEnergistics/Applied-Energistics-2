@@ -89,21 +89,38 @@ import appeng.util.Platform;
 public final class TestPlots {
     private static final Logger LOG = LoggerFactory.getLogger(TestPlots.class);
 
+    public record PlotInfo(
+            Identifier id,
+            Consumer<PlotBuilder> runner,
+            @Nullable PlotTestInfo testInfo) {
+    }
+
+    public record PlotTestInfo(
+            int maxTicks,
+            int setupTicks,
+            boolean skyAccess,
+            int padding) {
+        public PlotTestInfo() {
+            this(TestPlot.DEFAULT_MAX_TICKS, TestPlot.DEFAULT_SETUP_TICKS, TestPlot.DEFAULT_SKY_ACCESS,
+                    TestPlot.DEFAULT_PADDING);
+        }
+    }
+
     @Nullable
-    private static Map<Identifier, Consumer<PlotBuilder>> plots;
+    private static Map<Identifier, PlotInfo> plots;
 
     private TestPlots() {
     }
 
-    private static synchronized Map<Identifier, Consumer<PlotBuilder>> getPlots() {
+    private static synchronized Map<Identifier, PlotInfo> getPlotMap() {
         if (plots == null) {
             plots = scanForPlots();
         }
         return plots;
     }
 
-    private static Map<Identifier, Consumer<PlotBuilder>> scanForPlots() {
-        var plots = new HashMap<Identifier, Consumer<PlotBuilder>>();
+    private static Map<Identifier, PlotInfo> scanForPlots() {
+        var plots = new HashMap<Identifier, PlotInfo>();
 
         try {
             for (var clazz : findAllTestPlotClasses()) {
@@ -136,8 +153,17 @@ public final class TestPlots {
                                     "Method " + method + " must take a single PlotBuilder argument");
                         }
 
+                        PlotTestInfo testInfo = null;
+                        if (annotation.gameTest()) {
+                            testInfo = new PlotTestInfo(
+                                    annotation.maxTicks(),
+                                    annotation.setupTicks(),
+                                    annotation.skyAccess(),
+                                    annotation.padding());
+                        }
+
                         var id = AppEng.makeId(annotation.value());
-                        plots.put(id, builder -> {
+                        plots.put(id, new PlotInfo(id, builder -> {
                             try {
                                 method.invoke(null, builder);
                             } catch (InvocationTargetException e) {
@@ -145,7 +171,7 @@ public final class TestPlots {
                             } catch (IllegalAccessException e) {
                                 throw new RuntimeException("Failed to access " + method, e);
                             }
-                        });
+                        }, testInfo));
                     } else if (generatorAnnotation != null) {
                         if (!Arrays.asList(method.getParameterTypes()).equals(List.of(TestPlotCollection.class))) {
                             throw new IllegalStateException(
@@ -190,17 +216,17 @@ public final class TestPlots {
         return result;
     }
 
-    public static List<Identifier> getPlotIds() {
-        var list = new ArrayList<>(getPlots().keySet());
-        list.sort(Comparator.comparing(Identifier::toString));
+    public static List<PlotInfo> getPlots() {
+        var list = new ArrayList<>(getPlotMap().values());
+        list.sort(Comparator.comparing(PlotInfo::id));
         return list;
     }
 
     public static List<Plot> createPlots() {
         var plots = new ArrayList<Plot>();
-        for (var entry : getPlots().entrySet()) {
-            var plot = new Plot(entry.getKey());
-            entry.getValue().accept(plot);
+        for (var plotInfo : getPlots()) {
+            var plot = new Plot(plotInfo.id());
+            plotInfo.runner.accept(plot);
             plots.add(plot);
         }
         return plots;
@@ -208,12 +234,12 @@ public final class TestPlots {
 
     @Nullable
     public static Plot getById(Identifier name) {
-        var factory = getPlots().get(name);
-        if (factory == null) {
+        var info = getPlotMap().get(name);
+        if (info == null) {
             return null;
         }
         var plot = new Plot(name);
-        factory.accept(plot);
+        info.runner.accept(plot);
         return plot;
     }
 
@@ -228,7 +254,7 @@ public final class TestPlots {
     /**
      * A wall of all terminals/monitors in all color combinations.
      */
-    @TestPlot("all_terminals")
+    @TestPlot(value = "all_terminals", gameTest = false)
     public static void allTerminals(PlotBuilder plot) {
         plot.creativeEnergyCell("0 -1 0");
 
@@ -289,7 +315,7 @@ public final class TestPlots {
         return colors;
     }
 
-    @TestPlot("item_chest")
+    @TestPlot(value = "item_chest", gameTest = false)
     public static void itemChest(PlotBuilder plot) {
         plot.blockEntity("0 0 0", AEBlocks.ME_CHEST, chest -> {
             var cellItem = AEItems.ITEM_CELL_1K.stack();
@@ -306,7 +332,7 @@ public final class TestPlots {
         plot.creativeEnergyCell("0 -1 0");
     }
 
-    @TestPlot("fluid_chest")
+    @TestPlot(value = "fluid_chest", gameTest = false)
     public static void fluidChest(PlotBuilder plot) {
         plot.blockEntity("0 0 0", AEBlocks.ME_CHEST, chest -> {
             var cellItem = AEItems.FLUID_CELL_1K.stack();
@@ -327,7 +353,7 @@ public final class TestPlots {
         plot.creativeEnergyCell("0 -1 0");
     }
 
-    @TestPlot("import_exportbus")
+    @TestPlot(value = "import_exportbus", gameTest = false)
     public static void importExportBus(PlotBuilder plot) {
         plot.chest("1 0 1", new ItemStack(Items.ACACIA_LOG, 16), new ItemStack(Items.ENDER_PEARL, 6));
         plot.block("1 1 1", Blocks.HOPPER);
@@ -379,7 +405,7 @@ public final class TestPlots {
         });
     }
 
-    @TestPlot("inscriber")
+    @TestPlot(value = "inscriber", gameTest = false)
     public static void inscriber(PlotBuilder plot) {
         processorInscriber(plot.offset(0, 1, 2), AEItems.LOGIC_PROCESSOR_PRESS, Items.GOLD_INGOT);
         processorInscriber(plot.offset(5, 1, 2), AEItems.ENGINEERING_PROCESSOR_PRESS, Items.DIAMOND);
@@ -549,7 +575,7 @@ public final class TestPlots {
      * from. This is a regression test for Fabric, where the Storage Bus has to open a Transaction for
      * getAvailableStacks, and the simulated extraction causes a neighbor update, triggering the import bus.
      */
-    @TestPlot("import_on_pulse_transactioncrash")
+    @TestPlot(value = "import_on_pulse_transactioncrash", setupTicks = 20, maxTicks = 150)
     public static void importOnPulseTransactionCrash(PlotBuilder plot) {
         plot.creativeEnergyCell("1 0 0");
         plot.chest("0 0 -1", new ItemStack(Items.OAK_PLANKS)); // Import Chest
@@ -580,10 +606,10 @@ public final class TestPlots {
                         helper.assertContainerEmpty(new BlockPos(0, 0, 1));
                     })
                     .thenSucceed();
-        }).setupTicks(20).maxTicks(150);
+        });
     }
 
-    @TestPlot("mattercannon_range")
+    @TestPlot(value = "mattercannon_range", gameTest = false)
     public static void matterCannonRange(PlotBuilder plot) {
         var origin = BlockPos.ZERO;
 
@@ -676,7 +702,7 @@ public final class TestPlots {
         }));
     }
 
-    @TestPlot("maxchannels_adhoctest")
+    @TestPlot(value = "maxchannels_adhoctest", gameTest = false)
     public static void maxChannelsAdHocTest(PlotBuilder plot) {
         plot.creativeEnergyCell("0 -1 0");
         plot.block("[-3,3] -2 [-3,3]", AEBlocks.DRIVE);
@@ -824,7 +850,7 @@ public final class TestPlots {
     /**
      * Simple terminal full of enchanted items to test rendering performance.
      */
-    @TestPlot("terminal_fullof_enchanteditems")
+    @TestPlot(value = "terminal_fullof_enchanteditems", gameTest = false)
     public static void terminalFullOfEnchantedItems(PlotBuilder plot) {
         var origin = BlockPos.ZERO;
         plot.creativeEnergyCell(origin.below());

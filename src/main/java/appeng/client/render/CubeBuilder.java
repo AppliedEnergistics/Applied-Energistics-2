@@ -29,11 +29,7 @@ import org.joml.Vector4f;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
-import net.minecraft.util.LightCoordsUtil;
-
-import appeng.thirdparty.fabric.EncodingFormat;
-import appeng.thirdparty.fabric.MutableQuadViewImpl;
-import appeng.thirdparty.fabric.QuadEmitter;
+import net.neoforged.neoforge.client.model.quad.MutableQuad;
 
 /**
  * Builds the quads for a cube.
@@ -48,7 +44,7 @@ public class CubeBuilder {
 
     private final EnumMap<Direction, Vector4f> customUv = new EnumMap<>(Direction.class);
 
-    private byte[] uvRotations = new byte[Direction.values().length];
+    private final byte[] uvRotations = new byte[Direction.values().length];
 
     private final boolean[] flipU = new boolean[Direction.values().length];
 
@@ -57,6 +53,8 @@ public class CubeBuilder {
     private int color = 0xFFFFFFFF;
 
     private boolean emissiveMaterial;
+
+    private final MutableQuad quad = new MutableQuad();
 
     public CubeBuilder(Consumer<BakedQuad> output) {
         this.output = output;
@@ -98,18 +96,8 @@ public class CubeBuilder {
 
         var texture = this.textures.get(face);
 
-        var emitter = new MutableQuadViewImpl() {
-            {
-                begin(new int[EncodingFormat.TOTAL_STRIDE], 0);
-            }
-
-            @Override
-            public QuadEmitter emit() {
-                output.accept(toBakedQuad(texture));
-                return this;
-            }
-        };
-        emitter.colorIndex(-1);
+        quad.reset();
+        quad.setSprite(texture);
 
         var uv = new UvVector();
 
@@ -124,34 +112,31 @@ public class CubeBuilder {
             uv = this.getStandardUv(face, texture, x1, y1, z1, x2, y2, z2);
         }
 
-        emitter.color(color, color, color, color);
-        emitter.normal(0, face.getStepX(), face.getStepY(), face.getStepZ());
-        emitter.normal(1, face.getStepX(), face.getStepY(), face.getStepZ());
-        emitter.normal(2, face.getStepX(), face.getStepY(), face.getStepZ());
-        emitter.normal(3, face.getStepX(), face.getStepY(), face.getStepZ());
+        quad.setColor(color);
+        quad.setNormal(0, face.getStepX(), face.getStepY(), face.getStepZ());
+        quad.setNormal(1, face.getStepX(), face.getStepY(), face.getStepZ());
+        quad.setNormal(2, face.getStepX(), face.getStepY(), face.getStepZ());
+        quad.setNormal(3, face.getStepX(), face.getStepY(), face.getStepZ());
 
-        setFaceUV(face, emitter, uv);
+        setFaceUV(face, quad, uv);
 
         switch (face) {
-            case DOWN -> emitter.square(face, x1, z1, x2, z2, y1);
-            case UP -> emitter.square(face, x1, 1 - z2, x2, 1 - z1, 1 - y2);
-            case NORTH -> emitter.square(face, 1 - x2, y1, 1 - x1, y2, z1);
-            case SOUTH -> emitter.square(face, x1, y1, x2, y2, 1 - z2);
-            case WEST -> emitter.square(face, z1, y1, z2, y2, x1);
-            case EAST -> emitter.square(face, 1 - z2, y1, 1 - z1, y2, 1 - x2);
+            case DOWN -> quad.setCubeFaceFromSpriteCoords(face, x1, z1, x2, z2, y1);
+            case UP -> quad.setCubeFaceFromSpriteCoords(face, x1, 1 - z2, x2, 1 - z1, 1 - y2);
+            case NORTH -> quad.setCubeFaceFromSpriteCoords(face, 1 - x2, y1, 1 - x1, y2, z1);
+            case SOUTH -> quad.setCubeFaceFromSpriteCoords(face, x1, y1, x2, y2, 1 - z2);
+            case WEST -> quad.setCubeFaceFromSpriteCoords(face, z1, y1, z2, y2, x1);
+            case EAST -> quad.setCubeFaceFromSpriteCoords(face, 1 - z2, y1, 1 - z1, y2, 1 - x2);
         }
 
         if (emissiveMaterial) {
-            // Force Brightness to 15, this is for full bright mode
-            // this vertex element will only be present in that case
-            int lightmap = LightCoordsUtil.pack(15, 15);
-            emitter.lightmap(lightmap, lightmap, lightmap, lightmap);
+            quad.setLightEmission(15);
         }
 
-        emitter.emit();
+        output.accept(quad.toBakedQuad());
     }
 
-    private void setFaceUV(Direction face, QuadEmitter emitter, UvVector uv) {
+    private void setFaceUV(Direction face, MutableQuad quad, UvVector uv) {
         var rotation = uvRotations[face.ordinal()];
 
         if (flipU[face.ordinal()]) {
@@ -167,16 +152,16 @@ public class CubeBuilder {
 
         switch (face) {
             case DOWN, UP -> {
-                emitter.uv((0 + 4 - rotation) % 4, uv.u1, uv.v1);
-                emitter.uv((1 + 4 - rotation) % 4, uv.u1, uv.v2);
-                emitter.uv((2 + 4 - rotation) % 4, uv.u2, uv.v2);
-                emitter.uv((3 + 4 - rotation) % 4, uv.u2, uv.v1);
+                quad.setUv((0 + 4 - rotation) % 4, uv.u1, uv.v1);
+                quad.setUv((1 + 4 - rotation) % 4, uv.u1, uv.v2);
+                quad.setUv((2 + 4 - rotation) % 4, uv.u2, uv.v2);
+                quad.setUv((3 + 4 - rotation) % 4, uv.u2, uv.v1);
             }
             case NORTH, SOUTH, WEST, EAST -> {
-                emitter.uv((0 + 4 - rotation) % 4, uv.u1, uv.v2);
-                emitter.uv((1 + 4 - rotation) % 4, uv.u1, uv.v1);
-                emitter.uv((2 + 4 - rotation) % 4, uv.u2, uv.v1);
-                emitter.uv((3 + 4 - rotation) % 4, uv.u2, uv.v2);
+                quad.setUv((0 + 4 - rotation) % 4, uv.u1, uv.v2);
+                quad.setUv((1 + 4 - rotation) % 4, uv.u1, uv.v1);
+                quad.setUv((2 + 4 - rotation) % 4, uv.u2, uv.v1);
+                quad.setUv((3 + 4 - rotation) % 4, uv.u2, uv.v2);
             }
         }
     }

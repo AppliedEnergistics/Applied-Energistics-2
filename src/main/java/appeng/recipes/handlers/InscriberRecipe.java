@@ -26,10 +26,10 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
-import net.minecraft.core.HolderLookup;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.PlacementInfo;
 import net.minecraft.world.item.crafting.Recipe;
@@ -63,15 +63,15 @@ public class InscriberRecipe implements Recipe<RecipeInput> {
                     .group(
                             Ingredients.CODEC.fieldOf("ingredients")
                                     .forGetter(InscriberRecipe::getSerializedIngredients),
-                            ItemStack.CODEC.fieldOf("result").forGetter(ir -> ir.output),
+                            ItemStackTemplate.CODEC.fieldOf("result").forGetter(ir -> ir.result),
                             MODE_CODEC.fieldOf("mode").forGetter(ir -> ir.processType))
                     .apply(builder, InscriberRecipe::new));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, InscriberRecipe> STREAM_CODEC = StreamCodec.composite(
             Ingredients.STREAM_CODEC,
             InscriberRecipe::getSerializedIngredients,
-            ItemStack.STREAM_CODEC,
-            InscriberRecipe::getResultItem,
+            ItemStackTemplate.STREAM_CODEC,
+            InscriberRecipe::result,
             NeoForgeStreamCodecs.enumCodec(InscriberProcessType.class),
             InscriberRecipe::getProcessType,
             InscriberRecipe::new);
@@ -79,17 +79,17 @@ public class InscriberRecipe implements Recipe<RecipeInput> {
     private final Ingredient middleInput;
     private final Optional<Ingredient> topOptional;
     private final Optional<Ingredient> bottomOptional;
-    private final ItemStack output;
+    private final ItemStackTemplate result;
     private final InscriberProcessType processType;
 
-    private InscriberRecipe(Ingredients ingredients, ItemStack output, InscriberProcessType processType) {
-        this(ingredients.middle(), output, ingredients.top(), ingredients.bottom(), processType);
+    private InscriberRecipe(Ingredients ingredients, ItemStackTemplate result, InscriberProcessType processType) {
+        this(ingredients.middle(), result, ingredients.top(), ingredients.bottom(), processType);
     }
 
-    public InscriberRecipe(Ingredient middleInput, ItemStack output,
+    public InscriberRecipe(Ingredient middleInput, ItemStackTemplate result,
             Optional<Ingredient> topOptional, Optional<Ingredient> bottomOptional, InscriberProcessType processType) {
         this.middleInput = Objects.requireNonNull(middleInput, "middleInput");
-        this.output = Objects.requireNonNull(output, "output");
+        this.result = Objects.requireNonNull(result, "result");
         this.topOptional = Objects.requireNonNull(topOptional, "topOptional");
         this.bottomOptional = Objects.requireNonNull(bottomOptional, "bottomOptional");
         this.processType = Objects.requireNonNull(processType, "processType");
@@ -101,12 +101,12 @@ public class InscriberRecipe implements Recipe<RecipeInput> {
     }
 
     @Override
-    public ItemStack assemble(RecipeInput inv, HolderLookup.Provider registries) {
-        return getResultItem().copy();
+    public ItemStack assemble(RecipeInput inv) {
+        return result.create();
     }
 
-    public ItemStack getResultItem() {
-        return this.output;
+    public ItemStackTemplate result() {
+        return this.result;
     }
 
     @Override
@@ -127,7 +127,7 @@ public class InscriberRecipe implements Recipe<RecipeInput> {
                         topOptional.map(Ingredient::display).orElse(SlotDisplay.Empty.INSTANCE),
                         bottomOptional.map(Ingredient::display).orElse(SlotDisplay.Empty.INSTANCE),
                         processType,
-                        new SlotDisplay.ItemStackSlotDisplay(output),
+                        new SlotDisplay.ItemStackSlotDisplay(result),
                         new SlotDisplay.ItemSlotDisplay(AEBlocks.INSCRIBER.asItem())));
     }
 

@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Stream;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.mojang.authlib.GameProfile;
@@ -73,6 +74,9 @@ import appeng.util.helpers.P2PHelper;
 public class Platform {
 
     private static final Logger LOG = LoggerFactory.getLogger(Platform.class);
+
+    public static final Direction[] CULL_FACES = Stream.concat(Direction.stream(), Stream.of((Direction) null))
+            .toArray(Direction[]::new);
 
     @VisibleForTesting
     public static ThreadGroup serverThreadGroup = SidedThreadGroups.SERVER;
@@ -318,7 +322,7 @@ public class Platform {
      * This means that it must both be fully loaded, and close enough to a ticking ticket.
      */
     public static boolean areBlockEntitiesTicking(@Nullable Level level, BlockPos pos) {
-        return areBlockEntitiesTicking(level, ChunkPos.asLong(pos));
+        return areBlockEntitiesTicking(level, ChunkPos.pack(pos));
     }
 
     public static boolean areBlockEntitiesTicking(@Nullable Level level, long chunkPos) {

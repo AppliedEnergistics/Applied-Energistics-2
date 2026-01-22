@@ -268,7 +268,9 @@ public class MemoryCardItem extends AEBaseItem implements IMemoryCard {
 
                 if (missingAmount > 0 && !player.level().isClientSide()) {
                     player.displayClientMessage(
-                            PlayerMessages.MissingUpgrades.text(entry.getKey().getName(), missingAmount), true);
+                            PlayerMessages.MissingUpgrades.text(entry.getKey().getDefaultInstance().getItemName(),
+                                    missingAmount),
+                            true);
                 }
             }
         }

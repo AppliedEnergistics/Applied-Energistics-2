@@ -212,11 +212,14 @@ public class GridsCommand implements ISubCommand {
                 var chunks = entry.getValue();
                 var baseName = sanitizeName(level.dimension().identifier().toString());
                 for (var chunk : chunks) {
-                    var serializedChunk = SerializableChunkData.copyOf(level, level.getChunk(chunk.x, chunk.z)).write();
-                    zipOut.putNextEntry(new ZipEntry("chunks/" + baseName + "_" + chunk.x + "_" + chunk.z + ".nbt"));
+                    var serializedChunk = SerializableChunkData.copyOf(level, level.getChunk(chunk.x(), chunk.z()))
+                            .write();
+                    zipOut.putNextEntry(
+                            new ZipEntry("chunks/" + baseName + "_" + chunk.x() + "_" + chunk.z() + ".nbt"));
                     NbtIo.writeCompressed(serializedChunk, CloseShieldOutputStream.wrap(zipOut));
 
-                    zipOut.putNextEntry(new ZipEntry("chunks/" + baseName + "_" + chunk.x + "_" + chunk.z + ".snbt"));
+                    zipOut.putNextEntry(
+                            new ZipEntry("chunks/" + baseName + "_" + chunk.x() + "_" + chunk.z() + ".snbt"));
                     zipOut.write(NbtUtils.structureToSnbt(serializedChunk).getBytes(StandardCharsets.UTF_8));
                 }
             }

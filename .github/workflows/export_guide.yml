@@ -36,6 +36,8 @@ jobs:
           gunzip build/guide/guide.*.json.gz
           zopfli build/guide/guide.*.json
           rm -f build/guide/guide.*.json
+      - name: Build the static site
+        run: ./gradlew createStaticSite
       - name: Compress guide files before upload as artifact
         run: tar cf guide.tar build/guide/
       - uses: actions/upload-artifact@v4

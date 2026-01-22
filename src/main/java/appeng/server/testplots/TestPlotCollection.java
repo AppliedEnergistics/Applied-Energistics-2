@@ -10,9 +10,9 @@ import appeng.server.testworld.PlotBuilder;
 import appeng.server.testworld.PlotTestHelper;
 
 public class TestPlotCollection {
-    private final Map<Identifier, Consumer<PlotBuilder>> plots;
+    private final Map<Identifier, TestPlots.PlotInfo> plots;
 
-    public TestPlotCollection(Map<Identifier, Consumer<PlotBuilder>> plots) {
+    public TestPlotCollection(Map<Identifier, TestPlots.PlotInfo> plots) {
         this.plots = plots;
     }
 
@@ -25,11 +25,15 @@ public class TestPlotCollection {
     }
 
     public void add(Identifier id, Consumer<PlotBuilder> builder) {
-        plots.put(id, builder);
+        add(id, new TestPlots.PlotInfo(id, builder, new TestPlots.PlotTestInfo()));
+    }
+
+    public void add(Identifier id, TestPlots.PlotInfo info) {
+        plots.put(id, info);
     }
 
     public void add(Identifier id, Consumer<PlotBuilder> builder, Consumer<PlotTestHelper> test) {
-        plots.put(id, actualBuilder -> {
+        add(id, actualBuilder -> {
             builder.accept(actualBuilder);
             actualBuilder.test(test);
         });

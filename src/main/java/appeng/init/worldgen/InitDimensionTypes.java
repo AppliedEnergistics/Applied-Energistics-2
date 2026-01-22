@@ -1,5 +1,7 @@
 package appeng.init.worldgen;
 
+import java.util.Optional;
+
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.core.registries.Registries;
@@ -48,6 +50,7 @@ public final class InitDimensionTypes {
                         .set(EnvironmentAttributes.RESPAWN_ANCHOR_WORKS, false)
                         // TODO 1.21.11: environmental effects SpatialStorageDimensionIds.SKY_PROPERTIES_ID
                         .build(),
-                timelines.getOrThrow(TimelineTags.UNIVERSAL));
+                timelines.getOrThrow(TimelineTags.UNIVERSAL),
+                Optional.empty());
     }
 }

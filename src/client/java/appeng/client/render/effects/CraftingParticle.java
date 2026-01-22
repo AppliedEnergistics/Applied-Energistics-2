@@ -137,7 +137,7 @@ public class CraftingParticle extends SingleQuadParticle {
         @Override
         public @Nullable Particle createParticle(ItemParticleOption data, ClientLevel level, double x, double y,
                 double z, double xSpeed, double ySpeed, double zSpeed, RandomSource random) {
-            return new CraftingParticle(level, x, y, z, spriteSet.get(random), data.getItem());
+            return new CraftingParticle(level, x, y, z, spriteSet.get(random), data.getItem().create());
         }
     }
 

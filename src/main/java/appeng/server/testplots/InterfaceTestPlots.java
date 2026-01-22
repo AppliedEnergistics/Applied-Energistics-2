@@ -174,7 +174,7 @@ public class InterfaceTestPlots {
     /**
      * Regression test for https://github.com/AppliedEnergistics/Applied-Energistics-2/issues/5919
      */
-    @TestPlot("canceling_jobs_from_interfacecrash")
+    @TestPlot(value = "canceling_jobs_from_interfacecrash", maxTicks = 300 /* interface takes a while to request */)
     public static void cancelingJobsFromInterfaceCrash(PlotBuilder plot) {
         var origin = BlockPos.ZERO;
 
@@ -213,7 +213,7 @@ public class InterfaceTestPlots {
                                 "Nothing should have been inserted into the interface");
                     })
                     .thenSucceed();
-        }).maxTicks(300 /* interface takes a while to request */);
+        });
     }
 
 }

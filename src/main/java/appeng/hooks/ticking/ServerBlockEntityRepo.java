@@ -61,7 +61,7 @@ class ServerBlockEntityRepo {
         final LevelAccessor level = blockEntity.getLevel();
         final int x = blockEntity.getBlockPos().getX() >> 4;
         final int z = blockEntity.getBlockPos().getZ() >> 4;
-        final long chunkPos = ChunkPos.asLong(x, z);
+        final long chunkPos = ChunkPos.pack(x, z);
 
         // Note: in some cases, the level load event might be fired after addBlockEntity is called if a mod loads chunks
         // during an earlier listener. To avoid such issues, we use computeIfAbsent in addBlockEntity directly.
@@ -115,8 +115,8 @@ class ServerBlockEntityRepo {
 
             result.add(Component.literal(levelName).withStyle(ChatFormatting.BOLD));
             for (var chunkEntry : levelEntry.getValue().long2ObjectEntrySet()) {
-                var chunkPos = new ChunkPos(chunkEntry.getLongKey());
-                var line = Component.literal(chunkPos.x + "," + chunkPos.z + ": ")
+                var chunkPos = ChunkPos.unpack(chunkEntry.getLongKey());
+                var line = Component.literal(chunkPos.x() + "," + chunkPos.z() + ": ")
                         .withStyle(ChatFormatting.BOLD)
                         .append(Integer.toString(chunkEntry.getValue().size()));
                 result.add(line);

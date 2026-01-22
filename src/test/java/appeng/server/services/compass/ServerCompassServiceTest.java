@@ -46,10 +46,10 @@ class ServerCompassServiceTest {
 
         var region1 = CompassRegion.get(level, cp1);
         var region2 = CompassRegion.get(level, cp2);
-        region1.setHasCompassTarget(cp1.x, cp1.z, 0, true);
-        assertTrue(region1.hasCompassTarget(cp1.x, cp1.z, 0));
-        assertFalse(region2.hasCompassTarget(cp2.x, cp2.z, 0));
-        region2.setHasCompassTarget(cp2.x, cp2.z, 0, true);
+        region1.setHasCompassTarget(cp1.x(), cp1.z(), 0, true);
+        assertTrue(region1.hasCompassTarget(cp1.x(), cp1.z(), 0));
+        assertFalse(region2.hasCompassTarget(cp2.x(), cp2.z(), 0));
+        region2.setHasCompassTarget(cp2.x(), cp2.z(), 0, true);
     }
 
 }
