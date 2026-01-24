@@ -128,7 +128,7 @@ public final class AE2ModelProvider extends ModelProvider implements IAE2DataPro
         }
 
         private boolean isCable(IPartItem<?> partItem) {
-            return partItem.createPart() instanceof ICablePart;
+            return ICablePart.class.isAssignableFrom(partItem.getPartClass());
         }
 
         public CompletableFuture<?> save(CachedOutput output, PackOutput.PathProvider pathProvider) {

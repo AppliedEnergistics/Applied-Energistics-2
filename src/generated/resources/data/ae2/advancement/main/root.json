@@ -18,7 +18,6 @@
       "translate": "achievement.ae2.Root.desc"
     },
     "icon": {
-      "count": 1,
       "id": "ae2:certus_quartz_crystal"
     },
     "show_toast": false,

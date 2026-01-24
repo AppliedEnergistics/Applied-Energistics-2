@@ -1,6 +1,5 @@
 {
   "gives": {
-    "count": 1,
     "id": "minecraft:slime_ball"
   },
   "max_uses": 5.0,

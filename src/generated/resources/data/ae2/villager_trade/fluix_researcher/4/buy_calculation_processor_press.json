@@ -1,6 +1,5 @@
 {
   "gives": {
-    "count": 1,
     "id": "ae2:calculation_processor_press"
   },
   "max_uses": 1.0,

@@ -2,7 +2,6 @@
   "type": "ae2:charger",
   "ingredient": "ae2:certus_quartz_crystal",
   "result": {
-    "count": 1,
     "id": "ae2:charged_certus_quartz_crystal"
   }
 }

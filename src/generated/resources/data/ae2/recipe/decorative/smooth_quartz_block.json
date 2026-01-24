@@ -5,7 +5,6 @@
   "experience": 0.1,
   "ingredient": "ae2:cut_quartz_block",
   "result": {
-    "count": 1,
     "id": "ae2:smooth_quartz_block"
   }
 }
