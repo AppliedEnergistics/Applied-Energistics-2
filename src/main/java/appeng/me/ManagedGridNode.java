@@ -189,6 +189,11 @@ public class ManagedGridNode implements IManagedGridNode {
     public void saveToNBT(CompoundTag tag) {
         if (this.node != null) {
             this.node.saveToNBT(this.tagName, tag);
+        } else if (this.initData != null && this.initData.data != null) {
+            // Node not created yet, preserve initData
+            if (this.initData.data.contains(this.tagName)) {
+                tag.put(this.tagName, this.initData.data.getCompound(this.tagName));
+            }
         }
     }
 
