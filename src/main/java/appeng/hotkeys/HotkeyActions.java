@@ -1,5 +1,6 @@
 package appeng.hotkeys;
 
+import static appeng.api.features.HotkeyAction.HIGHLIGHT_STACKS;
 import static appeng.api.features.HotkeyAction.PORTABLE_FLUID_CELL;
 import static appeng.api.features.HotkeyAction.PORTABLE_ITEM_CELL;
 import static appeng.api.features.HotkeyAction.WIRELESS_TERMINAL;
@@ -42,6 +43,8 @@ public class HotkeyActions {
         registerPortableCell(AEItems.PORTABLE_FLUID_CELL16K, PORTABLE_FLUID_CELL);
         registerPortableCell(AEItems.PORTABLE_FLUID_CELL64K, PORTABLE_FLUID_CELL);
         registerPortableCell(AEItems.PORTABLE_FLUID_CELL256K, PORTABLE_FLUID_CELL);
+
+        register(new HighlightHotkeyAction(), HIGHLIGHT_STACKS);
     }
 
     /**

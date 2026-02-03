@@ -69,19 +69,23 @@ import appeng.api.storage.cells.IBasicCellItem;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 import appeng.client.gui.me.common.MEStorageScreen;
+import appeng.client.render.BlockHighlightHandler;
 import appeng.core.AELog;
 import appeng.core.sync.network.NetworkHandler;
+import appeng.core.sync.packets.BlockHighlightPacket;
 import appeng.core.sync.packets.ConfigValuePacket;
 import appeng.core.sync.packets.MEInteractionPacket;
 import appeng.core.sync.packets.MEInventoryUpdatePacket;
 import appeng.helpers.InventoryAction;
 import appeng.me.helpers.ChannelPowerSrc;
+import appeng.me.service.StorageService;
 import appeng.menu.AEBaseMenu;
 import appeng.menu.PatternBoxMenu;
 import appeng.menu.SlotSemantics;
 import appeng.menu.ToolboxMenu;
 import appeng.menu.guisync.GuiSync;
 import appeng.menu.implementations.MenuTypeBuilder;
+import appeng.menu.interfaces.IHighlightableMenu;
 import appeng.menu.me.crafting.CraftAmountMenu;
 import appeng.menu.slot.AppEngSlot;
 import appeng.menu.slot.RestrictedInputSlot;
@@ -93,7 +97,7 @@ import appeng.util.Platform;
  * @see MEStorageScreen
  */
 public class MEStorageMenu extends AEBaseMenu
-        implements IConfigManagerListener, IConfigurableObject, IMEInteractionHandler {
+        implements IConfigManagerListener, IConfigurableObject, IMEInteractionHandler, IHighlightableMenu {
 
     public static final MenuType<MEStorageMenu> TYPE = MenuTypeBuilder
             .<MEStorageMenu, ITerminalHost>create(MEStorageMenu::new, ITerminalHost.class)
@@ -759,5 +763,34 @@ public class MEStorageMenu extends AEBaseMenu
 
     public ITerminalHost getHost() {
         return host;
+    }
+
+    @Override
+    public void highlight(AEKey what) {
+        if (!canInteractWithGrid()) {
+            return;
+        }
+        if (what == null) {
+            return;
+        }
+        if (networkNode == null) {
+            return;
+        }
+        var grid = networkNode.getGrid();
+        if (grid == null) {
+            return;
+        }
+        var storageService = grid.getStorageService();
+        if (!(storageService instanceof StorageService service)) {
+            return;
+        }
+        var positions = service.getStorageLocations(what);
+        var level = networkNode.getLevel();
+        var dim = level.dimension();
+        for (var pos : positions) {
+            var packet = new BlockHighlightPacket(pos, dim,
+                    BlockHighlightHandler.getTime(pos, this.getPlayer().getOnPos()));
+            sendPacketToClient(packet);
+        }
     }
 }

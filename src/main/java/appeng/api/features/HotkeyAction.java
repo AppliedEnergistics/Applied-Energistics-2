@@ -21,6 +21,8 @@ public interface HotkeyAction {
     String PORTABLE_ITEM_CELL = "portable_item_cell";
     String PORTABLE_FLUID_CELL = "portable_fluid_cell";
 
+    String HIGHLIGHT_STACKS = "highlight_stacks";
+
     /**
      * register a new {@link HotkeyAction} under an id
      * <p/>

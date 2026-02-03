@@ -15,7 +15,7 @@ import appeng.api.stacks.AEKey;
 import appeng.client.render.BlockHighlightHandler;
 import appeng.core.localization.PlayerMessages;
 import appeng.core.sync.BasePacket;
-import appeng.menu.me.crafting.CraftingCPUMenu;
+import appeng.menu.interfaces.IHighlightableMenu;
 
 public class BlockHighlightPacket extends BasePacket {
     private final BlockPos pos;
@@ -68,8 +68,8 @@ public class BlockHighlightPacket extends BasePacket {
         @Override
         public void serverPacketData(ServerPlayer player) {
             var menu = player.containerMenu;
-            if (menu instanceof CraftingCPUMenu cpuMenu) {
-                cpuMenu.highlight(what);
+            if (menu instanceof IHighlightableMenu highlightableMenu) {
+                highlightableMenu.highlight(what);
             }
         }
     }

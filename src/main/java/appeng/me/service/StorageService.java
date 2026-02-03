@@ -30,8 +30,12 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.SetMultimap;
 
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
@@ -48,8 +52,10 @@ import appeng.api.storage.MEStorage;
 import appeng.me.helpers.InterestManager;
 import appeng.me.helpers.StackWatcher;
 import appeng.me.storage.NetworkStorage;
+import appeng.parts.AEBasePart;
 
 public class StorageService implements IStorageService, IGridServiceProvider {
+    private static final Logger LOGGER = LoggerFactory.getLogger(StorageService.class);
 
     /**
      * Tracks the storage service's state for each grid node that provides storage to the network.
@@ -287,5 +293,39 @@ public class StorageService implements IStorageService, IGridServiceProvider {
         private void unmount(MEStorage inventory) {
             storage.unmount(inventory);
         }
+    }
+
+    /**
+     * Returns the in-world block positions where the given key is stored (drives, storage buses). Used for highlighting
+     * storage locations in the terminal UI.
+     */
+    public Set<BlockPos> getStorageLocations(AEKey key) {
+        Set<BlockPos> locations = new HashSet<>();
+        var counter = new KeyCounter();
+        for (var entry : nodeProviders.entrySet()) {
+            var node = entry.getKey();
+            var state = entry.getValue();
+            var owner = node.getOwner();
+            BlockPos pos = null;
+            if (owner instanceof BlockEntity be) {
+                pos = be.getBlockPos();
+            } else if (owner instanceof AEBasePart part) {
+                pos = part.getBlockEntity().getBlockPos();
+            } else {
+                LOGGER.warn("Could not get position for owner {} on node {}, please report this issue.", owner, node);
+            }
+            if (pos == null) {
+                continue;
+            }
+            for (var inv : state.inventories) {
+                counter.clear();
+                inv.getAvailableStacks(counter);
+                if (counter.get(key) > 0) {
+                    locations.add(pos);
+                    break;
+                }
+            }
+        }
+        return locations;
     }
 }

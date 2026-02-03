@@ -46,12 +46,13 @@ import appeng.me.service.CraftingService;
 import appeng.menu.AEBaseMenu;
 import appeng.menu.guisync.GuiSync;
 import appeng.menu.implementations.MenuTypeBuilder;
+import appeng.menu.interfaces.IHighlightableMenu;
 import appeng.menu.me.common.IncrementalUpdateHelper;
 
 /**
  * @see appeng.client.gui.me.crafting.CraftingCPUScreen
  */
-public class CraftingCPUMenu extends AEBaseMenu {
+public class CraftingCPUMenu extends AEBaseMenu implements IHighlightableMenu {
 
     private static final String ACTION_CANCEL_CRAFTING = "cancelCrafting";
     private static final String ACTION_TOGGLE_SCHEDULING = "toggleScheduling";
@@ -192,6 +193,7 @@ public class CraftingCPUMenu extends AEBaseMenu {
         return this.grid;
     }
 
+    @Override
     public void highlight(AEKey what) {
         if (isServerSide() && grid != null) {
             CraftingService service = (CraftingService) grid.getCraftingService();

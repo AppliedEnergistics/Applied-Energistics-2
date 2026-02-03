@@ -48,6 +48,7 @@ import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
 import appeng.api.config.TypeFilter;
 import appeng.api.config.ViewItems;
+import appeng.api.features.HotkeyAction;
 import appeng.api.ids.AETags;
 import appeng.api.implementations.blockentities.IMEChest;
 import appeng.api.stacks.AEItemKey;
@@ -78,6 +79,7 @@ import appeng.core.localization.ButtonToolTips;
 import appeng.core.localization.GuiText;
 import appeng.core.localization.Tooltips;
 import appeng.core.sync.network.NetworkHandler;
+import appeng.core.sync.packets.BlockHighlightPacket;
 import appeng.core.sync.packets.ConfigValuePacket;
 import appeng.core.sync.packets.MEInteractionPacket;
 import appeng.core.sync.packets.SwitchGuisPacket;
@@ -712,6 +714,19 @@ public class MEStorageScreen<C extends MEStorageMenu>
         if (!this.searchField.isFocused() && isCloseHotkey(keyCode, scanCode)) {
             this.getPlayer().closeContainer();
             return true;
+        }
+
+        var hotKey = Hotkeys.getHotkeyMapping(HotkeyAction.HIGHLIGHT_STACKS);
+        if (hotKey != null && hotKey.mapping().matches(keyCode, scanCode)) {
+            if (this.hoveredSlot instanceof RepoSlot repoSlot) {
+                var entry = repoSlot.getEntry();
+                if (entry != null && entry.getStoredAmount() > 0) {
+                    hotKey.mapping().consumeClick();
+                    var packet = new BlockHighlightPacket.HighlightWhat(entry.getWhat());
+                    NetworkHandler.instance().sendToServer(packet);
+                    return true;
+                }
+            }
         }
 
         return super.keyPressed(keyCode, scanCode, p_keyPressed_3_);
