@@ -18,6 +18,8 @@
 
 package appeng.client.gui.me.crafting;
 
+import java.util.ArrayList;
+
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
@@ -29,11 +31,14 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
 import appeng.api.config.ActionItems;
+import appeng.api.config.Settings;
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.StackWithBounds;
 import appeng.client.gui.style.ScreenStyle;
+import appeng.client.gui.style.TerminalStyle;
 import appeng.client.gui.widgets.ActionButton;
 import appeng.client.gui.widgets.Scrollbar;
+import appeng.client.gui.widgets.SettingToggleButton;
 import appeng.core.AEConfig;
 import appeng.core.localization.GuiText;
 import appeng.helpers.CraftExporter;
@@ -47,18 +52,29 @@ import appeng.util.NumberUtil;
  */
 public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmMenu> {
 
-    private final CraftConfirmTableRenderer table;
+    private CraftConfirmTableRenderer table;
 
     private final Button start, startWithFollow;
     private final Button selectCPU;
     private final Scrollbar scrollbar;
     private final boolean isNotifyForFinishedCraftingJobs;
 
+    private SettingToggleButton<appeng.api.config.TerminalStyle> terminalStyleButton;
+
+    private TerminalStyle terminalStyle;
+    private int rows = 0;
+
     public CraftConfirmScreen(CraftConfirmMenu menu, Inventory playerInventory, Component title,
             ScreenStyle style) {
         super(menu, playerInventory, title, style);
         this.isNotifyForFinishedCraftingJobs = AEConfig.instance().isNotifyForFinishedCraftingJobs();
-        this.table = new CraftConfirmTableRenderer(this, 9, 19);
+        this.terminalStyle = style.getTerminalStyle();
+        if (this.terminalStyle == null) {
+            this.table = new CraftConfirmTableRenderer(this, 9, 19);
+        } else {
+            this.imageWidth = this.terminalStyle.getScreenWidth();
+            this.imageHeight = this.terminalStyle.getScreenHeight(0);
+        }
 
         this.scrollbar = widgets.addScrollBar("scrollbar");
 
@@ -76,6 +92,30 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmMenu> {
         this.addToLeftToolbar(new ActionButton(ActionItems.EXPORT_CRAFT, this::exportCraft));
 
         widgets.addButton("cancel", GuiText.Cancel.text(), menu::goBack);
+
+        if (this.terminalStyle != null) {
+            var currentStyle = AEConfig.instance().getTerminalStyle();
+            this.terminalStyleButton = new SettingToggleButton<>(Settings.TERMINAL_STYLE, currentStyle,
+                    this::toggleTerminalStyle);
+            this.addToLeftToolbar(this.terminalStyleButton);
+        }
+    }
+
+    @Override
+    protected void init() {
+        if (this.terminalStyle != null) {
+            var availableHeight = height - 2 * AEConfig.instance().getTerminalMargin();
+            this.rows = Math.max(2, AEConfig.instance().getTerminalStyle()
+                    .getRows(this.terminalStyle.getPossibleRows(availableHeight)));
+
+            this.imageHeight = this.terminalStyle.getScreenHeight(this.rows);
+            this.table = new CraftConfirmTableRenderer(this, 9, 19, this.rows);
+
+            if (this.scrollbar != null) {
+                this.scrollbar.setHeight(this.rows * this.terminalStyle.getRow().getSrcHeight() - 1);
+            }
+        }
+        super.init();
     }
 
     @Override
@@ -120,7 +160,12 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmMenu> {
         setTextContent("cpu_status", cpuDetails);
 
         final int size = plan != null ? plan.getEntries().size() : 0;
-        scrollbar.setRange(0, this.table.getScrollableRows(size), 1);
+        if (this.table != null) {
+            scrollbar.setRange(0, Math.max(0, this.table.getScrollableRows(size)), 1);
+        }
+        if (this.terminalStyleButton != null) {
+            this.terminalStyleButton.set(AEConfig.instance().getTerminalStyle());
+        }
     }
 
     private Component getNextCpuButtonLabel() {
@@ -143,18 +188,47 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmMenu> {
             int mouseY) {
 
         CraftingPlanSummary plan = menu.getPlan();
-        if (plan != null) {
+        if (plan != null && this.table != null) {
             this.table.render(guiGraphics, mouseX, mouseY, plan.getEntries(), scrollbar.getCurrentScroll());
         }
 
     }
 
+    @Override
+    public void drawBG(GuiGraphics guiGraphics, int offsetX, int offsetY, int mouseX, int mouseY, float partialTicks) {
+        if (this.terminalStyle == null) {
+            super.drawBG(guiGraphics, offsetX, offsetY, mouseX, mouseY, partialTicks);
+            return;
+        }
+
+        terminalStyle.getHeader()
+                .dest(offsetX, offsetY)
+                .blit(guiGraphics);
+
+        int y = offsetY + terminalStyle.getHeader().getSrcHeight();
+
+        int rowsToDraw = Math.max(2, this.rows);
+        for (int i = 0; i < rowsToDraw; i++) {
+            var blitter = terminalStyle.getRow();
+            if (i == 0) {
+                blitter = terminalStyle.getFirstRow();
+            } else if (i + 1 == rowsToDraw) {
+                blitter = terminalStyle.getLastRow();
+            }
+            blitter.dest(offsetX, y).blit(guiGraphics);
+            y += terminalStyle.getRow().getSrcHeight();
+        }
+        terminalStyle.getBottom().dest(offsetX, y - 1).blit(guiGraphics);
+    }
+
     @org.jetbrains.annotations.Nullable
     @Override
     public StackWithBounds getStackUnderMouse(double mouseX, double mouseY) {
-        var hovered = table.getHoveredStack();
-        if (hovered != null) {
-            return hovered;
+        if (this.table != null) {
+            var hovered = table.getHoveredStack();
+            if (hovered != null) {
+                return hovered;
+            }
         }
         return super.getStackUnderMouse(mouseX, mouseY);
     }
@@ -200,5 +274,13 @@ public class CraftConfirmScreen extends AEBaseScreen<CraftConfirmMenu> {
         }
         exportObject.add("getEntries", entryArray);
         CraftExporter.exportCraft(exportObject, getPlayer(), CraftExporter.ExportType.CRAFTING_PLAN);
+    }
+
+    private void toggleTerminalStyle(SettingToggleButton<appeng.api.config.TerminalStyle> btn, boolean backwards) {
+        var next = btn.getNextValue(backwards);
+        AEConfig.instance().setTerminalStyle(next);
+        btn.set(next);
+        new ArrayList<>(this.children()).forEach(this::removeWidget);
+        this.init();
     }
 }

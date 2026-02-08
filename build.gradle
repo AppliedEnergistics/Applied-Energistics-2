@@ -322,6 +322,7 @@ legacyForge {
         }
         client {
             client()
+            jvmArguments.add("-XX:+AllowEnhancedClassRedefinition")
         }
         gametestWorld {
             client()

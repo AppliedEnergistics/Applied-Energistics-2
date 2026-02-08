@@ -43,10 +43,12 @@ import appeng.api.config.Settings;
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.StackWithBounds;
 import appeng.client.gui.style.ScreenStyle;
+import appeng.client.gui.style.TerminalStyle;
 import appeng.client.gui.widgets.ActionButton;
 import appeng.client.gui.widgets.Scrollbar;
 import appeng.client.gui.widgets.ServerSettingToggleButton;
 import appeng.client.gui.widgets.SettingToggleButton;
+import appeng.core.AEConfig;
 import appeng.core.localization.GuiText;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.BlockHighlightPacket;
@@ -59,8 +61,9 @@ import appeng.menu.me.crafting.CraftingStatusEntry;
  * This screen shows the current crafting job that a crafting CPU is working on (if any).
  */
 public class CraftingCPUScreen<T extends CraftingCPUMenu> extends AEBaseScreen<T> {
+    private static final int MIN_ROWS = 2;
 
-    private final CraftingStatusTableRenderer table;
+    private CraftingStatusTableRenderer table;
 
     private final Button cancel, suspend;
 
@@ -72,10 +75,21 @@ public class CraftingCPUScreen<T extends CraftingCPUMenu> extends AEBaseScreen<T
 
     private CraftingStatus status;
 
+    private SettingToggleButton<appeng.api.config.TerminalStyle> terminalStyleButton;
+    private final TerminalStyle terminalStyle;
+    private int rows = 0;
+
     public CraftingCPUScreen(T menu, Inventory playerInventory, Component title, ScreenStyle style) {
         super(menu, playerInventory, title, style);
 
-        this.table = new CraftingStatusTableRenderer(this, 9, 19);
+        this.terminalStyle = style.getTerminalStyle();
+        if (this.terminalStyle == null) {
+            // Fallback
+            this.table = new CraftingStatusTableRenderer(this, 9, 19);
+        } else {
+            this.imageWidth = this.terminalStyle.getScreenWidth();
+            this.imageHeight = this.terminalStyle.getScreenHeight(0);
+        }
 
         this.scrollbar = widgets.addScrollBar("scrollbar");
 
@@ -90,6 +104,30 @@ public class CraftingCPUScreen<T extends CraftingCPUMenu> extends AEBaseScreen<T
         if (menu.allowConfiguration()) {
             this.addToLeftToolbar(this.schedulingModeButton);
         }
+        if (this.terminalStyle != null) {
+            var currentStyle = AEConfig.instance().getTerminalStyle();
+            this.terminalStyleButton = new SettingToggleButton<>(Settings.TERMINAL_STYLE, currentStyle,
+                    this::toggleTerminalStyle);
+            this.addToLeftToolbar(this.terminalStyleButton);
+        }
+    }
+
+    @Override
+    protected void init() {
+        if (this.terminalStyle != null) {
+            var availableHeight = height - 2 * AEConfig.instance().getTerminalMargin();
+            this.rows = Math.max(MIN_ROWS, AEConfig.instance().getTerminalStyle()
+                    .getRows(this.terminalStyle.getPossibleRows(availableHeight)));
+
+            this.imageHeight = this.terminalStyle.getScreenHeight(this.rows);
+            this.table = new CraftingStatusTableRenderer(this, 9, 19, this.rows);
+
+            if (this.scrollbar != null) {
+                this.scrollbar.setHeight(this.rows * this.terminalStyle.getRow().getSrcHeight() - 1);
+            }
+        }
+
+        super.init();
     }
 
     @Override
@@ -119,11 +157,17 @@ public class CraftingCPUScreen<T extends CraftingCPUMenu> extends AEBaseScreen<T
         setTextContent(TEXT_ID_DIALOG_TITLE, title);
 
         final int size = this.status != null ? this.status.getEntries().size() : 0;
-        scrollbar.setRange(0, this.table.getScrollableRows(size), 1);
+        if (this.table != null) {
+            scrollbar.setRange(0, Math.max(0, this.table.getScrollableRows(size)), 1);
+        }
 
         this.schedulingModeButton.set(this.menu.getSchedulingMode());
 
         this.exportCraft.visible = !getVisualEntries().isEmpty();
+
+        if (this.terminalStyleButton != null) {
+            this.terminalStyleButton.set(AEConfig.instance().getTerminalStyle());
+        }
     }
 
     private List<CraftingStatusEntry> getVisualEntries() {
@@ -145,6 +189,34 @@ public class CraftingCPUScreen<T extends CraftingCPUMenu> extends AEBaseScreen<T
         if (status != null) {
             this.table.render(guiGraphics, mouseX, mouseY, status.getEntries(), scrollbar.getCurrentScroll());
         }
+    }
+
+    @Override
+    public void drawBG(GuiGraphics guiGraphics, int offsetX, int offsetY, int mouseX, int mouseY, float partialTicks) {
+        if (this.terminalStyle == null) {
+            super.drawBG(guiGraphics, offsetX, offsetY, mouseX, mouseY, partialTicks);
+            return;
+        }
+
+        terminalStyle.getHeader()
+                .dest(offsetX, offsetY)
+                .blit(guiGraphics);
+
+        int y = offsetY + terminalStyle.getHeader().getSrcHeight();
+
+        int rowsToDraw = Math.max(2, this.rows);
+        for (int i = 0; i < rowsToDraw; i++) {
+            var blitter = terminalStyle.getRow();
+            if (i == 0) {
+                blitter = terminalStyle.getFirstRow();
+            } else if (i + 1 == rowsToDraw) {
+                blitter = terminalStyle.getLastRow();
+            }
+            blitter.dest(offsetX, y).blit(guiGraphics);
+            y += terminalStyle.getRow().getSrcHeight();
+        }
+
+        terminalStyle.getBottom().dest(offsetX, y - 1).blit(guiGraphics);
     }
 
     @org.jetbrains.annotations.Nullable
@@ -230,5 +302,21 @@ public class CraftingCPUScreen<T extends CraftingCPUMenu> extends AEBaseScreen<T
         }
         exportObject.add("entries", entryArray);
         CraftExporter.exportCraft(exportObject, getPlayer(), CraftExporter.ExportType.CRAFTING_STATUS);
+    }
+
+    private void toggleTerminalStyle(SettingToggleButton<appeng.api.config.TerminalStyle> button, boolean backwards) {
+        var next = button.getNextValue(backwards);
+        AEConfig.instance().setTerminalStyle(next);
+        button.set(next);
+        new ArrayList<>(this.children()).forEach(this::removeWidget);
+        this.init();
+    }
+
+    protected int getVisibleRows() {
+        return (terminalStyle != null && rows > 0) ? rows : 0;
+    }
+
+    protected TerminalStyle getTerminalStyle() {
+        return terminalStyle;
     }
 }

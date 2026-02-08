@@ -5,6 +5,29 @@
     "texture": "guis/craftingcpu.png",
     "srcRect": [0, 0, 238, 184]
   },
+  "terminalStyle": {
+    "slotsPerRow": 3,
+    "header": {
+      "texture": "guis/craftingcpu.png",
+      "srcRect": [0, 0, 238, 19]
+    },
+    "firstRow": {
+      "texture": "guis/craftingcpu.png",
+      "srcRect": [0, 19, 238, 23]
+    },
+    "row": {
+      "texture": "guis/craftingcpu.png",
+      "srcRect": [0, 42, 238, 23]
+    },
+    "lastRow": {
+      "texture": "guis/craftingcpu.png",
+      "srcRect": [0, 65, 238, 22]
+    },
+    "bottom": {
+      "texture": "guis/craftingcpu.png",
+      "srcRect": [0, 156, 238, 28]
+    }
+  },
   "text": {
     "dialog_title": {
       "position": {

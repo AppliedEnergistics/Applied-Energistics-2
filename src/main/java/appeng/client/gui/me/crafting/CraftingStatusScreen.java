@@ -24,6 +24,7 @@ import net.minecraft.world.entity.player.Inventory;
 import appeng.client.gui.implementations.AESubScreen;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.CPUSelectionList;
+import appeng.client.gui.widgets.Scrollbar;
 import appeng.menu.me.crafting.CraftingStatusMenu;
 
 /**
@@ -32,6 +33,9 @@ import appeng.menu.me.crafting.CraftingStatusMenu;
  */
 public class CraftingStatusScreen extends CraftingCPUScreen<CraftingStatusMenu> {
 
+    private final CPUSelectionList cpuList;
+    private final Scrollbar scrollbar;
+
     public CraftingStatusScreen(CraftingStatusMenu menu,
             Inventory playerInventory,
             Component title, ScreenStyle style) {
@@ -39,8 +43,24 @@ public class CraftingStatusScreen extends CraftingCPUScreen<CraftingStatusMenu> 
 
         AESubScreen.addBackButton(menu, "back", widgets);
 
-        var scrollbar = widgets.addScrollBar("selectCpuScrollbar");
-        widgets.add("selectCpuList", new CPUSelectionList(menu, scrollbar, style));
+        this.scrollbar = widgets.addScrollBar("selectCpuScrollbar");
+
+        this.cpuList = new CPUSelectionList(menu, scrollbar, style);
+        widgets.add("selectCpuList", this.cpuList);
+    }
+
+    @Override
+    protected void init() {
+        super.init();
+
+        var terminalStyle = getTerminalStyle();
+        if (terminalStyle != null) {
+            var visibleRows = getVisibleRows();
+            var listHeight = imageHeight - 8;
+            cpuList.setVisibleRows(visibleRows);
+            cpuList.setSize(cpuList.getBounds().getWidth(), listHeight);
+            scrollbar.setHeight(visibleRows * terminalStyle.getRow().getSrcHeight() - 1);
+        }
     }
 
     @Override

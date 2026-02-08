@@ -33,8 +33,14 @@ import appeng.util.NumberUtil;
 
 public class CraftConfirmTableRenderer extends AbstractTableRenderer<CraftingPlanSummaryEntry> {
 
+    private static final int DEFAULT_ROWS = 5;
+
     public CraftConfirmTableRenderer(AEBaseScreen<?> screen, int x, int y) {
-        super(screen, x, y, 5);
+        super(screen, x, y, DEFAULT_ROWS);
+    }
+
+    public CraftConfirmTableRenderer(AEBaseScreen<?> screen, int x, int y, int rows) {
+        super(screen, x, y, rows);
     }
 
     @Override

@@ -36,9 +36,14 @@ import appeng.menu.me.crafting.CraftingStatusEntry;
 public class CraftingStatusTableRenderer extends AbstractTableRenderer<CraftingStatusEntry> {
 
     private static final int BACKGROUND_ALPHA = 0x5A000000;
+    private static final int DEFAULT_ROWS = 6;
 
     public CraftingStatusTableRenderer(AEBaseScreen<?> screen, int x, int y) {
-        super(screen, x, y, 6);
+        super(screen, x, y, DEFAULT_ROWS);
+    }
+
+    public CraftingStatusTableRenderer(AEBaseScreen<?> screen, int x, int y, int rows) {
+        super(screen, x, y, rows);
     }
 
     @Override

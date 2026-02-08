@@ -38,6 +38,13 @@ public class CPUSelectionList implements ICompositeWidget {
     private final Color textColor;
     private final int selectedColor;
     private final Scrollbar scrollbar;
+    private int visibleRows = ROWS;
+
+    private final Blitter header;
+    private final Blitter firstRow;
+    private final Blitter row;
+    private final Blitter lastRow;
+    private final Blitter bottom;
 
     // Relative to the origin of the current screen (not window)
     private Rect2i bounds = new Rect2i(0, 0, 0, 0);
@@ -50,6 +57,13 @@ public class CPUSelectionList implements ICompositeWidget {
         this.textColor = style.getColor(PaletteColor.DEFAULT_TEXT_COLOR);
         this.selectedColor = style.getColor(PaletteColor.SELECTION_COLOR).toARGB();
         this.scrollbar.setCaptureMouseWheel(false);
+
+        var width = background.getSrcWidth();
+        this.header = background.copy().src(0, 0, width, 19);
+        this.firstRow = background.copy().src(0, 19, width, 23);
+        this.row = background.copy().src(0, 42, width, 23);
+        this.lastRow = background.copy().src(0, 65, width, 22);
+        this.bottom = background.copy().src(0, 156, width, 8);
     }
 
     @Override
@@ -164,19 +178,19 @@ public class CPUSelectionList implements ICompositeWidget {
 
     @Override
     public void updateBeforeRender() {
-        var hiddenRows = Math.max(0, menu.cpuList.cpus().size() - ROWS);
-        scrollbar.setRange(0, hiddenRows, ROWS / 3);
+        var hiddenRows = Math.max(0, menu.cpuList.cpus().size() - visibleRows);
+        scrollbar.setRange(0, hiddenRows, Math.max(1, visibleRows / 3));
     }
 
     @Override
     public void drawBackgroundLayer(GuiGraphics guiGraphics, Rect2i bounds, Point mouse) {
         var x = bounds.getX() + this.bounds.getX();
         var y = bounds.getY() + this.bounds.getY();
-        background.dest(
-                x,
-                y,
-                this.bounds.getWidth(),
-                this.bounds.getHeight()).blit(guiGraphics);
+
+        header.dest(x, y, header.getSrcWidth(), header.getSrcHeight()).blit(guiGraphics);
+        /*
+         * background.dest( x, y, this.bounds.getWidth(), this.bounds.getHeight()).blit(guiGraphics);
+         */
 
         // Move to first button
         x += 9;
@@ -187,12 +201,21 @@ public class CPUSelectionList implements ICompositeWidget {
         var font = Minecraft.getInstance().font;
         var cpus = menu.cpuList.cpus().subList(
                 Mth.clamp(scrollbar.getCurrentScroll(), 0, menu.cpuList.cpus().size()),
-                Mth.clamp(scrollbar.getCurrentScroll() + ROWS, 0, menu.cpuList.cpus().size()));
+                Mth.clamp(scrollbar.getCurrentScroll() + visibleRows, 0, menu.cpuList.cpus().size()));
+        int index = 0;
         for (var cpu : cpus) {
             int color = -1;
             if (cpu.serial() == menu.getSelectedCpuSerial()) {
                 color = selectedColor;
             }
+            var blitter = row;
+            if (index == 0) {
+                blitter = firstRow;
+            } else if (index + 1 == visibleRows) {
+                blitter = lastRow;
+            }
+            blitter.dest(bounds.getX() + this.bounds.getX(), y).blit(guiGraphics);
+
             buttonBg.dest(x, y)
                     .colorRgb(color)
                     .blit(guiGraphics);
@@ -249,10 +272,27 @@ public class CPUSelectionList implements ICompositeWidget {
             infoBar.render(guiGraphics, x + 2, y + buttonBg.getSrcHeight() - 12);
 
             y += buttonBg.getSrcHeight() + 1;
+            index++;
         }
+
+        for (; index < visibleRows; index++) {
+            var blitter = row;
+            if (index == 0) {
+                blitter = firstRow;
+            } else if (index + 1 == visibleRows) {
+                blitter = lastRow;
+            }
+            blitter.dest(bounds.getX() + this.bounds.getX(), y).blit(guiGraphics);
+            y += buttonBg.getSrcHeight() + 1;
+        }
+        bottom.dest(bounds.getX() + this.bounds.getX(), y - 1).blit(guiGraphics);
     }
 
     private Component getCpuName(CraftingStatusMenu.CraftingCpuListEntry cpu) {
         return cpu.name() != null ? cpu.name() : GuiText.CPUs.text().append(String.format(" #%d", cpu.serial()));
+    }
+
+    public void setVisibleRows(int rows) {
+        this.visibleRows = Math.max(1, rows);
     }
 }
