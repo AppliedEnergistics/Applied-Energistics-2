@@ -26,13 +26,11 @@ import appeng.api.storage.cells.StorageCell;
 
 public class DriveWatcher extends MEInventoryHandler {
 
-    private CellState oldStatus = CellState.EMPTY;
     private final Runnable activityCallback;
 
     public DriveWatcher(StorageCell i, Runnable activityCallback) {
         super(i);
         this.activityCallback = activityCallback;
-        this.oldStatus = getStatus();
     }
 
     public CellState getStatus() {
@@ -48,12 +46,7 @@ public class DriveWatcher extends MEInventoryHandler {
         var inserted = super.insert(what, amount, mode, source);
 
         if (mode == Actionable.MODULATE && inserted > 0) {
-            var newStatus = this.getStatus();
-
-            if (newStatus != this.oldStatus) {
-                this.activityCallback.run();
-                this.oldStatus = newStatus;
-            }
+            this.activityCallback.run();
         }
 
         return inserted;
@@ -64,12 +57,7 @@ public class DriveWatcher extends MEInventoryHandler {
         var extracted = super.extract(what, amount, mode, source);
 
         if (mode == Actionable.MODULATE && extracted > 0) {
-            var newStatus = this.getStatus();
-
-            if (newStatus != this.oldStatus) {
-                this.activityCallback.run();
-                this.oldStatus = newStatus;
-            }
+            this.activityCallback.run();
         }
 
         return extracted;

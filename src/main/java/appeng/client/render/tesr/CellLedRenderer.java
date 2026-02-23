@@ -44,8 +44,11 @@ public class CellLedRenderer {
     // Color to use if the cell is present but unpowered
     private static final Vector3f UNPOWERED_COLOR = new Vector3f(0, 0, 0);
 
-    // Color used for the cell indicator for blinking during recent activity
-    private static final Vector3f BLINK_COLOR = new Vector3f(1, 0.5f, 0.5f);
+    // Idle brightness multiplier for non-full cells. Blinking pulses from this up to full brightness
+    private static final float DIM_FACTOR = 0.55f;
+
+    // Duration of one full cosine pulse in milliseconds
+    private static final long PULSE_MS = 200;
 
     static {
         STATE_COLORS = new EnumMap<>(CellState.class);
@@ -113,21 +116,22 @@ public class CellLedRenderer {
             return UNPOWERED_COLOR;
         }
 
-        Vector3f col = STATE_COLORS.get(state);
-        if (drive.isCellBlinking(slot)) {
-            // 200 ms interval (100ms to get to red, then 100ms back)
-            long t = System.currentTimeMillis() % 200;
-            float f = (t - 100) / 200.0f + 0.5f;
-            f = easeInOutCubic(f);
-            col = new Vector3f(col);
-            col.lerp(BLINK_COLOR, f);
+        Vector3f bright = STATE_COLORS.get(state);
+
+        // Full cells stay at full brightness permanently — they are a constant warning
+        if (state == CellState.FULL) {
+            return bright;
         }
 
-        return col;
-    }
+        // All other states idle at a dimmer shade and pulse to full brightness on activity
+        Vector3f dim = new Vector3f(bright).mul(DIM_FACTOR);
+        if (drive.isCellBlinking(slot)) {
+            float phase = (System.currentTimeMillis() % PULSE_MS) / (float) PULSE_MS;
+            float f = 0.5f - 0.5f * (float) Math.cos(phase * 2 * Math.PI);
+            dim.lerp(bright, f);
+        }
 
-    private static float easeInOutCubic(float x) {
-        return x < 0.5f ? 4 * x * x * x : 1 - (float) Math.pow(-2 * x + 2, 3) / 2;
+        return dim;
     }
 
     private CellLedRenderer() {
