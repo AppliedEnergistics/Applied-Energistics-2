@@ -123,6 +123,10 @@ public class MEChestBlockEntity extends AENetworkedPoweredBlockEntity
     private ChestMonitorHandler cellHandler;
     private IFluidHandler fluidHandler;
     private double idlePowerUsage;
+    // Server-side: wall-clock ms of the most recent cell activity
+    private long lastBlinkTime = Long.MIN_VALUE;
+    // Client-side: wall-clock ms when we last received a blink notification
+    private long clientBlinkTimestamp = Long.MIN_VALUE;
 
     public MEChestBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
         super(blockEntityType, pos, blockState);
@@ -289,7 +293,7 @@ public class MEChestBlockEntity extends AENetworkedPoweredBlockEntity
 
     @Override
     public boolean isCellBlinking(int slot) {
-        return false;
+        return System.currentTimeMillis() - clientBlinkTimestamp < 400;
     }
 
     @Override
@@ -337,6 +341,9 @@ public class MEChestBlockEntity extends AENetworkedPoweredBlockEntity
         // empty->non-empty, so when the cell is changed, it should re-send the state
         // because of that
         data.writeVarInt(Item.getId(getCell().getItem()));
+
+        // Blink flag: true if there was cell activity in the last 900ms
+        data.writeBoolean(System.currentTimeMillis() - lastBlinkTime < 900);
     }
 
     @Override
@@ -352,6 +359,11 @@ public class MEChestBlockEntity extends AENetworkedPoweredBlockEntity
         clientPowered = data.readBoolean();
         paintedColor = data.readEnum(AEColor.class);
         cellItem = Item.byId(data.readVarInt());
+
+        // If the server reported recent activity, stamp the local arrival time
+        if (data.readBoolean()) {
+            clientBlinkTimestamp = System.currentTimeMillis();
+        }
 
         return c
                 || oldCellState != clientCellState
@@ -520,7 +532,8 @@ public class MEChestBlockEntity extends AENetworkedPoweredBlockEntity
     }
 
     private void blinkCell(int slot) {
-        this.recalculateDisplay();
+        this.lastBlinkTime = System.currentTimeMillis();
+        this.markForUpdate();
     }
 
     @Override

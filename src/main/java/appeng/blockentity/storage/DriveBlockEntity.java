@@ -80,6 +80,12 @@ public class DriveBlockEntity extends AENetworkedInvBlockEntity
     private final Item[] clientSideCellItems = new Item[getCellCount()];
     private final CellState[] clientSideCellState = new CellState[getCellCount()];
     private boolean clientSideOnline;
+    // Server-side: wall-clock ms of the most recent activity per slot
+    private final long[] lastBlinkTime = new long[getCellCount()];
+    // Client-side: wall-clock ms when we last received a blink notification per slot
+    private final long[] clientBlinkTimestamp = new long[getCellCount()];
+    // Rate-limiter: last time a blink triggered markForUpdate (server-side)
+    private long lastBlinkMarkForUpdateTime = 0L;
 
     public DriveBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
         super(blockEntityType, pos, blockState);
@@ -115,6 +121,16 @@ public class DriveBlockEntity extends AENetworkedInvBlockEntity
         for (int i = 0; i < getCellCount(); i++) {
             data.writeVarInt(BuiltInRegistries.ITEM.getId(getCellItem(i)));
         }
+
+        // Write blink mask: one bit per slot, set if the slot had activity in the last 900ms
+        int blinkMask = 0;
+        long now = System.currentTimeMillis();
+        for (int i = 0; i < getCellCount(); i++) {
+            if (now - lastBlinkTime[i] < 900) {
+                blinkMask |= (1 << i);
+            }
+        }
+        data.writeShort(blinkMask);
     }
 
     @Override
@@ -165,6 +181,15 @@ public class DriveBlockEntity extends AENetworkedInvBlockEntity
             if (clientSideCellItems[i] != item) {
                 clientSideCellItems[i] = item;
                 changed = true;
+            }
+        }
+
+        // Read blink mask and stamp the local arrival time for any active slots
+        int blinkMask = data.readShort() & 0xFFFF;
+        long now = System.currentTimeMillis();
+        for (int i = 0; i < getCellCount(); i++) {
+            if ((blinkMask & (1 << i)) != 0) {
+                clientBlinkTimestamp[i] = now;
             }
         }
 
@@ -257,7 +282,7 @@ public class DriveBlockEntity extends AENetworkedInvBlockEntity
 
     @Override
     public boolean isCellBlinking(int slot) {
-        return false;
+        return System.currentTimeMillis() - clientBlinkTimestamp[slot] < 400;
     }
 
     @Override
@@ -410,7 +435,13 @@ public class DriveBlockEntity extends AENetworkedInvBlockEntity
     }
 
     private void blinkCell(int slot) {
-        this.updateVisualStateIfNeeded();
+        long now = System.currentTimeMillis();
+        lastBlinkTime[slot] = now;
+        // Rate-limit blink-triggered network updates to at most one per 100ms per drive
+        if (now - lastBlinkMarkForUpdateTime >= 100) {
+            lastBlinkMarkForUpdateTime = now;
+            this.markForUpdate();
+        }
     }
 
     /**
