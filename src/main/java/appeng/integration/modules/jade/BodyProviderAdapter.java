@@ -28,8 +28,8 @@ class BodyProviderAdapter<T extends BlockEntity> extends BaseProvider implements
 
     @Override
     public void appendTooltip(ITooltip tooltip, BlockAccessor accessor, IPluginConfig config) {
-        tooltip.remove(JadeIds.UNIVERSAL_ENERGY_STORAGE_DETAILED);
-        tooltip.remove(JadeIds.UNIVERSAL_FLUID_STORAGE_DETAILED);
+        tooltip.remove(JadeIds.UNIVERSAL_ENERGY_STORAGE);
+        tooltip.remove(JadeIds.UNIVERSAL_FLUID_STORAGE);
 
         var context = ContextHelper.getContext(accessor);
         var tooltipBuilder = new JadeTooltipBuilder(tooltip);
