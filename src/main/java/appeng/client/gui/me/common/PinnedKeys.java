@@ -18,8 +18,8 @@ import appeng.api.stacks.AEKey;
 
 @OnlyIn(Dist.CLIENT)
 public final class PinnedKeys {
-    // One rows worth of keys
-    public static final int MAX_PINNED = 9;
+    public static final int MAX_PINNED_ROWS = 2;
+    public static final int MAX_PINNED = 9 * MAX_PINNED_ROWS;
 
     // Compares by time the entry was pinned in ascending order
     private static final Comparator<Map.Entry<AEKey, PinInfo>> TIME_COMPARATOR = Comparator
@@ -59,6 +59,7 @@ public final class PinnedKeys {
         // Remove older keys if we exceed the max amount of pinned keys
         if (pinned.size() > MAX_PINNED) {
             var toRemove = new ArrayList<>(pinned.entrySet());
+            toRemove.removeIf(e -> e.getValue().reason == PinReason.MANUAL);
             toRemove.sort(TIME_COMPARATOR);
             for (var entry : toRemove.subList(0, MAX_PINNED - toRemove.size())) {
                 pinned.remove(entry.getKey());
@@ -93,6 +94,7 @@ public final class PinnedKeys {
     }
 
     public enum PinReason {
-        CRAFTING
+        CRAFTING,
+        MANUAL
     }
 }

@@ -323,9 +323,11 @@ public class MEStorageScreen<C extends MEStorageMenu>
     private void updateScrollbar() {
         scrollbar.setHeight(this.rows * style.getRow().getSrcHeight() - 2);
         int totalRows = (this.repo.size() + getSlotsPerRow() - 1) / getSlotsPerRow();
-        if (repo.hasPinnedRow()) {
+        if (repo.hasPinnedRowOther()) {
             totalRows++;
         }
+        // Add 1 for the manually pinned items row
+        totalRows++;
         scrollbar.setRange(0, totalRows - this.rows, Math.max(1, this.rows / 6));
     }
 
@@ -443,8 +445,8 @@ public class MEStorageScreen<C extends MEStorageMenu>
         this.currentMouseX = mouseX;
         this.currentMouseY = mouseY;
 
-        // Render the pinned row decorations
-        if (repo.hasPinnedRow()) {
+        // TODO: Also want decoration for manually pinned, or only other/crafting?
+        if (repo.hasPinnedRowOther()) {
             renderPinnedRowDecorations(guiGraphics);
         }
 
@@ -547,6 +549,26 @@ public class MEStorageScreen<C extends MEStorageMenu>
     @Override
     protected void slotClicked(Slot slot, int slotIdx, int mouseButton, ClickType clickType) {
         if (slot instanceof RepoSlot repoSlot) {
+
+            // TODO: move to appropriate place/method
+            int idx = repoSlot.getRepoViewIndex();
+            boolean insideManualPins = repo.hasPinnedRowOther()
+                    ? idx >= this.getSlotsPerRow() && idx < this.getSlotsPerRow() * 2
+                    : idx < this.getSlotsPerRow();
+
+            var carried = AEItemKey.of(menu.getCarried());
+            if (insideManualPins && clickType == ClickType.PICKUP) {
+                if (carried != null && mouseButton == 0 && repoSlot.getEntry() == null) {
+                    PinnedKeys.pinKey(carried, PinnedKeys.PinReason.MANUAL);
+                } else if (carried == null && repoSlot.getEntry() != null && mouseButton == 1) {
+                    PinnedKeys.unpin(repoSlot.getEntry().getWhat());
+                    repo.updateView();
+
+                    // Early return to not grab items
+                    return;
+                }
+            }
+
             handleGridInventoryEntryMouseClick(repoSlot.getEntry(), mouseButton, clickType);
             return;
         }
@@ -598,12 +620,17 @@ public class MEStorageScreen<C extends MEStorageMenu>
         style.getBottom().dest(offsetX, y).blit(guiGraphics);
 
         // Draw the overlay for the pinned row
-        if (repo.hasPinnedRow()) {
+        if (repo.hasPinnedRowOther()) {
             Blitter.texture("guis/terminal.png")
                     .src(0, 204, 162, 18)
                     .dest(offsetX + 7, offsetY + style.getHeader().getSrcHeight())
                     .blit(guiGraphics);
         }
+        int PinnedManualDestY = offsetY + style.getHeader().getSrcHeight() * (repo.hasPinnedRowOther() ? 2 : 1);
+        Blitter.texture("guis/terminal.png")
+                .src(0, 204, 162, 18)
+                .dest(offsetX + 7, PinnedManualDestY)
+                .blit(guiGraphics);
 
         if (this.searchField != null) {
             this.searchField.render(guiGraphics, mouseX, mouseY, partialTicks);
