@@ -54,6 +54,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.material.Fluid;
+import net.neoforged.api.distmarker.Dist;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.fml.util.thread.SidedThreadGroups;
@@ -142,8 +143,11 @@ public class Platform {
     }
 
     public static String formatPower(double p, boolean isRate) {
-        var displayUnits = AEConfig.instance().getSelectedEnergyUnit();
-        p = PowerUnit.AE.convertTo(displayUnits, p);
+        var displayUnits = PowerUnit.AE;
+        if (FMLEnvironment.dist == Dist.CLIENT) {
+            displayUnits = AEConfig.instance().getSelectedEnergyUnit();
+            p = PowerUnit.AE.convertTo(displayUnits, p);
+        }
 
         final String[] preFixes = { "k", "M", "G", "T", "P", "T", "P", "E", "Z", "Y" };
         var unitName = displayUnits.getSymbolName();
