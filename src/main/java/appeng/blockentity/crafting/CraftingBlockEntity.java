@@ -118,6 +118,17 @@ public class CraftingBlockEntity extends AENetworkedBlockEntity
 
     public void updateStatus(CraftingCPUCluster c) {
         if (this.cluster != null && this.cluster != c) {
+            // Persist the cluster's crafting state before releasing the reference.
+            // During chunk unload, onChunkUnloaded() → destroy() → updateStatus(null)
+            // runs BEFORE the chunk is saved to disk. If we null the cluster here,
+            // saveAdditional() will skip writing the inventory and in-progress crafting
+            // jobs are permanently lost. Saving to previousState ensures the data
+            // survives for the subsequent saveAdditional() call.
+            if (c == null && this.isCoreBlock()) {
+                var data = new net.minecraft.nbt.CompoundTag();
+                this.cluster.writeToNBT(data, this.level.registryAccess());
+                this.setPreviousState(data);
+            }
             this.cluster.breakCluster();
         }
 
@@ -173,8 +184,15 @@ public class CraftingBlockEntity extends AENetworkedBlockEntity
     public void saveAdditional(CompoundTag data, HolderLookup.Provider registries) {
         super.saveAdditional(data, registries);
         data.putBoolean("core", this.isCoreBlock());
-        if (this.isCoreBlock() && this.cluster != null) {
-            this.cluster.writeToNBT(data, registries);
+        if (this.isCoreBlock()) {
+            if (this.cluster != null) {
+                this.cluster.writeToNBT(data, registries);
+            } else if (this.previousState != null) {
+                // Cluster was destroyed (chunk unload / server shutdown) before save.
+                // Restore the snapshot taken in updateStatus() so the inventory and
+                // in-progress crafting job survive the round-trip.
+                data.merge(this.previousState);
+            }
         }
     }
 
