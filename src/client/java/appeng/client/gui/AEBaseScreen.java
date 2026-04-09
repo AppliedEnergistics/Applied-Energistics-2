@@ -809,8 +809,8 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
     }
 
     public void drawItem(GuiGraphicsExtractor guiGraphics, int x, int y, ItemStack is) {
-        guiGraphics.renderItem(is, x, y);
-        guiGraphics.renderItemDecorations(font, is, x, y);
+        guiGraphics.item(is, x, y);
+        guiGraphics.itemDecorations(font, is, x, y);
     }
 
     protected Component getGuiDisplayName(Component in) {

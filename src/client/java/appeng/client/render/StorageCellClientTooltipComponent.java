@@ -106,7 +106,7 @@ public class StorageCellClientTooltipComponent implements ClientTooltipComponent
         if (!upgrades.isEmpty()) {
             var xoff = font.width(upgradesLabel) + 2;
             for (ItemStack upgrade : upgrades) {
-                guiGraphics.renderItem(upgrade, x + xoff, y);
+                guiGraphics.item(upgrade, x + xoff, y);
                 xoff += 17;
             }
         }

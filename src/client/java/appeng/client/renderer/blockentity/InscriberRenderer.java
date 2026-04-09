@@ -260,13 +260,13 @@ public final class InscriberRenderer implements BlockEntityRenderer<InscriberBlo
         });
 
         // render items.
-        renderItem(poseStack, state.middleItem, 0, combinedLight, nodes);
+        item(poseStack, state.middleItem, 0, combinedLight, nodes);
 
         if (!state.topItem.isEmpty()) {
-            renderItem(poseStack, state.topItem, press, combinedLight, nodes);
+            item(poseStack, state.topItem, press, combinedLight, nodes);
         }
         if (!state.bottomItem.isEmpty()) {
-            renderItem(poseStack, state.bottomItem, press, combinedLight, nodes);
+            item(poseStack, state.bottomItem, press, combinedLight, nodes);
         }
 
         poseStack.popPose();
@@ -282,8 +282,8 @@ public final class InscriberRenderer implements BlockEntityRenderer<InscriberBlo
         vb.setNormal(pose, front.getStepX(), front.getStepY(), front.getStepZ());
     }
 
-    private void renderItem(PoseStack poseStack, ItemStackRenderState stack, float o, int lightCoords,
-                            SubmitNodeCollector nodes) {
+    private void item(PoseStack poseStack, ItemStackRenderState stack, float o, int lightCoords,
+                      SubmitNodeCollector nodes) {
 
         if (!stack.isEmpty()) {
             poseStack.pushPose();
