@@ -64,7 +64,7 @@ public class TabButton extends Button implements ITooltip {
     }
 
     @Override
-    public void renderContents(GuiGraphicsExtractor guiGraphics, int x, int y, float partial) {
+    public void extractContents(GuiGraphicsExtractor guiGraphics, int x, int y, float partial) {
         if (this.visible) {
             // Selects the button border from the sprite-sheet, where each type occupies a
             // 2x2 slot

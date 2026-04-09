@@ -27,7 +27,7 @@ public class AE2Button extends Button {
     }
 
     @Override
-    protected void renderContents(GuiGraphicsExtractor pGuiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
+    protected void extractContents(GuiGraphicsExtractor pGuiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
         Minecraft minecraft = Minecraft.getInstance();
         pGuiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED,
                 SPRITES.get(this.active, this.isHovered()),
