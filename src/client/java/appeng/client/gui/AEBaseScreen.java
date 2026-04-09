@@ -276,10 +276,10 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
                 fillRect(guiGraphics, rectangle2d, 0x7f00FF00);
             }
 
-            guiGraphics.hLine(leftPos, leftPos + imageWidth - 1, topPos, 0xFFFFFFFF);
-            guiGraphics.hLine(leftPos, leftPos + imageWidth - 1, topPos + imageHeight - 1, 0xFFFFFFFF);
-            guiGraphics.vLine(leftPos, topPos, topPos + imageHeight, 0xFFFFFFFF);
-            guiGraphics.vLine(leftPos + imageWidth - 1, topPos, topPos + imageHeight - 1, 0xFFFFFFFF);
+            guiGraphics.horizontalLine(leftPos, leftPos + imageWidth - 1, topPos, 0xFFFFFFFF);
+            guiGraphics.horizontalLine(leftPos, leftPos + imageWidth - 1, topPos + imageHeight - 1, 0xFFFFFFFF);
+            guiGraphics.verticalLine(leftPos, topPos, topPos + imageHeight, 0xFFFFFFFF);
+            guiGraphics.verticalLine(leftPos + imageWidth - 1, topPos, topPos + imageHeight - 1, 0xFFFFFFFF);
         }
     }
 
@@ -1000,10 +1000,10 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
 
         // Same as the Vanilla method, just with dynamic width and height
         // Added a custom slot highlight effect - RID
-        guiGraphics.hLine(x, x + w, y - 1, 0xFFdaffff);
-        guiGraphics.hLine(x - 1, x + w, y + h, 0xFFdaffff);
-        guiGraphics.vLine(x - 1, y - 2, y + h, 0xFFdaffff);
-        guiGraphics.vLine(x + w, y - 2, y + h, 0xFFdaffff);
+        guiGraphics.horizontalLine(x, x + w, y - 1, 0xFFdaffff);
+        guiGraphics.horizontalLine(x - 1, x + w, y + h, 0xFFdaffff);
+        guiGraphics.verticalLine(x - 1, y - 2, y + h, 0xFFdaffff);
+        guiGraphics.verticalLine(x + w, y - 2, y + h, 0xFFdaffff);
         guiGraphics.fillGradient(x, y, x + w, y + h, 0x669cd3ff, 0x669cd3ff);
     }
 
