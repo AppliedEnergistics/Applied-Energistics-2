@@ -60,7 +60,7 @@ public class ProgressBar extends AbstractWidget implements ITooltip {
     }
 
     @Override
-    public void renderWidget(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    public void extractWidgetRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         if (this.visible) {
             int max = this.source.getMaxProgress();
             int current = this.source.getCurrentProgress();
