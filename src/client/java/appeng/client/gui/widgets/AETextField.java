@@ -161,7 +161,7 @@ public class AETextField extends EditBox implements IResizableWidget, ITooltip {
             // Render a placeholder value if the text field isn't focused and is empty
             if (placeholder != null && !isFocused() && getValue().isEmpty()) {
                 var font = Minecraft.getInstance().font;
-                guiGraphics.drawString(font, placeholder, getX(), getY(),
+                guiGraphics.text(font, placeholder, getX(), getY(),
                         style.getColor(PaletteColor.TEXTFIELD_PLACEHOLDER).toARGB(), false);
             }
         }

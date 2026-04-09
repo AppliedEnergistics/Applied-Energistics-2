@@ -69,14 +69,14 @@ public class StorageCellClientTooltipComponent implements ClientTooltipComponent
         if (!content.isEmpty()) {
             var xoff = content.size() * 17;
             if (tooltipComponent.hasMoreContent()) {
-                guiGraphics.drawString(font, "\u2026", x + xoff + 2, y + 2, -1, false);
+                guiGraphics.text(font, "\u2026", x + xoff + 2, y + 2, -1, false);
             }
             y += 17;
         }
 
         var upgrades = tooltipComponent.upgrades();
         if (!upgrades.isEmpty()) {
-            guiGraphics.drawString(font, upgradesLabel, x, y + yoff, 0x7E7E7E, false);
+            guiGraphics.text(font, upgradesLabel, x, y + yoff, 0x7E7E7E, false);
         }
     }
 

@@ -169,7 +169,7 @@ public class NetworkStatusScreen extends AEBaseScreen<NetworkStatusMenu> {
                 x - 1 - textWidth,
                 y + (CELL_HEIGHT - textHeight) / 2.0f);
         poseStack.scale(0.5f);
-        guiGraphics.drawString(this.font, str, 0, 0,
+        guiGraphics.text(this.font, str, 0, 0,
                 style.getColor(PaletteColor.DEFAULT_TEXT_COLOR).toARGB(), false);
         poseStack.popMatrix();
     }

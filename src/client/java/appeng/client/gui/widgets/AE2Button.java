@@ -62,12 +62,12 @@ public class AE2Button extends Button {
             double d2 = Math.sin((Math.PI / 2) * Math.cos((Math.PI * 2) * d0 / d1)) / 2.0 + 0.5;
             double d3 = Mth.lerp(d2, 0.0, (double) l);
             pGuiGraphics.enableScissor(pMinX, pMinY, pMaxX, pMaxY);
-            pGuiGraphics.drawString(pFont, pText, pMinX - (int) d3, j, pColor, false);
+            pGuiGraphics.text(pFont, pText, pMinX - (int) d3, j, pColor, false);
             pGuiGraphics.disableScissor();
         } else {
             int i1 = Mth.clamp(pCenterX, pMinX + i / 2, pMaxX - i / 2);
             FormattedCharSequence formattedcharsequence = pText.getVisualOrderText();
-            pGuiGraphics.drawString(pFont, formattedcharsequence, i1 - pFont.width(formattedcharsequence) / 2,
+            pGuiGraphics.text(pFont, formattedcharsequence, i1 - pFont.width(formattedcharsequence) / 2,
                     j - yOffset, pColor, false);
         }
     }

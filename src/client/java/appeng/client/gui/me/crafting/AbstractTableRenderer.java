@@ -111,7 +111,7 @@ public abstract class AbstractTableRenderer<T> {
                 pose.scale(TEXT_SCALE);
                 for (Component line : lines) {
                     final int w = fontRenderer.width(line);
-                    guiGraphics.drawString(fontRenderer, line,
+                    guiGraphics.text(fontRenderer, line,
                             (int) ((itemX - 2 - w * TEXT_SCALE) * INV_TEXT_SCALE),
                             (int) (textY * INV_TEXT_SCALE), textColor, false);
                     textY += lineHeight + LINE_SPACING;

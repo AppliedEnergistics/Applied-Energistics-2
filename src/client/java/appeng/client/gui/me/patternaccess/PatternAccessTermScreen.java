@@ -242,7 +242,7 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
                     var text = Language.getInstance().getVisualOrder(
                             this.font.substrByWidth(displayName, TEXT_MAX_WIDTH - 10));
 
-                    guiGraphics.drawString(font, text, GUI_PADDING_X + PATTERN_PROVIDER_NAME_MARGIN_X + 10,
+                    guiGraphics.text(font, text, GUI_PADDING_X + PATTERN_PROVIDER_NAME_MARGIN_X + 10,
                             GUI_PADDING_Y + GUI_HEADER_HEIGHT + i * ROW_HEIGHT, textColor, false);
                 }
             }

@@ -83,9 +83,9 @@ public class StorageBusScreen extends UpgradeableScreen<StorageBusMenu> {
         poseStack.scale(0.6f);
         var color = style.getColor(PaletteColor.DEFAULT_TEXT_COLOR);
         if (menu.getConnectedTo() != null) {
-            guiGraphics.drawString(font, GuiText.AttachedTo.text(menu.getConnectedTo()), 0, 0, color.toARGB(), false);
+            guiGraphics.text(font, GuiText.AttachedTo.text(menu.getConnectedTo()), 0, 0, color.toARGB(), false);
         } else {
-            guiGraphics.drawString(font, GuiText.Unattached.text(), 0, 0, color.toARGB(), false);
+            guiGraphics.text(font, GuiText.Unattached.text(), 0, 0, color.toARGB(), false);
         }
         poseStack.popMatrix();
     }
