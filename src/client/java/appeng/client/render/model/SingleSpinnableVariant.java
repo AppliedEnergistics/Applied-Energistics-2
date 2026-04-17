@@ -50,7 +50,7 @@ public class SingleSpinnableVariant implements BlockStateModel {
         }
 
         public BlockStateModel bake(ModelBaker p_410856_) {
-            return new net.minecraft.client.renderer.block.model.SingleVariant(this.variant.bake(p_410856_));
+            return new net.minecraft.client.renderer.block.dispatch.SingleVariant(this.variant.bake(p_410856_));
         }
 
         public void resolveDependencies(ResolvableModel.Resolver p_410724_) {

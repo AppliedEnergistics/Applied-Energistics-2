@@ -21,11 +21,5 @@ public abstract class AbstractCraftingUnitModelProvider<T extends ICraftingUnitT
         this.type = type;
     }
 
-    /**
-     * @return a list of any materials used for the model to be passed into
-     *         {@link CraftingCubeModel#getAdditionalTextures()}.
-     */
-    public abstract List<Material> getMaterials();
-
     public abstract BlockStateModel bake(SpriteGetter spriteGetter);
 }

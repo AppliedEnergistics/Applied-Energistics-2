@@ -20,6 +20,9 @@ package appeng.client.renderer.blockentity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
+import net.minecraft.client.renderer.Sheets;
+import net.minecraft.client.resources.model.sprite.SpriteGetter;
+import net.minecraft.client.resources.model.sprite.SpriteId;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Quaternionf;
 
@@ -31,9 +34,6 @@ import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.renderer.texture.TextureAtlas;
-import net.minecraft.client.resources.model.sprite.Material;
-import net.minecraft.client.resources.model.MaterialSet;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.Block;
@@ -51,17 +51,15 @@ public class SkyStoneChestRenderer implements BlockEntityRenderer<SkyStoneChestB
     public static ModelLayerLocation MODEL_LAYER = new ModelLayerLocation(AppEng.makeId("sky_chest"), "main");
 
     // The textures are in the block sheet due to the item model requiring them there
-    public static final Material TEXTURE_STONE = new Material(TextureAtlas.LOCATION_BLOCKS,
-            AppEng.makeId("block/skychest"));
-    public static final Material TEXTURE_BLOCK = new Material(TextureAtlas.LOCATION_BLOCKS,
-            AppEng.makeId("block/skyblockchest"));
+    public static final SpriteId TEXTURE_STONE = Sheets.BLOCKS_MAPPER.apply(AppEng.makeId("block/skychest"));
+    public static final SpriteId TEXTURE_BLOCK = Sheets.BLOCKS_MAPPER.apply(AppEng.makeId("block/skyblockchest"));
 
-    private final MaterialSet materialSet;
+    private final SpriteGetter sprites;
     private final SkyStoneChestModel model;
 
     public SkyStoneChestRenderer(BlockEntityRendererProvider.Context context) {
         this.model = new SkyStoneChestModel(context.bakeLayer(MODEL_LAYER));
-        this.materialSet = context.materials();
+        this.sprites = context.sprites();
     }
 
     @Override
@@ -91,7 +89,7 @@ public class SkyStoneChestRenderer implements BlockEntityRenderer<SkyStoneChestB
         lidAngle = 1.0F - lidAngle * lidAngle * lidAngle;
 
         var renderType = state.material.renderType(RenderTypes::entityCutout);
-        var sprite = materialSet.get(state.material);
+        var sprite = sprites.get(state.material);
 
         nodes.submitModel(model, lidAngle, poseStack, renderType, state.lightCoords, OverlayTexture.NO_OVERLAY, -1,
                 sprite, 0, state.breakProgress);
@@ -105,7 +103,7 @@ public class SkyStoneChestRenderer implements BlockEntityRenderer<SkyStoneChestB
         return AABB.encapsulatingFullBlocks(pos.offset(-1, 0, -1), pos.offset(1, 1, 1));
     }
 
-    protected Material getRenderMaterial(SkyStoneChestBlockEntity blockEntity) {
+    protected SpriteId getRenderMaterial(SkyStoneChestBlockEntity blockEntity) {
         Type type = Type.BLOCK;
         if (blockEntity.getLevel() != null) {
             Block blockType = blockEntity.getBlockState().getBlock();

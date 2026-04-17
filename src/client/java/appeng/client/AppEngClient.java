@@ -291,7 +291,7 @@ public class AppEngClient extends AppEngBase {
         modEventBus.addListener(this::registerItemModels);
         modEventBus.addListener(this::registerEnvironmentalEffectRenderers);
         modEventBus.addListener(this::registerItemTintSources);
-        modEventBus.addListener(this::registerBlockColors);
+        // TODO 26.1 modEventBus.addListener(this::registerBlockColors);
         modEventBus.addListener(this::registerPipRenderers);
 
         RenderBlockOutlineHook.install();
@@ -478,7 +478,7 @@ public class AppEngClient extends AppEngBase {
     @Override
     public void sendSystemMessage(Player player, Component text) {
         if (player == Minecraft.getInstance().player) {
-            Minecraft.getInstance().gui.getChat().addMessage(text);
+            Minecraft.getInstance().gui.getChat().addServerSystemMessage(text);
         }
         super.sendSystemMessage(player, text);
     }
@@ -617,10 +617,10 @@ public class AppEngClient extends AppEngBase {
         for (var cellModelKey : StorageCellModels.standaloneModels().values()) {
             // TODO 1.21.8 Investigate what model debug name vs. model key vs. resource location is
             event.register(cellModelKey,
-                    SimpleUnbakedStandaloneModel.simpleModelWrapper(Identifier.parse(cellModelKey.getName())));
+                    SimpleUnbakedStandaloneModel.blockStateModel(Identifier.parse(cellModelKey.getName())));
         }
         event.register(StorageCellModels.getDefaultStandaloneModel(), SimpleUnbakedStandaloneModel
-                .simpleModelWrapper(Identifier.parse(StorageCellModels.getDefaultStandaloneModel().getName())));
+                .blockStateModel(Identifier.parse(StorageCellModels.getDefaultStandaloneModel().getName())));
     }
 
     private void registerItemModelProperties(RegisterRangeSelectItemModelPropertyEvent event) {
@@ -651,11 +651,11 @@ public class AppEngClient extends AppEngBase {
         event.register(AEColorItemTintSource.ID, AEColorItemTintSource.MAP_CODEC);
     }
 
-    public void registerBlockColors(RegisterColorHandlersEvent.Block event) {
-        event.register(new StaticBlockColor(AEColor.TRANSPARENT), AEBlocks.WIRELESS_ACCESS_POINT.block());
-        event.register(new CableBusColor(), AEBlocks.CABLE_BUS.block());
-        event.register(ColorableBlockEntityBlockColor.INSTANCE, AEBlocks.ME_CHEST.block());
-    }
+    // TODO 26.1 public void registerBlockColors(RegisterColorHandlersEvent.Block event) {
+    // TODO 26.1     event.register(new StaticBlockColor(AEColor.TRANSPARENT), AEBlocks.WIRELESS_ACCESS_POINT.block());
+    // TODO 26.1     event.register(new CableBusColor(), AEBlocks.CABLE_BUS.block());
+    // TODO 26.1     event.register(ColorableBlockEntityBlockColor.INSTANCE, AEBlocks.ME_CHEST.block());
+    // TODO 26.1 }
 
     private void receiveRecipes(RecipesReceivedEvent event) {
         recipeMap = event.getRecipeMap();

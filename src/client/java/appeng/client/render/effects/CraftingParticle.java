@@ -28,7 +28,7 @@ import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.SingleQuadParticle;
 import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
-import net.minecraft.client.renderer.state.QuadParticleRenderState;
+import net.minecraft.client.renderer.state.level.QuadParticleRenderState;
 import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.particles.ItemParticleOption;
@@ -144,6 +144,7 @@ public class CraftingParticle extends SingleQuadParticle {
     private class ItemParticle extends SingleQuadParticle {
         private final float uo;
         private final float vo;
+        private Layer layer;
 
         public ItemParticle(ClientLevel level, double x, double y, double z, ItemStack stack, RandomSource random) {
             super(level, x, y, z, getSprite(level, stack, random));
@@ -157,17 +158,18 @@ public class CraftingParticle extends SingleQuadParticle {
             this.rCol = 1;
             this.lifetime = CraftingParticle.this.lifetime;
             this.hasPhysics = false; // we're INSIDE the block anyway
+            this.layer = SingleQuadParticle.Layer.bySprite(sprite);
         }
 
         private static TextureAtlasSprite getSprite(ClientLevel level, ItemStack stack, RandomSource random) {
             var renderState = new ItemStackRenderState();
             Minecraft.getInstance().getItemModelResolver().updateForTopItem(renderState, stack,
                     ItemDisplayContext.GROUND, level, null, 0);
-            var breakingParticle = renderState.pickParticleIcon(random);
+            var breakingParticle = renderState.pickParticleMaterial(random);
             if (breakingParticle != null) {
-                return breakingParticle;
+                return breakingParticle.sprite();
             } else {
-                return Minecraft.getInstance().getAtlasManager().getAtlasOrThrow(Layer.TERRAIN.textureAtlasLocation())
+                return Minecraft.getInstance().getAtlasManager().getAtlasOrThrow(Layer.OPAQUE_TERRAIN.textureAtlasLocation())
                         .getSprite(MissingTextureAtlasSprite.getLocation());
             }
         }
@@ -225,7 +227,7 @@ public class CraftingParticle extends SingleQuadParticle {
 
         @Override
         protected Layer getLayer() {
-            return Layer.TERRAIN;
+            return layer;
         }
 
         @Override

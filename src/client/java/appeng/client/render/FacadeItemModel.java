@@ -50,7 +50,6 @@ import net.minecraft.world.entity.ItemOwner;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.client.RenderTypeHelper;
 
 import appeng.api.implementations.items.IFacadeItem;
 import appeng.client.render.cablebus.FacadeBuilder;
@@ -96,7 +95,7 @@ public class FacadeItemModel implements ItemModel {
         renderState.appendModelIdentityElement(facadeBlockState);
 
         var facadeLayer = renderState.newLayer();
-        facadeLayer.setLocalTransform(baseModel.renderProperties().transforms().getTransform(displayContext));
+        baseModel.renderProperties().applyToLayer(facadeLayer, displayContext);
         facadeLayer.setupSpecialModel(new FacadeSpecialRender(), facadeBlockState);
         // We use the extents of the stem, which is certainly not quite correct.
         facadeLayer.setExtents(baseModel.extents());
