@@ -44,7 +44,7 @@ public class StackSizeRenderer {
         stack.pushMatrix();
         stack.scale(scaleFactor);
 
-        guiGraphics.drawString(fontRenderer, text, x, y, -1);
+        guiGraphics.text(fontRenderer, text, x, y, -1);
 
         stack.popMatrix();
     }

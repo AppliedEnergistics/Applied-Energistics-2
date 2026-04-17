@@ -94,11 +94,11 @@ public final class StonecuttingEncodingPanel extends EncodingModePanel {
             ItemStack resultItem = recipe.value().result().create();
 
             if (selected || mouse.isIn(slotBounds)) {
-                guiGraphics.renderItem(resultItem, renderX + 2, renderY + 3);
-                guiGraphics.renderItemDecorations(Minecraft.getInstance().font, resultItem, renderX + 2, renderY + 3);
+                guiGraphics.item(resultItem, renderX + 2, renderY + 3);
+                guiGraphics.itemDecorations(Minecraft.getInstance().font, resultItem, renderX + 2, renderY + 3);
             } else {
-                guiGraphics.renderItem(resultItem, renderX + 2, renderY + 2);
-                guiGraphics.renderItemDecorations(Minecraft.getInstance().font, resultItem, renderX + 2, renderY + 2);
+                guiGraphics.item(resultItem, renderX + 2, renderY + 2);
+                guiGraphics.itemDecorations(Minecraft.getInstance().font, resultItem, renderX + 2, renderY + 2);
             }
         }
     }

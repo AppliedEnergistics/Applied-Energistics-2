@@ -46,7 +46,7 @@ public class Label extends AbstractWidget implements Widget {
     public void draw(GuiGraphicsExtractor guiGraphics) {
         for (var line : getLines()) {
             var font = Minecraft.getInstance().font;
-            guiGraphics.drawString(font, line.text, (int) line.x, (int) line.y, color, shadow);
+            guiGraphics.text(font, line.text, (int) line.x, (int) line.y, color, shadow);
         }
     }
 

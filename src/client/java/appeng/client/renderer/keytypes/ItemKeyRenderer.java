@@ -38,8 +38,8 @@ public class ItemKeyRenderer implements AEKeyRenderer<AEItemKey, ItemStackRender
         poseStack.pushMatrix();
 
         var displayStack = stack.getReadOnlyStack();
-        guiGraphics.renderItem(displayStack, x, y);
-        guiGraphics.renderItemDecorations(minecraft.font, displayStack, x, y, "");
+        guiGraphics.item(displayStack, x, y);
+        guiGraphics.itemDecorations(minecraft.font, displayStack, x, y, "");
 
         poseStack.popMatrix();
     }

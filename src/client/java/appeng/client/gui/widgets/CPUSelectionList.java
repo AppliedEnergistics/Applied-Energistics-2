@@ -198,7 +198,7 @@ public class CPUSelectionList implements ICompositeWidget {
             pose.pushMatrix();
             pose.translate(x + 3, y + 2);
             pose.scale(0.666f);
-            guiGraphics.drawString(font, name, 0, 0, textColor.toARGB(), false);
+            guiGraphics.text(font, name, 0, 0, textColor.toARGB(), false);
             pose.popMatrix();
 
             var infoBar = new InfoBar();

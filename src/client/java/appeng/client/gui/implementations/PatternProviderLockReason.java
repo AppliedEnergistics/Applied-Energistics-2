@@ -71,7 +71,7 @@ public class PatternProviderLockReason implements ICompositeWidget {
         }
 
         Blitter.icon(icon).dest(x, y).blit(guiGraphics);
-        guiGraphics.drawString(Minecraft.getInstance().font, lockStatusText, x + 15, y + 5, -1, false);
+        guiGraphics.text(Minecraft.getInstance().font, lockStatusText, x + 15, y + 5, -1, false);
     }
 
     @Nullable

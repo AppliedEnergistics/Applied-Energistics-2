@@ -59,7 +59,7 @@ public abstract class IconButton extends Button implements ITooltip {
     }
 
     @Override
-    public void renderContents(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partial) {
+    public void extractContents(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partial) {
 
         if (this.visible) {
             var icon = this.getIcon();
@@ -77,7 +77,7 @@ public abstract class IconButton extends Button implements ITooltip {
                     Blitter.icon(Icon.TOOLBAR_BUTTON_BACKGROUND).dest(getX(), getY()).blit(guiGraphics);
                 }
                 if (item != null) {
-                    guiGraphics.renderItem(new ItemStack(item), getX(), getY());
+                    guiGraphics.item(new ItemStack(item), getX(), getY());
                 } else if (icon != null) {
                     Blitter blitter = Blitter.icon(icon);
                     if (!this.active) {
@@ -95,7 +95,7 @@ public abstract class IconButton extends Button implements ITooltip {
                             .blit(guiGraphics);
                 }
                 if (item != null) {
-                    guiGraphics.renderItem(new ItemStack(item), getX(), getY() + 1 + yOffset);
+                    guiGraphics.item(new ItemStack(item), getX(), getY() + 1 + yOffset);
                 } else if (icon != null) {
                     Blitter.icon(icon).dest(getX(), getY() + 1 + yOffset).blit(guiGraphics);
                 }

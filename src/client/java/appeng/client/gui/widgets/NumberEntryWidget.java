@@ -466,7 +466,7 @@ public class NumberEntryWidget implements ICompositeWidget {
                     - font.width(type.unit());
             var y = (int) (bounds.getY() + textFieldBounds.getY() + (textFieldBounds.getHeight() - font.lineHeight) / 2f
                     + 1);
-            guiGraphics.drawString(font, type.unit(), x, y, ChatFormatting.DARK_GRAY.getColor(), false);
+            guiGraphics.text(font, type.unit(), x, y, ChatFormatting.DARK_GRAY.getColor(), false);
         }
     }
 

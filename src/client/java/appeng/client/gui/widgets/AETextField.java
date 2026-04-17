@@ -134,7 +134,7 @@ public class AETextField extends EditBox implements IResizableWidget, ITooltip {
     }
 
     @Override
-    public void renderWidget(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partial) {
+    public void extractWidgetRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partial) {
         if (this.isVisible()) {
             var yOffset = 0;
             if (!this.isEditable()) {
@@ -156,12 +156,12 @@ public class AETextField extends EditBox implements IResizableWidget, ITooltip {
                     .dest(bounds.right - 1, bounds.top)
                     .blit(guiGraphics);
 
-            super.renderWidget(guiGraphics, mouseX, mouseY, partial);
+            super.extractWidgetRenderState(guiGraphics, mouseX, mouseY, partial);
 
             // Render a placeholder value if the text field isn't focused and is empty
             if (placeholder != null && !isFocused() && getValue().isEmpty()) {
                 var font = Minecraft.getInstance().font;
-                guiGraphics.drawString(font, placeholder, getX(), getY(),
+                guiGraphics.text(font, placeholder, getX(), getY(),
                         style.getColor(PaletteColor.TEXTFIELD_PLACEHOLDER).toARGB(), false);
             }
         }

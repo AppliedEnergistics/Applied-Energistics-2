@@ -70,11 +70,11 @@ public class FinishedJobToast implements Toast {
         }
         guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, BACKGROUND_SPRITE, 160, 32, 0, 32 - 8, 0, height - 8,
                 this.width(), 8);
-        guiGraphics.drawString(font, GuiText.ToastCraftingJobFinishedTitle.text(), 30, 7,
+        guiGraphics.text(font, GuiText.ToastCraftingJobFinishedTitle.text(), 30, 7,
                 TITLE_COLOR, false);
         var lineY = 18;
         for (var line : lines) {
-            guiGraphics.drawString(font, line, 30, lineY, TEXT_COLOR, false);
+            guiGraphics.text(font, line, 30, lineY, TEXT_COLOR, false);
             lineY += font.lineHeight;
         }
         appeng.client.api.AEKeyRendering.drawInGui(minecraft, guiGraphics, 8, 8, what);

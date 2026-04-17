@@ -146,7 +146,7 @@ public class InfoBar {
             poseStack.pushMatrix();
             poseStack.translate(xPos, yPos);
             poseStack.scale(scale);
-            guiGraphics.drawString(font, text, 0, 0, color, false);
+            guiGraphics.text(font, text, 0, 0, color, false);
             poseStack.popMatrix();
         }
     }

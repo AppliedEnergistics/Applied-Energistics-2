@@ -64,7 +64,7 @@ public class TabButton extends Button implements ITooltip {
     }
 
     @Override
-    public void renderContents(GuiGraphicsExtractor guiGraphics, int x, int y, float partial) {
+    public void extractContents(GuiGraphicsExtractor guiGraphics, int x, int y, float partial) {
         if (this.visible) {
             // Selects the button border from the sprite-sheet, where each type occupies a
             // 2x2 slot
@@ -102,9 +102,9 @@ public class TabButton extends Button implements ITooltip {
 
             if (this.item != null) {
                 guiGraphics.nextStratum();
-                guiGraphics.renderItem(this.item, getX() + iconX, getY() + iconY);
+                guiGraphics.item(this.item, getX() + iconX, getY() + iconY);
                 var font = Minecraft.getInstance().font;
-                guiGraphics.renderItemDecorations(font, this.item, getX() + iconX, getY() + iconY);
+                guiGraphics.itemDecorations(font, this.item, getX() + iconX, getY() + iconY);
             }
         }
     }
