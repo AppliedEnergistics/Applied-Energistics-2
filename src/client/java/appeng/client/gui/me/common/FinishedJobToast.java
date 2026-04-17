@@ -57,7 +57,7 @@ public class FinishedJobToast implements Toast {
     }
 
     @Override
-    public void render(GuiGraphicsExtractor guiGraphics, Font font, long visibilityTime) {
+    public void extractRenderState(GuiGraphicsExtractor guiGraphics, Font font, long visibilityTime) {
         var minecraft = Minecraft.getInstance();
 
         // stretch the middle

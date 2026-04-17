@@ -611,13 +611,13 @@ public class MEStorageScreen<C extends MEStorageMenu>
         }
 
         if (this.searchField != null) {
-            this.searchField.render(guiGraphics, mouseX, mouseY, partialTicks);
+            this.searchField.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
         }
 
     }
 
     @Override
-    public void renderSlot(GuiGraphicsExtractor guiGraphics, Slot s, int mouseX, int mouseY) {
+    public void extractSlot(GuiGraphicsExtractor guiGraphics, Slot s, int mouseX, int mouseY) {
         if (s instanceof RepoSlot repoSlot) {
             if (this.menu.getLinkStatus().connected()) {
                 GridInventoryEntry entry = repoSlot.getEntry();
@@ -654,7 +654,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
             return;
         }
 
-        super.renderSlot(guiGraphics, s, mouseX, mouseY);
+        super.extractSlot(guiGraphics, s, mouseX, mouseY);
     }
 
     /**
@@ -665,7 +665,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
     }
 
     @Override
-    protected void renderTooltip(GuiGraphicsExtractor guiGraphics, int x, int y) {
+    protected void extractTooltip(GuiGraphicsExtractor guiGraphics, int x, int y) {
         if (this.hoveredSlot instanceof RepoSlot repoSlot) {
             var carried = menu.getCarried();
             if (!carried.isEmpty()) {
@@ -692,7 +692,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
             return;
         }
 
-        super.renderTooltip(guiGraphics, x, y);
+        super.extractTooltip(guiGraphics, x, y);
     }
 
     protected void renderGridInventoryEntryTooltip(GuiGraphicsExtractor guiGraphics, GridInventoryEntry entry, int x, int y) {

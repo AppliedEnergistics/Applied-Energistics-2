@@ -51,7 +51,7 @@ public class QuartzKnifeScreen extends AEBaseScreen<QuartzKnifeMenu> {
     public void drawBG(GuiGraphicsExtractor guiGraphics, int offsetX, int offsetY, int mouseX, int mouseY,
             float partialTicks) {
         super.drawBG(guiGraphics, offsetX, offsetY, mouseX, mouseY, partialTicks);
-        this.name.render(guiGraphics, mouseX, mouseY, partialTicks);
+        this.name.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
     }
 
 }
