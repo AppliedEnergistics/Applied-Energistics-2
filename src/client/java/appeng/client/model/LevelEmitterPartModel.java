@@ -13,6 +13,7 @@ import net.minecraft.client.resources.model.SimpleModelWrapper;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.renderer.block.dispatch.ModelState;
+import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
@@ -44,8 +45,8 @@ public record LevelEmitterPartModel(
     }
 
     @Override
-    public TextureAtlasSprite particleIcon() {
-        return onBaked.particleIcon();
+    public Material.Baked particleMaterial() {
+        return onBaked.particleMaterial();
     }
 
     public record Unbaked(Identifier on, Identifier off) implements PartModel.Unbaked {

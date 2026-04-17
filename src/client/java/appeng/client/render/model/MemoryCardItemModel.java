@@ -35,12 +35,13 @@ import appeng.client.render.CubeBuilder;
 import appeng.client.render.ItemBaseModelWrapper;
 import appeng.core.AppEng;
 import appeng.items.tools.MemoryCardItem;
+import org.joml.Matrix4fc;
 
 public class MemoryCardItemModel implements ItemModel {
     private final ItemBaseModelWrapper baseModel;
     private final LoadingCache<MemoryCardColors, List<BakedQuad>> hashModelCache;
 
-    public MemoryCardItemModel(ItemBaseModelWrapper baseModel, TextureAtlasSprite hashSprite) {
+    public MemoryCardItemModel(ItemBaseModelWrapper baseModel, Material.Baked hashSprite) {
         this.baseModel = baseModel;
         this.hashModelCache = CacheBuilder.newBuilder()
                 .maximumSize(100)
@@ -68,22 +69,21 @@ public class MemoryCardItemModel implements ItemModel {
         renderState.appendModelIdentityElement(this);
 
         var baseLayer = renderState.newLayer();
-        var tint = baseLayer.prepareTintLayers(2);
-        tint[0] = -1;
-        tint[1] = ARGB.opaque(item.getColor(stack));
+        var tint = baseLayer.tintLayers();
+        tint.add(-1);
+        tint.add(ARGB.opaque(item.getColor(stack)));
         baseModel.applyToLayer(baseLayer, displayContext);
-        renderState.appendModelIdentityElement(tint[1]);
+        renderState.appendModelIdentityElement(tint.getInt(1));
 
         var colors = stack.getOrDefault(AEComponents.MEMORY_CARD_COLORS, MemoryCardColors.DEFAULT);
         var colorLayer = renderState.newLayer();
         colorLayer.setExtents(baseModel.extents());
-        colorLayer.setRenderType(Sheets.translucentItemSheet());
-        colorLayer.setTransform(baseModel.renderProperties().transforms().getTransform(displayContext));
+        baseModel.renderProperties().applyToLayer(colorLayer, displayContext);
         colorLayer.prepareQuadList().addAll(hashModelCache.getUnchecked(colors));
         renderState.appendModelIdentityElement(colors);
     }
 
-    private static List<BakedQuad> buildColorQuads(TextureAtlasSprite texture, MemoryCardColors colors) {
+    private static List<BakedQuad> buildColorQuads(Material.Baked texture, MemoryCardColors colors) {
         var quads = new ArrayList<BakedQuad>(2 * 4 * 6);
         CubeBuilder builder = new CubeBuilder(quads::add);
         builder.setDrawFaces(EnumSet.of(Direction.NORTH, Direction.SOUTH));
@@ -114,11 +114,11 @@ public class MemoryCardItemModel implements ItemModel {
                         .apply(builder, Unbaked::new));
 
         @Override
-        public MemoryCardItemModel bake(BakingContext context) {
+        public MemoryCardItemModel bake(BakingContext context, Matrix4fc transform) {
 
             ModelDebugName debugName = getClass()::toString;
-            var colorOverlayMaterial = new Material(TextureAtlas.LOCATION_ITEMS, colorOverlaySprite);
-            var hashSprite = context.blockModelBaker().sprites().get(colorOverlayMaterial, debugName);
+            var colorOverlayMaterial = new Material(colorOverlaySprite);
+            var hashSprite = context.blockModelBaker().materials().get(colorOverlayMaterial, debugName);
 
             var baseModel = ItemBaseModelWrapper.bake(context.blockModelBaker(), this.baseModel);
             return new MemoryCardItemModel(baseModel, hashSprite);

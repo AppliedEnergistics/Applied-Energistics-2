@@ -23,6 +23,7 @@ import java.util.Arrays;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.sprite.Material;
+import net.minecraft.client.resources.model.sprite.MaterialBaker;
 import net.minecraft.client.resources.model.sprite.SpriteGetter;
 import net.minecraft.resources.Identifier;
 
@@ -44,7 +45,7 @@ public class SmartCableTextures {
                     AppEng.makeId("part/cable/smart/channels_12"), //
                     AppEng.makeId("part/cable/smart/channels_13"), //
                     AppEng.makeId("part/cable/smart/channels_14")//
-            }).map(e -> new Material(TextureAtlas.LOCATION_BLOCKS, e)).toArray(Material[]::new);
+            }).map(Material::new).toArray(Material[]::new);
 
     // Textures used to display channels on smart cables. There's two sets of 5
     // textures each, and
@@ -62,14 +63,14 @@ public class SmartCableTextures {
                     AppEng.makeId("part/cable/dense_smart/channels_12"), //
                     AppEng.makeId("part/cable/dense_smart/channels_13"), //
                     AppEng.makeId("part/cable/dense_smart/channels_14")//
-            }).map(e -> new Material(TextureAtlas.LOCATION_BLOCKS, e)).toArray(Material[]::new);
+            }).map(Material::new).toArray(Material[]::new);
 
     // Textures used to display channels on dense smart cables. There's two sets of 5
     // textures each, and
     // one of each set are composed together to get even/odd colored channels
     private final TextureAtlasSprite[] densetextures;
 
-    public SmartCableTextures(SpriteGetter sprites) {
+    public SmartCableTextures(MaterialBaker sprites) {
         this.textures = Arrays.stream(SMART_CHANNELS_TEXTURES)
                 .map(l -> sprites.get(l, getClass()::toString))
                 .toArray(TextureAtlasSprite[]::new);

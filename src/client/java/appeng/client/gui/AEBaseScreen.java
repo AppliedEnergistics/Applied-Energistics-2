@@ -261,11 +261,11 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
     }
 
     @Override
-    public void render(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    public void extractRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         this.updateBeforeRender();
         this.widgets.updateBeforeRender();
 
-        super.render(guiGraphics, mouseX, mouseY, partialTicks);
+        super.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
 
         renderTooltips(guiGraphics, mouseX, mouseY);
 
@@ -336,7 +336,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
             }
         }
 
-        this.renderTooltip(guiGraphics, mouseX, mouseY);
+        this.extractTooltip(guiGraphics, mouseX, mouseY);
 
         // The line above should have render a tooltip if this condition is true, and no
         // additional tooltips should be shown
@@ -422,7 +422,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
     }
 
     @Override
-    protected final void renderLabels(GuiGraphicsExtractor guiGraphics, int x, int y) {
+    protected final void extractLabels(GuiGraphicsExtractor guiGraphics, int x, int y) {
         final int ox = this.leftPos;
         final int oy = this.topPos;
 
@@ -501,18 +501,18 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
     }
 
     @Override
-    protected final void renderBg(GuiGraphicsExtractor guiGraphics, float f, int x,
-            int y) {
+    public void extractContents(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+        super.extractContents(graphics, mouseX, mouseY, a);
 
-        this.drawBG(guiGraphics, leftPos, topPos, x, y, f);
+        this.drawBG(graphics, leftPos, topPos, mouseX, mouseY, a);
 
-        guiGraphics.nextStratum();
+        graphics.nextStratum();
 
-        widgets.drawBackgroundLayer(guiGraphics, getBounds(true), new Point(x - leftPos, y - topPos));
+        widgets.drawBackgroundLayer(graphics, getBounds(true), new Point(mouseX - leftPos, mouseY - topPos));
 
         for (Slot slot : this.getInventorySlots()) {
             if (slot instanceof IOptionalSlot) {
-                drawOptionalSlotBackground(guiGraphics, (IOptionalSlot) slot, false);
+                drawOptionalSlotBackground(graphics, (IOptionalSlot) slot, false);
             }
         }
     }
@@ -821,7 +821,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
      * This overrides the base-class method through some access transformer hackery...
      */
     @Override
-    public void renderSlot(GuiGraphicsExtractor guiGraphics, Slot s, int mouseX, int mouseY) {
+    public void extractSlot(GuiGraphicsExtractor guiGraphics, Slot s, int mouseX, int mouseY) {
         if (s instanceof AppEngSlot appEngSlot) {
             try {
                 renderAppEngSlot(guiGraphics, appEngSlot, mouseX, mouseY);
@@ -829,7 +829,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
                 AELog.warn("[AppEng] AE prevented crash while drawing slot: " + err);
             }
         } else {
-            super.renderSlot(guiGraphics, s, mouseX, mouseY);
+            super.extractSlot(guiGraphics, s, mouseX, mouseY);
         }
     }
 
@@ -850,7 +850,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
             guiGraphics.fill(s.x, s.y, 16 + s.x, 16 + s.y, 0x66ff6666);
         }
 
-        super.renderSlot(guiGraphics, s, mouseX, mouseY);
+        super.extractSlot(guiGraphics, s, mouseX, mouseY);
     }
 
     @Override

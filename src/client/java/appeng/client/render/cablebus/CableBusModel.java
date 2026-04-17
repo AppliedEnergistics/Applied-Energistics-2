@@ -33,6 +33,7 @@ import com.google.common.cache.LoadingCache;
 import com.google.common.cache.Weigher;
 import com.mojang.serialization.MapCodec;
 
+import net.minecraft.client.resources.model.sprite.Material;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.resources.model.geometry.BakedQuad;
@@ -79,17 +80,17 @@ public class CableBusModel implements DynamicBlockStateModel {
 
     private final Map<IPartItem<?>, PartModel[]> partModels;
 
-    private final TextureAtlasSprite particleTexture;
+    private final Material.Baked particleTexture;
 
     private final SimpleModelWrapper emptyCableModel;
 
     private CableBusModel(CableBuilder cableBuilder, FacadeBuilder facadeBuilder,
-            Map<IPartItem<?>, PartModel[]> partModels, TextureAtlasSprite particleTexture) {
+            Map<IPartItem<?>, PartModel[]> partModels, Material.Baked particleTexture) {
         this.cableBuilder = cableBuilder;
         this.facadeBuilder = facadeBuilder;
         this.particleTexture = particleTexture;
         this.partModels = partModels;
-        this.emptyCableModel = new SimpleModelWrapper(QuadCollection.EMPTY, false, particleTexture, null);
+        this.emptyCableModel = new SimpleModelWrapper(QuadCollection.EMPTY, false, particleTexture);
         this.cableModelCache = CacheBuilder.newBuilder()//
                 .maximumWeight(CACHE_QUAD_COUNT)//
                 .weigher((Weigher<CableBusRenderState, SimpleModelWrapper>) (key, value) -> value.quads().getAll()
@@ -150,14 +151,19 @@ public class CableBusModel implements DynamicBlockStateModel {
     }
 
     @Override
-    public TextureAtlasSprite particleIcon() {
+    public Material.Baked particleMaterial() {
         return particleTexture;
     }
 
     @Override
-    public TextureAtlasSprite particleIcon(BlockAndTintGetter level, BlockPos pos, BlockState state) {
+    public @BakedQuad.MaterialFlags int materialFlags(BlockAndTintGetter level, BlockPos pos, BlockState state) {
+        level.getModelData(pos);
+    }
+
+    @Override
+    public Material.Baked particleMaterial(BlockAndTintGetter level, BlockPos pos, BlockState state) {
         // TODO: Determine dynamic particle icon based on attached parts
-        return DynamicBlockStateModel.super.particleIcon(level, pos, state);
+        return DynamicBlockStateModel.super.particleMaterial(level, pos, state);
     }
 
     // Determines whether a cable is connected to exactly two sides that are
@@ -200,7 +206,7 @@ public class CableBusModel implements DynamicBlockStateModel {
         if (quadCollection.getAll().isEmpty()) {
             return emptyCableModel;
         }
-        return new SimpleModelWrapper(quadCollection, true, particleTexture, ChunkSectionLayer.CUTOUT);
+        return new SimpleModelWrapper(quadCollection, true, particleTexture);
     }
 
     private void getCableQuads(CableBusRenderState renderState, Consumer<BakedQuad> quadsOut) {
@@ -309,7 +315,7 @@ public class CableBusModel implements DynamicBlockStateModel {
     }
 
     @Nullable
-    private TextureAtlasSprite getCableParticleTexture(CableBusRenderState renderState) {
+    private Material.Baked getCableParticleTexture(CableBusRenderState renderState) {
         CableCoreType coreType = CableCoreType.fromCableType(renderState.getCableType());
         AEColor cableColor = renderState.getCableColor();
         if (coreType != null) {
@@ -321,8 +327,8 @@ public class CableBusModel implements DynamicBlockStateModel {
     /**
      * Gets a list of texture sprites appropriate for particles (digging, etc.) given the render state for a cable bus.
      */
-    public List<TextureAtlasSprite> getParticleTextures(CableBusRenderState renderState) {
-        List<TextureAtlasSprite> result = new ArrayList<>();
+    public List<Material.Baked> getParticleTextures(CableBusRenderState renderState) {
+        List<Material.Baked> result = new ArrayList<>();
 
         var cableParticleTexture = getCableParticleTexture(renderState);
         if (cableParticleTexture != null) {
@@ -335,7 +341,7 @@ public class CableBusModel implements DynamicBlockStateModel {
             var partState = entry.getValue();
             var modelsBySide = partModels.get(partState.partItem());
             if (modelsBySide != null) {
-                result.add(modelsBySide[side.ordinal()].particleIcon());
+                result.add(modelsBySide[side.ordinal()].particleMaterial());
             }
         }
 
@@ -348,9 +354,9 @@ public class CableBusModel implements DynamicBlockStateModel {
 
         @Override
         public BlockStateModel bake(ModelBaker baker) {
-            var spriteGetter = baker.sprites();
+            var materials = baker.materials();
 
-            var cableBuilder = new CableBuilder(spriteGetter);
+            var cableBuilder = new CableBuilder(materials);
 
             FacadeBuilder facadeBuilder = baker.compute(FacadeBuilder.SHARED_KEY);
 

@@ -9,6 +9,7 @@ import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.renderer.block.dispatch.ModelState;
+import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
@@ -32,8 +33,8 @@ public record CompositePartModel(List<PartModel> models) implements PartModel {
     }
 
     @Override
-    public TextureAtlasSprite particleIcon() {
-        return models.getFirst().particleIcon();
+    public Material.Baked particleMaterial() {
+        return models.getFirst().particleMaterial();
     }
 
     public record Unbaked(List<PartModel.Unbaked> models) implements PartModel.Unbaked {

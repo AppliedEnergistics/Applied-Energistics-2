@@ -11,6 +11,7 @@ import net.minecraft.client.resources.model.SimpleModelWrapper;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.renderer.block.dispatch.ModelState;
+import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
@@ -49,8 +50,8 @@ public record LockableMonitorPartModel(BlockStateModelPart unpoweredUnlockedMode
     }
 
     @Override
-    public TextureAtlasSprite particleIcon() {
-        return unpoweredLockedModel.particleIcon();
+    public Material.Baked particleMaterial() {
+        return unpoweredLockedModel.particleMaterial();
     }
 
     public record Unbaked(Identifier unpoweredUnlockedModel,

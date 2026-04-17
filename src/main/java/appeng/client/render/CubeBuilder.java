@@ -207,6 +207,22 @@ public class CubeBuilder {
         }
     }
 
+    public void setTexture(Material.Baked texture) {
+        for (Direction face : Direction.values()) {
+            this.textures.put(face, texture.sprite());
+        }
+    }
+
+    public void setTextures(Material.Baked up, Material.Baked down, Material.Baked north,
+                            Material.Baked south, Material.Baked east, Material.Baked west) {
+        this.textures.put(Direction.UP, up.sprite());
+        this.textures.put(Direction.DOWN, down.sprite());
+        this.textures.put(Direction.NORTH, north.sprite());
+        this.textures.put(Direction.SOUTH, south.sprite());
+        this.textures.put(Direction.EAST, east.sprite());
+        this.textures.put(Direction.WEST, west.sprite());
+    }
+
     public void setTextures(TextureAtlasSprite up, TextureAtlasSprite down, TextureAtlasSprite north,
             TextureAtlasSprite south, TextureAtlasSprite east, TextureAtlasSprite west) {
         this.textures.put(Direction.UP, up);

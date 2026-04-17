@@ -42,13 +42,13 @@ public class PlanePartModel implements PartModel {
     private final Map<PlaneConnections, SimpleModelWrapper> onParts;
     private final Map<PlaneConnections, SimpleModelWrapper> offParts;
 
-    private final TextureAtlasSprite frontOnSprite;
-    private final TextureAtlasSprite frontOffSprite;
+    private final Material.Baked frontOnSprite;
+    private final Material.Baked frontOffSprite;
 
-    public PlanePartModel(TextureAtlasSprite frontOnSprite,
-            TextureAtlasSprite frontOffSprite,
-            TextureAtlasSprite sidesSprite,
-            TextureAtlasSprite backSprite,
+    public PlanePartModel(Material.Baked frontOnSprite,
+            Material.Baked frontOffSprite,
+            Material.Baked sidesSprite,
+            Material.Baked backSprite,
             Transformation transformation) {
         this.frontOnSprite = frontOnSprite;
         this.frontOffSprite = frontOffSprite;
@@ -63,19 +63,17 @@ public class PlanePartModel implements PartModel {
             this.onParts.put(permutation, new SimpleModelWrapper(
                     buildQuads(frontOnSprite, sidesSprite, backSprite, permutation, quadTransformer),
                     true,
-                    frontOnSprite,
-                    ChunkSectionLayer.SOLID));
+                    frontOnSprite));
             this.offParts.put(permutation, new SimpleModelWrapper(
                     buildQuads(frontOffSprite, sidesSprite, backSprite, permutation, quadTransformer),
                     true,
-                    frontOffSprite,
-                    ChunkSectionLayer.SOLID));
+                    frontOffSprite));
         }
     }
 
-    private static QuadCollection buildQuads(TextureAtlasSprite frontSprite,
-            TextureAtlasSprite sidesSprite,
-            TextureAtlasSprite backSprite,
+    private static QuadCollection buildQuads(Material.Baked frontSprite,
+                                             Material.Baked sidesSprite,
+                                             Material.Baked backSprite,
             PlaneConnections permutation,
             UnaryOperator<BakedQuad> quadTransformer) {
         var quads = new QuadCollection.Builder();
@@ -113,7 +111,7 @@ public class PlanePartModel implements PartModel {
     }
 
     @Override
-    public TextureAtlasSprite particleIcon() {
+    public Material.Baked particleMaterial() {
         return frontOffSprite;
     }
 
@@ -140,12 +138,12 @@ public class PlanePartModel implements PartModel {
         public PartModel bake(ModelBaker baker, ModelState modelState) {
             ModelDebugName debugName = getClass()::toString;
 
-            var frontOnSprite = baker.sprites().get(new Material(TextureAtlas.LOCATION_BLOCKS, frontOnTexture),
+            var frontOnSprite = baker.materials().get(new Material(frontOnTexture),
                     debugName);
-            var frontOffSprite = baker.sprites().get(new Material(TextureAtlas.LOCATION_BLOCKS, frontOffTexture),
+            var frontOffSprite = baker.materials().get(new Material(frontOffTexture),
                     debugName);
-            var sidesSprite = baker.sprites().get(new Material(TextureAtlas.LOCATION_BLOCKS, sidesTexture), debugName);
-            var backSprite = baker.sprites().get(new Material(TextureAtlas.LOCATION_BLOCKS, backTexture), debugName);
+            var sidesSprite = baker.materials().get(new Material(sidesTexture), debugName);
+            var backSprite = baker.materials().get(new Material(backTexture), debugName);
 
             return new PlanePartModel(
                     frontOnSprite,

@@ -204,8 +204,7 @@ public class SpatialPylonModel implements DynamicBlockStateModel {
         }
 
         private static Material getTexturePath(SpatialPylonTextureType type) {
-            return new Material(TextureAtlas.LOCATION_BLOCKS,
-                    AppEng.makeId("block/spatial_pylon/" + type.name().toLowerCase(Locale.ROOT)));
+            return new Material(AppEng.makeId("block/spatial_pylon/" + type.name().toLowerCase(Locale.ROOT)));
         }
 
         @Override

@@ -5,10 +5,10 @@ import java.util.List;
 import com.mojang.serialization.MapCodec;
 
 import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.renderer.block.dispatch.ModelState;
 import net.minecraft.client.resources.model.ResolvableModel;
+import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
 import net.minecraft.client.renderer.block.BlockAndTintGetter;
@@ -31,7 +31,7 @@ public interface PartModel {
             RandomSource random,
             List<BlockStateModelPart> parts);
 
-    TextureAtlasSprite particleIcon();
+    Material.Baked particleMaterial();
 
     /**
      * An unbaked {@link PartModel} which is what is deserialized from the JSON file and ultimately used to produce a

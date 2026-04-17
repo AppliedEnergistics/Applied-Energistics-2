@@ -36,14 +36,13 @@ import appeng.parts.automation.PartModelData;
 import appeng.util.Platform;
 
 public final class P2PFrequencyPartModel implements PartModel {
-    private static final Material TEXTURE = new Material(TextureAtlas.LOCATION_BLOCKS,
-            AppEng.makeId("part/p2p_tunnel_frequency"));
+    private static final Material TEXTURE = new Material(AppEng.makeId("part/p2p_tunnel_frequency"));
     private static final int[][] QUAD_OFFSETS = new int[][] { { 3, 11, 2 }, { 11, 11, 2 }, { 3, 3, 2 }, { 11, 3, 2 } };
-    private final TextureAtlasSprite texture;
+    private final Material.Baked texture;
     private final Transformation transformation;
     private final Cache<Long, BlockStateModelPart> modelCache = CacheBuilder.newBuilder().maximumSize(100).build();
 
-    public P2PFrequencyPartModel(TextureAtlasSprite texture, Transformation transformation) {
+    public P2PFrequencyPartModel(Material.Baked texture, Transformation transformation) {
         this.texture = texture;
         this.transformation = BlockMath.blockCenterToCorner(transformation);
     }
@@ -57,7 +56,7 @@ public final class P2PFrequencyPartModel implements PartModel {
     }
 
     @Override
-    public TextureAtlasSprite particleIcon() {
+    public Material.Baked particleMaterial() {
         return texture;
     }
 
@@ -120,8 +119,20 @@ public final class P2PFrequencyPartModel implements PartModel {
             }
 
             @Override
-            public TextureAtlasSprite particleIcon() {
+            public Material.Baked particleMaterial() {
                 return texture;
+            }
+
+            @Override
+            public @BakedQuad.MaterialFlags int materialFlags() {
+                int flags = 0;
+                if (texture.forceTranslucent() || texture.sprite().contents().transparency().hasTranslucent()) {
+                    flags |= BakedQuad.FLAG_TRANSLUCENT;
+                }
+                if (texture.sprite().contents().isAnimated()) {
+                    flags |= BakedQuad.FLAG_ANIMATED;
+                }
+                return flags;
             }
         };
     }
@@ -137,7 +148,7 @@ public final class P2PFrequencyPartModel implements PartModel {
 
         @Override
         public PartModel bake(ModelBaker baker, ModelState modelState) {
-            var texture = baker.sprites().get(TEXTURE, getClass()::toString);
+            var texture = baker.materials().get(TEXTURE, getClass()::toString);
             return new P2PFrequencyPartModel(texture, modelState.transformation());
         }
 

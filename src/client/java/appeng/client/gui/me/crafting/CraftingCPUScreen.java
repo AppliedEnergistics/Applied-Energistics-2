@@ -118,11 +118,11 @@ public class CraftingCPUScreen<T extends CraftingCPUMenu> extends AEBaseScreen<T
     }
 
     @Override
-    public void render(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float btn) {
+    public void extractRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float btn) {
         this.cancel.active = !getVisualEntries().isEmpty();
         this.suspend.active = this.cancel.active;
 
-        super.render(guiGraphics, mouseX, mouseY, btn);
+        super.extractRenderState(guiGraphics, mouseX, mouseY, btn);
     }
 
     @Override

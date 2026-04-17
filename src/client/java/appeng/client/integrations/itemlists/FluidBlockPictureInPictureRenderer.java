@@ -4,6 +4,10 @@ import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
+import net.minecraft.client.renderer.Sheets;
+import net.minecraft.client.renderer.block.FluidRenderer;
+import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix3x2f;
 import org.joml.Quaternionf;
@@ -12,7 +16,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.gui.render.pip.PictureInPictureRenderer;
 import net.minecraft.client.renderer.state.gui.pip.PictureInPictureRenderState;
-import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -27,11 +30,11 @@ import net.minecraft.world.level.lighting.LevelLightEngine;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
-import net.neoforged.neoforge.client.RenderTypeHelper;
 import net.neoforged.neoforge.client.model.pipeline.VertexConsumerWrapper;
 
 public class FluidBlockPictureInPictureRenderer
         extends PictureInPictureRenderer<FluidBlockPictureInPictureRenderer.State> {
+
     public FluidBlockPictureInPictureRenderer(MultiBufferSource.BufferSource bufferSource) {
         super(bufferSource);
     }
@@ -43,20 +46,25 @@ public class FluidBlockPictureInPictureRenderer
 
     @Override
     protected void renderToTexture(State renderState, PoseStack poseStack) {
-        Minecraft.getInstance().gameRenderer.getLighting().setupFor(Lighting.Entry.LEVEL);
+        var minecraft = Minecraft.getInstance();
+        var fluidModelSet = minecraft.getModelManager().getFluidStateModelSet();
 
-        var blockRenderer = Minecraft.getInstance().getBlockRenderer();
+        minecraft.gameRenderer.getLighting().setupFor(Lighting.Entry.LEVEL);
 
         var fluidState = renderState.fluid.defaultFluidState();
 
         poseStack.pushPose();
         setupOrthographicProjection(poseStack);
 
-        var renderType = ItemBlockRenderTypes.getRenderLayer(fluidState);
-        VertexConsumer buffer = bufferSource.getBuffer(RenderTypeHelper.getEntityRenderType(renderType));
-        var liquidVertexConsumer = new LiquidVertexConsumer(buffer, poseStack.last());
-        blockRenderer.renderLiquid(
-                BlockPos.ZERO, new FakeWorld(fluidState), liquidVertexConsumer,
+        var fluidRenderer = new FluidRenderer(fluidModelSet);
+        fluidRenderer.tesselate(
+                BlockAndTintGetter.EMPTY,
+                BlockPos.ZERO,
+                layer -> {
+                    // TODO 26.1: Unclear if this is still needed
+                    var buffer = bufferSource.getBuffer(layer.translucent() ? Sheets.translucentBlockSheet() : Sheets.cutoutBlockSheet());
+                    return new LiquidVertexConsumer(buffer, poseStack.last());
+                },
                 fluidState.createLegacyBlock(), fluidState);
 
         poseStack.popPose();
@@ -104,81 +112,9 @@ public class FluidBlockPictureInPictureRenderer
         poseStack.translate(-0.5f, -0.5f, -0.5f);
     }
 
-    private static class FakeWorld implements BlockAndTintGetter {
-        private final FluidState fluidState;
-
-        public FakeWorld(FluidState fluidState) {
-            this.fluidState = fluidState;
-        }
-
-        @Override
-        public float getShade(Direction direction, boolean bl) {
-            return 1.0f;
-        }
-
-        @Override
-        public LevelLightEngine getLightEngine() {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public int getBrightness(LightLayer lightLayer, BlockPos blockPos) {
-            return 0;
-        }
-
-        @Override
-        public int getRawBrightness(BlockPos blockPos, int i) {
-            return 0;
-        }
-
-        @Override
-        public int getBlockTint(BlockPos blockPos, ColorResolver colorResolver) {
-            var level = Minecraft.getInstance().level;
-            if (level != null) {
-                var biome = Minecraft.getInstance().level.getBiome(blockPos);
-                return colorResolver.getColor(biome.value(), 0, 0);
-            } else {
-                return -1;
-            }
-        }
-
-        @Override
-        public BlockEntity getBlockEntity(BlockPos blockPos) {
-            return null;
-        }
-
-        @Override
-        public BlockState getBlockState(BlockPos blockPos) {
-            if (blockPos.equals(BlockPos.ZERO)) {
-                return fluidState.createLegacyBlock();
-            } else {
-                return Blocks.AIR.defaultBlockState();
-            }
-        }
-
-        @Override
-        public FluidState getFluidState(BlockPos blockPos) {
-            if (blockPos.equals(BlockPos.ZERO)) {
-                return fluidState;
-            } else {
-                return Fluids.EMPTY.defaultFluidState();
-            }
-        }
-
-        @Override
-        public int getHeight() {
-            return 0;
-        }
-
-        @Override
-        public int getMinY() {
-            return 0;
-        }
-    }
-
     /**
      * The only purpose of this vertex consumer proxy is to transform vertex positions emitted by the
-     * {@link net.minecraft.client.renderer.block.LiquidBlockRenderer} into absolute coordinates. The renderer assumes
+     * {@link FluidRenderer} into absolute coordinates. The renderer assumes
      * it is being called in the context of tessellating a chunk section (16x16x16) and emits corresponding coordinates,
      * while we batch all visible chunks in the guidebook together.
      */

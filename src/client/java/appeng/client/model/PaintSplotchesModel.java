@@ -18,10 +18,13 @@
 
 package appeng.client.model;
 
+import java.util.Arrays;
 import java.util.List;
 
 import com.mojang.serialization.MapCodec;
 
+import net.minecraft.client.resources.model.geometry.BakedQuad;
+import net.minecraft.client.resources.model.sprite.MaterialBaker;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
@@ -51,19 +54,28 @@ import appeng.core.AppEng;
 import appeng.helpers.Splotch;
 
 public class PaintSplotchesModel implements DynamicBlockStateModel {
-    private static final Material TEXTURE_PAINT1 = new Material(TextureAtlas.LOCATION_BLOCKS,
-            AppEng.makeId("block/paint1"));
-    private static final Material TEXTURE_PAINT2 = new Material(TextureAtlas.LOCATION_BLOCKS,
-            AppEng.makeId("block/paint2"));
-    private static final Material TEXTURE_PAINT3 = new Material(TextureAtlas.LOCATION_BLOCKS,
-            AppEng.makeId("block/paint3"));
+    private static final Material TEXTURE_PAINT1 = new Material(AppEng.makeId("block/paint1"));
+    private static final Material TEXTURE_PAINT2 = new Material(AppEng.makeId("block/paint2"));
+    private static final Material TEXTURE_PAINT3 = new Material(AppEng.makeId("block/paint3"));
 
-    private final TextureAtlasSprite[] textures;
+    private final Material.Baked[] textures;
+    private final int materialFlags;
 
-    public PaintSplotchesModel(SpriteGetter sprites) {
+    public PaintSplotchesModel(MaterialBaker materials) {
         ModelDebugName debugName = getClass()::toString;
-        this.textures = new TextureAtlasSprite[] { sprites.get(TEXTURE_PAINT1, debugName),
-                sprites.get(TEXTURE_PAINT2, debugName), sprites.get(TEXTURE_PAINT3, debugName) };
+        this.textures = new Material.Baked[] { materials.get(TEXTURE_PAINT1, debugName),
+                materials.get(TEXTURE_PAINT2, debugName), materials.get(TEXTURE_PAINT3, debugName) };
+        // Any animated?
+        var materialFlags = 0;
+        var translucent = Arrays.stream(this.textures).anyMatch(m -> m.forceTranslucent() || m.sprite().contents().transparency().hasTranslucent());
+        if (translucent) {
+            materialFlags |= BakedQuad.FLAG_TRANSLUCENT;
+        }
+        var animated = Arrays.stream(this.textures).anyMatch(m -> m.sprite().contents().isAnimated());
+        if (animated) {
+            materialFlags |= BakedQuad.FLAG_ANIMATED;
+        }
+        this.materialFlags = materialFlags;
     }
 
     @Override
@@ -75,13 +87,17 @@ public class PaintSplotchesModel implements DynamicBlockStateModel {
         list.add(new SimpleModelWrapper(
                 quadListBuilder.build(),
                 false,
-                textures[0],
-                ChunkSectionLayer.CUTOUT));
+                textures[0]));
     }
 
     @Override
-    public TextureAtlasSprite particleIcon() {
+    public Material.Baked particleMaterial() {
         return textures[0];
+    }
+
+    @Override
+    public @BakedQuad.MaterialFlags int materialFlags() {
+        return materialFlags;
     }
 
     @Override
@@ -102,7 +118,7 @@ public class PaintSplotchesModel implements DynamicBlockStateModel {
 
         @Override
         public PaintSplotchesModel bake(ModelBaker baker) {
-            return new PaintSplotchesModel(baker.sprites());
+            return new PaintSplotchesModel(baker.materials());
         }
 
         @Override
@@ -117,7 +133,7 @@ public class PaintSplotchesModel implements DynamicBlockStateModel {
             // This is the inventory model which should usually not be used other than in
             // special cases
             CubeBuilder builder = new CubeBuilder(quadListBuilder::addUnculledFace);
-            builder.setTexture(this.textures[0]);
+            builder.setTexture(this.textures[0].sprite());
             builder.addCube(0, 0, 0, 16, 16, 16);
             return;
         }
@@ -148,7 +164,7 @@ public class PaintSplotchesModel implements DynamicBlockStateModel {
             pos_x = Math.max(buffer, Math.min(1.0f - buffer, pos_x));
             pos_y = Math.max(buffer, Math.min(1.0f - buffer, pos_y));
 
-            TextureAtlasSprite ico = this.textures[s.getSeed() % this.textures.length];
+            TextureAtlasSprite ico = this.textures[s.getSeed() % this.textures.length].sprite();
             builder.setTexture(ico);
             builder.setCustomUv(s.getSide().getOpposite(), 0, 0, 1, 1);
 

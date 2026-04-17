@@ -12,6 +12,7 @@ import net.minecraft.client.resources.model.SimpleModelWrapper;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.renderer.block.dispatch.ModelState;
+import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
@@ -46,8 +47,8 @@ public record StatusIndicatorPartModel(
     }
 
     @Override
-    public TextureAtlasSprite particleIcon() {
-        return activeBaked.particleIcon();
+    public Material.Baked particleMaterial() {
+        return activeBaked.particleMaterial();
     }
 
     public record Unbaked(Identifier active, Identifier powered,
