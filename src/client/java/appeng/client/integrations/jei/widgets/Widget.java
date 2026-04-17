@@ -2,11 +2,11 @@ package appeng.client.integrations.jei.widgets;
 
 import java.util.List;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 
 public interface Widget {
-    void draw(GuiGraphics guiGraphics);
+    void draw(GuiGraphicsExtractor guiGraphics);
 
     default boolean hitTest(double x, double y) {
         return false;

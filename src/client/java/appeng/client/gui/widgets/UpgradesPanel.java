@@ -25,7 +25,7 @@ import java.util.function.Supplier;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
@@ -125,7 +125,7 @@ public final class UpgradesPanel implements ICompositeWidget {
     }
 
     @Override
-    public void drawBackgroundLayer(GuiGraphics guiGraphics, Rect2i bounds, Point mouse) {
+    public void drawBackgroundLayer(GuiGraphicsExtractor guiGraphics, Rect2i bounds, Point mouse) {
         int slotCount = getUpgradeSlotCount();
         if (slotCount <= 0) {
             return;
@@ -216,7 +216,7 @@ public final class UpgradesPanel implements ICompositeWidget {
         return new Tooltip(tooltip);
     }
 
-    private static void drawSlot(GuiGraphics guiGraphics, int x, int y,
+    private static void drawSlot(GuiGraphicsExtractor guiGraphics, int x, int y,
             boolean borderLeft, boolean borderTop, boolean borderRight, boolean borderBottom) {
         int srcX = PADDING;
         int srcY = PADDING;

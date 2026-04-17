@@ -2,7 +2,7 @@ package appeng.client.render;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
@@ -62,7 +62,7 @@ public class StorageCellClientTooltipComponent implements ClientTooltipComponent
     }
 
     @Override
-    public void renderText(GuiGraphics guiGraphics, Font font, int x, int y) {
+    public void renderText(GuiGraphicsExtractor guiGraphics, Font font, int x, int y) {
         var yoff = (16 - font.lineHeight) / 2;
 
         var content = tooltipComponent.content();
@@ -81,7 +81,7 @@ public class StorageCellClientTooltipComponent implements ClientTooltipComponent
     }
 
     @Override
-    public void renderImage(Font font, int x, int y, int width, int height, GuiGraphics guiGraphics) {
+    public void renderImage(Font font, int x, int y, int width, int height, GuiGraphicsExtractor guiGraphics) {
         var content = tooltipComponent.content();
         if (!content.isEmpty()) {
             var xoff = 0;

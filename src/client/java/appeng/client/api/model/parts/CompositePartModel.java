@@ -5,14 +5,14 @@ import java.util.List;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
-import net.minecraft.client.renderer.block.model.BlockModelPart;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.ModelBaker;
-import net.minecraft.client.resources.model.ModelState;
+import net.minecraft.client.renderer.block.dispatch.ModelState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.neoforged.neoforge.model.data.ModelData;
 
 import appeng.client.model.PartModels;
@@ -25,7 +25,7 @@ public record CompositePartModel(List<PartModel> models) implements PartModel {
 
     @Override
     public void collectParts(BlockAndTintGetter level, BlockPos pos, ModelData partModelData, RandomSource random,
-            List<BlockModelPart> parts) {
+            List<BlockStateModelPart> parts) {
         for (var model : models) {
             model.collectParts(level, pos, partModelData, random, parts);
         }

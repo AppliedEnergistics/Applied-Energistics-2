@@ -5,6 +5,7 @@ import java.util.concurrent.Executor;
 
 import com.google.common.collect.ImmutableList;
 
+import net.minecraft.world.level.levelgen.WorldGenSettings;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -46,6 +47,9 @@ public abstract class MinecraftServerMixin {
     protected WorldData worldData;
 
     @Shadow
+    protected WorldGenSettings worldGenSettings;
+
+    @Shadow
     protected Executor executor;
 
     @Shadow
@@ -65,7 +69,7 @@ public abstract class MinecraftServerMixin {
                 new SpatialStorageChunkGenerator(
                         registryHolder.lookupOrThrow(Registries.BIOME)));
 
-        long seed = BiomeManager.obfuscateSeed(this.worldData.worldGenOptions().seed());
+        long seed = BiomeManager.obfuscateSeed(this.worldGenSettings.options().seed());
 
         var serverLevelData = this.worldData.overworldData();
         var derivedLevelData = new DerivedLevelData(this.worldData, serverLevelData);
@@ -79,8 +83,7 @@ public abstract class MinecraftServerMixin {
                 false /* debug */,
                 seed,
                 ImmutableList.of(),
-                false,
-                null);
+                false /* tick time */);
         // NOTE: We don't register the spatial dimension for the world-border. Players can't move freely in that
         // dimension anyway.
         this.levels.put(SpatialStorageDimensionIds.WORLD_ID, level);

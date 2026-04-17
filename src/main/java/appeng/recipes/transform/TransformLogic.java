@@ -102,17 +102,15 @@ public final class TransformLogic {
             }
 
             if (missingIngredients.isEmpty()) {
-                var items = new ArrayList<ItemStack>(consumedItems.size());
                 for (var e : consumedItems.reference2IntEntrySet()) {
                     var itemEntity = e.getKey();
-                    items.add(itemEntity.getItem().split(e.getIntValue()));
+                    itemEntity.getItem().split(e.getIntValue());
 
                     if (itemEntity.getItem().getCount() <= 0) {
                         itemEntity.discard();
                     }
                 }
-                var recipeInput = new TransformRecipeInput(items);
-                var craftResult = recipe.assemble(recipeInput);
+                var craftResult = recipe.createResult();
 
                 var random = level.getRandom();
                 final double x = Math.floor(entity.getX()) + .25d + random.nextDouble() * .5;

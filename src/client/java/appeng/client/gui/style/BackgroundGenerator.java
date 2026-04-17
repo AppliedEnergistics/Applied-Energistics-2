@@ -1,6 +1,6 @@
 package appeng.client.gui.style;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 
 /**
  * Generates a background of arbitrary size by tiling a pre-defined background.
@@ -34,7 +34,7 @@ public final class BackgroundGenerator {
     private BackgroundGenerator() {
     }
 
-    public static void draw(int width, int height, GuiGraphics guiGraphics, int x, int y) {
+    public static void draw(int width, int height, GuiGraphicsExtractor guiGraphics, int x, int y) {
         if (width < 2 * BORDER || height < 2 * BORDER) {
             return;
         }

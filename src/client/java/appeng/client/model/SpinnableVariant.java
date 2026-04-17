@@ -14,11 +14,11 @@ import org.joml.Matrix4f;
 import org.joml.Matrix4fc;
 import org.joml.Quaternionf;
 
-import net.minecraft.client.renderer.block.model.BlockModelPart;
-import net.minecraft.client.renderer.block.model.SimpleModelWrapper;
-import net.minecraft.client.resources.model.BlockModelRotation;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
+import net.minecraft.client.resources.model.SimpleModelWrapper;
+import net.minecraft.client.renderer.block.dispatch.BlockModelRotation;
 import net.minecraft.client.resources.model.ModelBaker;
-import net.minecraft.client.resources.model.ModelState;
+import net.minecraft.client.renderer.block.dispatch.ModelState;
 import net.minecraft.client.resources.model.ResolvableModel;
 import net.minecraft.core.BlockMath;
 import net.minecraft.core.Direction;
@@ -26,11 +26,11 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 
 /**
- * Extends Vanillas {@link net.minecraft.client.renderer.block.model.Variant} with rotation around the Z-axis. TODO
+ * Extends Vanillas {@link net.minecraft.client.renderer.block.dispatch.Variant} with rotation around the Z-axis. TODO
  * 1.21.11: This entire thing can be yeeted since Vanilla now has z-rotation support.
  */
 public record SpinnableVariant(Identifier modelLocation,
-        SimpleModelState modelState) implements BlockModelPart.Unbaked {
+        SimpleModelState modelState) implements BlockStateModelPart.Unbaked {
 
     public static final MapCodec<SpinnableVariant> MAP_CODEC = RecordCodecBuilder.mapCodec(
             builder -> builder.group(
@@ -68,7 +68,7 @@ public record SpinnableVariant(Identifier modelLocation,
     }
 
     @Override
-    public BlockModelPart bake(ModelBaker baker) {
+    public BlockStateModelPart bake(ModelBaker baker) {
         return SimpleModelWrapper.bake(baker, this.modelLocation, this.modelState.asModelState());
     }
 

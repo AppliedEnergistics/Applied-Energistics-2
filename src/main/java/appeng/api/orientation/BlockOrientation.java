@@ -97,7 +97,7 @@ public enum BlockOrientation {
                 -angleZ * Mth.DEG_TO_RAD);
 
         if (angleX == 0 && angleY == 0 && angleZ == 0) {
-            this.transformation = Transformation.identity();
+            this.transformation = Transformation.IDENTITY;
         } else {
             var rotationMatrix = new Matrix4f()
                     .identity()

@@ -12,19 +12,19 @@ import com.mojang.serialization.MapCodec;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.BlockModelPart;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.Material;
+import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.client.resources.model.ModelBaker;
-import net.minecraft.client.resources.model.ModelState;
+import net.minecraft.client.renderer.block.dispatch.ModelState;
 import net.minecraft.core.BlockMath;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.neoforged.neoforge.client.model.quad.QuadTransforms;
 import net.neoforged.neoforge.model.data.ModelData;
 
@@ -41,7 +41,7 @@ public final class P2PFrequencyPartModel implements PartModel {
     private static final int[][] QUAD_OFFSETS = new int[][] { { 3, 11, 2 }, { 11, 11, 2 }, { 3, 3, 2 }, { 11, 3, 2 } };
     private final TextureAtlasSprite texture;
     private final Transformation transformation;
-    private final Cache<Long, BlockModelPart> modelCache = CacheBuilder.newBuilder().maximumSize(100).build();
+    private final Cache<Long, BlockStateModelPart> modelCache = CacheBuilder.newBuilder().maximumSize(100).build();
 
     public P2PFrequencyPartModel(TextureAtlasSprite texture, Transformation transformation) {
         this.texture = texture;
@@ -50,7 +50,7 @@ public final class P2PFrequencyPartModel implements PartModel {
 
     @Override
     public void collectParts(BlockAndTintGetter level, BlockPos pos, ModelData partModelData, RandomSource random,
-            List<BlockModelPart> parts) {
+            List<BlockStateModelPart> parts) {
         var frequency = partModelData.get(PartModelData.P2P_FREQUENCY);
         frequency = Objects.requireNonNullElse(frequency, 0L);
         parts.add(getFrequencyPart(frequency));
@@ -61,7 +61,7 @@ public final class P2PFrequencyPartModel implements PartModel {
         return texture;
     }
 
-    private BlockModelPart getFrequencyPart(long partFlags) {
+    private BlockStateModelPart getFrequencyPart(long partFlags) {
         try {
             return modelCache.get(partFlags, () -> {
                 short frequency = (short) (partFlags & 0xffffL);
@@ -73,7 +73,7 @@ public final class P2PFrequencyPartModel implements PartModel {
         }
     }
 
-    private BlockModelPart buildFrequencyPart(short frequency, boolean active) {
+    private BlockStateModelPart buildFrequencyPart(short frequency, boolean active) {
         var colors = Platform.p2p().toColors(frequency);
         var quads = new ArrayList<BakedQuad>(4 * 4);
         var cb = new CubeBuilder(q -> {
@@ -108,7 +108,7 @@ public final class P2PFrequencyPartModel implements PartModel {
         // Reset back to default
         cb.setEmissiveMaterial(false);
 
-        return new BlockModelPart() {
+        return new BlockStateModelPart() {
             @Override
             public List<BakedQuad> getQuads(@Nullable Direction side) {
                 return side == null ? quads : List.of();

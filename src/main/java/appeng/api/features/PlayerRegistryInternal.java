@@ -28,6 +28,7 @@ import com.google.common.collect.HashBiMap;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.UUIDUtil;
@@ -45,7 +46,7 @@ import appeng.core.AppEng;
  */
 final class PlayerRegistryInternal extends SavedData implements IPlayerRegistry {
 
-    private static final String NAME = AppEng.MOD_ID + "_players";
+    private static final Identifier ID = AppEng.makeId("players");
 
     private record PlayerRegistryData(List<Integer> playerIds, List<UUID> profileIds) {
     }
@@ -57,7 +58,7 @@ final class PlayerRegistryInternal extends SavedData implements IPlayerRegistry 
                     .apply(builder, PlayerRegistryData::new));
 
     private static final SavedDataType<PlayerRegistryInternal> TYPE = new SavedDataType<>(
-            NAME,
+            ID,
             level -> new PlayerRegistryInternal(level.getServer()),
             level -> RecordCodecBuilder.create(builder -> builder.group(
                     PLAYER_REGISTRY_DATA_CODEC.fieldOf("players").forGetter(PlayerRegistryInternal::getData))

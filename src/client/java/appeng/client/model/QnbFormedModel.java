@@ -16,31 +16,30 @@
  * along with Applied Energistics 2.  If not, see <http://www.gnu.org/licenses/lgpl>.
  */
 
-package appeng.block.qnb;
+package appeng.client.model;
 
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 
+import appeng.block.qnb.QnbFormedState;
 import com.mojang.serialization.MapCodec;
 
-import net.minecraft.client.renderer.block.model.BlockModelPart;
-import net.minecraft.client.renderer.block.model.BlockStateModel;
-import net.minecraft.client.renderer.block.model.SimpleModelWrapper;
-import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
-import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
+import net.minecraft.client.resources.model.SimpleModelWrapper;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.BlockModelRotation;
-import net.minecraft.client.resources.model.Material;
+import net.minecraft.client.renderer.block.dispatch.BlockModelRotation;
+import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ModelDebugName;
-import net.minecraft.client.resources.model.QuadCollection;
-import net.minecraft.client.resources.model.SpriteGetter;
+import net.minecraft.client.resources.model.geometry.QuadCollection;
+import net.minecraft.client.resources.model.sprite.MaterialBaker;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.client.model.DynamicBlockStateModel;
@@ -55,18 +54,12 @@ public class QnbFormedModel implements DynamicBlockStateModel {
     private static final Identifier MODEL_RING = AppEng.makeId("block/quantum_ring");
     private static final Identifier MODEL_LINK = AppEng.makeId("block/quantum_link");
 
-    private static final Material TEXTURE_LINK = new Material(TextureAtlas.LOCATION_BLOCKS,
-            AppEng.makeId("block/quantum_link"));
-    private static final Material TEXTURE_RING = new Material(TextureAtlas.LOCATION_BLOCKS,
-            AppEng.makeId("block/quantum_ring"));
-    private static final Material TEXTURE_RING_LIGHT = new Material(TextureAtlas.LOCATION_BLOCKS,
-            AppEng.makeId("block/quantum_ring_light"));
-    private static final Material TEXTURE_RING_LIGHT_CORNER = new Material(TextureAtlas.LOCATION_BLOCKS,
-            AppEng.makeId("block/quantum_ring_light_corner"));
-    private static final Material TEXTURE_CABLE_GLASS = new Material(TextureAtlas.LOCATION_BLOCKS,
-            AppEng.makeId("part/cable/glass/transparent"));
-    private static final Material TEXTURE_COVERED_CABLE = new Material(TextureAtlas.LOCATION_BLOCKS,
-            AppEng.makeId("part/cable/covered/transparent"));
+    private static final Material TEXTURE_LINK = new Material(AppEng.makeId("block/quantum_link"));
+    private static final Material TEXTURE_RING = new Material(AppEng.makeId("block/quantum_ring"));
+    private static final Material TEXTURE_RING_LIGHT = new Material(AppEng.makeId("block/quantum_ring_light"));
+    private static final Material TEXTURE_RING_LIGHT_CORNER = new Material(AppEng.makeId("block/quantum_ring_light_corner"));
+    private static final Material TEXTURE_CABLE_GLASS = new Material(AppEng.makeId("part/cable/glass/transparent"));
+    private static final Material TEXTURE_COVERED_CABLE = new Material(AppEng.makeId("part/cable/covered/transparent"));
 
     private static final float DEFAULT_RENDER_MIN = 2.0f;
     private static final float DEFAULT_RENDER_MAX = 14.0f;
@@ -77,36 +70,36 @@ public class QnbFormedModel implements DynamicBlockStateModel {
     private static final float CENTER_POWERED_RENDER_MIN = -0.01f;
     private static final float CENTER_POWERED_RENDER_MAX = 16.01f;
 
-    private final BlockModelPart unformedRing;
-    private final BlockModelPart unformedLink;
+    private final BlockStateModelPart unformedRing;
+    private final BlockStateModelPart unformedLink;
 
     private final Block linkBlock;
 
-    private final TextureAtlasSprite linkTexture;
-    private final TextureAtlasSprite ringTexture;
-    private final TextureAtlasSprite glassCableTexture;
-    private final TextureAtlasSprite coveredCableTexture;
-    private final TextureAtlasSprite lightTexture;
-    private final TextureAtlasSprite lightCornerTexture;
+    private final Material.Baked linkTexture;
+    private final Material.Baked ringTexture;
+    private final Material.Baked glassCableTexture;
+    private final Material.Baked coveredCableTexture;
+    private final Material.Baked lightTexture;
+    private final Material.Baked lightCornerTexture;
 
-    public QnbFormedModel(BlockModelPart unformedRing, BlockModelPart unformedLink,
-            SpriteGetter bakedTextureGetter) {
+    public QnbFormedModel(BlockStateModelPart unformedRing, BlockStateModelPart unformedLink,
+            MaterialBaker materialBaker) {
         this.unformedLink = unformedLink;
         ModelDebugName debugName = QnbFormedModel.class::toString;
 
         this.unformedRing = unformedRing;
-        this.linkTexture = bakedTextureGetter.get(TEXTURE_LINK, debugName);
-        this.ringTexture = bakedTextureGetter.get(TEXTURE_RING, debugName);
-        this.glassCableTexture = bakedTextureGetter.get(TEXTURE_CABLE_GLASS, debugName);
-        this.coveredCableTexture = bakedTextureGetter.get(TEXTURE_COVERED_CABLE, debugName);
-        this.lightTexture = bakedTextureGetter.get(TEXTURE_RING_LIGHT, debugName);
-        this.lightCornerTexture = bakedTextureGetter.get(TEXTURE_RING_LIGHT_CORNER, debugName);
+        this.linkTexture = materialBaker.get(TEXTURE_LINK, debugName);
+        this.ringTexture = materialBaker.get(TEXTURE_RING, debugName);
+        this.glassCableTexture = materialBaker.get(TEXTURE_CABLE_GLASS, debugName);
+        this.coveredCableTexture = materialBaker.get(TEXTURE_COVERED_CABLE, debugName);
+        this.lightTexture = materialBaker.get(TEXTURE_RING_LIGHT, debugName);
+        this.lightCornerTexture = materialBaker.get(TEXTURE_RING_LIGHT_CORNER, debugName);
         this.linkBlock = AEBlocks.QUANTUM_LINK.block();
     }
 
     @Override
     public void collectParts(BlockAndTintGetter level, BlockPos pos, BlockState state, RandomSource random,
-            List<BlockModelPart> parts) {
+            List<BlockStateModelPart> parts) {
         var modelData = level.getModelData(pos);
         var formedState = modelData.get(QuantumBridgeBlockEntity.FORMED_STATE);
 
@@ -119,12 +112,10 @@ public class QnbFormedModel implements DynamicBlockStateModel {
             return;
         }
 
-        var renderType = state.is(AEBlocks.QUANTUM_LINK.block()) ? ChunkSectionLayer.CUTOUT : ChunkSectionLayer.SOLID;
         parts.add(new SimpleModelWrapper(
                 getQuads(formedState, state),
                 true,
-                particleIcon(),
-                renderType));
+                unformedRing.particleMaterial()));
     }
 
     private QuadCollection getQuads(QnbFormedState formedState, BlockState state) {
@@ -226,8 +217,8 @@ public class QnbFormedModel implements DynamicBlockStateModel {
     }
 
     @Override
-    public TextureAtlasSprite particleIcon() {
-        return this.unformedRing.particleIcon();
+    public Material.Baked particleMaterial(BlockAndTintGetter level, BlockPos pos, BlockState state) {
+        return this.unformedRing.particleMaterial();
     }
 
     public record Unbaked() implements CustomUnbakedBlockStateModel {
@@ -239,7 +230,7 @@ public class QnbFormedModel implements DynamicBlockStateModel {
             var ring = SimpleModelWrapper.bake(baker, MODEL_RING, BlockModelRotation.IDENTITY);
             var link = SimpleModelWrapper.bake(baker, MODEL_LINK, BlockModelRotation.IDENTITY);
 
-            return new QnbFormedModel(ring, link, baker.sprites());
+            return new QnbFormedModel(ring, link, baker.materials());
         }
 
         @Override

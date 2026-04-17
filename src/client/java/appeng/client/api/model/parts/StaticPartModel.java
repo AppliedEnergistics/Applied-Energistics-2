@@ -5,15 +5,15 @@ import java.util.List;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
-import net.minecraft.client.renderer.block.model.BlockModelPart;
-import net.minecraft.client.renderer.block.model.SimpleModelWrapper;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
+import net.minecraft.client.resources.model.SimpleModelWrapper;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.ModelBaker;
-import net.minecraft.client.resources.model.ModelState;
+import net.minecraft.client.renderer.block.dispatch.ModelState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.neoforged.neoforge.model.data.ModelData;
 
 import appeng.api.util.AEColor;
@@ -33,15 +33,15 @@ import appeng.core.AppEng;
  * </dl>
  */
 public class StaticPartModel implements PartModel {
-    private final BlockModelPart model;
+    private final BlockStateModelPart model;
 
-    public StaticPartModel(BlockModelPart model) {
+    public StaticPartModel(BlockStateModelPart model) {
         this.model = model;
     }
 
     @Override
     public void collectParts(BlockAndTintGetter level, BlockPos pos, ModelData partModelData, RandomSource random,
-            List<BlockModelPart> parts) {
+            List<BlockStateModelPart> parts) {
         parts.add(model);
     }
 

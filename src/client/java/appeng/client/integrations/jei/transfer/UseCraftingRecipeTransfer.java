@@ -11,7 +11,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.crafting.CraftingRecipe;
@@ -205,7 +205,7 @@ public class UseCraftingRecipeTransfer<T extends CraftingTermMenu>
         }
 
         @Override
-        public void showError(GuiGraphics guiGraphics, int mouseX, int mouseY, IRecipeSlotsView slots, int recipeX,
+        public void showError(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, IRecipeSlotsView slots, int recipeX,
                 int recipeY) {
             var poseStack = guiGraphics.pose();
             poseStack.pushMatrix();

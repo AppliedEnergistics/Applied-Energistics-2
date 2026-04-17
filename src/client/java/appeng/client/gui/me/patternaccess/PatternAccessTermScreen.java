@@ -36,7 +36,7 @@ import com.google.common.collect.HashMultimap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.CharacterEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.Rect2i;
@@ -182,7 +182,7 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
     }
 
     @Override
-    public void drawFG(GuiGraphics guiGraphics, int offsetX, int offsetY, int mouseX,
+    public void drawFG(GuiGraphicsExtractor guiGraphics, int offsetX, int offsetY, int mouseX,
             int mouseY) {
 
         this.menu.slots.removeIf(slot -> slot instanceof PatternSlot);
@@ -252,7 +252,7 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
         renderLinkStatus(guiGraphics, getMenu().getLinkStatus());
     }
 
-    private void renderLinkStatus(GuiGraphics guiGraphics, ILinkStatus linkStatus) {
+    private void renderLinkStatus(GuiGraphicsExtractor guiGraphics, ILinkStatus linkStatus) {
         // Draw an overlay indicating the grid is disconnected
         if (!linkStatus.connected()) {
             var renderContext = new SimpleRenderContext(LytRect.empty(), guiGraphics);
@@ -274,7 +274,7 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
     }
 
     @Override
-    protected void renderTooltip(GuiGraphics guiGraphics, int x, int y) {
+    protected void renderTooltip(GuiGraphicsExtractor guiGraphics, int x, int y) {
         // Draw line tooltip
         if (hoveredSlot == null) {
             var hoveredLineIndex = getHoveredLineIndex(x, y);
@@ -370,7 +370,7 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
     }
 
     @Override
-    public void drawBG(GuiGraphics guiGraphics, int offsetX, int offsetY, int mouseX,
+    public void drawBG(GuiGraphicsExtractor guiGraphics, int offsetX, int offsetY, int mouseX,
             int mouseY, float partialTicks) {
         // Draw the top of the dialog
         blit(guiGraphics, offsetX, offsetY, HEADER_BBOX);
@@ -630,7 +630,7 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
     /**
      * A version of blit that lets us pass a source rectangle
      */
-    private void blit(GuiGraphics guiGraphics, int offsetX, int offsetY, Rect2i srcRect) {
+    private void blit(GuiGraphicsExtractor guiGraphics, int offsetX, int offsetY, Rect2i srcRect) {
         var texture = AppEng.makeId("textures/guis/patternaccessterminal.png");
         guiGraphics.blit(
                 RenderPipelines.GUI_TEXTURED,

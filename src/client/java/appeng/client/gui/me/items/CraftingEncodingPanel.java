@@ -2,7 +2,7 @@ package appeng.client.gui.me.items;
 
 import java.util.List;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.Slot;
@@ -83,7 +83,7 @@ public class CraftingEncodingPanel extends EncodingModePanel {
     }
 
     @Override
-    public void drawBackgroundLayer(GuiGraphics guiGraphics, Rect2i bounds, Point mouse) {
+    public void drawBackgroundLayer(GuiGraphicsExtractor guiGraphics, Rect2i bounds, Point mouse) {
         BG.dest(bounds.getX() + 8, bounds.getY() + bounds.getHeight() - 165).blit(guiGraphics);
 
         var absMouseX = bounds.getX() + mouse.getX();
@@ -95,7 +95,7 @@ public class CraftingEncodingPanel extends EncodingModePanel {
         }
     }
 
-    private void drawSlotGreenBG(Rect2i bounds, GuiGraphics guiGraphics, Slot slot) {
+    private void drawSlotGreenBG(Rect2i bounds, GuiGraphicsExtractor guiGraphics, Slot slot) {
         int x = bounds.getX() + slot.x;
         int y = bounds.getY() + slot.y;
         guiGraphics.fill(x, y, x + 16, y + 16, 0xff7ac25f);

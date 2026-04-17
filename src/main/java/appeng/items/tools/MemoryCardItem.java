@@ -143,12 +143,12 @@ public class MemoryCardItem extends AEBaseItem implements IMemoryCard {
 
         if (player != null && !player.level().isClientSide()) {
             if (imported.isEmpty()) {
-                player.displayClientMessage(PlayerMessages.InvalidMachine.text(), true);
+                player.sendOverlayMessage(PlayerMessages.InvalidMachine.text());
             } else {
                 var restored = Tooltips
                         .conjunction(imported.stream().map(MemoryCardItem::getSettingComponent)
                                 .distinct().toList());
-                player.displayClientMessage(PlayerMessages.InvalidMachinePartiallyRestored.text(restored), true);
+                player.sendOverlayMessage(PlayerMessages.InvalidMachinePartiallyRestored.text(restored));
             }
         }
     }
@@ -267,10 +267,9 @@ public class MemoryCardItem extends AEBaseItem implements IMemoryCard {
                 }
 
                 if (missingAmount > 0 && !player.level().isClientSide()) {
-                    player.displayClientMessage(
+                    player.sendOverlayMessage(
                             PlayerMessages.MissingUpgrades.text(entry.getKey().getDefaultInstance().getItemName(),
-                                    missingAmount),
-                            true);
+                                    missingAmount));
                 }
             }
         }
@@ -303,11 +302,11 @@ public class MemoryCardItem extends AEBaseItem implements IMemoryCard {
         }
 
         switch (msg) {
-            case SETTINGS_CLEARED -> player.displayClientMessage(PlayerMessages.SettingCleared.text(), true);
-            case INVALID_MACHINE -> player.displayClientMessage(PlayerMessages.InvalidMachine.text(), true);
-            case SETTINGS_LOADED -> player.displayClientMessage(PlayerMessages.LoadedSettings.text(), true);
-            case SETTINGS_SAVED -> player.displayClientMessage(PlayerMessages.SavedSettings.text(), true);
-            case SETTINGS_RESET -> player.displayClientMessage(PlayerMessages.ResetSettings.text(), true);
+            case SETTINGS_CLEARED -> player.sendOverlayMessage(PlayerMessages.SettingCleared.text());
+            case INVALID_MACHINE -> player.sendOverlayMessage(PlayerMessages.InvalidMachine.text());
+            case SETTINGS_LOADED -> player.sendOverlayMessage(PlayerMessages.LoadedSettings.text());
+            case SETTINGS_SAVED -> player.sendOverlayMessage(PlayerMessages.SavedSettings.text());
+            case SETTINGS_RESET -> player.sendOverlayMessage(PlayerMessages.ResetSettings.text());
             default -> {
             }
         }

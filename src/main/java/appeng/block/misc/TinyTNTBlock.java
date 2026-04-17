@@ -61,11 +61,6 @@ public class TinyTNTBlock extends AEBaseBlock {
     }
 
     @Override
-    protected int getLightBlock(BlockState state) {
-        return 2; // FIXME: Validate that this is the correct value range
-    }
-
-    @Override
     public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
         return SHAPE;
     }

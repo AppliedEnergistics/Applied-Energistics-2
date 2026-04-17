@@ -2,9 +2,9 @@ package appeng.client.render.crafting;
 
 import java.util.List;
 
-import net.minecraft.client.renderer.block.model.BlockStateModel;
-import net.minecraft.client.resources.model.Material;
-import net.minecraft.client.resources.model.SpriteGetter;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
+import net.minecraft.client.resources.model.sprite.Material;
+import net.minecraft.client.resources.model.sprite.SpriteGetter;
 
 import appeng.block.crafting.ICraftingUnitType;
 

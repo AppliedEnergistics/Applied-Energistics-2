@@ -37,7 +37,7 @@ import org.joml.Vector3f;
 import org.joml.Vector4f;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.state.LevelRenderState;
+import net.minecraft.client.renderer.state.level.LevelRenderState;
 import net.minecraft.client.renderer.state.SkyRenderState;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;

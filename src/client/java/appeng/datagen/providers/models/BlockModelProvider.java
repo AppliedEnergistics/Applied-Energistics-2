@@ -24,9 +24,10 @@ import net.minecraft.client.data.models.model.ModelTemplates;
 import net.minecraft.client.data.models.model.TextureMapping;
 import net.minecraft.client.data.models.model.TextureSlot;
 import net.minecraft.client.data.models.model.TexturedModel;
-import net.minecraft.client.renderer.block.model.VariantMutator;
+import net.minecraft.client.renderer.block.dispatch.VariantMutator;
 import net.minecraft.client.renderer.item.EmptyModel;
 import net.minecraft.client.renderer.item.RangeSelectItemModel;
+import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.Block;
@@ -43,7 +44,7 @@ import appeng.block.misc.VibrationChamberBlock;
 import appeng.block.networking.ControllerBlock;
 import appeng.block.networking.EnergyCellBlock;
 import appeng.block.networking.WirelessAccessPointBlock;
-import appeng.block.qnb.QnbFormedModel;
+import appeng.client.model.QnbFormedModel;
 import appeng.block.qnb.QuantumLinkChamberBlock;
 import appeng.block.qnb.QuantumRingBlock;
 import appeng.block.spatial.SpatialAnchorBlock;
@@ -78,7 +79,7 @@ public class BlockModelProvider extends ModelSubProvider {
         // These models will be overwritten in code
         var quartzGlassItemBaseModel = ModelTemplates.CUBE_ALL.create(
                 AEBlocks.QUARTZ_GLASS.asItem(),
-                TextureMapping.cube(AppEng.makeId("block/glass/quartz_glass_item")),
+                TextureMapping.cube(new Material(AppEng.makeId("block/glass/quartz_glass_item"))),
                 modelOutput);
         for (var quartzGlassBlock : List.of(AEBlocks.QUARTZ_GLASS, AEBlocks.QUARTZ_VIBRANT_GLASS)) {
             builtInModel(quartzGlassBlock, new QuartzGlassModel.Unbaked(), true);
@@ -151,9 +152,9 @@ public class BlockModelProvider extends ModelSubProvider {
 
         simpleBlockAndItem(AEBlocks.CELL_WORKBENCH, TexturedModel.CUBE_TOP_BOTTOM
                 .updateTexture(textures -> textures
-                        .put(TextureSlot.TOP, makeId("block/cell_workbench_top"))
+                        .put(TextureSlot.TOP, makeMaterial("block/cell_workbench_top"))
                         .put(TextureSlot.BOTTOM, MACHINE_BOTTOM)
-                        .put(TextureSlot.PARTICLE, makeId("block/cell_workbench_top"))));
+                        .put(TextureSlot.PARTICLE, makeMaterial("block/cell_workbench_top"))));
 
         energyCell(AEBlocks.ENERGY_CELL, "block/energy_cell");
         energyCell(AEBlocks.DENSE_ENERGY_CELL, "block/dense_energy_cell");
@@ -203,43 +204,43 @@ public class BlockModelProvider extends ModelSubProvider {
         var block = AEBlocks.CONTROLLER.block();
 
         var texturesBlock = new TextureMapping()
-                .put(TextureSlot.ALL, AppEng.makeId("block/controller"))
-                .put(TextureSlot.SIDE, AppEng.makeId("block/controller_column"))
-                .put(TextureSlot.END, AppEng.makeId("block/controller"))
-                .put(BLOCK, AppEng.makeId("block/controller_powered"))
-                .put(LIGHTS, AppEng.makeId("block/controller_lights"));
+                .put(TextureSlot.ALL, makeMaterial("block/controller"))
+                .put(TextureSlot.SIDE, makeMaterial("block/controller_column"))
+                .put(TextureSlot.END, makeMaterial("block/controller"))
+                .put(BLOCK, makeMaterial("block/controller_powered"))
+                .put(LIGHTS, makeMaterial("block/controller_lights"));
         var offlineBlock = ModelTemplates.CUBE_ALL.createWithSuffix(block, "_block_offline", texturesBlock,
                 modelOutput);
         var onlineBlock = CONTROLLER_BLOCK_LIGHTS.createWithSuffix(block, "_block_online", texturesBlock, modelOutput);
         var conflictedBlock = CONTROLLER_BLOCK_LIGHTS.createWithSuffix(block, "_block_conflicted",
-                texturesBlock.copy().put(LIGHTS, AppEng.makeId("block/controller_conflict")), modelOutput);
+                texturesBlock.copy().put(LIGHTS, makeMaterial("block/controller_conflict")), modelOutput);
 
         var texturesColumn = new TextureMapping()
-                .put(TextureSlot.ALL, AppEng.makeId("block/controller"))
-                .put(TextureSlot.SIDE, AppEng.makeId("block/controller_column"))
-                .put(TextureSlot.END, AppEng.makeId("block/controller"))
-                .put(BLOCK, AppEng.makeId("block/controller_column_powered"))
-                .put(LIGHTS, AppEng.makeId("block/controller_column_lights"));
+                .put(TextureSlot.ALL, makeMaterial("block/controller"))
+                .put(TextureSlot.SIDE, makeMaterial("block/controller_column"))
+                .put(TextureSlot.END, makeMaterial("block/controller"))
+                .put(BLOCK, makeMaterial("block/controller_column_powered"))
+                .put(LIGHTS, makeMaterial("block/controller_column_lights"));
         var offlineColumn = ModelTemplates.CUBE_COLUMN.createWithSuffix(block, "_column_offline", texturesColumn,
                 modelOutput);
         var onlineColumn = CONTROLLER_COLUMN_LIGHTS.createWithSuffix(block, "_column_online", texturesColumn,
                 modelOutput);
         var conflictedColumn = CONTROLLER_COLUMN_LIGHTS.createWithSuffix(block, "_column_conflicted",
-                texturesColumn.copy().put(LIGHTS, AppEng.makeId("block/controller_column_conflict")), modelOutput);
+                texturesColumn.copy().put(LIGHTS, makeMaterial("block/controller_column_conflict")), modelOutput);
 
         var insideA = ModelTemplates.CUBE_ALL.createWithSuffix(block, "_inside_a",
-                TextureMapping.cube(AppEng.makeId("block/controller_inside_a")), modelOutput);
+                TextureMapping.cube(makeMaterial("block/controller_inside_a")), modelOutput);
         var insideB = ModelTemplates.CUBE_ALL.createWithSuffix(block, "_inside_b",
-                TextureMapping.cube(AppEng.makeId("block/controller_inside_b")), modelOutput);
+                TextureMapping.cube(makeMaterial("block/controller_inside_b")), modelOutput);
         var insideAConflicted = CONTROLLER_BLOCK_LIGHTS.createWithSuffix(block, "inside_a_conflicted",
                 new TextureMapping()
-                        .put(BLOCK, AppEng.makeId("block/controller_inside_a_powered"))
-                        .put(LIGHTS, AppEng.makeId("block/controller_conflict")),
+                        .put(BLOCK, makeMaterial("block/controller_inside_a_powered"))
+                        .put(LIGHTS, makeMaterial("block/controller_conflict")),
                 modelOutput);
         var insideBConflicted = CONTROLLER_BLOCK_LIGHTS.createWithSuffix(block, "inside_b_conflicted",
                 new TextureMapping()
-                        .put(BLOCK, AppEng.makeId("block/controller_inside_b_powered"))
-                        .put(LIGHTS, AppEng.makeId("block/controller_conflict")),
+                        .put(BLOCK, makeMaterial("block/controller_inside_b_powered"))
+                        .put(LIGHTS, makeMaterial("block/controller_conflict")),
                 modelOutput);
 
         // Alias the enums since the following becomes very noisy otherwise
@@ -328,7 +329,7 @@ public class BlockModelProvider extends ModelSubProvider {
                 AEBlocks.SPATIAL_PYLON.asItem(),
                 ItemModelUtils.plainModel(
                         ModelTemplates.CUBE_ALL.create(AEBlocks.SPATIAL_PYLON.asItem(),
-                                TextureMapping.cube(AppEng.makeId("item/spatial_pylon")), modelOutput)));
+                                TextureMapping.cube(makeMaterial("item/spatial_pylon")), modelOutput)));
         builtInModel(AEBlocks.SPATIAL_PYLON, new SpatialPylonModel.Unbaked(), true);
     }
 
@@ -382,13 +383,13 @@ public class BlockModelProvider extends ModelSubProvider {
         var unformedModel = ModelTemplates.CUBE.create(
                 makeId("block/crafting/monitor"),
                 new TextureMapping()
-                        .put(TextureSlot.PARTICLE, makeId("block/crafting/monitor"))
+                        .put(TextureSlot.PARTICLE, makeMaterial("block/crafting/monitor"))
                         .put(TextureSlot.DOWN, MACHINE_BOTTOM)
-                        .put(TextureSlot.UP, makeId("block/crafting/unit"))
-                        .put(TextureSlot.NORTH, makeId("block/crafting/monitor"))
-                        .put(TextureSlot.EAST, makeId("block/crafting/unit"))
-                        .put(TextureSlot.SOUTH, makeId("block/crafting/unit"))
-                        .put(TextureSlot.WEST, makeId("block/crafting/unit")),
+                        .put(TextureSlot.UP, makeMaterial("block/crafting/unit"))
+                        .put(TextureSlot.NORTH, makeMaterial("block/crafting/monitor"))
+                        .put(TextureSlot.EAST, makeMaterial("block/crafting/unit"))
+                        .put(TextureSlot.SOUTH, makeMaterial("block/crafting/unit"))
+                        .put(TextureSlot.WEST, makeMaterial("block/crafting/unit")),
                 modelOutput);
 
         blockStateOutput.accept(
@@ -460,7 +461,7 @@ public class BlockModelProvider extends ModelSubProvider {
         itemModels.declareCustomModelItem(AEBlocks.WIRELESS_ACCESS_POINT.asItem());
     }
 
-    private static final Identifier MACHINE_BOTTOM = AppEng.makeId("block/generics/bottom");
+    private static final Material MACHINE_BOTTOM = makeMaterial("block/generics/bottom");
 
     private void vibrationChamber() {
         var block = AEBlocks.VIBRATION_CHAMBER.block();
@@ -613,7 +614,7 @@ public class BlockModelProvider extends ModelSubProvider {
 
     private void craftingModel(BlockDefinition<?> block, String name, CraftingUnitType type) {
         var unformedModel = ModelTemplates.CUBE_ALL.create(
-                makeId("block/crafting/" + name), TextureMapping.cube(makeId("block/crafting/" + name)), modelOutput);
+                makeId("block/crafting/" + name), TextureMapping.cube(makeMaterial("block/crafting/" + name)), modelOutput);
         var formedModel = customBlockStateModel(new CraftingCubeModel.Unbaked(type));
 
         blockModels.blockStateOutput
@@ -637,7 +638,6 @@ public class BlockModelProvider extends ModelSubProvider {
                                 block,
                                 plainVariant(ModelTemplates.CROSS
                                         .extend()
-                                        .renderType("cutout")
                                         .build()
                                         .create(block, TextureMapping.cross(block), modelOutput)))
                                 .with(ROTATIONS_COLUMN_WITH_FACING));

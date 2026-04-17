@@ -8,7 +8,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.texture.OverlayTexture;
@@ -26,7 +26,7 @@ import appeng.util.Platform;
 
 public class FluidKeyRenderer implements AEKeyRenderer<AEFluidKey, FluidKeyRenderer.RenderState> {
     @Override
-    public void drawInGui(Minecraft minecraft, GuiGraphics guiGraphics, int x, int y, AEFluidKey what) {
+    public void drawInGui(Minecraft minecraft, GuiGraphicsExtractor guiGraphics, int x, int y, AEFluidKey what) {
         FluidBlitter.create(what)
                 .dest(x, y, 16, 16)
                 .blit(guiGraphics);

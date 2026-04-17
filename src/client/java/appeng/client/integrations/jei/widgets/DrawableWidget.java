@@ -2,7 +2,7 @@ package appeng.client.integrations.jei.widgets;
 
 import java.util.List;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 
 import mezz.jei.api.gui.drawable.IDrawable;
@@ -30,7 +30,7 @@ public class DrawableWidget extends AbstractWidget {
     }
 
     @Override
-    public void draw(GuiGraphics guiGraphics) {
+    public void draw(GuiGraphicsExtractor guiGraphics) {
         drawable.draw(guiGraphics, x, y);
     }
 }

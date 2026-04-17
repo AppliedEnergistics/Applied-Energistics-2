@@ -8,14 +8,14 @@ import org.jetbrains.annotations.Nullable;
 import org.joml.Quaternionf;
 
 import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.block.model.BlockModelPart;
-import net.minecraft.client.renderer.block.model.BlockStateModel;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
 import net.minecraft.client.renderer.block.model.SingleVariant;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
-import net.minecraft.client.renderer.state.CameraRenderState;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
@@ -30,7 +30,7 @@ import appeng.core.AppEng;
 public class CrankRenderer implements BlockEntityRenderer<CrankBlockEntity, CrankRenderState> {
 
     public static final Identifier HANDLE_MODEL_ID = AppEng.makeId("block/crank_handle");
-    public static final StandaloneModelKey<BlockModelPart> HANDLE_MODEL = new StandaloneModelKey<>(
+    public static final StandaloneModelKey<BlockStateModelPart> HANDLE_MODEL = new StandaloneModelKey<>(
             HANDLE_MODEL_ID::toString);
 
     private final BlockStateModel handleModel;

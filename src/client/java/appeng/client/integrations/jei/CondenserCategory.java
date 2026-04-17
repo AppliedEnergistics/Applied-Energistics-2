@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
@@ -107,7 +107,7 @@ class CondenserCategory implements IRecipeCategory<CondenserOutput> {
     }
 
     @Override
-    public void draw(CondenserOutput recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX,
+    public void draw(CondenserOutput recipe, IRecipeSlotsView recipeSlotsView, GuiGraphicsExtractor guiGraphics, double mouseX,
             double mouseY) {
         this.progress.draw(guiGraphics, 70, 0);
         this.progressOverlay.draw(guiGraphics, 70, 0);

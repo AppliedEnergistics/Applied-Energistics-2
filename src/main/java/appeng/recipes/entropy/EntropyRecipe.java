@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import appeng.recipes.MechanicsRecipe;
 import com.google.common.collect.Maps;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
@@ -38,7 +39,6 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.PlacementInfo;
-import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeBookCategories;
 import net.minecraft.world.item.crafting.RecipeBookCategory;
 import net.minecraft.world.item.crafting.RecipeInput;
@@ -59,7 +59,7 @@ import appeng.recipes.AERecipeTypes;
 /**
  * A special recipe used for the {@link EntropyManipulatorItem}.
  */
-public class EntropyRecipe implements Recipe<RecipeInput> {
+public class EntropyRecipe extends MechanicsRecipe<RecipeInput> {
 
     public static final MapCodec<EntropyRecipe> CODEC = RecordCodecBuilder.mapCodec(builder -> builder.group(
             EntropyMode.CODEC.fieldOf("mode").forGetter(EntropyRecipe::getMode),
@@ -75,6 +75,8 @@ public class EntropyRecipe implements Recipe<RecipeInput> {
             EntropyRecipe::getOutput,
             EntropyRecipe::new);
 
+    public static final RecipeSerializer<EntropyRecipe> SERIALIZER = new RecipeSerializer<>(CODEC, STREAM_CODEC);
+
     private final EntropyMode mode;
     private final Input input;
     private final Output output;
@@ -86,38 +88,13 @@ public class EntropyRecipe implements Recipe<RecipeInput> {
     }
 
     @Override
-    public boolean isSpecial() {
-        return true;
-    }
-
-    @Override
-    public boolean matches(RecipeInput inv, Level level) {
-        return false;
-    }
-
-    @Override
-    public ItemStack assemble(RecipeInput inv) {
-        return ItemStack.EMPTY;
-    }
-
-    @Override
     public RecipeSerializer<EntropyRecipe> getSerializer() {
-        return EntropyRecipeSerializer.INSTANCE;
+        return SERIALIZER;
     }
 
     @Override
     public RecipeType<EntropyRecipe> getType() {
         return AERecipeTypes.ENTROPY;
-    }
-
-    @Override
-    public PlacementInfo placementInfo() {
-        return PlacementInfo.NOT_PLACEABLE;
-    }
-
-    @Override
-    public RecipeBookCategory recipeBookCategory() {
-        return RecipeBookCategories.CRAFTING_MISC;
     }
 
     public EntropyMode getMode() {

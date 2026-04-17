@@ -174,7 +174,7 @@ public abstract class AbstractCraftingUnitBlock<T extends CraftingBlockEntity> e
 
         var cb = this.getBlockEntity(level, pos);
         if (cb != null && cb.getCluster() != null && cb.getCluster().isBusy()) {
-            player.displayClientMessage(PlayerMessages.CraftingCpuBusy.text().withColor(0xFF1F1F), true);
+            player.sendOverlayMessage(PlayerMessages.CraftingCpuBusy.text().withColor(0xFF1F1F));
             return InteractionResult.PASS;
         }
 

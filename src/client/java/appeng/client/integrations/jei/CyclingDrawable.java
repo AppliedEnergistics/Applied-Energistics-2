@@ -3,7 +3,7 @@ package appeng.client.integrations.jei;
 import java.util.Arrays;
 import java.util.List;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.util.Util;
 import net.minecraft.world.level.ItemLike;
 
@@ -30,7 +30,7 @@ public class CyclingDrawable implements IDrawable {
     }
 
     @Override
-    public void draw(GuiGraphics guiGraphics, int xOffset, int yOffset) {
+    public void draw(GuiGraphicsExtractor guiGraphics, int xOffset, int yOffset) {
         var now = Util.getMillis();
         if (now > nextFrame + 2000) {
             currentStage++;

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.ItemLike;
 
@@ -17,7 +17,7 @@ import appeng.util.Icon;
 public class InfoBar {
     private final List<Widget> widgets = new ArrayList<>();
 
-    public void render(GuiGraphics guiGraphics, int x, int y) {
+    public void render(GuiGraphicsExtractor guiGraphics, int x, int y) {
         var maxHeight = widgets.stream().mapToInt(Widget::getHeight).max().orElse(0);
 
         for (var widget : widgets) {
@@ -35,7 +35,7 @@ public class InfoBar {
 
         int getHeight();
 
-        void render(GuiGraphics guiGraphics, int x, int y);
+        void render(GuiGraphicsExtractor guiGraphics, int x, int y);
     }
 
     // TODO (RID): Added xPos and yPos to give me better control over render, but the code below might need refactoring
@@ -75,7 +75,7 @@ public class InfoBar {
         }
 
         @Override
-        public void render(GuiGraphics guiGraphics, int x, int y) {
+        public void render(GuiGraphicsExtractor guiGraphics, int x, int y) {
             var poseStack = guiGraphics.pose();
             poseStack.pushMatrix();
             poseStack.translate(xPos, yPos);
@@ -97,7 +97,7 @@ public class InfoBar {
         }
 
         @Override
-        public void render(GuiGraphics guiGraphics, int x, int y) {
+        public void render(GuiGraphicsExtractor guiGraphics, int x, int y) {
             var poseStack = guiGraphics.pose();
             poseStack.pushMatrix();
             poseStack.translate(xPos, yPos);
@@ -140,7 +140,7 @@ public class InfoBar {
         }
 
         @Override
-        public void render(GuiGraphics guiGraphics, int x, int y) {
+        public void render(GuiGraphicsExtractor guiGraphics, int x, int y) {
             var poseStack = guiGraphics.pose();
             var font = Minecraft.getInstance().font;
             poseStack.pushMatrix();
@@ -169,7 +169,7 @@ public class InfoBar {
         }
 
         @Override
-        public void render(GuiGraphics guiGraphics, int x, int y) {
+        public void render(GuiGraphicsExtractor guiGraphics, int x, int y) {
         }
     }
 }

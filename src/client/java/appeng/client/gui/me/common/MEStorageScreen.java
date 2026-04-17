@@ -35,7 +35,7 @@ import org.slf4j.LoggerFactory;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.CharacterEvent;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
@@ -441,7 +441,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
     }
 
     @Override
-    public void drawFG(GuiGraphics guiGraphics, int offsetX, int offsetY, int mouseX,
+    public void drawFG(GuiGraphicsExtractor guiGraphics, int offsetX, int offsetY, int mouseX,
             int mouseY) {
         this.currentMouseX = mouseX;
         this.currentMouseY = mouseY;
@@ -465,7 +465,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
         renderLinkStatus(guiGraphics, getMenu().getLinkStatus());
     }
 
-    private void renderLinkStatus(GuiGraphics guiGraphics, ILinkStatus linkStatus) {
+    private void renderLinkStatus(GuiGraphicsExtractor guiGraphics, ILinkStatus linkStatus) {
         // Draw an overlay indicating the grid is disconnected
         if (!linkStatus.connected()) {
             var renderContext = new SimpleRenderContext(LytRect.empty(), guiGraphics);
@@ -489,7 +489,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
         }
     }
 
-    private void renderPinnedRowDecorations(GuiGraphics guiGraphics) {
+    private void renderPinnedRowDecorations(GuiGraphicsExtractor guiGraphics) {
         for (Slot slot : menu.slots) {
             if (slot instanceof RepoSlot repoSlot) {
                 var entry = repoSlot.getEntry();
@@ -574,7 +574,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
     }
 
     @Override
-    public void drawBG(GuiGraphics guiGraphics, int offsetX, int offsetY, int mouseX,
+    public void drawBG(GuiGraphicsExtractor guiGraphics, int offsetX, int offsetY, int mouseX,
             int mouseY, float partialTicks) {
 
         guiGraphics.nextStratum();
@@ -617,7 +617,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
     }
 
     @Override
-    public void renderSlot(GuiGraphics guiGraphics, Slot s, int mouseX, int mouseY) {
+    public void renderSlot(GuiGraphicsExtractor guiGraphics, Slot s, int mouseX, int mouseY) {
         if (s instanceof RepoSlot repoSlot) {
             if (this.menu.getLinkStatus().connected()) {
                 GridInventoryEntry entry = repoSlot.getEntry();
@@ -665,7 +665,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
     }
 
     @Override
-    protected void renderTooltip(GuiGraphics guiGraphics, int x, int y) {
+    protected void renderTooltip(GuiGraphicsExtractor guiGraphics, int x, int y) {
         if (this.hoveredSlot instanceof RepoSlot repoSlot) {
             var carried = menu.getCarried();
             if (!carried.isEmpty()) {
@@ -695,7 +695,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
         super.renderTooltip(guiGraphics, x, y);
     }
 
-    protected void renderGridInventoryEntryTooltip(GuiGraphics guiGraphics, GridInventoryEntry entry, int x, int y) {
+    protected void renderGridInventoryEntryTooltip(GuiGraphicsExtractor guiGraphics, GridInventoryEntry entry, int x, int y) {
 
         var currentToolTip = AEKeyRendering.getTooltip(entry.getWhat());
 

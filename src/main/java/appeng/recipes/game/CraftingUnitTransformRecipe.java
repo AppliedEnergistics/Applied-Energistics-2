@@ -2,6 +2,7 @@ package appeng.recipes.game;
 
 import java.util.List;
 
+import appeng.recipes.MechanicsRecipe;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
@@ -29,7 +30,7 @@ import appeng.recipes.AERecipeTypes;
 /**
  * Used to handle upgrading and removal of upgrades for crafting units (in-world).
  */
-public class CraftingUnitTransformRecipe implements Recipe<RecipeInput> {
+public class CraftingUnitTransformRecipe extends MechanicsRecipe<RecipeInput> {
     public static final MapCodec<CraftingUnitTransformRecipe> CODEC = RecordCodecBuilder.mapCodec((builder) -> builder
             .group(
                     BuiltInRegistries.BLOCK.byNameCodec().fieldOf("upgraded_block")
@@ -46,17 +47,14 @@ public class CraftingUnitTransformRecipe implements Recipe<RecipeInput> {
                     CraftingUnitTransformRecipe::getUpgradeItem,
                     CraftingUnitTransformRecipe::new);
 
+    public static final RecipeSerializer<CraftingUnitTransformRecipe> SERIALIZER = new RecipeSerializer<>(CODEC, STREAM_CODEC);
+
     private final Block upgradedBlock;
     private final Item upgradeItem;
 
     public CraftingUnitTransformRecipe(Block upgradedBlock, Item upgradeItem) {
         this.upgradedBlock = upgradedBlock;
         this.upgradeItem = upgradeItem;
-    }
-
-    @Override
-    public boolean isSpecial() {
-        return true;
     }
 
     public Block getUpgradedBlock() {
@@ -97,26 +95,6 @@ public class CraftingUnitTransformRecipe implements Recipe<RecipeInput> {
     }
 
     @Override
-    public boolean matches(RecipeInput input, Level level) {
-        return false;
-    }
-
-    @Override
-    public ItemStack assemble(RecipeInput input) {
-        return ItemStack.EMPTY;
-    }
-
-    @Override
-    public PlacementInfo placementInfo() {
-        return PlacementInfo.NOT_PLACEABLE;
-    }
-
-    @Override
-    public RecipeBookCategory recipeBookCategory() {
-        return RecipeBookCategories.CRAFTING_MISC;
-    }
-
-    @Override
     public List<RecipeDisplay> display() {
         return List.of(
                 new CraftingUnitTransformDisplay(upgradedBlock, new SlotDisplay.ItemSlotDisplay(upgradeItem)));
@@ -124,7 +102,7 @@ public class CraftingUnitTransformRecipe implements Recipe<RecipeInput> {
 
     @Override
     public RecipeSerializer<CraftingUnitTransformRecipe> getSerializer() {
-        return CraftingUnitTransformRecipeSerializer.INSTANCE;
+        return SERIALIZER;
     }
 
     @Override

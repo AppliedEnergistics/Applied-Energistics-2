@@ -5,7 +5,7 @@ import java.util.List;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
@@ -43,7 +43,7 @@ public class Label extends AbstractWidget implements Widget {
     }
 
     @Override
-    public void draw(GuiGraphics guiGraphics) {
+    public void draw(GuiGraphicsExtractor guiGraphics) {
         for (var line : getLines()) {
             var font = Minecraft.getInstance().font;
             guiGraphics.drawString(font, line.text, (int) line.x, (int) line.y, color, shadow);

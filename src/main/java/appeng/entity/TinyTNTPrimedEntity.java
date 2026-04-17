@@ -88,7 +88,7 @@ public final class TinyTNTPrimedEntity extends PrimedTnt implements IEntityWithC
      */
     @Override
     public void tick() {
-        this.updateInWaterStateAndDoFluidPushing();
+        this.updateFluidInteraction();
 
         this.xo = this.getX();
         this.yo = this.getY();

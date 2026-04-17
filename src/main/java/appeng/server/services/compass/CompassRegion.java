@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiFunction;
 
+import appeng.core.AppEng;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
@@ -54,7 +55,7 @@ final class CompassRegion extends SavedData {
 
     private static final BiFunction<Integer, Integer, SavedDataType<CompassRegion>> TYPE = Util
             .memoize((regionX, regionZ) -> new SavedDataType<>(
-                    "ae2_compass_" + regionX + "_" + regionZ,
+                    AppEng.makeId("compass_" + regionX + "_" + regionZ),
                     () -> new CompassRegion(regionX, regionZ),
                     RecordCodecBuilder.create(builder -> builder.group(
                             SECTION_CODEC.listOf().fieldOf("sections").forGetter(CompassRegion::sections))

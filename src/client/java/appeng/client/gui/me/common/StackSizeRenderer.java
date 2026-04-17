@@ -19,17 +19,17 @@
 package appeng.client.gui.me.common;
 
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 
 import appeng.core.AEConfig;
 
 public class StackSizeRenderer {
-    public static void renderSizeLabel(GuiGraphics guiGraphics, Font fontRenderer, float xPos, float yPos,
+    public static void renderSizeLabel(GuiGraphicsExtractor guiGraphics, Font fontRenderer, float xPos, float yPos,
             String text) {
         renderSizeLabel(guiGraphics, fontRenderer, xPos, yPos, text, AEConfig.instance().isUseLargeFonts());
     }
 
-    public static void renderSizeLabel(GuiGraphics guiGraphics, Font fontRenderer, float xPos, float yPos, String text,
+    public static void renderSizeLabel(GuiGraphicsExtractor guiGraphics, Font fontRenderer, float xPos, float yPos, String text,
             boolean largeFonts) {
         float scaleFactor = largeFonts ? 0.85f : 0.666f;
         float inverseScaleFactor = 1.0f / scaleFactor;

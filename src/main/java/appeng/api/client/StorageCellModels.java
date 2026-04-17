@@ -29,9 +29,9 @@ import java.util.Objects;
 
 import com.google.common.base.Preconditions;
 
+import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.client.renderer.block.model.BlockModelPart;
 import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
@@ -47,11 +47,11 @@ import appeng.core.AppEng;
 public final class StorageCellModels {
 
     private static final Identifier MODEL_CELL_DEFAULT = AppEng.makeId("block/drive_cell");
-    private static final StandaloneModelKey<BlockModelPart> MODEL_CELL_DEFAULT_STANDALONE = new StandaloneModelKey<>(
+    private static final StandaloneModelKey<BlockStateModel> MODEL_CELL_DEFAULT_STANDALONE = new StandaloneModelKey<>(
             MODEL_CELL_DEFAULT::toString);
 
     private static final Map<Item, Identifier> registry = new IdentityHashMap<>();
-    private static final Map<Item, StandaloneModelKey<BlockModelPart>> standaloneRegistry = new IdentityHashMap<>();
+    private static final Map<Item, StandaloneModelKey<BlockStateModel>> standaloneRegistry = new IdentityHashMap<>();
 
     private StorageCellModels() {
     }
@@ -83,7 +83,6 @@ public final class StorageCellModels {
      * The {@link Identifier} of the model used to render the given storage cell {@link Item} when inserted into a drive
      * or similar.
      *
-     * @param itemLike
      * @return null, if no model is registered.
      */
     @Nullable
@@ -103,7 +102,7 @@ public final class StorageCellModels {
      * @return null, if no model is registered.
      */
     @Nullable
-    public synchronized static StandaloneModelKey<BlockModelPart> standaloneModel(ItemLike itemLike) {
+    public synchronized static StandaloneModelKey<BlockStateModel> standaloneModel(ItemLike itemLike) {
         Objects.requireNonNull(itemLike, "itemLike");
         var item = Objects.requireNonNull(itemLike.asItem(), "itemLike.asItem()");
 
@@ -120,7 +119,7 @@ public final class StorageCellModels {
     /**
      * A copy of all registered standalone model keys.
      */
-    public synchronized static Map<Item, StandaloneModelKey<BlockModelPart>> standaloneModels() {
+    public synchronized static Map<Item, StandaloneModelKey<BlockStateModel>> standaloneModels() {
         return new IdentityHashMap<>(standaloneRegistry);
     }
 
@@ -134,7 +133,7 @@ public final class StorageCellModels {
     /**
      * Returns the default model, which can be used when no explicit model is registered.
      */
-    public static StandaloneModelKey<BlockModelPart> getDefaultStandaloneModel() {
+    public static StandaloneModelKey<BlockStateModel> getDefaultStandaloneModel() {
         return MODEL_CELL_DEFAULT_STANDALONE;
     }
 

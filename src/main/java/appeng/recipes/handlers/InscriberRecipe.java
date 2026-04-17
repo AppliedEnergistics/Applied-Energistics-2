@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+import appeng.recipes.MechanicsRecipe;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -46,7 +47,7 @@ import net.neoforged.neoforge.network.codec.NeoForgeStreamCodecs;
 import appeng.core.definitions.AEBlocks;
 import appeng.recipes.AERecipeTypes;
 
-public class InscriberRecipe implements Recipe<RecipeInput> {
+public class InscriberRecipe extends MechanicsRecipe<RecipeInput> {
 
     private static final Codec<InscriberProcessType> MODE_CODEC = Codec.stringResolver(
             mode -> switch (mode) {
@@ -76,6 +77,8 @@ public class InscriberRecipe implements Recipe<RecipeInput> {
             InscriberRecipe::getProcessType,
             InscriberRecipe::new);
 
+    public static final RecipeSerializer<InscriberRecipe> SERIALIZER = new RecipeSerializer<>(CODEC, STREAM_CODEC);
+
     private final Ingredient middleInput;
     private final Optional<Ingredient> topOptional;
     private final Optional<Ingredient> bottomOptional;
@@ -95,23 +98,13 @@ public class InscriberRecipe implements Recipe<RecipeInput> {
         this.processType = Objects.requireNonNull(processType, "processType");
     }
 
-    @Override
-    public boolean matches(RecipeInput inv, Level level) {
-        return false;
-    }
-
-    @Override
-    public ItemStack assemble(RecipeInput inv) {
-        return result.create();
-    }
-
     public ItemStackTemplate result() {
         return this.result;
     }
 
     @Override
     public RecipeSerializer<InscriberRecipe> getSerializer() {
-        return InscriberRecipeSerializer.INSTANCE;
+        return SERIALIZER;
     }
 
     @Override
@@ -131,16 +124,6 @@ public class InscriberRecipe implements Recipe<RecipeInput> {
                         new SlotDisplay.ItemSlotDisplay(AEBlocks.INSCRIBER.asItem())));
     }
 
-    @Override
-    public PlacementInfo placementInfo() {
-        return PlacementInfo.NOT_PLACEABLE;
-    }
-
-    @Override
-    public RecipeBookCategory recipeBookCategory() {
-        return RecipeBookCategories.CRAFTING_MISC; // TODO 1.21.4
-    }
-
     public Ingredient getMiddleInput() {
         return middleInput;
     }
@@ -155,11 +138,6 @@ public class InscriberRecipe implements Recipe<RecipeInput> {
 
     public InscriberProcessType getProcessType() {
         return processType;
-    }
-
-    @Override
-    public boolean isSpecial() {
-        return true;
     }
 
     private Ingredients getSerializedIngredients() {

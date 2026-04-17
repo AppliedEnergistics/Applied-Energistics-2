@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jspecify.annotations.Nullable;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.DataComponents;
@@ -362,7 +362,7 @@ public class JEIPlugin implements IModPlugin {
     }
 
     // Copy-pasted from JEI since it doesn't seem to expose these
-    public static void drawHoveringText(GuiGraphics guiGraphics, List<Component> textLines, int x, int y) {
+    public static void drawHoveringText(GuiGraphicsExtractor guiGraphics, List<Component> textLines, int x, int y) {
         var font = Minecraft.getInstance().font;
         guiGraphics.setTooltipForNextFrame(font, textLines, Optional.empty(), ItemStack.EMPTY, x, y);
     }

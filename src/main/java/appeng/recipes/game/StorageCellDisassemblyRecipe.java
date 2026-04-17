@@ -2,6 +2,7 @@ package appeng.recipes.game;
 
 import java.util.List;
 
+import appeng.recipes.MechanicsRecipe;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
@@ -27,7 +28,7 @@ import appeng.recipes.AERecipeTypes;
 /**
  * Used to handle disassembly of the (Portable) Storage Cells.
  */
-public class StorageCellDisassemblyRecipe implements Recipe<SingleRecipeInput> {
+public class StorageCellDisassemblyRecipe extends MechanicsRecipe<SingleRecipeInput> {
     public static final MapCodec<StorageCellDisassemblyRecipe> CODEC = RecordCodecBuilder.mapCodec((builder) -> builder
             .group(
                     BuiltInRegistries.ITEM.byNameCodec().fieldOf("cell")
@@ -44,17 +45,14 @@ public class StorageCellDisassemblyRecipe implements Recipe<SingleRecipeInput> {
                     StorageCellDisassemblyRecipe::cellDisassemblyItems,
                     StorageCellDisassemblyRecipe::new);
 
+    public static final RecipeSerializer<StorageCellDisassemblyRecipe> SERIALIZER = new RecipeSerializer<>(CODEC, STREAM_CODEC);
+
     private final List<ItemStackTemplate> disassemblyItems;
     private final Item storageCell;
 
     public StorageCellDisassemblyRecipe(Item storageCell, List<ItemStackTemplate> disassemblyItems) {
         this.storageCell = storageCell;
         this.disassemblyItems = disassemblyItems;
-    }
-
-    @Override
-    public boolean isSpecial() {
-        return true;
     }
 
     public Item storageCell() {
@@ -92,32 +90,12 @@ public class StorageCellDisassemblyRecipe implements Recipe<SingleRecipeInput> {
     }
 
     @Override
-    public boolean matches(SingleRecipeInput input, Level level) {
-        return false;
-    }
-
-    @Override
-    public ItemStack assemble(SingleRecipeInput input) {
-        return ItemStack.EMPTY;
-    }
-
-    @Override
     public RecipeSerializer<StorageCellDisassemblyRecipe> getSerializer() {
-        return StorageCellDisassemblyRecipeSerializer.INSTANCE;
+        return SERIALIZER;
     }
 
     @Override
     public RecipeType<StorageCellDisassemblyRecipe> getType() {
         return AERecipeTypes.CELL_DISASSEMBLY;
-    }
-
-    @Override
-    public PlacementInfo placementInfo() {
-        return PlacementInfo.NOT_PLACEABLE;
-    }
-
-    @Override
-    public RecipeBookCategory recipeBookCategory() {
-        return RecipeBookCategories.CRAFTING_MISC;
     }
 }

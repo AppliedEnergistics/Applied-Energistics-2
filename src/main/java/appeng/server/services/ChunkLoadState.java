@@ -37,7 +37,7 @@ class ChunkLoadState extends SavedData {
     }
 
     private static final SavedDataType<ChunkLoadState> TYPE = new SavedDataType<>(
-            AppEng.MOD_ID + "_chunk_load_state",
+            AppEng.makeId("chunk_load_state"),
             ChunkLoadState::new,
             level -> RecordCodecBuilder.create(builder -> builder.group(
                     ForcedChunk.CODEC.listOf().fieldOf("forcedChunks").forGetter(ChunkLoadState::getForcedChunks))

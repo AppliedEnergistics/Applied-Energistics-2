@@ -2,6 +2,7 @@ package appeng.recipes.transform;
 
 import java.util.List;
 
+import appeng.recipes.MechanicsRecipe;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
@@ -13,22 +14,17 @@ import net.minecraft.tags.FluidTags;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.PlacementInfo;
-import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeBookCategories;
-import net.minecraft.world.item.crafting.RecipeBookCategory;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.display.RecipeDisplay;
 import net.minecraft.world.item.crafting.display.SlotDisplay;
-import net.minecraft.world.level.Level;
 
 import appeng.blockentity.qnb.QuantumBridgeBlockEntity;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEItems;
 import appeng.recipes.AERecipeTypes;
 
-public final class TransformRecipe implements Recipe<TransformRecipeInput> {
+public final class TransformRecipe extends MechanicsRecipe<TransformRecipeInput> {
     @Deprecated(forRemoval = true, since = "1.21.1")
     public static final Identifier TYPE_ID = AppEng.makeId("transform");
     @Deprecated(forRemoval = true, since = "1.21.1")
@@ -56,6 +52,8 @@ public final class TransformRecipe implements Recipe<TransformRecipeInput> {
             TransformRecipe::circumstance,
             TransformRecipe::new);
 
+    public static final RecipeSerializer<TransformRecipe> SERIALIZER = new RecipeSerializer<>(CODEC, STREAM_CODEC);
+
     public final List<Ingredient> ingredients;
     public final ItemStackTemplate output;
     public final TransformCircumstance circumstance;
@@ -78,13 +76,7 @@ public final class TransformRecipe implements Recipe<TransformRecipeInput> {
         return output;
     }
 
-    @Override
-    public boolean matches(TransformRecipeInput container, Level level) {
-        return false;
-    }
-
-    @Override
-    public ItemStack assemble(TransformRecipeInput container) {
+    public ItemStack createResult() {
         ItemStack result = result().create();
         if (AEItems.QUANTUM_ENTANGLED_SINGULARITY.is(result) && result.getCount() > 1) {
             QuantumBridgeBlockEntity.assignFrequency(result);
@@ -103,26 +95,11 @@ public final class TransformRecipe implements Recipe<TransformRecipeInput> {
 
     @Override
     public RecipeSerializer<TransformRecipe> getSerializer() {
-        return TransformRecipeSerializer.INSTANCE;
+        return SERIALIZER;
     }
 
     @Override
     public RecipeType<TransformRecipe> getType() {
         return TYPE;
-    }
-
-    @Override
-    public PlacementInfo placementInfo() {
-        return PlacementInfo.NOT_PLACEABLE;
-    }
-
-    @Override
-    public RecipeBookCategory recipeBookCategory() {
-        return RecipeBookCategories.CRAFTING_MISC;
-    }
-
-    @Override
-    public boolean isSpecial() {
-        return true;
     }
 }

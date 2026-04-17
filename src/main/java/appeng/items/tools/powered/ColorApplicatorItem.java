@@ -142,7 +142,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
         var newStack = stack.copy();
         cycleColors(newStack, getColor(stack), 1);
         if (level.isClientSide()) {
-            player.displayClientMessage(stack.getHoverName(), true);
+            player.sendOverlayMessage(stack.getHoverName());
         }
         return InteractionResult.CONSUME.heldItemTransformedTo(stack);
     }
@@ -207,7 +207,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
         if (p != null && InteractionUtil.isInAlternateUseMode(p)) {
             this.cycleColors(is, color, 1);
             if (level.isClientSide()) {
-                p.displayClientMessage(is.getHoverName(), true);
+                p.sendOverlayMessage(is.getHoverName());
             }
             return InteractionResult.CONSUME;
         }

@@ -4,7 +4,7 @@ import java.util.List;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.toasts.Toast;
 import net.minecraft.client.gui.components.toasts.ToastManager;
 import net.minecraft.client.renderer.RenderPipelines;
@@ -57,7 +57,7 @@ public class FinishedJobToast implements Toast {
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, Font font, long visibilityTime) {
+    public void render(GuiGraphicsExtractor guiGraphics, Font font, long visibilityTime) {
         var minecraft = Minecraft.getInstance();
 
         // stretch the middle

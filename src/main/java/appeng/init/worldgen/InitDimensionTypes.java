@@ -2,6 +2,7 @@ package appeng.init.worldgen;
 
 import java.util.Optional;
 
+import net.minecraft.world.level.CardinalLighting;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.core.registries.Registries;
@@ -36,6 +37,7 @@ public final class InitDimensionTypes {
                 true, // fixedTime
                 false, // hasSkylight
                 false, // hasCeiling
+                false,
                 1.0, // coordinateScale
                 SpatialStorageChunkGenerator.MIN_Y, // minY
                 SpatialStorageChunkGenerator.HEIGHT, // height
@@ -44,7 +46,7 @@ public final class InitDimensionTypes {
                 1.0f, // ambientLight
                 new DimensionType.MonsterSettings(ConstantInt.of(0), 0),
                 DimensionType.Skybox.OVERWORLD,
-                DimensionType.CardinalLightType.DEFAULT,
+                CardinalLighting.Type.DEFAULT,
                 EnvironmentAttributeMap.builder()
                         .set(EnvironmentAttributes.BED_RULE, BedRule.EXPLODES)
                         .set(EnvironmentAttributes.RESPAWN_ANCHOR_WORKS, false)

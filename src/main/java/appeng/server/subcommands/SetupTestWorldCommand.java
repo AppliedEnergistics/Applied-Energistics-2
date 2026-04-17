@@ -135,7 +135,7 @@ public class SetupTestWorldCommand implements ISubCommand {
     }
 
     private static void makeAlwaysDaytime(MinecraftServer srv) {
-        srv.getWorldData().getGameRules().set(GameRules.ADVANCE_TIME, false, srv);
+        srv.getGameRules().set(GameRules.ADVANCE_TIME, false, srv);
         var clock = srv.overworld().dimensionType().defaultClock();
         if (clock.isPresent()) {
             srv.clockManager().setTotalTicks(clock.get(), 1000);
@@ -143,12 +143,12 @@ public class SetupTestWorldCommand implements ISubCommand {
     }
 
     private static void disableWeather(MinecraftServer srv) {
-        srv.getWorldData().getGameRules().set(GameRules.ADVANCE_WEATHER, false, srv);
-        srv.overworld().setWeatherParameters(9999, 0, false, false);
+        srv.getGameRules().set(GameRules.ADVANCE_WEATHER, false, srv);
+        srv.overworld().resetWeatherCycle();
     }
 
     private static void disableMobSpawning(MinecraftServer srv) {
-        srv.getWorldData().getGameRules().set(GameRules.SPAWN_MOBS, false, srv);
+        srv.getGameRules().set(GameRules.SPAWN_MOBS, false, srv);
     }
 
     private static boolean isSuperflatWorld(ServerLevel level) {

@@ -1,6 +1,6 @@
 package appeng.client.integrations.jei;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 
 import mezz.jei.api.gui.drawable.IDrawable;
 
@@ -36,7 +36,7 @@ final class IconDrawable implements IDrawable {
     }
 
     @Override
-    public void draw(GuiGraphics guiGraphics, int xOffset, int yOffset) {
+    public void draw(GuiGraphicsExtractor guiGraphics, int xOffset, int yOffset) {
         blitter.dest(x + xOffset, y + yOffset).blit(guiGraphics);
     }
 }

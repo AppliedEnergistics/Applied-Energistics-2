@@ -5,7 +5,7 @@ import java.util.Objects;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.core.RegistryAccess;
@@ -59,7 +59,7 @@ public final class StonecuttingEncodingPanel extends EncodingModePanel {
     }
 
     @Override
-    public void drawBackgroundLayer(GuiGraphics guiGraphics, Rect2i bounds, Point mouse) {
+    public void drawBackgroundLayer(GuiGraphicsExtractor guiGraphics, Rect2i bounds, Point mouse) {
         BG.dest(bounds.getX() + 8, bounds.getY() + bounds.getHeight() - 165).blit(guiGraphics);
         drawRecipes(guiGraphics, bounds, mouse);
     }
@@ -68,7 +68,7 @@ public final class StonecuttingEncodingPanel extends EncodingModePanel {
         return Objects.requireNonNull(Minecraft.getInstance().level).registryAccess();
     }
 
-    private void drawRecipes(GuiGraphics guiGraphics, Rect2i bounds, Point mouse) {
+    private void drawRecipes(GuiGraphicsExtractor guiGraphics, Rect2i bounds, Point mouse) {
         var recipes = menu.getStonecuttingRecipes();
         var startIndex = scrollbar.getCurrentScroll() * COLS;
         var endIndex = startIndex + ROWS * COLS;

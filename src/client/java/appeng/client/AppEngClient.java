@@ -92,7 +92,7 @@ import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKeyType;
 import appeng.api.util.AEColor;
-import appeng.block.qnb.QnbFormedModel;
+import appeng.client.model.QnbFormedModel;
 import appeng.client.api.AEKeyRendering;
 import appeng.client.api.model.parts.CompositePartModel;
 import appeng.client.api.model.parts.RegisterPartModelsEvent;

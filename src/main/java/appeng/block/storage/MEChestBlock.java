@@ -73,7 +73,7 @@ public class MEChestBlock extends AEBaseEntityBlock<MEChestBlockEntity> {
             if (!level.isClientSide()) {
                 if (hitResult.getDirection() == be.getTop()) {
                     if (!be.openGui(player)) {
-                        player.displayClientMessage(PlayerMessages.ChestCannotReadStorageCell.text(), true);
+                        player.sendOverlayMessage(PlayerMessages.ChestCannotReadStorageCell.text());
                     }
                 } else {
                     be.openCellInventoryMenu(player);

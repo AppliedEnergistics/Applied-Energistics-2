@@ -18,34 +18,39 @@
 
 package appeng.client.render;
 
-import org.jetbrains.annotations.Nullable;
-
-import net.minecraft.client.color.block.BlockColor;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.BlockAndTintGetter;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
-
 import appeng.api.implementations.blockentities.IColorableBlockEntity;
 import appeng.api.util.AEColor;
+import net.minecraft.client.color.block.BlockTintSource;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 
 /**
  * Automatically exposes the color of a colorable block entity using tint indices 0-2
  */
-public class ColorableBlockEntityBlockColor implements BlockColor {
+public class ColorableBlockEntityBlockColor implements BlockTintSource {
 
-    public static final ColorableBlockEntityBlockColor INSTANCE = new ColorableBlockEntityBlockColor();
+    public static final ColorableBlockEntityBlockColor INSTANCE = new ColorableBlockEntityBlockColor(0);
+
+    private final int tintIndex;
+
+    public ColorableBlockEntityBlockColor(int tintIndex) {
+        this.tintIndex = tintIndex;
+    }
 
     @Override
-    public int getColor(BlockState state, @Nullable BlockAndTintGetter level, @Nullable BlockPos pos,
-            int tintIndex) {
+    public int color(BlockState state) {
+        return AEColor.TRANSPARENT.getVariantByTintIndex(tintIndex);
+    }
+
+    @Override
+    public int colorInWorld(BlockState state, BlockAndTintGetter level, BlockPos pos) {
         AEColor color = AEColor.TRANSPARENT; // Default to a neutral color
 
-        if (level != null && pos != null) {
-            BlockEntity te = level.getBlockEntity(pos);
-            if (te instanceof IColorableBlockEntity) {
-                color = ((IColorableBlockEntity) te).getColor();
-            }
+        BlockEntity te = level.getBlockEntity(pos);
+        if (te instanceof IColorableBlockEntity) {
+            color = ((IColorableBlockEntity) te).getColor();
         }
 
         return color.getVariantByTintIndex(tintIndex);

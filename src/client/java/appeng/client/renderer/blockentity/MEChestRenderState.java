@@ -1,10 +1,11 @@
 package appeng.client.renderer.blockentity;
 
+import net.minecraft.client.renderer.block.BlockModelRenderState;
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.client.renderer.block.model.BlockModelPart;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
 
 public class MEChestRenderState extends ChestOrDriveRenderState {
-    public @Nullable BlockModelPart cellModel;
+    public final BlockModelRenderState cellModel = new BlockModelRenderState();
     public int frontLightCoords;
 }

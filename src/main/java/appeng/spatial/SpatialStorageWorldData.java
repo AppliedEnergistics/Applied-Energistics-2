@@ -20,10 +20,12 @@ package appeng.spatial;
 
 import java.util.List;
 
+import appeng.core.AppEng;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.saveddata.SavedData;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
@@ -36,7 +38,7 @@ public class SpatialStorageWorldData extends SavedData {
     /**
      * ID of this data when it is attached to a level.
      */
-    public static final String ID = "ae2_spatial_storage";
+    public static final Identifier ID = AppEng.makeId("spatial_storage");
 
     public static final Codec<SpatialStorageWorldData> CODEC = RecordCodecBuilder.create(builder -> builder.group(
             SpatialStoragePlot.CODEC.listOf().fieldOf("plots").forGetter(SpatialStorageWorldData::getPlots))

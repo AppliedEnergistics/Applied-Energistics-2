@@ -1,6 +1,6 @@
 package appeng.client.integrations.jei;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.crafting.RecipeHolder;
@@ -93,7 +93,7 @@ class InscriberRecipeCategory implements IRecipeCategory<RecipeHolder<InscriberR
     }
 
     @Override
-    public void draw(RecipeHolder<InscriberRecipe> recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics,
+    public void draw(RecipeHolder<InscriberRecipe> recipe, IRecipeSlotsView recipeSlotsView, GuiGraphicsExtractor guiGraphics,
             double mouseX,
             double mouseY) {
         this.background.draw(guiGraphics, 16, 0);

@@ -24,9 +24,10 @@ import java.util.function.Consumer;
 
 import com.google.common.base.Preconditions;
 
+import net.minecraft.client.resources.model.sprite.Material;
 import org.joml.Vector4f;
 
-import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
 import net.neoforged.neoforge.client.model.quad.MutableQuad;
@@ -97,7 +98,7 @@ public class CubeBuilder {
         var texture = this.textures.get(face);
 
         quad.reset();
-        quad.setSprite(texture);
+        quad.setSprite(new Material.Baked(texture, false));
 
         var uv = new UvVector();
 

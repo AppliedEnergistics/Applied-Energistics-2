@@ -87,17 +87,17 @@ public class UpgradeCardItem extends AEBaseItem {
                     }
                 }
                 if (isFull) {
-                    player.displayClientMessage(PlayerMessages.MaxUpgradesInstalled.text(), true);
+                    player.sendOverlayMessage(PlayerMessages.MaxUpgradesInstalled.text());
                     return InteractionResult.FAIL;
                 }
 
                 var maxInstalled = upgrades.getMaxInstalled(heldStack.getItem());
                 var installed = upgrades.getInstalledUpgrades(heldStack.getItem());
                 if (maxInstalled <= 0) {
-                    player.displayClientMessage(PlayerMessages.UnsupportedUpgrade.text(), true);
+                    player.sendOverlayMessage(PlayerMessages.UnsupportedUpgrade.text());
                     return InteractionResult.FAIL;
                 } else if (installed >= maxInstalled) {
-                    player.displayClientMessage(PlayerMessages.MaxUpgradesOfTypeInstalled.text(), true);
+                    player.sendOverlayMessage(PlayerMessages.MaxUpgradesOfTypeInstalled.text());
                     return InteractionResult.FAIL;
                 }
 

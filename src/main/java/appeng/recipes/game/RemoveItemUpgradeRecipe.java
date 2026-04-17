@@ -8,7 +8,6 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -22,14 +21,12 @@ import appeng.api.upgrades.IUpgradeableItem;
 public class RemoveItemUpgradeRecipe extends CustomRecipe {
     public static final RemoveItemUpgradeRecipe INSTANCE = new RemoveItemUpgradeRecipe();
 
-    private RemoveItemUpgradeRecipe() {
-        super(CraftingBookCategory.MISC);
-    }
-
     public static final MapCodec<RemoveItemUpgradeRecipe> CODEC = MapCodec.unit(INSTANCE);
 
     public static final StreamCodec<RegistryFriendlyByteBuf, RemoveItemUpgradeRecipe> STREAM_CODEC = StreamCodec
             .unit(INSTANCE);
+
+    public static final RecipeSerializer<RemoveItemUpgradeRecipe> SERIALIZER = new RecipeSerializer<>(CODEC, STREAM_CODEC);
 
     record RemovalResult(ItemStack upgradableItem, ItemStack upgrade) {
     }
@@ -83,7 +80,7 @@ public class RemoveItemUpgradeRecipe extends CustomRecipe {
 
     @Override
     public RecipeSerializer<RemoveItemUpgradeRecipe> getSerializer() {
-        return RemoveItemUpgradeRecipeSerializer.INSTANCE;
+        return SERIALIZER;
     }
 
 }

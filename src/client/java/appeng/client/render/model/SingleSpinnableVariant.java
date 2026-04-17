@@ -5,15 +5,15 @@ import java.util.List;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 
-import net.minecraft.client.renderer.block.model.BlockModelPart;
-import net.minecraft.client.renderer.block.model.BlockStateModel;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ResolvableModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.client.model.block.CustomUnbakedBlockStateModel;
 
@@ -21,13 +21,13 @@ import appeng.client.model.SpinnableVariant;
 import appeng.core.AppEng;
 
 public class SingleSpinnableVariant implements BlockStateModel {
-    private final BlockModelPart model;
+    private final BlockStateModelPart model;
 
-    public SingleSpinnableVariant(BlockModelPart p_410307_) {
+    public SingleSpinnableVariant(BlockStateModelPart p_410307_) {
         this.model = p_410307_;
     }
 
-    public void collectParts(RandomSource p_410554_, List<BlockModelPart> p_410007_) {
+    public void collectParts(RandomSource p_410554_, List<BlockStateModelPart> p_410007_) {
         p_410007_.add(this.model);
     }
 

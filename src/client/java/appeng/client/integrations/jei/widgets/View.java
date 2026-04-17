@@ -2,7 +2,7 @@ package appeng.client.integrations.jei.widgets;
 
 import java.util.List;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
@@ -15,7 +15,7 @@ public interface View {
     default void buildSlots(IRecipeLayoutBuilder builder) {
     }
 
-    default void draw(GuiGraphics guiGraphics, IRecipeSlotsView slots, double mouseX, double mouseY) {
+    default void draw(GuiGraphicsExtractor guiGraphics, IRecipeSlotsView slots, double mouseX, double mouseY) {
     }
 
     default List<Component> getTooltipStrings(double mouseX, double mouseY) {

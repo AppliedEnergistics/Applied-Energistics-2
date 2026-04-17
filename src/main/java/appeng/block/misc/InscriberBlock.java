@@ -57,12 +57,6 @@ public class InscriberBlock extends AEBaseEntityBlock<InscriberBlockEntity> impl
     }
 
     @Override
-    public int getLightBlock(BlockState state) {
-        return 2; // FIXME validate this. a) possibly not required because of getShape b) value
-        // range. was 2 in 1.10
-    }
-
-    @Override
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player,
             BlockHitResult hitResult) {
         if (level.getBlockEntity(pos) instanceof InscriberBlockEntity be) {

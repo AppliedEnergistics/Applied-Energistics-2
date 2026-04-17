@@ -23,7 +23,7 @@ import java.util.List;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -88,7 +88,7 @@ public class NetworkStatusScreen extends AEBaseScreen<NetworkStatusMenu> {
     }
 
     @Override
-    public void drawFG(GuiGraphics guiGraphics, int offsetX, int offsetY, int mouseX,
+    public void drawFG(GuiGraphicsExtractor guiGraphics, int offsetX, int offsetY, int mouseX,
             int mouseY) {
         int x = 0;
         int y = 0;
@@ -150,7 +150,7 @@ public class NetworkStatusScreen extends AEBaseScreen<NetworkStatusMenu> {
     }
 
     // x,y is upper left corner of related machine icon (which is 16x16)
-    private void drawMachineCount(GuiGraphics guiGraphics, int x, int y, long count) {
+    private void drawMachineCount(GuiGraphicsExtractor guiGraphics, int x, int y, long count) {
         String str;
         if (count >= 10000) {
             str = Long.toString(count / 1000) + 'k';

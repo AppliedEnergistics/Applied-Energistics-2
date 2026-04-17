@@ -6,6 +6,8 @@ import java.util.List;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
+import net.minecraft.world.item.crafting.NormalCraftingRecipe;
+import net.minecraft.world.item.crafting.Recipe;
 import org.apache.commons.lang3.mutable.MutableBoolean;
 
 import net.minecraft.core.NonNullList;
@@ -32,33 +34,36 @@ import net.neoforged.neoforge.server.ServerLifecycleHooks;
 import appeng.core.ConventionTags;
 import appeng.core.definitions.AEItems;
 
-public class QuartzCuttingRecipe implements CraftingRecipe {
+public class QuartzCuttingRecipe extends NormalCraftingRecipe {
     public static final MapCodec<QuartzCuttingRecipe> CODEC = RecordCodecBuilder.mapCodec((builder) -> builder.group(
+            Recipe.CommonInfo.MAP_CODEC.forGetter(o -> o.commonInfo),
+            CraftingRecipe.CraftingBookInfo.MAP_CODEC.forGetter(o -> o.bookInfo),
             ItemStackTemplate.CODEC.fieldOf("result").forGetter(QuartzCuttingRecipe::result),
             Ingredient.CODEC.listOf().fieldOf("ingredients").forGetter(QuartzCuttingRecipe::ingredients))
             .apply(builder, QuartzCuttingRecipe::new));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, QuartzCuttingRecipe> STREAM_CODEC = StreamCodec.composite(
+            Recipe.CommonInfo.STREAM_CODEC, o -> o.commonInfo,
+            CraftingRecipe.CraftingBookInfo.STREAM_CODEC, o -> o.bookInfo,
             ItemStackTemplate.STREAM_CODEC, QuartzCuttingRecipe::result,
             Ingredient.CONTENTS_STREAM_CODEC.apply(ByteBufCodecs.list()), QuartzCuttingRecipe::ingredients,
             QuartzCuttingRecipe::new);
+
+    public static final RecipeSerializer<QuartzCuttingRecipe> SERIALIZER = new RecipeSerializer<>(CODEC, STREAM_CODEC);
 
     final ItemStackTemplate result;
     final List<Ingredient> ingredients;
     private final boolean isSimple;
 
-    public QuartzCuttingRecipe(ItemStackTemplate result, List<Ingredient> ingredients) {
+    public QuartzCuttingRecipe(Recipe.CommonInfo commonInfo, CraftingRecipe.CraftingBookInfo bookInfo, ItemStackTemplate result, List<Ingredient> ingredients) {
+        super(commonInfo, bookInfo);
         this.result = result;
         this.ingredients = ingredients;
         this.isSimple = ingredients.stream().allMatch(Ingredient::isSimple);
     }
 
     public RecipeSerializer<QuartzCuttingRecipe> getSerializer() {
-        return QuartzCuttingRecipeSerializer.INSTANCE;
-    }
-
-    public CraftingBookCategory category() {
-        return CraftingBookCategory.MISC;
+        return SERIALIZER;
     }
 
     public ItemStackTemplate result() {
@@ -104,7 +109,7 @@ public class QuartzCuttingRecipe implements CraftingRecipe {
     }
 
     @Override
-    public PlacementInfo placementInfo() {
+    protected PlacementInfo createPlacementInfo() {
         return PlacementInfo.create(ingredients);
     }
 

@@ -31,20 +31,20 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.color.block.BlockColors;
-import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.BlockModelPart;
-import net.minecraft.client.renderer.block.model.SimpleModelWrapper;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
+import net.minecraft.client.resources.model.SimpleModelWrapper;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.ModelBaker;
-import net.minecraft.client.resources.model.QuadCollection;
+import net.minecraft.client.resources.model.geometry.QuadCollection;
 import net.minecraft.client.resources.model.ResolvableModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.TriState;
-import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.SingleThreadedRandomSource;
 import net.minecraft.world.phys.AABB;
@@ -88,9 +88,9 @@ public class FacadeBuilder {
             new AABB(1.0 - THIN_THICKNESS, 0.0, 0.0, 1.0, 1.0, 1.0) };
 
     // Pre-rotated transparent facade quads
-    private final Map<Direction, BlockModelPart> transparentFacadeModels;
+    private final Map<Direction, BlockStateModelPart> transparentFacadeModels;
 
-    private final Map<Direction, BlockModelPart> cableAnchorStilts;
+    private final Map<Direction, BlockStateModelPart> cableAnchorStilts;
 
     public FacadeBuilder(ModelBaker baker) {
         cableAnchorStilts = new EnumMap<>(Direction.class);
@@ -105,7 +105,7 @@ public class FacadeBuilder {
 
     public void collectFacadeParts(CableBusRenderState renderState,
             BlockAndTintGetter level,
-            Consumer<BlockModelPart> partConsumer) {
+            Consumer<BlockStateModelPart> partConsumer) {
         boolean transparent = PartHelper.getCableRenderMode().transparentFacades;
 
         collectFacadePartsInternal(
@@ -125,7 +125,7 @@ public class FacadeBuilder {
             List<AABB> partBoxes,
             Set<Direction> sidesWithParts,
             BlockPos pos,
-            Consumer<BlockModelPart> partConsumer) {
+            Consumer<BlockStateModelPart> partConsumer) {
         BlockColors blockColors = Minecraft.getInstance().getBlockColors();
         var quad = new MutableQuad();
 
@@ -287,7 +287,7 @@ public class FacadeBuilder {
 
     }
 
-    record FacadeBlockModelPart(QuadCollection quadCollection, BlockModelPart originalPart) implements BlockModelPart {
+    record FacadeBlockModelPart(QuadCollection quadCollection, BlockStateModelPart originalPart) implements BlockStateModelPart {
         @Override
         public List<BakedQuad> getQuads(@Nullable Direction side) {
             return quadCollection.getQuads(side);

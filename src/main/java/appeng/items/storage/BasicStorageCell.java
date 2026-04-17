@@ -156,7 +156,7 @@ public class BasicStorageCell extends AEBaseItem implements IBasicCellItem, AETo
 
         var inv = StorageCells.getCellInventory(stack, null);
         if (inv != null && !inv.getAvailableStacks().isEmpty()) {
-            player.displayClientMessage(PlayerMessages.OnlyEmptyCellsCanBeDisassembled.text(), true);
+            player.sendOverlayMessage(PlayerMessages.OnlyEmptyCellsCanBeDisassembled.text());
             return false;
         }
 

@@ -18,44 +18,43 @@
 
 package appeng.client.renderer.blockentity;
 
-import java.util.List;
-import java.util.function.Function;
-
-import com.mojang.blaze3d.vertex.PoseStack;
-
-import org.jetbrains.annotations.Nullable;
-
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.LevelRenderer;
-import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.SimpleModelWrapper;
-import net.minecraft.client.renderer.block.model.SingleVariant;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
-import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
-import net.minecraft.client.renderer.state.CameraRenderState;
-import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.resources.model.ModelManager;
-import net.minecraft.client.resources.model.QuadCollection;
-import net.minecraft.core.Direction;
-import net.minecraft.util.LightCoordsUtil;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.client.RenderTypeHelper;
-import net.neoforged.neoforge.client.model.quad.QuadTransforms;
-
 import appeng.api.client.StorageCellModels;
 import appeng.api.orientation.BlockOrientation;
 import appeng.blockentity.storage.MEChestBlockEntity;
 import appeng.client.render.AERenderTypes;
 import appeng.util.Platform;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.LevelRenderer;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.resources.model.ModelManager;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
+import net.minecraft.client.resources.model.geometry.QuadCollection;
+import net.minecraft.core.Direction;
+import net.minecraft.util.LightCoordsUtil;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.client.model.quad.QuadTransforms;
+import org.jetbrains.annotations.Nullable;
+import org.joml.Matrix4f;
+import org.joml.Matrix4fc;
+
+import java.util.List;
+import java.util.function.Function;
 
 /**
  * The block entity renderer for ME chests takes care of rendering the right model for the inserted cell, as well as the
  * LED.
  */
 public class MEChestRenderer implements BlockEntityRenderer<MEChestBlockEntity, MEChestRenderState> {
+
+    private static final Matrix4fc IDENTITY = new Matrix4f();
 
     private final ModelManager modelManager;
 
@@ -71,7 +70,7 @@ public class MEChestRenderer implements BlockEntityRenderer<MEChestBlockEntity, 
 
     @Override
     public void extractRenderState(MEChestBlockEntity be, MEChestRenderState state, float partialTicks, Vec3 cameraPos,
-            @Nullable ModelFeatureRenderer.CrumblingOverlay crumblingOverlay) {
+                                   @Nullable ModelFeatureRenderer.CrumblingOverlay crumblingOverlay) {
         BlockEntityRenderer.super.extractRenderState(be, state, partialTicks, cameraPos, crumblingOverlay);
 
         // Calculate the lightlevel in front of the drive for lighting the exposed cell model.
@@ -92,6 +91,7 @@ public class MEChestRenderer implements BlockEntityRenderer<MEChestBlockEntity, 
 
         var cellItem = be.getCellItem(0);
         if (cellItem == null) {
+            state.cellModel.clear();
             return; // No cell inserted into chest
         }
 
@@ -101,15 +101,18 @@ public class MEChestRenderer implements BlockEntityRenderer<MEChestBlockEntity, 
         if (cellModelKey == null) {
             cellModelKey = StorageCellModels.getDefaultStandaloneModel();
         }
-        state.cellModel = modelManager.getStandaloneModel(cellModelKey);
+        var model = modelManager.getStandaloneModel(cellModelKey);
+        var blockAndTintGetter = (BlockAndTintGetter) be.getLevel();
+        var modelParts = state.cellModel.setupModel(IDENTITY, model.hasMaterialFlag(blockAndTintGetter, be.getBlockPos(), be.getBlockState(), BakedQuad.FLAG_TRANSLUCENT));
+        model.collectParts(blockAndTintGetter, be.getBlockPos(), be.getBlockState(), state.cellModel.scratchRandomSource(42L), modelParts);
     }
 
     @Override
     public void submit(MEChestRenderState state, PoseStack poseStack, SubmitNodeCollector nodes,
-            CameraRenderState cameraRenderState) {
+                       CameraRenderState cameraRenderState) {
 
         var cellModel = state.cellModel;
-        if (cellModel == null) {
+        if (cellModel.isEmpty()) {
             return;
         }
 
@@ -122,18 +125,15 @@ public class MEChestRenderer implements BlockEntityRenderer<MEChestBlockEntity, 
         // we need to move them into place for the slot on the ME chest
         poseStack.translate(5 / 16.0, 4 / 16.0, 0);
 
-        var rotatedModelQuads = rotateQuadCullFaces(cellModel::getQuads, state.blockOrientation);
-        var chunkSectionLayer = cellModel.getRenderType(state.blockState);
-        var renderType = RenderTypeHelper.getEntityRenderType(chunkSectionLayer);
-        nodes.submitBlockModel(
+        // TODO 26.1: Might not be necessary anymore, check lighting on cell
+        //  var rotatedModelQuads = rotateQuadCullFaces(cellModel::getQuads, state.blockOrientation);
+        state.cellModel.submit(
                 poseStack,
-                renderType,
-                new SingleVariant(new SimpleModelWrapper(rotatedModelQuads, cellModel.useAmbientOcclusion(),
-                        cellModel.particleIcon(), chunkSectionLayer)),
-                1, 1, 1,
+                nodes,
                 state.frontLightCoords,
                 OverlayTexture.NO_OVERLAY,
-                0);
+                0
+        );
 
         nodes.submitCustomGeometry(
                 poseStack,
@@ -148,7 +148,7 @@ public class MEChestRenderer implements BlockEntityRenderer<MEChestBlockEntity, 
      * the incorrect lighting data would be used to apply diffuse lighting and the lightmap texture.
      */
     private static QuadCollection rotateQuadCullFaces(Function<Direction, List<BakedQuad>> quadCollection,
-            BlockOrientation r) {
+                                                      BlockOrientation r) {
         var rotated = new QuadCollection.Builder();
         for (var cullFace : Platform.CULL_FACES) {
             if (cullFace != null) {

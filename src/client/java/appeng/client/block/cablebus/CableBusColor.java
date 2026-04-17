@@ -20,9 +20,9 @@ package appeng.client.block.cablebus;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.client.color.block.BlockColor;
+import net.minecraft.client.color.block.BlockTintSource;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -33,7 +33,7 @@ import appeng.parts.CableBusContainer;
 /**
  * Exposes the cable bus color as tint indices 0 (dark variant), 1 (medium variant) and 2 (bright variant).
  */
-public class CableBusColor implements BlockColor {
+public class CableBusColor implements BlockTintSource {
 
     @Override
     public int getColor(BlockState state, @Nullable BlockAndTintGetter level, @Nullable BlockPos pos, int tintIndex) {

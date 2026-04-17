@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
@@ -168,7 +168,7 @@ public class EncodePatternTransferHandler<T extends PatternEncodingTermMenu>
         }
 
         @Override
-        public void showError(GuiGraphics guiGraphics, int mouseX, int mouseY, IRecipeSlotsView recipeSlotsView,
+        public void showError(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, IRecipeSlotsView recipeSlotsView,
                 int recipeX, int recipeY) {
             var poseStack = guiGraphics.pose();
             poseStack.pushMatrix();

@@ -31,7 +31,6 @@ public class StorageCellUpgradeRecipe extends CustomRecipe {
     private final Item resultComponent;
 
     public StorageCellUpgradeRecipe(Item inputCell, Item inputComponent, Item resultCell, Item resultComponent) {
-        super(CraftingBookCategory.MISC);
         this.inputCell = inputCell;
         this.inputComponent = inputComponent;
         this.resultCell = resultCell;
@@ -56,6 +55,8 @@ public class StorageCellUpgradeRecipe extends CustomRecipe {
                     ByteBufCodecs.registry(Registries.ITEM), StorageCellUpgradeRecipe::getResultCell,
                     ByteBufCodecs.registry(Registries.ITEM), StorageCellUpgradeRecipe::getResultComponent,
                     StorageCellUpgradeRecipe::new);
+
+    public static final RecipeSerializer<StorageCellUpgradeRecipe> SERIALIZER = new RecipeSerializer<>(CODEC, STREAM_CODEC);
 
     public Item getInputCell() {
         return inputCell;
@@ -149,7 +150,7 @@ public class StorageCellUpgradeRecipe extends CustomRecipe {
 
     @Override
     public RecipeSerializer<StorageCellUpgradeRecipe> getSerializer() {
-        return StorageCellUpgradeRecipeSerializer.INSTANCE;
+        return SERIALIZER;
     }
 
     @Override

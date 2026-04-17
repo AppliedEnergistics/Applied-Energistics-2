@@ -2,6 +2,7 @@ package appeng.recipes.handlers;
 
 import java.util.List;
 
+import appeng.recipes.MechanicsRecipe;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
@@ -26,7 +27,7 @@ import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
 import appeng.recipes.AERecipeTypes;
 
-public class ChargerRecipe implements Recipe<RecipeInput> {
+public class ChargerRecipe extends MechanicsRecipe<RecipeInput> {
     @Deprecated(forRemoval = true, since = "1.21.1")
     public static final Identifier TYPE_ID = AppEng.makeId("charger");
     @Deprecated(forRemoval = true, since = "1.21.1")
@@ -49,19 +50,11 @@ public class ChargerRecipe implements Recipe<RecipeInput> {
             ChargerRecipe::result,
             ChargerRecipe::new);
 
+    public static final RecipeSerializer<ChargerRecipe> SERIALIZER = new RecipeSerializer<>(CODEC, STREAM_CODEC);
+
     public ChargerRecipe(Ingredient ingredient, ItemStackTemplate result) {
         this.ingredient = ingredient;
         this.result = result;
-    }
-
-    @Override
-    public boolean matches(RecipeInput container, Level level) {
-        return false;
-    }
-
-    @Override
-    public ItemStack assemble(RecipeInput container) {
-        return ItemStack.EMPTY;
     }
 
     public Ingredient ingredient() {
@@ -74,7 +67,7 @@ public class ChargerRecipe implements Recipe<RecipeInput> {
 
     @Override
     public RecipeSerializer<ChargerRecipe> getSerializer() {
-        return ChargerRecipeSerializer.INSTANCE;
+        return SERIALIZER;
     }
 
     @Override
@@ -89,20 +82,5 @@ public class ChargerRecipe implements Recipe<RecipeInput> {
                         ingredient.display(),
                         new SlotDisplay.ItemStackSlotDisplay(result),
                         new SlotDisplay.ItemSlotDisplay(AEBlocks.CHARGER.asItem())));
-    }
-
-    @Override
-    public PlacementInfo placementInfo() {
-        return PlacementInfo.NOT_PLACEABLE;
-    }
-
-    @Override
-    public RecipeBookCategory recipeBookCategory() {
-        return RecipeBookCategories.CRAFTING_MISC;
-    }
-
-    @Override
-    public boolean isSpecial() {
-        return true;
     }
 }

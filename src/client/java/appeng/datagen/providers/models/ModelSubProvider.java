@@ -20,8 +20,9 @@ import net.minecraft.client.data.models.model.ModelTemplate;
 import net.minecraft.client.data.models.model.TextureMapping;
 import net.minecraft.client.data.models.model.TextureSlot;
 import net.minecraft.client.data.models.model.TexturedModel;
-import net.minecraft.client.renderer.block.model.Variant;
-import net.minecraft.client.renderer.block.model.VariantMutator;
+import net.minecraft.client.renderer.block.dispatch.Variant;
+import net.minecraft.client.renderer.block.dispatch.VariantMutator;
+import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.random.WeightedList;
@@ -43,7 +44,7 @@ import appeng.core.definitions.BlockDefinition;
 
 public abstract class ModelSubProvider {
     public static final TextureMapping TRANSPARENT_PARTICLE = TextureMapping
-            .particle(AppEng.makeId("block/transparent"));
+            .particle(makeMaterial("block/transparent"));
 
     public static final ModelTemplate EMPTY_MODEL = new ModelTemplate(Optional.empty(), Optional.empty(),
             TextureSlot.PARTICLE);
@@ -85,7 +86,7 @@ public abstract class ModelSubProvider {
     protected void simpleBlockAndItem(BlockDefinition<?> block, String textureName) {
         blockModels.createTrivialBlock(
                 block.block(),
-                TexturedModel.CUBE.updateTexture(mapping -> mapping.put(TextureSlot.ALL, AppEng.makeId(textureName))));
+                TexturedModel.CUBE.updateTexture(mapping -> mapping.put(TextureSlot.ALL, makeMaterial(textureName))));
         // item falls back automatically to the block model
     }
 
@@ -198,19 +199,19 @@ public abstract class ModelSubProvider {
         return conditionBuilder.term(property, blockState.getValue(property));
     }
 
-    protected static Identifier getBlockTexture(BlockDefinition<?> block) {
+    protected static Material getBlockTexture(BlockDefinition<?> block) {
         return TextureMapping.getBlockTexture(block.block());
     }
 
-    protected static Identifier getBlockTexture(Block block) {
+    protected static Material getBlockTexture(Block block) {
         return TextureMapping.getBlockTexture(block);
     }
 
-    protected static Identifier getBlockTexture(Block block, String suffix) {
+    protected static Material getBlockTexture(Block block, String suffix) {
         return TextureMapping.getBlockTexture(block, suffix);
     }
 
-    protected static Identifier getBlockTexture(BlockDefinition<?> block, String suffix) {
+    protected static Material getBlockTexture(BlockDefinition<?> block, String suffix) {
         return TextureMapping.getBlockTexture(block.block(), suffix);
     }
 
@@ -232,5 +233,9 @@ public abstract class ModelSubProvider {
 
     public static MultiVariantGenerator createSimpleBlock(BlockDefinition<?> block, MultiVariant variant) {
         return BlockModelGenerators.createSimpleBlock(block.block(), variant);
+    }
+
+    protected static Material makeMaterial(String texture) {
+        return new Material(AppEng.makeId(texture));
     }
 }

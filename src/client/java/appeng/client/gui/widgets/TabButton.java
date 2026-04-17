@@ -22,7 +22,7 @@ import java.util.Collections;
 import java.util.List;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
@@ -64,7 +64,7 @@ public class TabButton extends Button implements ITooltip {
     }
 
     @Override
-    public void renderContents(GuiGraphics guiGraphics, int x, int y, float partial) {
+    public void renderContents(GuiGraphicsExtractor guiGraphics, int x, int y, float partial) {
         if (this.visible) {
             // Selects the button border from the sprite-sheet, where each type occupies a
             // 2x2 slot
