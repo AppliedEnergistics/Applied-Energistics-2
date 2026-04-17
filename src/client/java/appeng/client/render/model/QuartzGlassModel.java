@@ -18,42 +18,36 @@
 
 package appeng.client.render.model;
 
-import java.util.List;
-import java.util.stream.IntStream;
-
+import appeng.core.AppEng;
+import appeng.decorative.solid.GlassState;
+import appeng.decorative.solid.QuartzGlassBlock;
 import com.google.common.base.Strings;
 import com.mojang.serialization.MapCodec;
-
-import org.joml.Vector3f;
-
-import net.minecraft.client.resources.model.geometry.BakedQuad;
-import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
-import net.minecraft.client.resources.model.SimpleModelWrapper;
-import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
-import net.minecraft.client.renderer.texture.TextureAtlas;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.sprite.Material;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
 import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ModelDebugName;
+import net.minecraft.client.resources.model.SimpleModelWrapper;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.client.resources.model.geometry.QuadCollection;
-import net.minecraft.client.resources.model.sprite.SpriteGetter;
+import net.minecraft.client.resources.model.sprite.Material;
+import net.minecraft.client.resources.model.sprite.MaterialBaker;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
-import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.client.model.DynamicBlockStateModel;
 import net.neoforged.neoforge.client.model.block.CustomUnbakedBlockStateModel;
 import net.neoforged.neoforge.client.model.pipeline.QuadBakingVertexConsumer;
 import net.neoforged.neoforge.model.data.ModelProperty;
+import org.joml.Vector3f;
 
-import appeng.core.AppEng;
-import appeng.decorative.solid.GlassState;
-import appeng.decorative.solid.QuartzGlassBlock;
+import java.util.List;
+import java.util.stream.IntStream;
 
 /**
  * Model class for the connected texture glass model.
@@ -64,14 +58,10 @@ public class QuartzGlassModel implements DynamicBlockStateModel {
     public static final ModelProperty<GlassState> GLASS_STATE = new ModelProperty<>();
 
     // Alternating textures based on position
-    static final Material TEXTURE_A = new Material(TextureAtlas.LOCATION_BLOCKS,
-            Identifier.parse("ae2:block/glass/quartz_glass_a"));
-    static final Material TEXTURE_B = new Material(TextureAtlas.LOCATION_BLOCKS,
-            Identifier.parse("ae2:block/glass/quartz_glass_b"));
-    static final Material TEXTURE_C = new Material(TextureAtlas.LOCATION_BLOCKS,
-            Identifier.parse("ae2:block/glass/quartz_glass_c"));
-    static final Material TEXTURE_D = new Material(TextureAtlas.LOCATION_BLOCKS,
-            Identifier.parse("ae2:block/glass/quartz_glass_d"));
+    static final Material TEXTURE_A = new Material(Identifier.parse("ae2:block/glass/quartz_glass_a"));
+    static final Material TEXTURE_B = new Material(Identifier.parse("ae2:block/glass/quartz_glass_b"));
+    static final Material TEXTURE_C = new Material(Identifier.parse("ae2:block/glass/quartz_glass_c"));
+    static final Material TEXTURE_D = new Material(Identifier.parse("ae2:block/glass/quartz_glass_d"));
 
     // Frame texture
     static final Material[] TEXTURES_FRAME = generateTexturesFrame();
@@ -80,30 +70,33 @@ public class QuartzGlassModel implements DynamicBlockStateModel {
     private static Material[] generateTexturesFrame() {
         return IntStream.range(1, 16).mapToObj(Integer::toBinaryString).map(s -> Strings.padStart(s, 4, '0'))
                 .map(s -> Identifier.parse("ae2:block/glass/quartz_glass_frame" + s))
-                .map(rl -> new Material(TextureAtlas.LOCATION_BLOCKS, rl)).toArray(Material[]::new);
+                .map(Material::new).toArray(Material[]::new);
     }
 
-    private final TextureAtlasSprite[] glassTextures;
+    private final Material.Baked[] glassTextures;
 
-    private final TextureAtlasSprite[] frameTextures;
+    private final Material.Baked[] frameTextures;
 
-    private QuartzGlassModel(SpriteGetter bakedTextureGetter) {
+    private final Material.Baked particleMaterial;
+
+    private QuartzGlassModel(MaterialBaker bakedTextureGetter) {
         ModelDebugName debugName = getClass()::toString;
-        this.glassTextures = new TextureAtlasSprite[] { bakedTextureGetter.get(TEXTURE_A, debugName),
+        this.glassTextures = new Material.Baked[]{bakedTextureGetter.get(TEXTURE_A, debugName),
                 bakedTextureGetter.get(TEXTURE_B, debugName), bakedTextureGetter.get(TEXTURE_C, debugName),
-                bakedTextureGetter.get(TEXTURE_D, debugName) };
+                bakedTextureGetter.get(TEXTURE_D, debugName)};
 
         // The first frame texture would be empty, so we simply leave it set to null
         // here
-        this.frameTextures = new TextureAtlasSprite[16];
+        this.frameTextures = new Material.Baked[16];
         for (int i = 0; i < TEXTURES_FRAME.length; i++) {
             this.frameTextures[1 + i] = bakedTextureGetter.get(TEXTURES_FRAME[i], debugName);
         }
+        particleMaterial = this.frameTextures[this.frameTextures.length - 1];
     }
 
     @Override
     public void collectParts(BlockAndTintGetter level, BlockPos pos, BlockState state, RandomSource random,
-            List<BlockStateModelPart> parts) {
+                             List<BlockStateModelPart> parts) {
         var glassState = getGlassState(level, state, pos);
 
         var quads = new QuadCollection.Builder();
@@ -129,7 +122,7 @@ public class QuartzGlassModel implements DynamicBlockStateModel {
                 quads.addCulledFace(side, this.createQuad(side, corners, glassTexture, u, v));
 
                 final int edgeBitmask = glassState.getMask(side);
-                final TextureAtlasSprite sideSprite = this.frameTextures[edgeBitmask];
+                var sideSprite = this.frameTextures[edgeBitmask];
 
                 if (sideSprite != null) {
                     quads.addCulledFace(side, this.createQuad(side, corners, sideSprite, 0, 0));
@@ -137,7 +130,12 @@ public class QuartzGlassModel implements DynamicBlockStateModel {
             }
         }
 
-        parts.add(new SimpleModelWrapper(quads.build(), false, particleIcon(), ChunkSectionLayer.CUTOUT));
+        parts.add(new SimpleModelWrapper(quads.build(), false, particleMaterial));
+    }
+
+    @Override
+    public @BakedQuad.MaterialFlags int materialFlags() {
+        return BakedQuad.FLAG_TRANSLUCENT;
     }
 
     /**
@@ -161,7 +159,7 @@ public class QuartzGlassModel implements DynamicBlockStateModel {
     }
 
     private static int makeBitmask(BlockAndTintGetter level, BlockState state, BlockPos pos, Direction face,
-            Direction up, Direction right, Direction down, Direction left) {
+                                   Direction up, Direction right, Direction down, Direction left) {
 
         int bitmask = 0;
 
@@ -180,14 +178,14 @@ public class QuartzGlassModel implements DynamicBlockStateModel {
         return bitmask;
     }
 
-    private BakedQuad createQuad(Direction side, List<Vector3f> corners, TextureAtlasSprite sprite, float uOffset,
-            float vOffset) {
+    private BakedQuad createQuad(Direction side, List<Vector3f> corners, Material.Baked sprite, float uOffset,
+                                 float vOffset) {
         return this.createQuad(side, corners.get(0), corners.get(1), corners.get(2), corners.get(3), sprite, uOffset,
                 vOffset);
     }
 
     private BakedQuad createQuad(Direction side, Vector3f c1, Vector3f c2, Vector3f c3, Vector3f c4,
-            TextureAtlasSprite sprite, float uOffset, float vOffset) {
+                                 Material.Baked sprite, float uOffset, float vOffset) {
         Vec3 normal = side.getUnitVec3();
 
         // Apply the u,v shift.
@@ -212,18 +210,18 @@ public class QuartzGlassModel implements DynamicBlockStateModel {
      * has to be precisely the order in which the vertex elements had been declared in the vertex format.
      */
     private void putVertex(QuadBakingVertexConsumer builder, Vec3 normal, float x, float y, float z,
-            TextureAtlasSprite sprite, float u, float v) {
+                           Material.Baked sprite, float u, float v) {
         builder.addVertex(x, y, z);
         builder.setColor(1.0f, 1.0f, 1.0f, 1.0f);
         builder.setNormal((float) normal.x, (float) normal.y, (float) normal.z);
-        u = sprite.getU(u);
-        v = sprite.getV(v);
+        u = sprite.sprite().getU(u);
+        v = sprite.sprite().getV(v);
         builder.setUv(u, v);
     }
 
     @Override
-    public TextureAtlasSprite particleIcon() {
-        return this.frameTextures[this.frameTextures.length - 1];
+    public Material.Baked particleMaterial() {
+        return this.particleMaterial;
     }
 
     private static GlassState getGlassState(BlockAndTintGetter level, BlockState state, BlockPos pos) {
@@ -255,7 +253,7 @@ public class QuartzGlassModel implements DynamicBlockStateModel {
      * @param adjDir       Direction in which to check.
      */
     private static boolean isGlassBlock(BlockAndTintGetter level, BlockState state, BlockPos pos,
-            Direction queryingFace, Direction adjDir, Direction adjFace) {
+                                        Direction queryingFace, Direction adjDir, Direction adjFace) {
         var adjacentPos = pos.relative(adjDir);
         var adjacentState = level.getBlockState(adjacentPos);
         // Checks that the adjacent block is indeed glass
@@ -272,11 +270,11 @@ public class QuartzGlassModel implements DynamicBlockStateModel {
 
     public record Unbaked() implements CustomUnbakedBlockStateModel {
         public static final Identifier ID = AppEng.makeId("quartz_glass");
-        public static final MapCodec<QuartzGlassModel.Unbaked> MAP_CODEC = MapCodec.unit(Unbaked::new);
+        public static final MapCodec<Unbaked> MAP_CODEC = MapCodec.unit(Unbaked::new);
 
         @Override
         public BlockStateModel bake(ModelBaker baker) {
-            return new QuartzGlassModel(baker.sprites());
+            return new QuartzGlassModel(baker.materials());
         }
 
         @Override
@@ -284,7 +282,7 @@ public class QuartzGlassModel implements DynamicBlockStateModel {
         }
 
         @Override
-        public MapCodec<QuartzGlassModel.Unbaked> codec() {
+        public MapCodec<Unbaked> codec() {
             return MAP_CODEC;
         }
     }
