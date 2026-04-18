@@ -1,10 +1,7 @@
 package appeng.client.render.crafting;
 
-import java.util.List;
-
 import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
-import net.minecraft.client.resources.model.sprite.Material;
-import net.minecraft.client.resources.model.sprite.SpriteGetter;
+import net.minecraft.client.resources.model.sprite.MaterialBaker;
 
 import appeng.block.crafting.ICraftingUnitType;
 
@@ -21,5 +18,5 @@ public abstract class AbstractCraftingUnitModelProvider<T extends ICraftingUnitT
         this.type = type;
     }
 
-    public abstract BlockStateModel bake(SpriteGetter spriteGetter);
+    public abstract BlockStateModel bake(MaterialBaker materialBaker);
 }
