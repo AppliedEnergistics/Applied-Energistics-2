@@ -24,7 +24,8 @@ public class PickColorMixin {
     @Shadow
     HitResult hitResult;
 
-    @Inject(method = "pickBlockOrEntity", at = @At("HEAD"), cancellable = true) // TODO 26.1 - Mithi83 - just guessing here
+    @Inject(method = "pickBlockOrEntity", at = @At("HEAD"), cancellable = true) // TODO 26.1 - Mithi83 - just guessing
+                                                                                // here
     public void pickColor(CallbackInfo ci) {
         if (this.player != null && this.hitResult != null && this.hitResult.getType() == HitResult.Type.BLOCK) {
             if (ColorApplicatorPickColorHook.onPickColor(player, (BlockHitResult) this.hitResult)) {

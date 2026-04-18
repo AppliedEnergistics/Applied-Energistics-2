@@ -1,10 +1,12 @@
 {
   "type": "ae2:quartz_cutting",
+  "category": "misc",
   "ingredients": [
     "#ae2:metal_ingots"
   ],
   "result": {
     "count": 4,
     "id": "ae2:cable_anchor"
-  }
+  },
+  "show_notification": false
 }
