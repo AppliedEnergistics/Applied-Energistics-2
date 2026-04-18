@@ -1,6 +1,7 @@
 package appeng.datagen.providers.models;
 
 import java.util.List;
+import java.util.Optional;
 
 import net.minecraft.client.color.item.Constant;
 import net.minecraft.client.data.models.BlockModelGenerators;
@@ -14,6 +15,7 @@ import net.minecraft.client.data.models.model.TextureSlot;
 import net.minecraft.client.renderer.item.CompositeModel;
 import net.minecraft.client.renderer.item.EmptyModel;
 import net.minecraft.client.renderer.item.ItemModel;
+import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import net.minecraft.world.level.ItemLike;
@@ -46,7 +48,7 @@ public class ItemModelProvider extends ModelSubProvider {
         builtInItemModel(AEItems.METEORITE_COMPASS, new CompositeModel.Unbaked(
                 List.of(
                         ItemModelUtils.plainModel(makeId("item/meteorite_compass_base")),
-                        new MeteoriteCompassModel.Unbaked())));
+                        new MeteoriteCompassModel.Unbaked()), Optional.empty()));
 
         flatSingleLayer(AEItems.ADVANCED_CARD, "item/advanced_card");
         flatSingleLayer(AEItems.VOID_CARD, "item/card_void");
@@ -153,7 +155,7 @@ public class ItemModelProvider extends ModelSubProvider {
         // Create the base models
         var baseModel = ModelTemplates.TWO_LAYERED_ITEM.create(
                 ModelLocationUtils.getModelLocation(AEItems.MEMORY_CARD.asItem(), "_base"),
-                TextureMapping.layered(makeId("item/memory_card_base"), makeId("item/memory_card_led")),
+                TextureMapping.layered(new Material(makeId("item/memory_card_base")), new Material(makeId("item/memory_card_led"))),
                 modelOutput);
         itemModels.itemModelOutput.accept(
                 AEItems.MEMORY_CARD.asItem(),
@@ -167,8 +169,8 @@ public class ItemModelProvider extends ModelSubProvider {
     private void storageCell(ItemDefinition<?> item, String background) {
         var model = itemModels.generateLayeredItem(
                 item.asItem(),
-                makeId(background),
-                makeId("item/storage_cell_led"));
+                new Material(makeId(background)),
+                new Material(makeId("item/storage_cell_led")));
         itemModels.itemModelOutput.accept(item.asItem(), ItemModelUtils.tintedModel(
                 model,
                 new Constant(-1),
@@ -184,10 +186,10 @@ public class ItemModelProvider extends ModelSubProvider {
         var model = FOUR_LAYERED_ITEM.create(
                 item.asItem(),
                 TextureMapping.layered(
-                        makeId("item/portable_cell_%s_housing".formatted(housingType)),
-                        makeId("item/portable_cell_led"),
-                        makeId("item/portable_cell_screen"))
-                        .put(LAYER3, makeId("item/portable_cell_side_%s".formatted(tier))),
+                        new Material(makeId("item/portable_cell_%s_housing".formatted(housingType))),
+                        new Material(makeId("item/portable_cell_led")),
+                        new Material(makeId("item/portable_cell_screen")))
+                        .put(LAYER3, new Material(makeId("item/portable_cell_side_%s".formatted(tier)))),
                 itemModels.modelOutput);
         itemModels.itemModelOutput.accept(item.asItem(), ItemModelUtils.tintedModel(
                 model,
@@ -233,9 +235,9 @@ public class ItemModelProvider extends ModelSubProvider {
      */
     private void registerPaintballs() {
         var baseModel = ModelTemplates.FLAT_ITEM.create(AppEng.makeId("item/paint_ball"),
-                TextureMapping.layer0(AppEng.makeId("item/paint_ball")), this.modelOutput);
+                TextureMapping.layer0(new Material(AppEng.makeId("item/paint_ball"))), this.modelOutput);
         var lumenModel = ModelTemplates.FLAT_ITEM.create(AppEng.makeId("item/paint_ball_shimmer"),
-                TextureMapping.layer0(AppEng.makeId("item/paint_ball_shimmer")), this.modelOutput);
+                TextureMapping.layer0(new Material(AppEng.makeId("item/paint_ball_shimmer"))), this.modelOutput);
 
         for (var color : AEColor.values()) {
             if (color == AEColor.TRANSPARENT) {
@@ -267,7 +269,7 @@ public class ItemModelProvider extends ModelSubProvider {
     }
 
     private void flatSingleLayer(ItemLike item, String texture) {
-        var model = ModelTemplates.FLAT_ITEM.create(item.asItem(), TextureMapping.layer0(makeId(texture)),
+        var model = ModelTemplates.FLAT_ITEM.create(item.asItem(), TextureMapping.layer0(new Material(makeId(texture))),
                 itemModels.modelOutput);
         itemModels.itemModelOutput.accept(item.asItem(), ItemModelUtils.plainModel(model));
     }
