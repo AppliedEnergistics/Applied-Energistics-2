@@ -1,5 +1,6 @@
 package appeng.mixins;
 
+import net.minecraft.world.item.ItemInstance;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -15,9 +16,9 @@ import appeng.hooks.IntrinsicEnchantItem;
 @Mixin(EnchantmentHelper.class)
 public class EnchantmentHelperMixin {
     @Inject(at = @At("RETURN"), method = "getItemEnchantmentLevel", cancellable = true)
-    private static void hookGetItemEnchantmentLevel(Holder<Enchantment> enchantment, ItemStack stack,
+    private static void hookGetItemEnchantmentLevel(Holder<Enchantment> enchantment, ItemInstance stack,
             CallbackInfoReturnable<Integer> cir) {
-        if (cir.getReturnValueI() == 0 && stack.getItem() instanceof IntrinsicEnchantItem item) {
+        if (cir.getReturnValueI() == 0 && stack.typeHolder().value() instanceof IntrinsicEnchantItem item) {
             int level = item.getIntrinsicEnchantLevel(stack, enchantment);
             if (level != 0) {
                 cir.setReturnValue(level);

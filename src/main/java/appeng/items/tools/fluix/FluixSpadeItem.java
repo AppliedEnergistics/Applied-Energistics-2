@@ -5,6 +5,7 @@ import java.util.function.Consumer;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item.Properties;
+import net.minecraft.world.item.ItemInstance;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ShovelItem;
 import net.minecraft.world.item.TooltipFlag;
@@ -23,7 +24,7 @@ public class FluixSpadeItem extends ShovelItem implements IntrinsicEnchantItem {
     }
 
     @Override
-    public int getIntrinsicEnchantLevel(ItemStack stack, Holder<Enchantment> enchantment) {
+    public int getIntrinsicEnchantLevel(ItemInstance instance, Holder<Enchantment> enchantment) {
         return intrinsicEnchantment.getLevel(enchantment);
     }
 

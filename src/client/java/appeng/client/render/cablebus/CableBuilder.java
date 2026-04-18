@@ -299,8 +299,8 @@ class CableBuilder {
         var texture = this.connectionTextures.get(AECableType.SMART).get(cableColor);
         cubeBuilder.setTexture(texture);
 
-        TextureAtlasSprite oddChannel = this.smartCableTextures.getOddTextureForChannels(channels);
-        TextureAtlasSprite evenChannel = this.smartCableTextures.getEvenTextureForChannels(channels);
+        var oddChannel = this.smartCableTextures.getOddTextureForChannels(channels);
+        var evenChannel = this.smartCableTextures.getEvenTextureForChannels(channels);
 
         // For to-machine connections, use a thicker end-cap for the connection
         if (connectionType != AECableType.GLASS && !cableBusAdjacent) {
@@ -481,8 +481,8 @@ class CableBuilder {
         // Dense cables show used channels in groups of 4, rounded up
         channels = (channels + 3) / 4;
 
-        TextureAtlasSprite oddChannel = this.smartCableTextures.getOddTextureForDenseChannels(channels);
-        TextureAtlasSprite evenChannel = this.smartCableTextures.getEvenTextureForDenseChannels(channels);
+        var oddChannel = this.smartCableTextures.getOddTextureForDenseChannels(channels);
+        var evenChannel = this.smartCableTextures.getEvenTextureForDenseChannels(channels);
 
         // Render the channel indicators brightly lit at night
         cubeBuilder.setEmissiveMaterial(true);
@@ -538,8 +538,8 @@ class CableBuilder {
         // Dense cables show used channels in groups of 4, rounded up
         channels = (channels + 3) / 4;
 
-        TextureAtlasSprite oddChannel = this.smartCableTextures.getOddTextureForDenseChannels(channels);
-        TextureAtlasSprite evenChannel = this.smartCableTextures.getEvenTextureForDenseChannels(channels);
+        var oddChannel = this.smartCableTextures.getOddTextureForDenseChannels(channels);
+        var evenChannel = this.smartCableTextures.getEvenTextureForDenseChannels(channels);
 
         // Render the channel indicators brightly lit at night
         cubeBuilder.setEmissiveMaterial(true);

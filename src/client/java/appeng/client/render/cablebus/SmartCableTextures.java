@@ -48,7 +48,7 @@ public class SmartCableTextures {
     // Textures used to display channels on smart cables. There's two sets of 5
     // textures each, and
     // one of each set are composed together to get even/odd colored channels
-    private final TextureAtlasSprite[] textures;
+    private final Material.Baked[] textures;
 
     public static final Material[] DENSE_SMART_CHANNELS_TEXTURES = Arrays
             .stream(new Identifier[] { AppEng.makeId("part/cable/dense_smart/channels_00"), //
@@ -66,22 +66,22 @@ public class SmartCableTextures {
     // Textures used to display channels on dense smart cables. There's two sets of 5
     // textures each, and
     // one of each set are composed together to get even/odd colored channels
-    private final TextureAtlasSprite[] densetextures;
+    private final Material.Baked[] densetextures;
 
-    public SmartCableTextures(MaterialBaker sprites) {
+    public SmartCableTextures(MaterialBaker materials) {
         this.textures = Arrays.stream(SMART_CHANNELS_TEXTURES)
-                .map(l -> sprites.get(l, getClass()::toString))
-                .toArray(TextureAtlasSprite[]::new);
+                .map(l -> materials.get(l, getClass()::toString))
+                .toArray(Material.Baked[]::new);
 
         this.densetextures = Arrays.stream(DENSE_SMART_CHANNELS_TEXTURES)
-                .map(l -> sprites.get(l, getClass()::toString))
-                .toArray(TextureAtlasSprite[]::new);
+                .map(l -> materials.get(l, getClass()::toString))
+                .toArray(Material.Baked[]::new);
     }
 
     /**
      * The odd variant is used for displaying channels 1-4 as in use.
      */
-    public TextureAtlasSprite getOddTextureForChannels(int channels) {
+    public Material.Baked getOddTextureForChannels(int channels) {
         if (channels < 0) {
             return this.textures[0];
         } else if (channels <= 4) {
@@ -91,7 +91,7 @@ public class SmartCableTextures {
         }
     }
 
-    public TextureAtlasSprite getOddTextureForDenseChannels(int channels) {
+    public Material.Baked getOddTextureForDenseChannels(int channels) {
         if (channels < 0) {
             return this.densetextures[0];
         } else if (channels <= 4) {
@@ -104,7 +104,7 @@ public class SmartCableTextures {
     /**
      * The even variant is used for displaying channels 5-8 as in use.
      */
-    public TextureAtlasSprite getEvenTextureForChannels(int channels) {
+    public Material.Baked getEvenTextureForChannels(int channels) {
         if (channels < 5) {
             return this.textures[5];
         } else if (channels <= 8) {
@@ -114,7 +114,7 @@ public class SmartCableTextures {
         }
     }
 
-    public TextureAtlasSprite getEvenTextureForDenseChannels(int channels) {
+    public Material.Baked getEvenTextureForDenseChannels(int channels) {
         if (channels < 5) {
             return this.densetextures[5];
         } else if (channels <= 8) {
