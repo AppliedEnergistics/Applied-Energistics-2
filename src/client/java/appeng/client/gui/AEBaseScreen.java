@@ -502,11 +502,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
 
     @Override
     public void extractContents(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
-        super.extractContents(graphics, mouseX, mouseY, a);
-
         this.drawBG(graphics, leftPos, topPos, mouseX, mouseY, a);
-
-        graphics.nextStratum();
 
         widgets.drawBackgroundLayer(graphics, getBounds(true), new Point(mouseX - leftPos, mouseY - topPos));
 
@@ -515,6 +511,11 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
                 drawOptionalSlotBackground(graphics, (IOptionalSlot) slot, false);
             }
         }
+
+        // TODO 26.1 - Mithi83 - double-check the order of rendering in here
+        super.extractContents(graphics, mouseX, mouseY, a);
+
+        graphics.nextStratum();
     }
 
     private void drawOptionalSlotBackground(GuiGraphicsExtractor guiGraphics, IOptionalSlot slot, boolean alwaysDraw) {

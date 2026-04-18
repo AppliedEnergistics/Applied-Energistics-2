@@ -127,7 +127,6 @@ public class VerticalButtonBar implements ICompositeWidget {
                 AppEng.makeId("vertical_buttons_bg"),
                 bounds.getX() + this.bounds.getX() - 2,
                 bounds.getY() + this.bounds.getY() - 1,
-                1,
                 this.bounds.getWidth() + 1,
                 this.bounds.getHeight() + 4);
     }
