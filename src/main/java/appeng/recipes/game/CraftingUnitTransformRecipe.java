@@ -2,7 +2,6 @@ package appeng.recipes.game;
 
 import java.util.List;
 
-import appeng.recipes.MechanicsRecipe;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
@@ -13,19 +12,15 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.PlacementInfo;
-import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeBookCategories;
-import net.minecraft.world.item.crafting.RecipeBookCategory;
 import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.display.RecipeDisplay;
 import net.minecraft.world.item.crafting.display.SlotDisplay;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 
 import appeng.recipes.AERecipeTypes;
+import appeng.recipes.MechanicsRecipe;
 
 /**
  * Used to handle upgrading and removal of upgrades for crafting units (in-world).
@@ -47,7 +42,8 @@ public class CraftingUnitTransformRecipe extends MechanicsRecipe<RecipeInput> {
                     CraftingUnitTransformRecipe::getUpgradeItem,
                     CraftingUnitTransformRecipe::new);
 
-    public static final RecipeSerializer<CraftingUnitTransformRecipe> SERIALIZER = new RecipeSerializer<>(CODEC, STREAM_CODEC);
+    public static final RecipeSerializer<CraftingUnitTransformRecipe> SERIALIZER = new RecipeSerializer<>(CODEC,
+            STREAM_CODEC);
 
     private final Block upgradedBlock;
     private final Item upgradeItem;

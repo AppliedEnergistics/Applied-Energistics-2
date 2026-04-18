@@ -68,7 +68,8 @@ public abstract class AbstractTableRenderer<T> {
         this.rows = rows;
     }
 
-    public final void render(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, List<T> entries, int scrollOffset) {
+    public final void render(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, List<T> entries,
+            int scrollOffset) {
         mouseX -= screen.getGuiLeft();
         mouseY -= screen.getGuiTop();
 

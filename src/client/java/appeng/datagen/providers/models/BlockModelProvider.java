@@ -44,7 +44,6 @@ import appeng.block.misc.VibrationChamberBlock;
 import appeng.block.networking.ControllerBlock;
 import appeng.block.networking.EnergyCellBlock;
 import appeng.block.networking.WirelessAccessPointBlock;
-import appeng.client.model.QnbFormedModel;
 import appeng.block.qnb.QuantumLinkChamberBlock;
 import appeng.block.qnb.QuantumRingBlock;
 import appeng.block.spatial.SpatialAnchorBlock;
@@ -53,6 +52,7 @@ import appeng.block.storage.IOPortBlock;
 import appeng.block.storage.MEChestBlock;
 import appeng.client.item.EnergyFillLevelProperty;
 import appeng.client.model.PaintSplotchesModel;
+import appeng.client.model.QnbFormedModel;
 import appeng.client.model.SpatialPylonModel;
 import appeng.client.model.SpinnableVariant;
 import appeng.client.render.cablebus.CableBusModel;
@@ -614,7 +614,8 @@ public class BlockModelProvider extends ModelSubProvider {
 
     private void craftingModel(BlockDefinition<?> block, String name, CraftingUnitType type) {
         var unformedModel = ModelTemplates.CUBE_ALL.create(
-                makeId("block/crafting/" + name), TextureMapping.cube(makeMaterial("block/crafting/" + name)), modelOutput);
+                makeId("block/crafting/" + name), TextureMapping.cube(makeMaterial("block/crafting/" + name)),
+                modelOutput);
         var formedModel = customBlockStateModel(new CraftingCubeModel.Unbaked(type));
 
         blockModels.blockStateOutput

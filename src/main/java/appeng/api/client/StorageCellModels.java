@@ -29,9 +29,9 @@ import java.util.Objects;
 
 import com.google.common.base.Preconditions;
 
-import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
 import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;

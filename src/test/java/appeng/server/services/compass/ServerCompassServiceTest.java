@@ -6,7 +6,6 @@ import static org.mockito.Mockito.when;
 
 import java.nio.file.Path;
 
-import net.minecraft.world.level.storage.SavedDataStorage;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.io.TempDir;
@@ -17,6 +16,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.datafix.DataFixers;
 import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.storage.SavedDataStorage;
 import net.neoforged.testframework.junit.EphemeralTestServerProvider;
 
 @ExtendWith(EphemeralTestServerProvider.class)

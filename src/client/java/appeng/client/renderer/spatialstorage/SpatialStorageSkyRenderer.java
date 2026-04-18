@@ -62,9 +62,9 @@ public class SpatialStorageSkyRenderer implements CustomSkyboxRenderer, AutoClos
             new Quaternionf().rotationZ(Mth.DEG_TO_RAD * 90.0F),
             new Quaternionf().rotationZ(Mth.DEG_TO_RAD * -90.0F), };
 
-
     @Override
-    public boolean renderSky(LevelRenderState levelRenderState, SkyRenderState skyRenderState, Matrix4fc modelViewMatrix, Runnable setupFog) {
+    public boolean renderSky(LevelRenderState levelRenderState, SkyRenderState skyRenderState,
+            Matrix4fc modelViewMatrix, Runnable setupFog) {
         var poseStack = new PoseStack();
         poseStack.mulPose(modelViewMatrix);
 

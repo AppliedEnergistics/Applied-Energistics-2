@@ -18,7 +18,6 @@
 
 package appeng.parts.reporting;
 
-import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.Direction;

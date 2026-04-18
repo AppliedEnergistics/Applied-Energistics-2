@@ -26,7 +26,8 @@ public class RemoveItemUpgradeRecipe extends CustomRecipe {
     public static final StreamCodec<RegistryFriendlyByteBuf, RemoveItemUpgradeRecipe> STREAM_CODEC = StreamCodec
             .unit(INSTANCE);
 
-    public static final RecipeSerializer<RemoveItemUpgradeRecipe> SERIALIZER = new RecipeSerializer<>(CODEC, STREAM_CODEC);
+    public static final RecipeSerializer<RemoveItemUpgradeRecipe> SERIALIZER = new RecipeSerializer<>(CODEC,
+            STREAM_CODEC);
 
     record RemovalResult(ItemStack upgradableItem, ItemStack upgrade) {
     }

@@ -160,7 +160,8 @@ public final class UpgradesPanel implements ICompositeWidget {
         }
         // Added border to match the rest of the GUI style - RID
         guiGraphics.horizontalLine(slotOriginX - 4, slotOriginX + 11, slotOriginY, 0XFFf2f2f2);
-        guiGraphics.horizontalLine(slotOriginX - 4, slotOriginX + 11, slotOriginY + (SLOT_SIZE * slotCount) - 1, 0XFFf2f2f2);
+        guiGraphics.horizontalLine(slotOriginX - 4, slotOriginX + 11, slotOriginY + (SLOT_SIZE * slotCount) - 1,
+                0XFFf2f2f2);
         guiGraphics.verticalLine(slotOriginX - 5, slotOriginY - 1, slotOriginY + (SLOT_SIZE * slotCount), 0XFFf2f2f2);
         guiGraphics.verticalLine(slotOriginX + 12, slotOriginY - 1, slotOriginY + (SLOT_SIZE * slotCount), 0XFFf2f2f2);
     }

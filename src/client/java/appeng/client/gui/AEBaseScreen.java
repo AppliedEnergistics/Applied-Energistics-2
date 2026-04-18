@@ -982,7 +982,8 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
      * Renders a highlight for the given slot to indicate the mouse is currently hovering over it.
      */
     // TODO 1.21.8 Unused
-    protected void renderSlotHighlight(GuiGraphicsExtractor guiGraphics, Slot slot, int mouseX, int mouseY, float partialTick) {
+    protected void renderSlotHighlight(GuiGraphicsExtractor guiGraphics, Slot slot, int mouseX, int mouseY,
+            float partialTick) {
         if (!slot.isHighlightable()) {
             return;
         }

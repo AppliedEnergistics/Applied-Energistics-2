@@ -4,10 +4,6 @@ import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
-import net.minecraft.client.renderer.Sheets;
-import net.minecraft.client.renderer.block.FluidRenderer;
-import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix3x2f;
 import org.joml.Quaternionf;
@@ -15,21 +11,14 @@ import org.joml.Quaternionf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.gui.render.pip.PictureInPictureRenderer;
-import net.minecraft.client.renderer.state.gui.pip.PictureInPictureRenderState;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.util.Mth;
+import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.block.BlockAndTintGetter;
-import net.minecraft.world.level.ColorResolver;
-import net.minecraft.world.level.LightLayer;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.lighting.LevelLightEngine;
+import net.minecraft.client.renderer.block.FluidRenderer;
+import net.minecraft.client.renderer.state.gui.pip.PictureInPictureRenderState;
+import net.minecraft.core.BlockPos;
+import net.minecraft.util.Mth;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraft.world.level.material.FluidState;
-import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.client.model.pipeline.VertexConsumerWrapper;
 
 public class FluidBlockPictureInPictureRenderer
@@ -62,7 +51,8 @@ public class FluidBlockPictureInPictureRenderer
                 BlockPos.ZERO,
                 layer -> {
                     // TODO 26.1: Unclear if this is still needed
-                    var buffer = bufferSource.getBuffer(layer.translucent() ? Sheets.translucentBlockSheet() : Sheets.cutoutBlockSheet());
+                    var buffer = bufferSource.getBuffer(
+                            layer.translucent() ? Sheets.translucentBlockSheet() : Sheets.cutoutBlockSheet());
                     return new LiquidVertexConsumer(buffer, poseStack.last());
                 },
                 fluidState.createLegacyBlock(), fluidState);
@@ -114,9 +104,9 @@ public class FluidBlockPictureInPictureRenderer
 
     /**
      * The only purpose of this vertex consumer proxy is to transform vertex positions emitted by the
-     * {@link FluidRenderer} into absolute coordinates. The renderer assumes
-     * it is being called in the context of tessellating a chunk section (16x16x16) and emits corresponding coordinates,
-     * while we batch all visible chunks in the guidebook together.
+     * {@link FluidRenderer} into absolute coordinates. The renderer assumes it is being called in the context of
+     * tessellating a chunk section (16x16x16) and emits corresponding coordinates, while we batch all visible chunks in
+     * the guidebook together.
      */
     private static class LiquidVertexConsumer extends VertexConsumerWrapper {
         private final PoseStack.Pose pose;

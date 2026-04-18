@@ -21,14 +21,14 @@ package appeng.client.render.crafting;
 import java.util.EnumSet;
 import java.util.List;
 
-import appeng.client.render.MaterialUtil;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
-import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
-import net.minecraft.client.resources.model.SimpleModelWrapper;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
 import net.minecraft.client.resources.model.ModelBaker;
+import net.minecraft.client.resources.model.SimpleModelWrapper;
 import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.client.resources.model.geometry.QuadCollection;
 import net.minecraft.client.resources.model.sprite.Material;
@@ -37,7 +37,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
-import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.client.model.DynamicBlockStateModel;
 import net.neoforged.neoforge.client.model.block.CustomUnbakedBlockStateModel;
@@ -46,6 +45,7 @@ import net.neoforged.neoforge.model.data.ModelData;
 import appeng.block.crafting.CraftingUnitType;
 import appeng.blockentity.crafting.CraftingCubeModelData;
 import appeng.client.render.CubeBuilder;
+import appeng.client.render.MaterialUtil;
 import appeng.core.AppEng;
 import appeng.util.Platform;
 
@@ -259,7 +259,8 @@ public abstract class CraftingCubeModel implements DynamicBlockStateModel {
         return materialFlags;
     }
 
-    // TODO 26.1: Should implement the location ware materialFlags method to return the flags for the actually used materials
+    // TODO 26.1: Should implement the location ware materialFlags method to return the flags for the actually used
+    // materials
 
     public record Unbaked(CraftingUnitType type) implements CustomUnbakedBlockStateModel {
         public static final Identifier ID = AppEng.makeId("crafting_cube");

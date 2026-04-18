@@ -169,7 +169,8 @@ public class CraftingParticle extends SingleQuadParticle {
             if (breakingParticle != null) {
                 return breakingParticle.sprite();
             } else {
-                return Minecraft.getInstance().getAtlasManager().getAtlasOrThrow(Layer.OPAQUE_TERRAIN.textureAtlasLocation())
+                return Minecraft.getInstance().getAtlasManager()
+                        .getAtlasOrThrow(Layer.OPAQUE_TERRAIN.textureAtlasLocation())
                         .getSprite(MissingTextureAtlasSprite.getLocation());
             }
         }

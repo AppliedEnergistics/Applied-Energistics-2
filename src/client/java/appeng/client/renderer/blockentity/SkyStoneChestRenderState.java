@@ -1,7 +1,6 @@
 package appeng.client.renderer.blockentity;
 
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
-import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.client.resources.model.sprite.SpriteId;
 
 public class SkyStoneChestRenderState extends BlockEntityRenderState {

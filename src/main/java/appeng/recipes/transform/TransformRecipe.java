@@ -2,7 +2,6 @@ package appeng.recipes.transform;
 
 import java.util.List;
 
-import appeng.recipes.MechanicsRecipe;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
@@ -23,6 +22,7 @@ import appeng.blockentity.qnb.QuantumBridgeBlockEntity;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEItems;
 import appeng.recipes.AERecipeTypes;
+import appeng.recipes.MechanicsRecipe;
 
 public final class TransformRecipe extends MechanicsRecipe<TransformRecipeInput> {
     @Deprecated(forRemoval = true, since = "1.21.1")

@@ -22,32 +22,32 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 
-import appeng.block.qnb.QnbFormedState;
-import appeng.client.render.MaterialUtil;
 import com.mojang.serialization.MapCodec;
 
-import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
-import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
-import net.minecraft.client.resources.model.SimpleModelWrapper;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.client.renderer.block.dispatch.BlockModelRotation;
-import net.minecraft.client.resources.model.geometry.BakedQuad;
-import net.minecraft.client.resources.model.sprite.Material;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
 import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ModelDebugName;
+import net.minecraft.client.resources.model.SimpleModelWrapper;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.client.resources.model.geometry.QuadCollection;
+import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.client.resources.model.sprite.MaterialBaker;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
-import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.client.model.DynamicBlockStateModel;
 import net.neoforged.neoforge.client.model.block.CustomUnbakedBlockStateModel;
 
+import appeng.block.qnb.QnbFormedState;
 import appeng.blockentity.qnb.QuantumBridgeBlockEntity;
 import appeng.client.render.CubeBuilder;
+import appeng.client.render.MaterialUtil;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
 
@@ -58,7 +58,8 @@ public class QnbFormedModel implements DynamicBlockStateModel {
     private static final Material TEXTURE_LINK = new Material(AppEng.makeId("block/quantum_link"));
     private static final Material TEXTURE_RING = new Material(AppEng.makeId("block/quantum_ring"));
     private static final Material TEXTURE_RING_LIGHT = new Material(AppEng.makeId("block/quantum_ring_light"));
-    private static final Material TEXTURE_RING_LIGHT_CORNER = new Material(AppEng.makeId("block/quantum_ring_light_corner"));
+    private static final Material TEXTURE_RING_LIGHT_CORNER = new Material(
+            AppEng.makeId("block/quantum_ring_light_corner"));
     private static final Material TEXTURE_CABLE_GLASS = new Material(AppEng.makeId("part/cable/glass/transparent"));
     private static final Material TEXTURE_COVERED_CABLE = new Material(AppEng.makeId("part/cable/covered/transparent"));
 
@@ -103,8 +104,7 @@ public class QnbFormedModel implements DynamicBlockStateModel {
                 glassCableTexture,
                 coveredCableTexture,
                 lightTexture,
-                lightCornerTexture
-        );
+                lightCornerTexture);
     }
 
     @Override

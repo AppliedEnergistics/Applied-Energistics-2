@@ -9,18 +9,17 @@ import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.level.Level;
 
 /**
- * Base class for recipes that are recipes used to
- * make game mechanics data-driven without being normal crafting
- * recipes. This interface just default-implements a few of the
- * recipe methods that would only be relevant for normal crafting.
+ * Base class for recipes that are recipes used to make game mechanics data-driven without being normal crafting
+ * recipes. This interface just default-implements a few of the recipe methods that would only be relevant for normal
+ * crafting.
  * <p>
  * They're:
  * <ul>
- *     <li>Not placeable</li>
- *     <li>Don't show in any recipe books</li>
- *     <li>Don't show discovery notifications</li>
- *     <li>They never match anything</li>
- *     <li>Their assembly method returns an empty stack</li>
+ * <li>Not placeable</li>
+ * <li>Don't show in any recipe books</li>
+ * <li>Don't show discovery notifications</li>
+ * <li>They never match anything</li>
+ * <li>Their assembly method returns an empty stack</li>
  * </ul>
  */
 public abstract class MechanicsRecipe<T extends RecipeInput> implements Recipe<T> {

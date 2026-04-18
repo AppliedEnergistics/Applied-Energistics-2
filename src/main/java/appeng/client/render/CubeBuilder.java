@@ -24,11 +24,11 @@ import java.util.function.Consumer;
 
 import com.google.common.base.Preconditions;
 
-import net.minecraft.client.resources.model.sprite.Material;
 import org.joml.Vector4f;
 
-import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
+import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.core.Direction;
 import net.neoforged.neoforge.client.model.quad.MutableQuad;
 
@@ -214,7 +214,7 @@ public class CubeBuilder {
     }
 
     public void setTextures(Material.Baked up, Material.Baked down, Material.Baked north,
-                            Material.Baked south, Material.Baked east, Material.Baked west) {
+            Material.Baked south, Material.Baked east, Material.Baked west) {
         this.textures.put(Direction.UP, up.sprite());
         this.textures.put(Direction.DOWN, down.sprite());
         this.textures.put(Direction.NORTH, north.sprite());

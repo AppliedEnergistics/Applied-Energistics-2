@@ -37,7 +37,7 @@ public class LightBakedModel extends CraftingCubeModel {
     private final Material.Baked lightTexture;
 
     public LightBakedModel(Material.Baked ringCorner, Material.Baked ringHor, Material.Baked ringVer,
-                           Material.Baked baseTexture, Material.Baked lightTexture) {
+            Material.Baked baseTexture, Material.Baked lightTexture) {
         super(ringCorner, ringHor, ringVer);
         this.baseTexture = baseTexture;
         this.lightTexture = lightTexture;

@@ -7,17 +7,15 @@ import java.util.function.Supplier;
 
 import com.google.common.base.Suppliers;
 
-import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 import org.joml.Matrix4fc;
 import org.joml.Vector3fc;
 
-import net.minecraft.client.renderer.Sheets;
-import net.minecraft.client.resources.model.geometry.BakedQuad;
+import net.minecraft.client.renderer.block.dispatch.BlockModelRotation;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.item.ModelRenderProperties;
-import net.minecraft.client.renderer.block.dispatch.BlockModelRotation;
 import net.minecraft.client.resources.model.ModelBaker;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemDisplayContext;
 
@@ -26,6 +24,7 @@ public record ItemBaseModelWrapper(
         Supplier<Vector3fc[]> extents,
         ModelRenderProperties renderProperties,
         Matrix4fc transformation) {
+
     private static final Matrix4fc IDENTITY = new Matrix4f();
 
     public static ItemBaseModelWrapper bake(ModelBaker modelBaker, Identifier id) {

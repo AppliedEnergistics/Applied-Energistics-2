@@ -18,8 +18,6 @@
 
 package appeng.client.render.crafting;
 
-import appeng.client.render.MaterialUtil;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.BlockState;
@@ -31,6 +29,7 @@ import appeng.api.util.AEColor;
 import appeng.block.crafting.CraftingMonitorBlock;
 import appeng.blockentity.crafting.CraftingMonitorModelData;
 import appeng.client.render.CubeBuilder;
+import appeng.client.render.MaterialUtil;
 
 /**
  * The baked model for the crafting monitor. Please note that this model doesn't handle the item being displayed. That
@@ -50,8 +49,8 @@ public class MonitorBakedModel extends CraftingCubeModel {
     private final Material.Baked lightBrightTexture;
 
     public MonitorBakedModel(Material.Baked ringCorner, Material.Baked ringHor, Material.Baked ringVer,
-                             Material.Baked chassisTexture, Material.Baked baseTexture, Material.Baked lightDarkTexture,
-                             Material.Baked lightMediumTexture, Material.Baked lightBrightTexture) {
+            Material.Baked chassisTexture, Material.Baked baseTexture, Material.Baked lightDarkTexture,
+            Material.Baked lightMediumTexture, Material.Baked lightBrightTexture) {
         super(ringCorner, ringHor, ringVer);
         this.chassisTexture = chassisTexture;
         this.baseTexture = baseTexture;
@@ -63,8 +62,7 @@ public class MonitorBakedModel extends CraftingCubeModel {
                 baseTexture,
                 lightDarkTexture,
                 lightMediumTexture,
-                lightBrightTexture
-        );
+                lightBrightTexture);
     }
 
     @Override

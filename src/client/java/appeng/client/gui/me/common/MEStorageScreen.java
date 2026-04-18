@@ -695,7 +695,8 @@ public class MEStorageScreen<C extends MEStorageMenu>
         super.extractTooltip(guiGraphics, x, y);
     }
 
-    protected void renderGridInventoryEntryTooltip(GuiGraphicsExtractor guiGraphics, GridInventoryEntry entry, int x, int y) {
+    protected void renderGridInventoryEntryTooltip(GuiGraphicsExtractor guiGraphics, GridInventoryEntry entry, int x,
+            int y) {
 
         var currentToolTip = AEKeyRendering.getTooltip(entry.getWhat());
 

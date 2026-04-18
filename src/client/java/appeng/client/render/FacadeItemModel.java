@@ -27,15 +27,14 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.QuadInstance;
 import com.mojang.serialization.MapCodec;
 
-import net.minecraft.client.renderer.Sheets;
-import net.minecraft.client.renderer.block.BlockAndTintGetter;
-import net.minecraft.client.resources.model.geometry.BakedQuad;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4fc;
 import org.joml.Vector3fc;
 
 import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
 import net.minecraft.client.renderer.item.ItemModel;
 import net.minecraft.client.renderer.item.ItemModelResolver;
@@ -43,6 +42,7 @@ import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.special.SpecialModelRenderer;
 import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ResolvableModel;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.Identifier;
@@ -104,12 +104,12 @@ public class FacadeItemModel implements ItemModel {
     public class FacadeSpecialRender implements SpecialModelRenderer<BlockState> {
         @Override
         public void submit(@Nullable BlockState blockState,
-                           PoseStack poseStack,
-                           SubmitNodeCollector submitNodeCollector,
-                           int lightCoords,
-                           int overlayCoords,
-                           boolean hasFoil,
-                           final int outlineColor) {
+                PoseStack poseStack,
+                SubmitNodeCollector submitNodeCollector,
+                int lightCoords,
+                int overlayCoords,
+                boolean hasFoil,
+                final int outlineColor) {
             if (blockState == null) {
                 return;
             }
@@ -131,12 +131,15 @@ public class FacadeItemModel implements ItemModel {
             for (var blockModelPart : blockModelParts) {
                 // TODO 26.1: Probably incorrect
                 var renderType = (blockModelPart.materialFlags() & BakedQuad.FLAG_TRANSLUCENT) != 0
-                        ? Sheets.translucentBlockItemSheet() : Sheets.cutoutItemSheet();
+                        ? Sheets.translucentBlockItemSheet()
+                        : Sheets.cutoutItemSheet();
 
                 submitNodeCollector.submitCustomGeometry(poseStack, renderType, (pose, consumer) -> {
                     for (var cullFace : Platform.CULL_FACES) {
                         for (var quad : blockModelPart.getQuads(cullFace)) {
-                            var shade = (quad.materialInfo().shade() && quad.direction() != null) ? getShade(quad.direction()) : 1f;
+                            var shade = (quad.materialInfo().shade() && quad.direction() != null)
+                                    ? getShade(quad.direction())
+                                    : 1f;
                             qi.setColor(-1);
                             qi.scaleColor(shade);
                             consumer.putBakedQuad(

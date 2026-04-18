@@ -31,7 +31,7 @@ public class CableBusBreakingParticle extends SingleQuadParticle {
     private final Layer layer;
 
     public CableBusBreakingParticle(ClientLevel level, double x, double y, double z, double speedX, double speedY,
-                                    double speedZ, TextureAtlasSprite sprite) {
+            double speedZ, TextureAtlasSprite sprite) {
         super(level, x, y, z, speedX, speedY, speedZ, sprite);
         this.gravity = 1.0F;
         this.quadSize /= 2.0F;

@@ -27,25 +27,23 @@ import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import net.minecraft.client.resources.model.sprite.Material;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.color.block.BlockColors;
-import net.minecraft.client.resources.model.geometry.BakedQuad;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
-import net.minecraft.client.resources.model.SimpleModelWrapper;
-import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.ModelBaker;
-import net.minecraft.client.resources.model.geometry.QuadCollection;
 import net.minecraft.client.resources.model.ResolvableModel;
+import net.minecraft.client.resources.model.SimpleModelWrapper;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
+import net.minecraft.client.resources.model.geometry.QuadCollection;
+import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.TriState;
-import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.SingleThreadedRandomSource;
 import net.minecraft.world.phys.AABB;
@@ -235,7 +233,8 @@ public class FacadeBuilder {
 
                         // Prebake the color tint into the quad
                         if (originalQuad.materialInfo().isTinted()) {
-                            var tintSource = blockColors.getTintSource(blockState, originalQuad.materialInfo().tintIndex());
+                            var tintSource = blockColors.getTintSource(blockState,
+                                    originalQuad.materialInfo().tintIndex());
                             if (tintSource != null) {
                                 var tintedColor = tintSource.colorInWorld(blockState, level, pos);
                                 quadTinter = new QuadTinter(tintedColor);
@@ -292,7 +291,8 @@ public class FacadeBuilder {
 
     }
 
-    record FacadeBlockModelPart(QuadCollection quadCollection, BlockStateModelPart originalPart) implements BlockStateModelPart {
+    record FacadeBlockModelPart(QuadCollection quadCollection,
+            BlockStateModelPart originalPart) implements BlockStateModelPart {
         @Override
         public List<BakedQuad> getQuads(@Nullable Direction side) {
             return quadCollection.getQuads(side);

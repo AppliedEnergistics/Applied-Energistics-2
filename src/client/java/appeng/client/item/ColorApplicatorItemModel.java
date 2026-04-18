@@ -4,6 +4,7 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import org.jetbrains.annotations.Nullable;
+import org.joml.Matrix4fc;
 
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.item.ItemModel;
@@ -19,7 +20,6 @@ import net.minecraft.world.item.ItemStack;
 import appeng.client.render.ItemBaseModelWrapper;
 import appeng.core.AppEng;
 import appeng.items.tools.powered.ColorApplicatorItem;
-import org.joml.Matrix4fc;
 
 public class ColorApplicatorItemModel implements ItemModel {
     private final ItemBaseModelWrapper uncoloredModel;
@@ -75,7 +75,8 @@ public class ColorApplicatorItemModel implements ItemModel {
 
         @Override
         public ItemModel bake(ItemModel.BakingContext context, Matrix4fc transform) {
-            var uncoloredBakedModel = ItemBaseModelWrapper.bake(context.blockModelBaker(), this.uncoloredModel, transform);
+            var uncoloredBakedModel = ItemBaseModelWrapper.bake(context.blockModelBaker(), this.uncoloredModel,
+                    transform);
             var coloredBakedModel = ItemBaseModelWrapper.bake(context.blockModelBaker(), this.coloredModel, transform);
             return new ColorApplicatorItemModel(uncoloredBakedModel, coloredBakedModel);
         }

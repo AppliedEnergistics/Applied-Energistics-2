@@ -18,12 +18,12 @@
 
 package appeng.client.renderer.blockentity;
 
-import appeng.api.orientation.BlockOrientation;
-import appeng.blockentity.misc.InscriberBlockEntity;
-import appeng.core.AppEng;
-import appeng.recipes.handlers.InscriberProcessType;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+
+import org.jetbrains.annotations.Nullable;
+import org.joml.Quaternionf;
+
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.SubmitNodeCollector;
@@ -43,8 +43,11 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
-import org.jetbrains.annotations.Nullable;
-import org.joml.Quaternionf;
+
+import appeng.api.orientation.BlockOrientation;
+import appeng.blockentity.misc.InscriberBlockEntity;
+import appeng.core.AppEng;
+import appeng.recipes.handlers.InscriberProcessType;
 
 /**
  * Renders the dynamic parts of an inscriber (the presses, the animation and the item being smashed)
@@ -70,7 +73,7 @@ public final class InscriberRenderer implements BlockEntityRenderer<InscriberBlo
 
     @Override
     public void extractRenderState(InscriberBlockEntity be, InscriberRenderState state, float partialTicks,
-                                   Vec3 cameraPos, @Nullable ModelFeatureRenderer.CrumblingOverlay crumblingOverlay) {
+            Vec3 cameraPos, @Nullable ModelFeatureRenderer.CrumblingOverlay crumblingOverlay) {
         BlockEntityRenderer.super.extractRenderState(be, state, partialTicks, cameraPos, crumblingOverlay);
         // Calculate the lightlevel in front of the drive for lighting the exposed cell model.
         if (be.getLevel() != null) {
@@ -156,7 +159,7 @@ public final class InscriberRenderer implements BlockEntityRenderer<InscriberBlo
 
     @Override
     public void submit(InscriberRenderState state, PoseStack poseStack, SubmitNodeCollector nodes,
-                       CameraRenderState cameraRenderState) {
+            CameraRenderState cameraRenderState) {
 
         // render inscriber
         poseStack.pushPose();
@@ -273,7 +276,7 @@ public final class InscriberRenderer implements BlockEntityRenderer<InscriberBlo
     }
 
     private static void addVertex(VertexConsumer vb, PoseStack.Pose pose, TextureAtlasSprite sprite, float x, float y,
-                                  float z, float texU, float texV, int overlayUV, int lightmapUV, Direction front) {
+            float z, float texU, float texV, int overlayUV, int lightmapUV, Direction front) {
         vb.addVertex(pose, x, y, z);
         vb.setColor(1.0f, 1.0f, 1.0f, 1.0f);
         vb.setUv(sprite.getU(texU), sprite.getV(texV));
@@ -283,7 +286,7 @@ public final class InscriberRenderer implements BlockEntityRenderer<InscriberBlo
     }
 
     private void item(PoseStack poseStack, ItemStackRenderState stack, float o, int lightCoords,
-                      SubmitNodeCollector nodes) {
+            SubmitNodeCollector nodes) {
 
         if (!stack.isEmpty()) {
             poseStack.pushPose();

@@ -1,8 +1,8 @@
 package appeng.client.render.crafting;
 
 import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
-import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.client.resources.model.ModelDebugName;
+import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.client.resources.model.sprite.MaterialBaker;
 
 import appeng.block.crafting.CraftingUnitType;
@@ -65,7 +65,8 @@ public class CraftingUnitModelProvider extends AbstractCraftingUnitModelProvider
     }
 
     private static Material texture(String name) {
-        return new Material(AppEng.makeId("block/crafting/" + name)); // TODO 26.1 - Mithi83 - this needs to be double-checked
+        return new Material(AppEng.makeId("block/crafting/" + name)); // TODO 26.1 - Mithi83 - this needs to be
+                                                                      // double-checked
     }
 
     @Override

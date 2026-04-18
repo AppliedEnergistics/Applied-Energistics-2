@@ -4,26 +4,22 @@ import java.util.Objects;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.Sheets;
-import net.minecraft.client.renderer.block.BlockAndTintGetter;
-import net.minecraft.client.renderer.block.model.BlockStateModelWrapper;
-import net.minecraft.client.resources.model.geometry.BakedQuad;
-import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
 import net.minecraft.client.renderer.block.dispatch.SingleVariant;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
@@ -58,8 +54,10 @@ public class CrankRenderer implements BlockEntityRenderer<CrankBlockEntity, Cran
 
         state.orientation = BlockOrientation.get(be);
         state.visibleRotation = be.getVisibleRotation();
-        var parts = state.modelRenderState.setupModel(new Matrix4f(), handleModel.hasMaterialFlag((BlockAndTintGetter) be.getLevel(), be.getBlockPos(), be.getBlockState(), BakedQuad.FLAG_TRANSLUCENT));
-        handleModel.collectParts((BlockAndTintGetter) be.getLevel(), be.getBlockPos(), be.getBlockState(), state.modelRenderState.scratchRandomSource(42L), parts);
+        var parts = state.modelRenderState.setupModel(new Matrix4f(), handleModel.hasMaterialFlag(
+                (BlockAndTintGetter) be.getLevel(), be.getBlockPos(), be.getBlockState(), BakedQuad.FLAG_TRANSLUCENT));
+        handleModel.collectParts((BlockAndTintGetter) be.getLevel(), be.getBlockPos(), be.getBlockState(),
+                state.modelRenderState.scratchRandomSource(42L), parts);
     }
 
     @Override

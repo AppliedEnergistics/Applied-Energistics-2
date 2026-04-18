@@ -205,7 +205,8 @@ public class UseCraftingRecipeTransfer<T extends CraftingTermMenu>
         }
 
         @Override
-        public void showError(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, IRecipeSlotsView slots, int recipeX,
+        public void showError(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, IRecipeSlotsView slots,
+                int recipeX,
                 int recipeY) {
             var poseStack = guiGraphics.pose();
             poseStack.pushMatrix();

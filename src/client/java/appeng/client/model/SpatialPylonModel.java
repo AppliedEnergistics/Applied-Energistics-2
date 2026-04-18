@@ -27,21 +27,19 @@ import java.util.Objects;
 import com.google.common.collect.ImmutableMap;
 import com.mojang.serialization.MapCodec;
 
-import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
-import net.minecraft.client.resources.model.SimpleModelWrapper;
-import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.geometry.BakedQuad;
-import net.minecraft.client.resources.model.sprite.Material;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
 import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ModelDebugName;
+import net.minecraft.client.resources.model.SimpleModelWrapper;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.client.resources.model.geometry.QuadCollection;
+import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
-import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.client.model.DynamicBlockStateModel;
 import net.neoforged.neoforge.client.model.block.CustomUnbakedBlockStateModel;
@@ -64,7 +62,8 @@ public class SpatialPylonModel implements DynamicBlockStateModel {
         if (materials.values().stream().anyMatch(m -> m.sprite().contents().isAnimated())) {
             materialFlags |= BakedQuad.FLAG_ANIMATED;
         }
-        if (materials.values().stream().anyMatch(m -> m.forceTranslucent() || m.sprite().contents().transparency().hasTranslucent())) {
+        if (materials.values().stream()
+                .anyMatch(m -> m.forceTranslucent() || m.sprite().contents().transparency().hasTranslucent())) {
             materialFlags |= BakedQuad.FLAG_TRANSLUCENT;
         }
         this.materialFlags = materialFlags;
@@ -203,7 +202,8 @@ public class SpatialPylonModel implements DynamicBlockStateModel {
 
     @Override
     public @BakedQuad.MaterialFlags int materialFlags(BlockAndTintGetter level, BlockPos pos, BlockState state) {
-        // TODO 26.1: Compute the actual wost-case material flags based on the concrete texture used by the pylon at the location
+        // TODO 26.1: Compute the actual wost-case material flags based on the concrete texture used by the pylon at the
+        // location
         return DynamicBlockStateModel.super.materialFlags(level, pos, state);
     }
 

@@ -2,7 +2,6 @@ package appeng.recipes.game;
 
 import java.util.List;
 
-import appeng.recipes.MechanicsRecipe;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
@@ -14,16 +13,12 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
-import net.minecraft.world.item.crafting.PlacementInfo;
-import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeBookCategories;
-import net.minecraft.world.item.crafting.RecipeBookCategory;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
-import net.minecraft.world.level.Level;
 
 import appeng.recipes.AERecipeTypes;
+import appeng.recipes.MechanicsRecipe;
 
 /**
  * Used to handle disassembly of the (Portable) Storage Cells.
@@ -45,7 +40,8 @@ public class StorageCellDisassemblyRecipe extends MechanicsRecipe<SingleRecipeIn
                     StorageCellDisassemblyRecipe::cellDisassemblyItems,
                     StorageCellDisassemblyRecipe::new);
 
-    public static final RecipeSerializer<StorageCellDisassemblyRecipe> SERIALIZER = new RecipeSerializer<>(CODEC, STREAM_CODEC);
+    public static final RecipeSerializer<StorageCellDisassemblyRecipe> SERIALIZER = new RecipeSerializer<>(CODEC,
+            STREAM_CODEC);
 
     private final List<ItemStackTemplate> disassemblyItems;
     private final Item storageCell;

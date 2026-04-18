@@ -91,8 +91,6 @@ import appeng.api.parts.CableRenderMode;
 import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKeyType;
-import appeng.api.util.AEColor;
-import appeng.client.model.QnbFormedModel;
 import appeng.client.api.AEKeyRendering;
 import appeng.client.api.model.parts.CompositePartModel;
 import appeng.client.api.model.parts.RegisterPartModelsEvent;
@@ -100,7 +98,6 @@ import appeng.client.api.model.parts.StaticPartModel;
 import appeng.client.api.renderer.parts.RegisterPartRendererEvent;
 import appeng.client.areaoverlay.AreaOverlayRenderer;
 import appeng.client.block.cablebus.CableBusBlockClientExtensions;
-import appeng.client.block.cablebus.CableBusColor;
 import appeng.client.commands.ClientCommands;
 import appeng.client.gui.me.common.PendingCraftingJobs;
 import appeng.client.gui.me.common.PinnedKeys;
@@ -123,13 +120,12 @@ import appeng.client.model.P2PFrequencyPartModel;
 import appeng.client.model.PaintSplotchesModel;
 import appeng.client.model.PartModels;
 import appeng.client.model.PlanePartModel;
+import appeng.client.model.QnbFormedModel;
 import appeng.client.model.SpatialPylonModel;
 import appeng.client.model.StatusIndicatorPartModel;
 import appeng.client.render.AEColorItemTintSource;
 import appeng.client.render.AERenderPipelines;
-import appeng.client.render.ColorableBlockEntityBlockColor;
 import appeng.client.render.FacadeItemModel;
-import appeng.client.render.StaticBlockColor;
 import appeng.client.render.StorageCellClientTooltipComponent;
 import appeng.client.render.cablebus.CableBusModel;
 import appeng.client.render.crafting.CraftingCubeModel;
@@ -652,9 +648,9 @@ public class AppEngClient extends AppEngBase {
     }
 
     // TODO 26.1 public void registerBlockColors(RegisterColorHandlersEvent.Block event) {
-    // TODO 26.1     event.register(new StaticBlockColor(AEColor.TRANSPARENT), AEBlocks.WIRELESS_ACCESS_POINT.block());
-    // TODO 26.1     event.register(new CableBusColor(), AEBlocks.CABLE_BUS.block());
-    // TODO 26.1     event.register(ColorableBlockEntityBlockColor.INSTANCE, AEBlocks.ME_CHEST.block());
+    // TODO 26.1 event.register(new StaticBlockColor(AEColor.TRANSPARENT), AEBlocks.WIRELESS_ACCESS_POINT.block());
+    // TODO 26.1 event.register(new CableBusColor(), AEBlocks.CABLE_BUS.block());
+    // TODO 26.1 event.register(ColorableBlockEntityBlockColor.INSTANCE, AEBlocks.ME_CHEST.block());
     // TODO 26.1 }
 
     private void receiveRecipes(RecipesReceivedEvent event) {

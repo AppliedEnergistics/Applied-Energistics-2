@@ -23,25 +23,22 @@ import java.util.List;
 
 import com.mojang.serialization.MapCodec;
 
-import net.minecraft.client.resources.model.geometry.BakedQuad;
-import net.minecraft.client.resources.model.sprite.MaterialBaker;
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
-import net.minecraft.client.resources.model.SimpleModelWrapper;
-import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
-import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ModelDebugName;
+import net.minecraft.client.resources.model.SimpleModelWrapper;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.client.resources.model.geometry.QuadCollection;
-import net.minecraft.client.resources.model.sprite.SpriteGetter;
+import net.minecraft.client.resources.model.sprite.Material;
+import net.minecraft.client.resources.model.sprite.MaterialBaker;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
-import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.client.model.DynamicBlockStateModel;
 import net.neoforged.neoforge.client.model.block.CustomUnbakedBlockStateModel;
@@ -67,7 +64,8 @@ public class PaintSplotchesModel implements DynamicBlockStateModel {
                 materials.get(TEXTURE_PAINT2, debugName), materials.get(TEXTURE_PAINT3, debugName) };
         // Any animated?
         var materialFlags = 0;
-        var translucent = Arrays.stream(this.textures).anyMatch(m -> m.forceTranslucent() || m.sprite().contents().transparency().hasTranslucent());
+        var translucent = Arrays.stream(this.textures)
+                .anyMatch(m -> m.forceTranslucent() || m.sprite().contents().transparency().hasTranslucent());
         if (translucent) {
             materialFlags |= BakedQuad.FLAG_TRANSLUCENT;
         }

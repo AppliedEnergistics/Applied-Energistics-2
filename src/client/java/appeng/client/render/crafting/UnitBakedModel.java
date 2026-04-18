@@ -33,7 +33,7 @@ public class UnitBakedModel extends CraftingCubeModel {
     private final Material.Baked unitTexture;
 
     public UnitBakedModel(Material.Baked ringCorner, Material.Baked ringHor, Material.Baked ringVer,
-                          Material.Baked unitTexture) {
+            Material.Baked unitTexture) {
         super(ringCorner, ringHor, ringVer);
         this.unitTexture = unitTexture;
     }

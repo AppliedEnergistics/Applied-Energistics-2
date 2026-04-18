@@ -1,13 +1,9 @@
 package appeng.client.block.cablebus;
 
-import java.util.List;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleEngine;
-import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Util;
 import net.minecraft.world.level.Level;
@@ -66,7 +62,8 @@ public class CableBusBlockClientExtensions implements IClientBlockExtensions {
             double x = target.getLocation().x;
             double y = target.getLocation().y;
             double z = target.getLocation().z;
-            // FIXME: Check how this looks, probably like shit, maybe provide parts the ability to supply particle textures???
+            // FIXME: Check how this looks, probably like shit, maybe provide parts the ability to supply particle
+            // textures???
             effectRenderer.add(
                     new CableBusBreakingParticle((ClientLevel) level, x, y, z, texture.sprite()).scale(0.8F));
         }

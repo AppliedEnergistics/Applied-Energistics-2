@@ -20,10 +20,8 @@ package appeng.client.gui.style;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.data.AtlasIds;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
-import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.neoforged.neoforge.fluids.FluidStack;
 
 import appeng.api.stacks.AEFluidKey;
@@ -47,7 +45,8 @@ public final class FluidBlitter {
 
         Fluid fluid = stack.getFluid();
 
-        var fluidModel = Minecraft.getInstance().getModelManager().getFluidStateModelSet().get(fluid.defaultFluidState());
+        var fluidModel = Minecraft.getInstance().getModelManager().getFluidStateModelSet()
+                .get(fluid.defaultFluidState());
 
         TextureAtlasSprite sprite = fluidModel.stillMaterial().sprite();
 

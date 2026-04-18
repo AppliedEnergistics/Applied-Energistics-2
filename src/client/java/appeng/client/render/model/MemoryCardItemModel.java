@@ -11,14 +11,15 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import org.jetbrains.annotations.Nullable;
+import org.joml.Matrix4fc;
 
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.client.renderer.item.ItemModel;
 import net.minecraft.client.renderer.item.ItemModelResolver;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
-import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.client.resources.model.ModelDebugName;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
+import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
@@ -32,7 +33,6 @@ import appeng.client.render.CubeBuilder;
 import appeng.client.render.ItemBaseModelWrapper;
 import appeng.core.AppEng;
 import appeng.items.tools.MemoryCardItem;
-import org.joml.Matrix4fc;
 
 public class MemoryCardItemModel implements ItemModel {
     private final ItemBaseModelWrapper baseModel;

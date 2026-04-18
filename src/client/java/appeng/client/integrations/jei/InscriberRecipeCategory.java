@@ -93,7 +93,8 @@ class InscriberRecipeCategory implements IRecipeCategory<RecipeHolder<InscriberR
     }
 
     @Override
-    public void draw(RecipeHolder<InscriberRecipe> recipe, IRecipeSlotsView recipeSlotsView, GuiGraphicsExtractor guiGraphics,
+    public void draw(RecipeHolder<InscriberRecipe> recipe, IRecipeSlotsView recipeSlotsView,
+            GuiGraphicsExtractor guiGraphics,
             double mouseX,
             double mouseY) {
         this.background.draw(guiGraphics, 16, 0);

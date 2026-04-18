@@ -18,11 +18,14 @@
 
 package appeng.client.render.model;
 
-import appeng.core.AppEng;
-import appeng.decorative.solid.GlassState;
-import appeng.decorative.solid.QuartzGlassBlock;
+import java.util.List;
+import java.util.stream.IntStream;
+
 import com.google.common.base.Strings;
 import com.mojang.serialization.MapCodec;
+
+import org.joml.Vector3f;
+
 import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
@@ -44,10 +47,10 @@ import net.neoforged.neoforge.client.model.DynamicBlockStateModel;
 import net.neoforged.neoforge.client.model.block.CustomUnbakedBlockStateModel;
 import net.neoforged.neoforge.client.model.pipeline.QuadBakingVertexConsumer;
 import net.neoforged.neoforge.model.data.ModelProperty;
-import org.joml.Vector3f;
 
-import java.util.List;
-import java.util.stream.IntStream;
+import appeng.core.AppEng;
+import appeng.decorative.solid.GlassState;
+import appeng.decorative.solid.QuartzGlassBlock;
 
 /**
  * Model class for the connected texture glass model.
@@ -81,9 +84,9 @@ public class QuartzGlassModel implements DynamicBlockStateModel {
 
     private QuartzGlassModel(MaterialBaker bakedTextureGetter) {
         ModelDebugName debugName = getClass()::toString;
-        this.glassTextures = new Material.Baked[]{bakedTextureGetter.get(TEXTURE_A, debugName),
+        this.glassTextures = new Material.Baked[] { bakedTextureGetter.get(TEXTURE_A, debugName),
                 bakedTextureGetter.get(TEXTURE_B, debugName), bakedTextureGetter.get(TEXTURE_C, debugName),
-                bakedTextureGetter.get(TEXTURE_D, debugName)};
+                bakedTextureGetter.get(TEXTURE_D, debugName) };
 
         // The first frame texture would be empty, so we simply leave it set to null
         // here
@@ -96,7 +99,7 @@ public class QuartzGlassModel implements DynamicBlockStateModel {
 
     @Override
     public void collectParts(BlockAndTintGetter level, BlockPos pos, BlockState state, RandomSource random,
-                             List<BlockStateModelPart> parts) {
+            List<BlockStateModelPart> parts) {
         var glassState = getGlassState(level, state, pos);
 
         var quads = new QuadCollection.Builder();
@@ -159,7 +162,7 @@ public class QuartzGlassModel implements DynamicBlockStateModel {
     }
 
     private static int makeBitmask(BlockAndTintGetter level, BlockState state, BlockPos pos, Direction face,
-                                   Direction up, Direction right, Direction down, Direction left) {
+            Direction up, Direction right, Direction down, Direction left) {
 
         int bitmask = 0;
 
@@ -179,13 +182,13 @@ public class QuartzGlassModel implements DynamicBlockStateModel {
     }
 
     private BakedQuad createQuad(Direction side, List<Vector3f> corners, Material.Baked sprite, float uOffset,
-                                 float vOffset) {
+            float vOffset) {
         return this.createQuad(side, corners.get(0), corners.get(1), corners.get(2), corners.get(3), sprite, uOffset,
                 vOffset);
     }
 
     private BakedQuad createQuad(Direction side, Vector3f c1, Vector3f c2, Vector3f c3, Vector3f c4,
-                                 Material.Baked sprite, float uOffset, float vOffset) {
+            Material.Baked sprite, float uOffset, float vOffset) {
         Vec3 normal = side.getUnitVec3();
 
         // Apply the u,v shift.
@@ -210,7 +213,7 @@ public class QuartzGlassModel implements DynamicBlockStateModel {
      * has to be precisely the order in which the vertex elements had been declared in the vertex format.
      */
     private void putVertex(QuadBakingVertexConsumer builder, Vec3 normal, float x, float y, float z,
-                           Material.Baked sprite, float u, float v) {
+            Material.Baked sprite, float u, float v) {
         builder.addVertex(x, y, z);
         builder.setColor(1.0f, 1.0f, 1.0f, 1.0f);
         builder.setNormal((float) normal.x, (float) normal.y, (float) normal.z);
@@ -253,7 +256,7 @@ public class QuartzGlassModel implements DynamicBlockStateModel {
      * @param adjDir       Direction in which to check.
      */
     private static boolean isGlassBlock(BlockAndTintGetter level, BlockState state, BlockPos pos,
-                                        Direction queryingFace, Direction adjDir, Direction adjFace) {
+            Direction queryingFace, Direction adjDir, Direction adjFace) {
         var adjacentPos = pos.relative(adjDir);
         var adjacentState = level.getBlockState(adjacentPos);
         // Checks that the adjacent block is indeed glass

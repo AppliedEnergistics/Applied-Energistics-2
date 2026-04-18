@@ -13,11 +13,9 @@ import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.data.AtlasIds;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.ARGB;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 
 import appeng.api.stacks.AEFluidKey;
 import appeng.client.api.AEKeyRenderer;
@@ -45,7 +43,8 @@ public class FluidKeyRenderer implements AEKeyRenderer<AEFluidKey, FluidKeyRende
     @Override
     public void extract(RenderState state, AEFluidKey what, @Nullable Level level, int seed) {
         var fluidStack = what.toStack(1);
-        var fluidModel = Minecraft.getInstance().getModelManager().getFluidStateModelSet().get(what.getFluid().defaultFluidState());
+        var fluidModel = Minecraft.getInstance().getModelManager().getFluidStateModelSet()
+                .get(what.getFluid().defaultFluidState());
         var tintSource = fluidModel.fluidTintSource();
         if (tintSource != null) {
             state.color = tintSource.colorAsStack(fluidStack);

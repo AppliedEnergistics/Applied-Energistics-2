@@ -168,7 +168,8 @@ public class EncodePatternTransferHandler<T extends PatternEncodingTermMenu>
         }
 
         @Override
-        public void showError(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, IRecipeSlotsView recipeSlotsView,
+        public void showError(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY,
+                IRecipeSlotsView recipeSlotsView,
                 int recipeX, int recipeY) {
             var poseStack = guiGraphics.pose();
             poseStack.pushMatrix();

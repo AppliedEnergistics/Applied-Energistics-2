@@ -40,15 +40,12 @@ import net.minecraft.client.data.models.model.TextureMapping;
 import net.minecraft.client.data.models.model.TextureSlot;
 import net.minecraft.client.renderer.block.dispatch.VariantMutator;
 import net.minecraft.client.resources.model.sprite.Material;
-import net.minecraft.client.resources.model.sprite.SpriteId;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.SlabBlock;
 import net.minecraft.world.level.block.StairBlock;
 import net.minecraft.world.level.block.WallBlock;
 
 import appeng.block.misc.QuartzFixtureBlock;
-import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.BlockDefinition;
 
@@ -318,7 +315,7 @@ public class DecorationModelProvider extends ModelSubProvider {
     }
 
     private void slabBlock(BlockDefinition<? extends SlabBlock> blockDef, BlockDefinition<?> doubleModelDonor,
-                           Material topTexture, Material sideTexture, Material bottomTexture) {
+            Material topTexture, Material sideTexture, Material bottomTexture) {
         var block = blockDef.block();
 
         var textures = new TextureMapping()
@@ -344,7 +341,7 @@ public class DecorationModelProvider extends ModelSubProvider {
     }
 
     private void stairsBlock(BlockDefinition<? extends StairBlock> blockDef, Material topTexture,
-                             Material sideTexture, Material bottomTexture) {
+            Material sideTexture, Material bottomTexture) {
         var block = blockDef.block();
 
         var textures = new TextureMapping()

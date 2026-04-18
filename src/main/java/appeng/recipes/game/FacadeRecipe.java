@@ -18,11 +18,8 @@
 
 package appeng.recipes.game;
 
-import appeng.core.definitions.AEItems;
-import appeng.core.definitions.AEParts;
-import appeng.core.definitions.ItemDefinition;
-import appeng.items.parts.FacadeItem;
 import com.mojang.serialization.MapCodec;
+
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
@@ -30,6 +27,11 @@ import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
+
+import appeng.core.definitions.AEItems;
+import appeng.core.definitions.AEParts;
+import appeng.core.definitions.ItemDefinition;
+import appeng.items.parts.FacadeItem;
 
 public final class FacadeRecipe extends CustomRecipe {
     public static final MapCodec<FacadeRecipe> CODEC = MapCodec.unit(() -> new FacadeRecipe(AEItems.FACADE.get()));

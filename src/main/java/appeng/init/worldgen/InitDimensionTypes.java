@@ -2,7 +2,6 @@ package appeng.init.worldgen;
 
 import java.util.Optional;
 
-import net.minecraft.world.level.CardinalLighting;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.core.registries.Registries;
@@ -13,6 +12,7 @@ import net.minecraft.util.valueproviders.ConstantInt;
 import net.minecraft.world.attribute.BedRule;
 import net.minecraft.world.attribute.EnvironmentAttributeMap;
 import net.minecraft.world.attribute.EnvironmentAttributes;
+import net.minecraft.world.level.CardinalLighting;
 import net.minecraft.world.level.dimension.DimensionType;
 
 import appeng.spatial.SpatialStorageChunkGenerator;

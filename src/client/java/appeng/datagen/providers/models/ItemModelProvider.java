@@ -48,7 +48,8 @@ public class ItemModelProvider extends ModelSubProvider {
         builtInItemModel(AEItems.METEORITE_COMPASS, new CompositeModel.Unbaked(
                 List.of(
                         ItemModelUtils.plainModel(makeId("item/meteorite_compass_base")),
-                        new MeteoriteCompassModel.Unbaked()), Optional.empty()));
+                        new MeteoriteCompassModel.Unbaked()),
+                Optional.empty()));
 
         flatSingleLayer(AEItems.ADVANCED_CARD, "item/advanced_card");
         flatSingleLayer(AEItems.VOID_CARD, "item/card_void");
@@ -155,7 +156,8 @@ public class ItemModelProvider extends ModelSubProvider {
         // Create the base models
         var baseModel = ModelTemplates.TWO_LAYERED_ITEM.create(
                 ModelLocationUtils.getModelLocation(AEItems.MEMORY_CARD.asItem(), "_base"),
-                TextureMapping.layered(new Material(makeId("item/memory_card_base")), new Material(makeId("item/memory_card_led"))),
+                TextureMapping.layered(new Material(makeId("item/memory_card_base")),
+                        new Material(makeId("item/memory_card_led"))),
                 modelOutput);
         itemModels.itemModelOutput.accept(
                 AEItems.MEMORY_CARD.asItem(),

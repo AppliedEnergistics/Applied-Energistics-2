@@ -19,9 +19,8 @@
 package appeng.client.renderer.blockentity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-
 import com.mojang.blaze3d.vertex.QuadInstance;
-import net.minecraft.util.ColorRGBA;
+
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.Minecraft;
@@ -31,11 +30,8 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
-import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.data.AtlasIds;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 
 import appeng.blockentity.storage.SkyStoneTankBlockEntity;
 import appeng.client.render.CubeBuilder;
@@ -69,7 +65,8 @@ public final class SkyStoneTankRenderer
         var fluidStack = resource.toStack(1);
 
         state.fill = (float) amount / capacity;
-        var fluidModel = Minecraft.getInstance().getModelManager().getFluidStateModelSet().get(resource.getFluid().defaultFluidState());
+        var fluidModel = Minecraft.getInstance().getModelManager().getFluidStateModelSet()
+                .get(resource.getFluid().defaultFluidState());
         state.sprite = fluidModel.stillMaterial().sprite();
         var tintSource = fluidModel.fluidTintSource();
         if (tintSource != null) {

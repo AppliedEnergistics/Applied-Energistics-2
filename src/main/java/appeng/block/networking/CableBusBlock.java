@@ -21,7 +21,6 @@ package appeng.block.networking;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.world.level.BlockAndLightGetter;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
@@ -38,7 +37,7 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.client.renderer.block.BlockAndTintGetter;
+import net.minecraft.world.level.BlockAndLightGetter;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
@@ -350,7 +349,7 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
 
     @Override
     public BlockState getAppearance(BlockState state, BlockAndLightGetter renderView, BlockPos pos, Direction side,
-                                    @Nullable BlockState sourceState, @Nullable BlockPos sourcePos) {
+            @Nullable BlockState sourceState, @Nullable BlockPos sourcePos) {
         ModelData modelData;
         if (renderView instanceof ServerLevel) {
             // We're on the server, use BE directly

@@ -45,12 +45,14 @@ public class AE2Button extends Button {
         }
     }
 
-    public static void renderButtonText(GuiGraphicsExtractor pGuiGraphics, Font pFont, Component pText, int pMinX, int pMinY,
+    public static void renderButtonText(GuiGraphicsExtractor pGuiGraphics, Font pFont, Component pText, int pMinX,
+            int pMinY,
             int pMaxX, int pMaxY, int yOffset, int pColor) {
         renderButtonText(pGuiGraphics, pFont, pText, (pMinX + pMaxX) / 2, pMinX, pMinY, pMaxX, pMaxY, yOffset, pColor);
     }
 
-    public static void renderButtonText(GuiGraphicsExtractor pGuiGraphics, Font pFont, Component pText, int pCenterX, int pMinX,
+    public static void renderButtonText(GuiGraphicsExtractor pGuiGraphics, Font pFont, Component pText, int pCenterX,
+            int pMinX,
             int pMinY, int pMaxX, int pMaxY, int yOffset, int pColor) {
         int i = pFont.width(pText);
         int j = (pMinY + pMaxY - 9) / 2 + 1;
@@ -72,7 +74,8 @@ public class AE2Button extends Button {
         }
     }
 
-    protected void renderButtonText(GuiGraphicsExtractor pGuiGraphics, Font pFont, int pWidth, int pColor, int yOffset) {
+    protected void renderButtonText(GuiGraphicsExtractor pGuiGraphics, Font pFont, int pWidth, int pColor,
+            int yOffset) {
         int i = this.getX() + pWidth;
         int j = this.getX() + this.getWidth() - pWidth;
         renderButtonText(pGuiGraphics, pFont, this.getMessage(), i, this.getY(), j, this.getY() + this.getHeight(),

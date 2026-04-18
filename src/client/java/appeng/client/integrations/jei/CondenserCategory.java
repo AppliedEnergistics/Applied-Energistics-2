@@ -107,7 +107,8 @@ class CondenserCategory implements IRecipeCategory<CondenserOutput> {
     }
 
     @Override
-    public void draw(CondenserOutput recipe, IRecipeSlotsView recipeSlotsView, GuiGraphicsExtractor guiGraphics, double mouseX,
+    public void draw(CondenserOutput recipe, IRecipeSlotsView recipeSlotsView, GuiGraphicsExtractor guiGraphics,
+            double mouseX,
             double mouseY) {
         this.progress.draw(guiGraphics, 70, 0);
         this.progressOverlay.draw(guiGraphics, 70, 0);

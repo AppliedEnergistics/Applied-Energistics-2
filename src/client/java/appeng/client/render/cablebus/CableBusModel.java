@@ -18,21 +18,23 @@
 
 package appeng.client.render.cablebus;
 
-import appeng.api.parts.IPart;
-import appeng.api.parts.IPartItem;
-import appeng.api.util.AECableType;
-import appeng.api.util.AEColor;
-import appeng.block.networking.CableBusRenderState;
-import appeng.block.networking.CableCoreType;
-import appeng.client.AppEngClient;
-import appeng.client.api.model.parts.PartModel;
-import appeng.client.model.FacingModelState;
-import appeng.core.AppEng;
+import java.util.ArrayList;
+import java.util.EnumMap;
+import java.util.IdentityHashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.function.Consumer;
+
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.common.cache.Weigher;
 import com.mojang.serialization.MapCodec;
+
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
@@ -48,16 +50,17 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.client.model.DynamicBlockStateModel;
 import net.neoforged.neoforge.client.model.block.CustomUnbakedBlockStateModel;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.IdentityHashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.function.Consumer;
+import appeng.api.parts.IPart;
+import appeng.api.parts.IPartItem;
+import appeng.api.util.AECableType;
+import appeng.api.util.AEColor;
+import appeng.block.networking.CableBusRenderState;
+import appeng.block.networking.CableCoreType;
+import appeng.client.AppEngClient;
+import appeng.client.api.model.parts.PartModel;
+import appeng.client.model.FacingModelState;
+import appeng.core.AppEng;
 
 /**
  * The built-in model for the cable bus block.
@@ -80,7 +83,7 @@ public class CableBusModel implements DynamicBlockStateModel {
     private final SimpleModelWrapper emptyCableModel;
 
     private CableBusModel(CableBuilder cableBuilder, FacadeBuilder facadeBuilder,
-                          Map<IPartItem<?>, PartModel[]> partModels, Material.Baked particleTexture) {
+            Map<IPartItem<?>, PartModel[]> partModels, Material.Baked particleTexture) {
         this.cableBuilder = cableBuilder;
         this.facadeBuilder = facadeBuilder;
         this.particleTexture = particleTexture;
@@ -100,7 +103,7 @@ public class CableBusModel implements DynamicBlockStateModel {
 
     @Override
     public void collectParts(BlockAndTintGetter level, BlockPos pos, BlockState state, RandomSource random,
-                             List<BlockStateModelPart> parts) {
+            List<BlockStateModelPart> parts) {
         var data = level.getModelData(pos);
 
         var renderState = data.get(CableBusRenderState.PROPERTY);
@@ -225,9 +228,9 @@ public class CableBusModel implements DynamicBlockStateModel {
         // has been forced (in case of glass
         // cables), then render the cable as a simplified straight line.
         boolean noAttachments = false; /*
-         * TODO !renderState.getAttachments().values().stream()
-         * .anyMatch(IPartModel::requireCableConnection);
-         */
+                                        * TODO !renderState.getAttachments().values().stream()
+                                        * .anyMatch(IPartModel::requireCableConnection);
+                                        */
         if (noAttachments && isStraightLine(cableType, connectionTypes)) {
             Direction facing = connectionTypes.keySet().iterator().next();
 

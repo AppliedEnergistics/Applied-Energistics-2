@@ -29,7 +29,8 @@ public class StackSizeRenderer {
         renderSizeLabel(guiGraphics, fontRenderer, xPos, yPos, text, AEConfig.instance().isUseLargeFonts());
     }
 
-    public static void renderSizeLabel(GuiGraphicsExtractor guiGraphics, Font fontRenderer, float xPos, float yPos, String text,
+    public static void renderSizeLabel(GuiGraphicsExtractor guiGraphics, Font fontRenderer, float xPos, float yPos,
+            String text,
             boolean largeFonts) {
         float scaleFactor = largeFonts ? 0.85f : 0.666f;
         float inverseScaleFactor = 1.0f / scaleFactor;
