@@ -31,7 +31,6 @@ import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
 import net.minecraft.client.resources.model.SimpleModelWrapper;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
-import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.client.resources.model.ModelBaker;
@@ -54,10 +53,10 @@ import appeng.core.AppEng;
  * The baked model that will be used for rendering the spatial pylon.
  */
 public class SpatialPylonModel implements DynamicBlockStateModel {
-    private final Map<SpatialPylonTextureType, TextureAtlasSprite> textures;
+    private final Map<SpatialPylonTextureType, Material.Baked> materials;
 
-    private SpatialPylonModel(Map<SpatialPylonTextureType, TextureAtlasSprite> textures) {
-        this.textures = ImmutableMap.copyOf(textures);
+    private SpatialPylonModel(Map<SpatialPylonTextureType, Material.Baked> materials) {
+        this.materials = ImmutableMap.copyOf(materials);
     }
 
     @Override
@@ -115,36 +114,36 @@ public class SpatialPylonModel implements DynamicBlockStateModel {
                 }
             }
 
-            builder.setTextures(this.textures.get(getTextureTypeFromSideOutside(state, ori, Direction.UP)),
-                    this.textures.get(getTextureTypeFromSideOutside(state, ori, Direction.DOWN)),
-                    this.textures.get(getTextureTypeFromSideOutside(state, ori, Direction.NORTH)),
-                    this.textures.get(getTextureTypeFromSideOutside(state, ori, Direction.SOUTH)),
-                    this.textures.get(getTextureTypeFromSideOutside(state, ori, Direction.EAST)),
-                    this.textures.get(getTextureTypeFromSideOutside(state, ori, Direction.WEST)));
+            builder.setTextures(this.materials.get(getTextureTypeFromSideOutside(state, ori, Direction.UP)),
+                    this.materials.get(getTextureTypeFromSideOutside(state, ori, Direction.DOWN)),
+                    this.materials.get(getTextureTypeFromSideOutside(state, ori, Direction.NORTH)),
+                    this.materials.get(getTextureTypeFromSideOutside(state, ori, Direction.SOUTH)),
+                    this.materials.get(getTextureTypeFromSideOutside(state, ori, Direction.EAST)),
+                    this.materials.get(getTextureTypeFromSideOutside(state, ori, Direction.WEST)));
             builder.addCube(0, 0, 0, 16, 16, 16);
 
             if (state.powered()) {
                 builder.setEmissiveMaterial(true);
             }
 
-            builder.setTextures(this.textures.get(getTextureTypeFromSideInside(state, ori, Direction.UP)),
-                    this.textures.get(getTextureTypeFromSideInside(state, ori, Direction.DOWN)),
-                    this.textures.get(getTextureTypeFromSideInside(state, ori, Direction.NORTH)),
-                    this.textures.get(getTextureTypeFromSideInside(state, ori, Direction.SOUTH)),
-                    this.textures.get(getTextureTypeFromSideInside(state, ori, Direction.EAST)),
-                    this.textures.get(getTextureTypeFromSideInside(state, ori, Direction.WEST)));
+            builder.setTextures(this.materials.get(getTextureTypeFromSideInside(state, ori, Direction.UP)),
+                    this.materials.get(getTextureTypeFromSideInside(state, ori, Direction.DOWN)),
+                    this.materials.get(getTextureTypeFromSideInside(state, ori, Direction.NORTH)),
+                    this.materials.get(getTextureTypeFromSideInside(state, ori, Direction.SOUTH)),
+                    this.materials.get(getTextureTypeFromSideInside(state, ori, Direction.EAST)),
+                    this.materials.get(getTextureTypeFromSideInside(state, ori, Direction.WEST)));
         } else {
-            builder.setTexture(this.textures.get(SpatialPylonTextureType.BASE));
+            builder.setTexture(this.materials.get(SpatialPylonTextureType.BASE));
             builder.addCube(0, 0, 0, 16, 16, 16);
 
-            builder.setTexture(this.textures.get(SpatialPylonTextureType.DIM));
+            builder.setTexture(this.materials.get(SpatialPylonTextureType.DIM));
         }
         builder.addCube(0, 0, 0, 16, 16, 16);
 
         // Reset back to default
         builder.setEmissiveMaterial(false);
 
-        parts.add(new SimpleModelWrapper(quadCollection.build(), true, particleIcon(), ChunkSectionLayer.CUTOUT));
+        parts.add(new SimpleModelWrapper(quadCollection.build(), true, particleMaterial()));
     }
 
     private static SpatialPylonTextureType getTextureTypeFromSideOutside(SpatialPylonBlockEntity.ClientState state,
@@ -182,8 +181,8 @@ public class SpatialPylonModel implements DynamicBlockStateModel {
     }
 
     @Override
-    public TextureAtlasSprite particleIcon() {
-        return this.textures.get(SpatialPylonTextureType.DIM);
+    public Material.Baked particleMaterial() {
+        return this.materials.get(SpatialPylonTextureType.DIM);
     }
 
     public record Unbaked() implements CustomUnbakedBlockStateModel {
@@ -193,11 +192,11 @@ public class SpatialPylonModel implements DynamicBlockStateModel {
         @Override
         public BlockStateModel bake(ModelBaker baker) {
             ModelDebugName debugName = getClass()::toString;
-            Map<SpatialPylonTextureType, TextureAtlasSprite> pylonTextures = new EnumMap<>(
+            Map<SpatialPylonTextureType, Material.Baked> pylonTextures = new EnumMap<>(
                     SpatialPylonTextureType.class);
 
             for (SpatialPylonTextureType type : SpatialPylonTextureType.values()) {
-                pylonTextures.put(type, baker.sprites().get(getTexturePath(type), debugName));
+                pylonTextures.put(type, baker.materials().get(getTexturePath(type), debugName));
             }
 
             return new SpatialPylonModel(pylonTextures);

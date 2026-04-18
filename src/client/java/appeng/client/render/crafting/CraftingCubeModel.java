@@ -27,10 +27,9 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
 import net.minecraft.client.resources.model.SimpleModelWrapper;
-import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.geometry.QuadCollection;
+import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
@@ -54,13 +53,13 @@ import appeng.util.Platform;
  * "inner" part of each block to the subclasses of this class.
  */
 public abstract class CraftingCubeModel implements DynamicBlockStateModel {
-    private final TextureAtlasSprite ringCorner;
+    private final Material.Baked ringCorner;
 
-    private final TextureAtlasSprite ringHor;
+    private final Material.Baked ringHor;
 
-    private final TextureAtlasSprite ringVer;
+    private final Material.Baked ringVer;
 
-    CraftingCubeModel(TextureAtlasSprite ringCorner, TextureAtlasSprite ringHor, TextureAtlasSprite ringVer) {
+    CraftingCubeModel(Material.Baked ringCorner, Material.Baked ringHor, Material.Baked ringVer) {
         this.ringCorner = ringCorner;
         this.ringHor = ringHor;
         this.ringVer = ringVer;
@@ -114,7 +113,7 @@ public abstract class CraftingCubeModel implements DynamicBlockStateModel {
             this.addInnerCube(cullFace, state, extraData, builder, x1, y1, z1, x2, y2, z2);
         }
 
-        parts.add(new SimpleModelWrapper(quadCollection.build(), false, ringCorner, ChunkSectionLayer.CUTOUT));
+        parts.add(new SimpleModelWrapper(quadCollection.build(), false, ringCorner));
     }
 
     private void addRing(CubeBuilder builder, Direction side, EnumSet<Direction> connections) {
@@ -246,7 +245,7 @@ public abstract class CraftingCubeModel implements DynamicBlockStateModel {
             float x1, float y1, float z1, float x2, float y2, float z2);
 
     @Override
-    public TextureAtlasSprite particleIcon() {
+    public Material.Baked particleMaterial() {
         return ringCorner;
     }
 
@@ -260,7 +259,7 @@ public abstract class CraftingCubeModel implements DynamicBlockStateModel {
         @Override
         public BlockStateModel bake(ModelBaker baker) {
             var provider = new CraftingUnitModelProvider(type);
-            return provider.bake(baker.sprites());
+            return provider.bake(baker.materials());
         }
 
         @Override

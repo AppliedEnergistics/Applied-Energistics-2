@@ -134,7 +134,6 @@ public class MeteoriteCompassModel implements ItemModel {
     private record RotatedPointerRenderer(ItemBaseModelWrapper pointer) implements SpecialModelRenderer<Float> {
         @Override
         public void submit(@Nullable Float target,
-                ItemDisplayContext displayContext,
                 PoseStack poseStack,
                 SubmitNodeCollector nodes,
                 int packedLight,

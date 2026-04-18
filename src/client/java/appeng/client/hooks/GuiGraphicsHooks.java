@@ -85,7 +85,7 @@ public final class GuiGraphicsHooks {
             @Nullable Level level, ItemStack stack, int x, int y, int seed) {
         OVERRIDING_FOR.set(stack);
         try {
-            guiGraphics.renderItem(livingEntity, level, stack, x, y, seed);
+            guiGraphics.item(livingEntity, level, stack, x, y, seed);
         } finally {
             OVERRIDING_FOR.remove();
         }

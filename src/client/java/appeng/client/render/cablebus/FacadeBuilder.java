@@ -27,6 +27,7 @@ import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+import net.minecraft.client.resources.model.sprite.Material;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.Minecraft;
@@ -305,8 +306,8 @@ public class FacadeBuilder {
         }
 
         @Override
-        public TextureAtlasSprite particleIcon() {
-            return originalPart.particleIcon();
+        public Material.Baked particleMaterial() {
+            return originalPart.particleMaterial();
         }
 
         @Override

@@ -62,7 +62,7 @@ public class StorageCellClientTooltipComponent implements ClientTooltipComponent
     }
 
     @Override
-    public void renderText(GuiGraphicsExtractor guiGraphics, Font font, int x, int y) {
+    public void extractText(GuiGraphicsExtractor guiGraphics, Font font, int x, int y) {
         var yoff = (16 - font.lineHeight) / 2;
 
         var content = tooltipComponent.content();
@@ -81,7 +81,7 @@ public class StorageCellClientTooltipComponent implements ClientTooltipComponent
     }
 
     @Override
-    public void renderImage(Font font, int x, int y, int width, int height, GuiGraphicsExtractor guiGraphics) {
+    public void extractImage(Font font, int x, int y, int width, int height, GuiGraphicsExtractor guiGraphics) {
         var content = tooltipComponent.content();
         if (!content.isEmpty()) {
             var xoff = 0;

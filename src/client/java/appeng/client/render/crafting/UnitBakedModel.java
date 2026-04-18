@@ -18,7 +18,7 @@
 
 package appeng.client.render.crafting;
 
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.model.data.ModelData;
@@ -30,10 +30,10 @@ import appeng.client.render.CubeBuilder;
  */
 public class UnitBakedModel extends CraftingCubeModel {
 
-    private final TextureAtlasSprite unitTexture;
+    private final Material.Baked unitTexture;
 
-    public UnitBakedModel(TextureAtlasSprite ringCorner, TextureAtlasSprite ringHor, TextureAtlasSprite ringVer,
-            TextureAtlasSprite unitTexture) {
+    public UnitBakedModel(Material.Baked ringCorner, Material.Baked ringHor, Material.Baked ringVer,
+                          Material.Baked unitTexture) {
         super(ringCorner, ringHor, ringVer);
         this.unitTexture = unitTexture;
     }

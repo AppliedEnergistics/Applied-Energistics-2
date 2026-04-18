@@ -19,6 +19,7 @@ import net.minecraft.world.item.ItemStack;
 import appeng.client.render.ItemBaseModelWrapper;
 import appeng.core.AppEng;
 import appeng.items.tools.powered.ColorApplicatorItem;
+import org.joml.Matrix4fc;
 
 public class ColorApplicatorItemModel implements ItemModel {
     private final ItemBaseModelWrapper uncoloredModel;
@@ -73,7 +74,7 @@ public class ColorApplicatorItemModel implements ItemModel {
         }
 
         @Override
-        public ItemModel bake(ItemModel.BakingContext context) {
+        public ItemModel bake(ItemModel.BakingContext context, Matrix4fc matrix4fc) {
             var uncoloredBakedModel = ItemBaseModelWrapper.bake(context.blockModelBaker(), this.uncoloredModel);
             var coloredBakedModel = ItemBaseModelWrapper.bake(context.blockModelBaker(), this.coloredModel);
             return new ColorApplicatorItemModel(uncoloredBakedModel, coloredBakedModel);

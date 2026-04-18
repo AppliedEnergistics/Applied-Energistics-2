@@ -220,7 +220,7 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
                 } else if (row instanceof GroupHeaderRow(PatternContainerGroup group)) {
                     if (group.icon() != null) {
                         var renderContext = new SimpleRenderContext(LytRect.empty(), guiGraphics);
-                        renderContext.item(
+                        renderContext.renderItem(
                                 group.icon().getReadOnlyStack(),
                                 GUI_PADDING_X + PATTERN_PROVIDER_NAME_MARGIN_X,
                                 GUI_PADDING_Y + GUI_HEADER_HEIGHT + i * ROW_HEIGHT,
@@ -274,7 +274,7 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
     }
 
     @Override
-    protected void renderTooltip(GuiGraphicsExtractor guiGraphics, int x, int y) {
+    protected void extractTooltip(GuiGraphicsExtractor guiGraphics, int x, int y) {
         // Draw line tooltip
         if (hoveredSlot == null) {
             var hoveredLineIndex = getHoveredLineIndex(x, y);
@@ -286,7 +286,7 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
                 }
             }
         }
-        super.renderTooltip(guiGraphics, x, y);
+        super.extractTooltip(guiGraphics, x, y);
     }
 
     private int getHoveredLineIndex(int x, int y) {

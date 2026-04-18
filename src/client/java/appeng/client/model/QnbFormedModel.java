@@ -187,7 +187,7 @@ public class QnbFormedModel implements DynamicBlockStateModel {
         return result.build();
     }
 
-    private void renderCableAt(CubeBuilder builder, float thickness, TextureAtlasSprite texture, float pull,
+    private void renderCableAt(CubeBuilder builder, float thickness, Material.Baked texture, float pull,
             Set<Direction> connections) {
         builder.setTexture(texture);
 
