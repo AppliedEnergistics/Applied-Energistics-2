@@ -32,6 +32,7 @@ import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
 import net.minecraft.client.resources.model.SimpleModelWrapper;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ModelDebugName;
@@ -54,9 +55,19 @@ import appeng.core.AppEng;
  */
 public class SpatialPylonModel implements DynamicBlockStateModel {
     private final Map<SpatialPylonTextureType, Material.Baked> materials;
+    private final int materialFlags;
 
     private SpatialPylonModel(Map<SpatialPylonTextureType, Material.Baked> materials) {
         this.materials = ImmutableMap.copyOf(materials);
+        // TODO 26.1: Compute the worst-case flags
+        var materialFlags = 0;
+        if (materials.values().stream().anyMatch(m -> m.sprite().contents().isAnimated())) {
+            materialFlags |= BakedQuad.FLAG_ANIMATED;
+        }
+        if (materials.values().stream().anyMatch(m -> m.forceTranslucent() || m.sprite().contents().transparency().hasTranslucent())) {
+            materialFlags |= BakedQuad.FLAG_TRANSLUCENT;
+        }
+        this.materialFlags = materialFlags;
     }
 
     @Override
@@ -183,6 +194,17 @@ public class SpatialPylonModel implements DynamicBlockStateModel {
     @Override
     public Material.Baked particleMaterial() {
         return this.materials.get(SpatialPylonTextureType.DIM);
+    }
+
+    @Override
+    public @BakedQuad.MaterialFlags int materialFlags() {
+        return materialFlags;
+    }
+
+    @Override
+    public @BakedQuad.MaterialFlags int materialFlags(BlockAndTintGetter level, BlockPos pos, BlockState state) {
+        // TODO 26.1: Compute the actual wost-case material flags based on the concrete texture used by the pylon at the location
+        return DynamicBlockStateModel.super.materialFlags(level, pos, state);
     }
 
     public record Unbaked() implements CustomUnbakedBlockStateModel {

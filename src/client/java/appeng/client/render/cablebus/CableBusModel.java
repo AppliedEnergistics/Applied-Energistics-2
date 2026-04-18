@@ -18,41 +18,6 @@
 
 package appeng.client.render.cablebus;
 
-import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.IdentityHashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.function.Consumer;
-
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
-import com.google.common.cache.Weigher;
-import com.mojang.serialization.MapCodec;
-
-import net.minecraft.client.resources.model.sprite.Material;
-import org.jetbrains.annotations.Nullable;
-
-import net.minecraft.client.resources.model.geometry.BakedQuad;
-import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
-import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
-import net.minecraft.client.resources.model.SimpleModelWrapper;
-import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.ModelBaker;
-import net.minecraft.client.resources.model.geometry.QuadCollection;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.resources.Identifier;
-import net.minecraft.util.RandomSource;
-import net.minecraft.client.renderer.block.BlockAndTintGetter;
-import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.client.model.DynamicBlockStateModel;
-import net.neoforged.neoforge.client.model.block.CustomUnbakedBlockStateModel;
-
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartItem;
 import appeng.api.util.AECableType;
@@ -63,6 +28,36 @@ import appeng.client.AppEngClient;
 import appeng.client.api.model.parts.PartModel;
 import appeng.client.model.FacingModelState;
 import appeng.core.AppEng;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
+import com.google.common.cache.Weigher;
+import com.mojang.serialization.MapCodec;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
+import net.minecraft.client.resources.model.ModelBaker;
+import net.minecraft.client.resources.model.SimpleModelWrapper;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
+import net.minecraft.client.resources.model.geometry.QuadCollection;
+import net.minecraft.client.resources.model.sprite.Material;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.client.model.DynamicBlockStateModel;
+import net.neoforged.neoforge.client.model.block.CustomUnbakedBlockStateModel;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.EnumMap;
+import java.util.IdentityHashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.function.Consumer;
 
 /**
  * The built-in model for the cable bus block.
@@ -85,7 +80,7 @@ public class CableBusModel implements DynamicBlockStateModel {
     private final SimpleModelWrapper emptyCableModel;
 
     private CableBusModel(CableBuilder cableBuilder, FacadeBuilder facadeBuilder,
-            Map<IPartItem<?>, PartModel[]> partModels, Material.Baked particleTexture) {
+                          Map<IPartItem<?>, PartModel[]> partModels, Material.Baked particleTexture) {
         this.cableBuilder = cableBuilder;
         this.facadeBuilder = facadeBuilder;
         this.particleTexture = particleTexture;
@@ -105,7 +100,7 @@ public class CableBusModel implements DynamicBlockStateModel {
 
     @Override
     public void collectParts(BlockAndTintGetter level, BlockPos pos, BlockState state, RandomSource random,
-            List<BlockStateModelPart> parts) {
+                             List<BlockStateModelPart> parts) {
         var data = level.getModelData(pos);
 
         var renderState = data.get(CableBusRenderState.PROPERTY);
@@ -156,13 +151,21 @@ public class CableBusModel implements DynamicBlockStateModel {
     }
 
     @Override
+    public @BakedQuad.MaterialFlags int materialFlags() {
+        // Since we can attach practically any other model via a facade,
+        // we can only return the worst-case flags here
+        return BakedQuad.FLAG_TRANSLUCENT | BakedQuad.FLAG_ANIMATED;
+    }
+
+    @Override
     public @BakedQuad.MaterialFlags int materialFlags(BlockAndTintGetter level, BlockPos pos, BlockState state) {
-        level.getModelData(pos);
+        // TODO 26.1: Determine flags based on attached part models
+        return materialFlags();
     }
 
     @Override
     public Material.Baked particleMaterial(BlockAndTintGetter level, BlockPos pos, BlockState state) {
-        // TODO: Determine dynamic particle icon based on attached parts
+        // TODO 26.1: Determine dynamic particle icon based on attached parts
         return DynamicBlockStateModel.super.particleMaterial(level, pos, state);
     }
 
@@ -222,9 +225,9 @@ public class CableBusModel implements DynamicBlockStateModel {
         // has been forced (in case of glass
         // cables), then render the cable as a simplified straight line.
         boolean noAttachments = false; /*
-                                        * TODO !renderState.getAttachments().values().stream()
-                                        * .anyMatch(IPartModel::requireCableConnection);
-                                        */
+         * TODO !renderState.getAttachments().values().stream()
+         * .anyMatch(IPartModel::requireCableConnection);
+         */
         if (noAttachments && isStraightLine(cableType, connectionTypes)) {
             Direction facing = connectionTypes.keySet().iterator().next();
 
@@ -327,7 +330,7 @@ public class CableBusModel implements DynamicBlockStateModel {
     /**
      * Gets a list of texture sprites appropriate for particles (digging, etc.) given the render state for a cable bus.
      */
-    public List<Material.Baked> getParticleTextures(CableBusRenderState renderState) {
+    public List<Material.Baked> getParticleMaterials(CableBusRenderState renderState) {
         List<Material.Baked> result = new ArrayList<>();
 
         var cableParticleTexture = getCableParticleTexture(renderState);

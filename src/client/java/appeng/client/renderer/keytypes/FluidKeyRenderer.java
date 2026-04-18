@@ -45,11 +45,14 @@ public class FluidKeyRenderer implements AEKeyRenderer<AEFluidKey, FluidKeyRende
     @Override
     public void extract(RenderState state, AEFluidKey what, @Nullable Level level, int seed) {
         var fluidStack = what.toStack(1);
-        var renderProps = IClientFluidTypeExtensions.of(what.getFluid());
-        var texture = renderProps.getStillTexture(fluidStack);
-        state.color = renderProps.getTintColor(fluidStack);
-        state.sprite = Minecraft.getInstance().getAtlasManager().getAtlasOrThrow(AtlasIds.BLOCKS)
-                .getSprite(texture);
+        var fluidModel = Minecraft.getInstance().getModelManager().getFluidStateModelSet().get(what.getFluid().defaultFluidState());
+        var tintSource = fluidModel.fluidTintSource();
+        if (tintSource != null) {
+            state.color = tintSource.colorAsStack(fluidStack);
+        } else {
+            state.color = -1;
+        }
+        state.sprite = fluidModel.stillMaterial().sprite();
     }
 
     @Override

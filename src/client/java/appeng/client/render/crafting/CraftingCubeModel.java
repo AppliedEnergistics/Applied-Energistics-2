@@ -21,6 +21,7 @@ package appeng.client.render.crafting;
 import java.util.EnumSet;
 import java.util.List;
 
+import appeng.client.render.MaterialUtil;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
@@ -28,6 +29,7 @@ import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
 import net.minecraft.client.resources.model.SimpleModelWrapper;
 import net.minecraft.client.resources.model.ModelBaker;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.client.resources.model.geometry.QuadCollection;
 import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.core.BlockPos;
@@ -59,10 +61,13 @@ public abstract class CraftingCubeModel implements DynamicBlockStateModel {
 
     private final Material.Baked ringVer;
 
+    protected int materialFlags;
+
     CraftingCubeModel(Material.Baked ringCorner, Material.Baked ringHor, Material.Baked ringVer) {
         this.ringCorner = ringCorner;
         this.ringHor = ringHor;
         this.ringVer = ringVer;
+        this.materialFlags = MaterialUtil.getMaterialFlags(ringCorner, ringHor, ringVer);
     }
 
     @Override
@@ -248,6 +253,13 @@ public abstract class CraftingCubeModel implements DynamicBlockStateModel {
     public Material.Baked particleMaterial() {
         return ringCorner;
     }
+
+    @Override
+    public @BakedQuad.MaterialFlags int materialFlags() {
+        return materialFlags;
+    }
+
+    // TODO 26.1: Should implement the location ware materialFlags method to return the flags for the actually used materials
 
     public record Unbaked(CraftingUnitType type) implements CustomUnbakedBlockStateModel {
         public static final Identifier ID = AppEng.makeId("crafting_cube");

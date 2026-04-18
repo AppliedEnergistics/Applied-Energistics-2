@@ -23,13 +23,14 @@ import java.util.List;
 import java.util.Set;
 
 import appeng.block.qnb.QnbFormedState;
+import appeng.client.render.MaterialUtil;
 import com.mojang.serialization.MapCodec;
 
 import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
 import net.minecraft.client.resources.model.SimpleModelWrapper;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.block.dispatch.BlockModelRotation;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ModelDebugName;
@@ -81,6 +82,7 @@ public class QnbFormedModel implements DynamicBlockStateModel {
     private final Material.Baked coveredCableTexture;
     private final Material.Baked lightTexture;
     private final Material.Baked lightCornerTexture;
+    private final int materialFlags;
 
     public QnbFormedModel(BlockStateModelPart unformedRing, BlockStateModelPart unformedLink,
             MaterialBaker materialBaker) {
@@ -95,6 +97,14 @@ public class QnbFormedModel implements DynamicBlockStateModel {
         this.lightTexture = materialBaker.get(TEXTURE_RING_LIGHT, debugName);
         this.lightCornerTexture = materialBaker.get(TEXTURE_RING_LIGHT_CORNER, debugName);
         this.linkBlock = AEBlocks.QUANTUM_LINK.block();
+        this.materialFlags = unformedRing.materialFlags() | MaterialUtil.getMaterialFlags(
+                linkTexture,
+                ringTexture,
+                glassCableTexture,
+                coveredCableTexture,
+                lightTexture,
+                lightCornerTexture
+        );
     }
 
     @Override
@@ -217,9 +227,16 @@ public class QnbFormedModel implements DynamicBlockStateModel {
     }
 
     @Override
-    public Material.Baked particleMaterial(BlockAndTintGetter level, BlockPos pos, BlockState state) {
+    public Material.Baked particleMaterial() {
         return this.unformedRing.particleMaterial();
     }
+
+    @Override
+    public @BakedQuad.MaterialFlags int materialFlags() {
+        return materialFlags;
+    }
+
+    // TODO 26.1: Implement the world-aware particleMaterial/materialFlags methods
 
     public record Unbaked() implements CustomUnbakedBlockStateModel {
         public static final Identifier ID = AppEng.makeId("qnb_formed");

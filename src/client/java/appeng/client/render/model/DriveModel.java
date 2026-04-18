@@ -25,6 +25,7 @@ import java.util.Map;
 import com.mojang.math.Transformation;
 import com.mojang.serialization.MapCodec;
 
+import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.client.resources.model.sprite.Material;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -132,6 +133,11 @@ public class DriveModel implements DynamicBlockStateModel {
     @Override
     public Material.Baked particleMaterial() {
         return baseModel.particleMaterial();
+    }
+
+    @Override
+    public @BakedQuad.MaterialFlags int materialFlags() {
+        return baseModel.materialFlags();
     }
 
     // Determine which drive chassis to show based on the used cell

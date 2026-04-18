@@ -150,8 +150,8 @@ public class FacadeBuilder {
                 continue;
             }
 
-            var dispatcher = Minecraft.getInstance().getBlockRenderer();
-            var model = dispatcher.getBlockModel(blockState);
+            var modelManager = Minecraft.getInstance().getModelManager();
+            var model = modelManager.getBlockStateModelSet().get(blockState);
 
             AABB fullBounds = THIN_FACADE_BOXES[sideIndex];
             AABB facadeBox = fullBounds;
@@ -208,7 +208,8 @@ public class FacadeBuilder {
             QuadReInterpolator interpolator = new QuadReInterpolator();
 
             var random = new SingleThreadedRandomSource(blockState.getSeed(pos));
-            var parts = model.collectParts(level, pos, blockState, random);
+            var parts = new ArrayList<BlockStateModelPart>();
+            model.collectParts(level, pos, blockState, random, parts);
 
             // Transform each part emitted by the block model
             for (var part : parts) {
@@ -233,9 +234,12 @@ public class FacadeBuilder {
                         QuadTinter quadTinter = null;
 
                         // Prebake the color tint into the quad
-                        if (originalQuad.tintIndex() != -1) {
-                            quadTinter = new QuadTinter(
-                                    blockColors.getColor(blockState, level, pos, originalQuad.tintIndex()));
+                        if (originalQuad.materialInfo().isTinted()) {
+                            var tintSource = blockColors.getTintSource(blockState, originalQuad.materialInfo().tintIndex());
+                            if (tintSource != null) {
+                                var tintedColor = tintSource.colorInWorld(blockState, level, pos);
+                                quadTinter = new QuadTinter(tintedColor);
+                            }
                         }
 
                         for (AABB box : holeStrips) {
@@ -243,8 +247,8 @@ public class FacadeBuilder {
                             // Keep the cull-face for faces that are flush with the outer block-face on the
                             // side the facade is attached to, but clear it for anything that faces inwards
                             quad.setDirection(originalQuad.direction());
-                            quad.setShade(originalQuad.shade());
-                            quad.setHasAmbientOcclusion(originalQuad.hasAmbientOcclusion());
+                            quad.setShade(originalQuad.materialInfo().shade());
+                            quad.setAmbientOcclusion(originalQuad.materialInfo().ambientOcclusion());
                             interpolator.setInputQuad(quad);
 
                             QuadClamper clamper = new QuadClamper(box);
@@ -311,8 +315,8 @@ public class FacadeBuilder {
         }
 
         @Override
-        public ChunkSectionLayer getRenderType(BlockState state) {
-            return originalPart.getRenderType(state);
+        public @BakedQuad.MaterialFlags int materialFlags() {
+            return originalPart.materialFlags();
         }
     }
 

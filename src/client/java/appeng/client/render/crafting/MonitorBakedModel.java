@@ -18,6 +18,7 @@
 
 package appeng.client.render.crafting;
 
+import appeng.client.render.MaterialUtil;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.core.Direction;
@@ -57,6 +58,13 @@ public class MonitorBakedModel extends CraftingCubeModel {
         this.lightDarkTexture = lightDarkTexture;
         this.lightMediumTexture = lightMediumTexture;
         this.lightBrightTexture = lightBrightTexture;
+        this.materialFlags = this.materialFlags | MaterialUtil.getMaterialFlags(
+                chassisTexture,
+                baseTexture,
+                lightDarkTexture,
+                lightMediumTexture,
+                lightBrightTexture
+        );
     }
 
     @Override

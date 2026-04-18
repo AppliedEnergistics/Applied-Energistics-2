@@ -28,14 +28,16 @@ public class CableBusBreakingParticle extends SingleQuadParticle {
 
     private final float uCoord;
     private final float vCoord;
+    private final Layer layer;
 
     public CableBusBreakingParticle(ClientLevel level, double x, double y, double z, double speedX, double speedY,
-            double speedZ, TextureAtlasSprite sprite) {
+                                    double speedZ, TextureAtlasSprite sprite) {
         super(level, x, y, z, speedX, speedY, speedZ, sprite);
         this.gravity = 1.0F;
         this.quadSize /= 2.0F;
         this.uCoord = this.random.nextFloat() * 3.0F;
         this.vCoord = this.random.nextFloat() * 3.0F;
+        this.layer = SingleQuadParticle.Layer.bySprite(sprite);
     }
 
     public CableBusBreakingParticle(ClientLevel level, double x, double y, double z, TextureAtlasSprite sprite) {
@@ -44,7 +46,7 @@ public class CableBusBreakingParticle extends SingleQuadParticle {
 
     @Override
     protected Layer getLayer() {
-        return Layer.TERRAIN;
+        return layer;
     }
 
     @Override

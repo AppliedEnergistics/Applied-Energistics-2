@@ -20,6 +20,8 @@ package appeng.client.renderer.blockentity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
+import com.mojang.blaze3d.vertex.QuadInstance;
+import net.minecraft.util.ColorRGBA;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.Minecraft;
@@ -67,10 +69,14 @@ public final class SkyStoneTankRenderer
         var fluidStack = resource.toStack(1);
 
         state.fill = (float) amount / capacity;
-        var renderProps = IClientFluidTypeExtensions.of(resource.getFluid());
-        state.sprite = Minecraft.getInstance().getAtlasManager().getAtlasOrThrow(AtlasIds.BLOCKS)
-                .getSprite(renderProps.getStillTexture(fluidStack));
-        state.color = renderProps.getTintColor(fluidStack);
+        var fluidModel = Minecraft.getInstance().getModelManager().getFluidStateModelSet().get(resource.getFluid().defaultFluidState());
+        state.sprite = fluidModel.stillMaterial().sprite();
+        var tintSource = fluidModel.fluidTintSource();
+        if (tintSource != null) {
+            state.color = tintSource.colorAsStack(fluidStack);
+        } else {
+            state.color = -1;
+        }
         state.lighterThanAir = resource.getFluidType().isLighterThanAir();
     }
 
@@ -91,11 +97,6 @@ public final class SkyStoneTankRenderer
         // From Modern Industrialization
         nodes.submitCustomGeometry(poseStack, Sheets.translucentBlockItemSheet(), (pose, consumer) -> {
             var fill = state.fill;
-            var color = state.color;
-
-            float r = ((color >> 16) & 255) / 256f;
-            float g = ((color >> 8) & 255) / 256f;
-            float b = (color & 255) / 256f;
 
             var fillY = Mth.lerp(Mth.clamp(fill, 0, 1), TANK_W, 1 - TANK_W);
 
@@ -109,8 +110,11 @@ public final class SkyStoneTankRenderer
                 bottomHeight = 1 - fillY;
             }
 
+            var qi = new QuadInstance();
+            qi.setColor(state.color);
+            qi.setLightCoords(state.lightCoords);
             var builder = new CubeBuilder(bakedQuad -> {
-                consumer.putBulkData(pose, bakedQuad, r, g, b, 1.0f, state.lightCoords, OverlayTexture.NO_OVERLAY);
+                consumer.putBakedQuad(pose, bakedQuad, qi);
             });
             builder.setTexture(state.sprite);
 

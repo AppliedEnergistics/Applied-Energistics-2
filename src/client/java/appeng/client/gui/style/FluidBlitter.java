@@ -47,14 +47,18 @@ public final class FluidBlitter {
 
         Fluid fluid = stack.getFluid();
 
-        var attributes = IClientFluidTypeExtensions.of(fluid);
-        TextureAtlasSprite sprite = Minecraft.getInstance()
-                .getAtlasManager()
-                .getAtlasOrThrow(AtlasIds.BLOCKS)
-                .getSprite(attributes.getStillTexture(stack));
+        var fluidModel = Minecraft.getInstance().getModelManager().getFluidStateModelSet().get(fluid.defaultFluidState());
+
+        TextureAtlasSprite sprite = fluidModel.stillMaterial().sprite();
+
+        var color = -1;
+        var tintSource = fluidModel.fluidTintSource();
+        if (tintSource != null) {
+            color = tintSource.colorAsStack(stack);
+        }
 
         return Blitter.sprite(sprite)
-                .colorRgb(attributes.getTintColor(stack))
+                .colorRgb(color)
                 // Most fluid texture have transparency, but we want an opaque slot
                 .blending(false);
     }

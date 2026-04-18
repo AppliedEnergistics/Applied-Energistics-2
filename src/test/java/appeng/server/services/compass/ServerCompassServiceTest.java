@@ -6,6 +6,7 @@ import static org.mockito.Mockito.when;
 
 import java.nio.file.Path;
 
+import net.minecraft.world.level.storage.SavedDataStorage;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.io.TempDir;
@@ -16,7 +17,6 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.datafix.DataFixers;
 import net.minecraft.world.level.ChunkPos;
-import net.minecraft.world.level.storage.DimensionDataStorage;
 import net.neoforged.testframework.junit.EphemeralTestServerProvider;
 
 @ExtendWith(EphemeralTestServerProvider.class)
@@ -37,7 +37,7 @@ class ServerCompassServiceTest {
         var cp1 = new ChunkPos(1, 0);
         var cp2 = new ChunkPos(-1023, 0);
 
-        var dimensionalDataStorage = new DimensionDataStorage(
+        var dimensionalDataStorage = new SavedDataStorage(
                 level,
                 tempDir,
                 DataFixers.getDataFixer(),

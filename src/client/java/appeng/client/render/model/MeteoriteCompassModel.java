@@ -23,11 +23,13 @@ import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.QuadInstance;
 import com.mojang.math.Transformation;
 import com.mojang.serialization.MapCodec;
 
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
+import org.joml.Matrix4fc;
 import org.joml.Quaternionf;
 import org.joml.Vector2f;
 import org.joml.Vector3fc;
@@ -82,7 +84,8 @@ public class MeteoriteCompassModel implements ItemModel {
         }
 
         var pointerLayer = renderState.newLayer();
-        pointerLayer.setTransform(pointer.renderProperties().transforms().getTransform(displayContext));
+        pointerLayer.setLocalTransform(pointer.transformation());
+        pointer.renderProperties().applyToLayer(pointerLayer, displayContext);
         pointerLayer.setupSpecialModel(rotatedPointerRenderer, target);
         renderState.setAnimated();
         renderState.appendModelIdentityElement(this);
@@ -153,11 +156,14 @@ public class MeteoriteCompassModel implements ItemModel {
             UnaryOperator<BakedQuad> transformer = q -> QuadTransforms.applyTransformation(q,
                     new Transformation(transformation));
 
-            var renderType = Objects.requireNonNullElse(pointer.renderType(), Sheets.translucentItemSheet());
+            var qi = new QuadInstance();
+            qi.setLightCoords(packedLight);
+            qi.setOverlayCoords(packedOverlay);
+            var renderType = Sheets.translucentItemSheet();
             nodes.submitCustomGeometry(poseStack, renderType, (pose, buffer) -> {
                 for (var bakedQuad : this.pointer.quads()) {
                     bakedQuad = transformer.apply(bakedQuad);
-                    buffer.putBulkData(pose, bakedQuad, 1f, 1f, 1f, 1f, packedLight, packedOverlay);
+                    buffer.putBakedQuad(pose, bakedQuad, qi);
                 }
             });
         }
@@ -177,8 +183,8 @@ public class MeteoriteCompassModel implements ItemModel {
         public static final MapCodec<Unbaked> MAP_CODEC = MapCodec.unit(Unbaked::new);
 
         @Override
-        public ItemModel bake(BakingContext context) {
-            var pointerModel = ItemBaseModelWrapper.bake(context.blockModelBaker(), MODEL_POINTER);
+        public ItemModel bake(BakingContext context, Matrix4fc transform) {
+            var pointerModel = ItemBaseModelWrapper.bake(context.blockModelBaker(), MODEL_POINTER, transform);
             return new MeteoriteCompassModel(pointerModel);
         }
 

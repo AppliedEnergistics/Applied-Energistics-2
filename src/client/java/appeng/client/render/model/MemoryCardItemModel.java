@@ -13,13 +13,10 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.client.renderer.item.ItemModel;
 import net.minecraft.client.renderer.item.ItemModelResolver;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
-import net.minecraft.client.renderer.texture.TextureAtlas;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.client.resources.model.ModelDebugName;
 import net.minecraft.core.Direction;
@@ -40,8 +37,9 @@ import org.joml.Matrix4fc;
 public class MemoryCardItemModel implements ItemModel {
     private final ItemBaseModelWrapper baseModel;
     private final LoadingCache<MemoryCardColors, List<BakedQuad>> hashModelCache;
+    private final Matrix4fc transform;
 
-    public MemoryCardItemModel(ItemBaseModelWrapper baseModel, Material.Baked hashSprite) {
+    public MemoryCardItemModel(ItemBaseModelWrapper baseModel, Material.Baked hashSprite, Matrix4fc transform) {
         this.baseModel = baseModel;
         this.hashModelCache = CacheBuilder.newBuilder()
                 .maximumSize(100)
@@ -51,6 +49,7 @@ public class MemoryCardItemModel implements ItemModel {
                         return buildColorQuads(hashSprite, colors);
                     }
                 });
+        this.transform = transform;
     }
 
     @Override
@@ -77,6 +76,7 @@ public class MemoryCardItemModel implements ItemModel {
 
         var colors = stack.getOrDefault(AEComponents.MEMORY_CARD_COLORS, MemoryCardColors.DEFAULT);
         var colorLayer = renderState.newLayer();
+        colorLayer.setLocalTransform(transform);
         colorLayer.setExtents(baseModel.extents());
         baseModel.renderProperties().applyToLayer(colorLayer, displayContext);
         colorLayer.prepareQuadList().addAll(hashModelCache.getUnchecked(colors));
@@ -120,8 +120,8 @@ public class MemoryCardItemModel implements ItemModel {
             var colorOverlayMaterial = new Material(colorOverlaySprite);
             var hashSprite = context.blockModelBaker().materials().get(colorOverlayMaterial, debugName);
 
-            var baseModel = ItemBaseModelWrapper.bake(context.blockModelBaker(), this.baseModel);
-            return new MemoryCardItemModel(baseModel, hashSprite);
+            var baseModel = ItemBaseModelWrapper.bake(context.blockModelBaker(), this.baseModel, transform);
+            return new MemoryCardItemModel(baseModel, hashSprite, transform);
         }
 
         @Override

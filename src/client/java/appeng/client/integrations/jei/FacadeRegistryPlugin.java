@@ -12,7 +12,9 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
+import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.item.crafting.ShapedRecipePattern;
@@ -107,10 +109,13 @@ class FacadeRegistryPlugin implements IRecipeManagerPlugin {
         result.setCount(4);
 
         // This id should only be used within REI and not really matter
+        var commonInfo = new Recipe.CommonInfo(false);
+        var bookInfo = new CraftingRecipe.CraftingBookInfo(CraftingBookCategory.MISC, "");
+
         Identifier id = AppEng.makeId("facade/" + Item.getId(textureItem.getItem()));
         return new RecipeHolder<>(
                 ResourceKey.create(Registries.RECIPE, id),
-                new ShapedRecipe("", CraftingBookCategory.MISC, pattern, ItemStackTemplate.fromNonEmptyStack(result)));
+                new ShapedRecipe(commonInfo, bookInfo, pattern, ItemStackTemplate.fromNonEmptyStack(result)));
     }
 
     @Override

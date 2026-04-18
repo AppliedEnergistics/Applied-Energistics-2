@@ -48,8 +48,9 @@ public class CableBusBlockClientExtensions implements IClientBlockExtensions {
         ICableBusContainer cb = block.cb(level, blockPos);
 
         // Our built-in model has the actual baked sprites we need
-        var model = Minecraft.getInstance().getBlockRenderer()
-                .getBlockModel(block.defaultBlockState());
+        var model = Minecraft.getInstance().getModelManager()
+                .getBlockModelSet()
+                .get(block.defaultBlockState());
 
         // We cannot add the effect if we don't have the model
         if (!(model instanceof CableBusModel cableBusModel)) {
@@ -59,16 +60,15 @@ public class CableBusBlockClientExtensions implements IClientBlockExtensions {
         CableBusRenderState renderState = cb.getRenderState();
 
         // Spawn a particle for one of the particle textures
-        var textures = cableBusModel.getParticleTextures(renderState);
+        var textures = cableBusModel.getParticleMaterials(renderState);
         if (!textures.isEmpty()) {
             var texture = Util.getRandom(textures, level.getRandom());
             double x = target.getLocation().x;
             double y = target.getLocation().y;
             double z = target.getLocation().z;
-            // FIXME: Check how this looks, probably like shit, maybe provide parts the
-            // ability to supply particle textures???
+            // FIXME: Check how this looks, probably like shit, maybe provide parts the ability to supply particle textures???
             effectRenderer.add(
-                    new CableBusBreakingParticle((ClientLevel) level, x, y, z, texture).scale(0.8F));
+                    new CableBusBreakingParticle((ClientLevel) level, x, y, z, texture.sprite()).scale(0.8F));
         }
 
         return true;
@@ -80,26 +80,29 @@ public class CableBusBlockClientExtensions implements IClientBlockExtensions {
         ICableBusContainer cb = block.cb(level, pos);
 
         // Our built-in model has the actual baked sprites we need
-        BlockStateModel model = Minecraft.getInstance().getBlockRenderer()
-                .getBlockModel(block.defaultBlockState());
+        var model = Minecraft.getInstance().getModelManager()
+                .getBlockModelSet()
+                .get(block.defaultBlockState());
 
-        // We cannot add the effect if we dont have the model
+        //
+
+        // We cannot add the effect if we don't have the model
         if (!(model instanceof CableBusModel cableBusModel)) {
             return true;
         }
 
         CableBusRenderState renderState = cb.getRenderState();
 
-        List<TextureAtlasSprite> textures = cableBusModel.getParticleTextures(renderState);
+        var particleMaterials = cableBusModel.getParticleMaterials(renderState);
 
-        if (!textures.isEmpty()) {
+        if (!particleMaterials.isEmpty()) {
             // Shamelessly inspired by ParticleManager.addBlockDestroyEffects
             for (int j = 0; j < 4; ++j) {
                 for (int k = 0; k < 4; ++k) {
                     for (int l = 0; l < 4; ++l) {
                         // Randomly select one of the textures if the cable bus has more than just one
                         // possibility here
-                        var texture = Util.getRandom(textures, level.getRandom());
+                        var material = Util.getRandom(particleMaterials, level.getRandom());
 
                         final double x = pos.getX() + (j + 0.5D) / 4.0D;
                         final double y = pos.getY() + (k + 0.5D) / 4.0D;
@@ -108,7 +111,7 @@ public class CableBusBlockClientExtensions implements IClientBlockExtensions {
                         // FIXME: Check how this looks, probably like shit, maybe provide parts the
                         // ability to supply particle textures???
                         Particle effect = new CableBusBreakingParticle((ClientLevel) level, x, y, z,
-                                x - pos.getX() - 0.5D, y - pos.getY() - 0.5D, z - pos.getZ() - 0.5D, texture);
+                                x - pos.getX() - 0.5D, y - pos.getY() - 0.5D, z - pos.getZ() - 0.5D, material.sprite());
                         effectRenderer.add(effect);
                     }
                 }
