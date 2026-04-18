@@ -25,6 +25,7 @@ import java.util.Map;
 import com.mojang.math.Transformation;
 import com.mojang.serialization.MapCodec;
 
+import net.minecraft.client.resources.model.sprite.Material;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
@@ -129,8 +130,8 @@ public class DriveModel implements DynamicBlockStateModel {
     }
 
     @Override
-    public TextureAtlasSprite particleIcon() {
-        return baseModel.particleIcon();
+    public Material.Baked particleMaterial() {
+        return baseModel.particleMaterial();
     }
 
     // Determine which drive chassis to show based on the used cell
