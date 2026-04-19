@@ -497,7 +497,10 @@ public class MEStorageScreen<C extends MEStorageMenu>
                     var sprite = minecraft.getAtlasManager().getAtlasOrThrow(AtlasIds.BLOCKS)
                             .getSprite(AppEng.makeId("block/molecular_assembler_lights"));
                     Blitter.sprite(sprite)
-                            .src(sprite.getX() + 2, sprite.getY() + 2, sprite.contents().width() - 4,
+                            // We only want the square part of the texture, which starts at the 3rd pixel.
+                            // Textures on atlases are padded by one pixel, we don't want the padding so move by one
+                            // additional pixel.
+                            .src(sprite.getX() + 3, sprite.getY() + 3, sprite.contents().width() - 4,
                                     sprite.contents().height() - 4)
                             .dest(slot.x - 1, slot.y - 1, 18, 18)
                             .blit(guiGraphics);

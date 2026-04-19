@@ -111,10 +111,11 @@ public final class Blitter {
     public static Blitter sprite(TextureAtlasSprite sprite) {
         var atlas = (TextureAtlas) Minecraft.getInstance().getTextureManager().getTexture(sprite.atlasLocation());
 
+        // Textures on atlases are padded by one pixel, we don't want the padding so move by one pixel.
         return new Blitter(sprite.atlasLocation(), atlas.getWidth(), atlas.getHeight())
                 .src(
-                        sprite.getX(),
-                        sprite.getY(),
+                        sprite.getX() + 1,
+                        sprite.getY() + 1,
                         sprite.contents().width(),
                         sprite.contents().height());
     }
