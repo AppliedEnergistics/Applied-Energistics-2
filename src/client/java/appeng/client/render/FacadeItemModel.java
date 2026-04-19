@@ -132,7 +132,7 @@ public class FacadeItemModel implements ItemModel {
                 // TODO 26.1: Probably incorrect
                 var renderType = (blockModelPart.materialFlags() & BakedQuad.FLAG_TRANSLUCENT) != 0
                         ? Sheets.translucentBlockItemSheet()
-                        : Sheets.cutoutItemSheet();
+                        : Sheets.cutoutBlockItemSheet();
 
                 submitNodeCollector.submitCustomGeometry(poseStack, renderType, (pose, consumer) -> {
                     for (var cullFace : Platform.CULL_FACES) {
