@@ -51,8 +51,8 @@ public class SkyStoneChestRenderer implements BlockEntityRenderer<SkyStoneChestB
     public static ModelLayerLocation MODEL_LAYER = new ModelLayerLocation(AppEng.makeId("sky_chest"), "main");
 
     // The textures are in the block sheet due to the item model requiring them there
-    public static final SpriteId TEXTURE_STONE = Sheets.BLOCKS_MAPPER.apply(AppEng.makeId("block/skychest"));
-    public static final SpriteId TEXTURE_BLOCK = Sheets.BLOCKS_MAPPER.apply(AppEng.makeId("block/skyblockchest"));
+    public static final SpriteId TEXTURE_STONE = Sheets.BLOCKS_MAPPER.apply(AppEng.makeId("skychest"));
+    public static final SpriteId TEXTURE_BLOCK = Sheets.BLOCKS_MAPPER.apply(AppEng.makeId("skyblockchest"));
 
     private final SpriteGetter sprites;
     private final SkyStoneChestModel model;

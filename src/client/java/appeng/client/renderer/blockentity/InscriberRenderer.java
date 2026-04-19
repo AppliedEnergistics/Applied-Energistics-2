@@ -56,7 +56,7 @@ public final class InscriberRenderer implements BlockEntityRenderer<InscriberBlo
 
     private static final float ITEM_RENDER_SCALE = 1.0f / 1.2f;
 
-    private static final SpriteId TEXTURE_INSIDE = Sheets.BLOCKS_MAPPER.apply(AppEng.makeId("block/inscriber_inside"));
+    private static final SpriteId TEXTURE_INSIDE = Sheets.BLOCKS_MAPPER.apply(AppEng.makeId("inscriber_inside"));
 
     private final ItemModelResolver itemModelResolver;
     private final SpriteGetter sprites;

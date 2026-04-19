@@ -3,9 +3,11 @@ package appeng.client.render.cablebus;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 
+import com.mojang.blaze3d.platform.Transparency;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import org.joml.Vector3fc;
@@ -13,6 +15,8 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.mockito.Mockito;
 
+import net.minecraft.client.renderer.texture.SpriteContents;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.cuboid.FaceBakery;
 import net.minecraft.client.resources.model.geometry.BakedQuad;
@@ -38,7 +42,12 @@ class CubeBuilderTest {
         try (var mockedStatic = Mockito.mockStatic(RenderSystem.class)) {
             var output = new ArrayList<BakedQuad>();
             var cb = new CubeBuilder(output::add);
-            cb.setTexture(mock(TextureAtlasSprite.class));
+            var mockedSprite = mock(TextureAtlasSprite.class);
+            var mockedSpriteContents = mock(SpriteContents.class);
+            when(mockedSpriteContents.transparency()).thenReturn(Transparency.NONE);
+            when(mockedSprite.atlasLocation()).thenReturn(TextureAtlas.LOCATION_BLOCKS);
+            when(mockedSprite.contents()).thenReturn(mockedSpriteContents);
+            cb.setTexture(mockedSprite);
             cb.addQuad(side, 0, 0, 0, 1, 1, 1);
 
             assertEquals(1, output.size());
