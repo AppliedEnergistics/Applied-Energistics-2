@@ -18,9 +18,13 @@
 
 package appeng.client.render;
 
+import java.util.List;
+import java.util.stream.IntStream;
+
 import net.minecraft.client.color.block.BlockTintSource;
 import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.core.BlockPos;
+import net.minecraft.util.ARGB;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -32,7 +36,9 @@ import appeng.api.util.AEColor;
  */
 public class ColorableBlockEntityBlockColor implements BlockTintSource {
 
-    public static final ColorableBlockEntityBlockColor INSTANCE = new ColorableBlockEntityBlockColor(0);
+    public static List<BlockTintSource> TINT_SOURCES = IntStream.range(0, 5)
+            .<BlockTintSource>mapToObj(ColorableBlockEntityBlockColor::new)
+            .toList();
 
     private final int tintIndex;
 
@@ -54,6 +60,6 @@ public class ColorableBlockEntityBlockColor implements BlockTintSource {
             color = ((IColorableBlockEntity) te).getColor();
         }
 
-        return color.getVariantByTintIndex(tintIndex);
+        return ARGB.opaque(color.getVariantByTintIndex(tintIndex));
     }
 }

@@ -91,6 +91,7 @@ import appeng.api.parts.CableRenderMode;
 import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKeyType;
+import appeng.api.util.AEColor;
 import appeng.client.api.AEKeyRendering;
 import appeng.client.api.model.parts.CompositePartModel;
 import appeng.client.api.model.parts.RegisterPartModelsEvent;
@@ -98,6 +99,7 @@ import appeng.client.api.model.parts.StaticPartModel;
 import appeng.client.api.renderer.parts.RegisterPartRendererEvent;
 import appeng.client.areaoverlay.AreaOverlayRenderer;
 import appeng.client.block.cablebus.CableBusBlockClientExtensions;
+import appeng.client.block.cablebus.CableBusColor;
 import appeng.client.commands.ClientCommands;
 import appeng.client.gui.me.common.PendingCraftingJobs;
 import appeng.client.gui.me.common.PinnedKeys;
@@ -125,7 +127,9 @@ import appeng.client.model.SpatialPylonModel;
 import appeng.client.model.StatusIndicatorPartModel;
 import appeng.client.render.AEColorItemTintSource;
 import appeng.client.render.AERenderPipelines;
+import appeng.client.render.ColorableBlockEntityBlockColor;
 import appeng.client.render.FacadeItemModel;
+import appeng.client.render.StaticBlockColor;
 import appeng.client.render.StorageCellClientTooltipComponent;
 import appeng.client.render.cablebus.CableBusModel;
 import appeng.client.render.crafting.CraftingCubeModel;
@@ -287,7 +291,7 @@ public class AppEngClient extends AppEngBase {
         modEventBus.addListener(this::registerItemModels);
         modEventBus.addListener(this::registerEnvironmentalEffectRenderers);
         modEventBus.addListener(this::registerItemTintSources);
-        // TODO 26.1 modEventBus.addListener(this::registerBlockColors);
+        modEventBus.addListener(this::registerBlockTintSources);
         modEventBus.addListener(this::registerPipRenderers);
 
         RenderBlockOutlineHook.install();
@@ -647,11 +651,11 @@ public class AppEngClient extends AppEngBase {
         event.register(AEColorItemTintSource.ID, AEColorItemTintSource.MAP_CODEC);
     }
 
-    // TODO 26.1 public void registerBlockColors(RegisterColorHandlersEvent.Block event) {
-    // TODO 26.1 event.register(new StaticBlockColor(AEColor.TRANSPARENT), AEBlocks.WIRELESS_ACCESS_POINT.block());
-    // TODO 26.1 event.register(new CableBusColor(), AEBlocks.CABLE_BUS.block());
-    // TODO 26.1 event.register(ColorableBlockEntityBlockColor.INSTANCE, AEBlocks.ME_CHEST.block());
-    // TODO 26.1 }
+    public void registerBlockTintSources(RegisterColorHandlersEvent.BlockTintSources event) {
+        event.register(StaticBlockColor.createTintSources(AEColor.TRANSPARENT), AEBlocks.WIRELESS_ACCESS_POINT.block());
+        event.register(CableBusColor.TINT_SOURCES, AEBlocks.CABLE_BUS.block());
+        event.register(ColorableBlockEntityBlockColor.TINT_SOURCES, AEBlocks.ME_CHEST.block());
+    }
 
     private void receiveRecipes(RecipesReceivedEvent event) {
         recipeMap = event.getRecipeMap();
