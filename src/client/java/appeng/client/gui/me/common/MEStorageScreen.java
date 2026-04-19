@@ -496,9 +496,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
                 if (entry != null && PendingCraftingJobs.hasPendingJob(entry.getWhat())) {
                     var sprite = minecraft.getAtlasManager().getAtlasOrThrow(AtlasIds.BLOCKS)
                             .getSprite(AppEng.makeId("block/molecular_assembler_lights"));
-                    Blitter.sprite(sprite)
-                            .src(sprite.getX() + 2, sprite.getY() + 2, sprite.contents().width() - 4,
-                                    sprite.contents().height() - 4)
+                    Blitter.spriteSubRegion(sprite, 2, 2, 2, 2)
                             .dest(slot.x - 1, slot.y - 1, 18, 18)
                             .blit(guiGraphics);
                 }

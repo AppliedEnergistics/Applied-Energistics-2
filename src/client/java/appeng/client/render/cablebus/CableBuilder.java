@@ -23,7 +23,6 @@ import java.util.EnumSet;
 import java.util.Locale;
 import java.util.function.Consumer;
 
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.ModelDebugName;
 import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.client.resources.model.sprite.Material;

@@ -2,7 +2,6 @@ package appeng.hooks;
 
 import net.minecraft.core.Holder;
 import net.minecraft.world.item.ItemInstance;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
 
 /**

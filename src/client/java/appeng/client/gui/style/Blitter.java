@@ -111,12 +111,28 @@ public final class Blitter {
     public static Blitter sprite(TextureAtlasSprite sprite) {
         var atlas = (TextureAtlas) Minecraft.getInstance().getTextureManager().getTexture(sprite.atlasLocation());
 
+        var padding = sprite.padding;
         return new Blitter(sprite.atlasLocation(), atlas.getWidth(), atlas.getHeight())
                 .src(
-                        sprite.getX(),
-                        sprite.getY(),
+                        sprite.getX() + padding,
+                        sprite.getY() + padding,
                         sprite.contents().width(),
                         sprite.contents().height());
+    }
+
+    /**
+     * Creates a blitter from a texture atlas sprite.
+     */
+    public static Blitter spriteSubRegion(TextureAtlasSprite sprite, int left, int top, int right, int bottom) {
+        var atlas = (TextureAtlas) Minecraft.getInstance().getTextureManager().getTexture(sprite.atlasLocation());
+
+        var padding = sprite.padding;
+        return new Blitter(sprite.atlasLocation(), atlas.getWidth(), atlas.getHeight())
+                .src(
+                        sprite.getX() + padding + left,
+                        sprite.getY() + padding + top,
+                        sprite.contents().width() - left - right,
+                        sprite.contents().height() - top - bottom);
     }
 
     public static Blitter guiSprite(Identifier resourceLocation) {
