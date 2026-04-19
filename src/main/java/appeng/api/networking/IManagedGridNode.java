@@ -90,7 +90,11 @@ public interface IManagedGridNode {
         if (node == null) {
             return false;
         }
-        action.accept(node.getGrid());
+        var grid = node.getGrid();
+        if (grid == null) {
+            return false;
+        }
+        action.accept(grid);
         return true;
     }
 
@@ -99,7 +103,11 @@ public interface IManagedGridNode {
         if (node == null) {
             return false;
         }
-        action.accept(node.getGrid(), node);
+        var grid = node.getGrid();
+        if (grid == null) {
+            return false;
+        }
+        action.accept(grid, node);
         return true;
     }
 
