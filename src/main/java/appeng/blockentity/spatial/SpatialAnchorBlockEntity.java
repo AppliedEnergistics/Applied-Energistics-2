@@ -134,7 +134,7 @@ public class SpatialAnchorBlockEntity extends AENetworkedBlockEntity
         AreaOverlayManager.getInstance().removeArea(this);
 
         if (this.displayOverlay) {
-            this.chunks.addAll(Arrays.stream(data.readLongArray(null)).mapToObj(ChunkPos::unpack)
+            this.chunks.addAll(Arrays.stream(data.readLongArray()).mapToObj(ChunkPos::unpack)
                     .collect(Collectors.toSet()));
             // Register it again to render the overlay
             AreaOverlayManager.getInstance().showArea(this);
