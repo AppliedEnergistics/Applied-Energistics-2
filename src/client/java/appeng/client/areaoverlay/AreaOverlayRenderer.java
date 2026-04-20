@@ -141,6 +141,8 @@ public class AreaOverlayRenderer {
         float z1 = 0f;
         float z2 = 16f;
 
+        final float lineWidth = 2f;
+
         boolean noNorth = !allChunks.contains(new ChunkPos(pos.x(), pos.z() - 1));
         boolean noSouth = !allChunks.contains(new ChunkPos(pos.x(), pos.z() + 1));
         boolean noWest = !allChunks.contains(new ChunkPos(pos.x() - 1, pos.z()));
@@ -149,96 +151,96 @@ public class AreaOverlayRenderer {
         if (noNorth) {
             // Face North, Edge Bottom
             wr.addVertex(posMat, x1, y1, z1).setColor(cols[1], cols[2], cols[3], cols[0])
-                    .setNormal(1, 0, 0);
+                    .setNormal(1, 0, 0).setLineWidth(lineWidth);
             wr.addVertex(posMat, x2, y1, z1).setColor(cols[1], cols[2], cols[3], cols[0])
-                    .setNormal(1, 0, 0);
+                    .setNormal(1, 0, 0).setLineWidth(lineWidth);
             // Face North, Edge Top
             wr.addVertex(posMat, x2, y2, z1).setColor(cols[1], cols[2], cols[3], cols[0])
-                    .setNormal(-1, 0, 0);
+                    .setNormal(-1, 0, 0).setLineWidth(lineWidth);
             wr.addVertex(posMat, x1, y2, z1).setColor(cols[1], cols[2], cols[3], cols[0])
-                    .setNormal(-1, 0, 0);
+                    .setNormal(-1, 0, 0).setLineWidth(lineWidth);
         }
 
         if (noSouth) {
             // Face South, Edge Bottom
             wr.addVertex(posMat, x2, y1, z2).setColor(cols[1], cols[2], cols[3], cols[0])
-                    .setNormal(-1, 0, 0);
+                    .setNormal(-1, 0, 0).setLineWidth(lineWidth);
             wr.addVertex(posMat, x1, y1, z2).setColor(cols[1], cols[2], cols[3], cols[0])
-                    .setNormal(-1, 0, 0);
+                    .setNormal(-1, 0, 0).setLineWidth(lineWidth);
             // Face South, Edge Top
             wr.addVertex(posMat, x1, y2, z2).setColor(cols[1], cols[2], cols[3], cols[0])
-                    .setNormal(1, 0, 0);
+                    .setNormal(1, 0, 0).setLineWidth(lineWidth);
             wr.addVertex(posMat, x2, y2, z2).setColor(cols[1], cols[2], cols[3], cols[0])
-                    .setNormal(1, 0, 0);
+                    .setNormal(1, 0, 0).setLineWidth(lineWidth);
         }
 
         if (noWest) {
             // Face West, Edge Bottom
             wr.addVertex(posMat, x1, y1, z1).setColor(cols[1], cols[2], cols[3], cols[0])
-                    .setNormal(0, 0, 1);
+                    .setNormal(0, 0, 1).setLineWidth(lineWidth);
             wr.addVertex(posMat, x1, y1, z2).setColor(cols[1], cols[2], cols[3], cols[0])
-                    .setNormal(0, 0, 1);
+                    .setNormal(0, 0, 1).setLineWidth(lineWidth);
             // Face West, Edge Top
             wr.addVertex(posMat, x1, y2, z2).setColor(cols[1], cols[2], cols[3], cols[0])
-                    .setNormal(0, 0, -1);
+                    .setNormal(0, 0, -1).setLineWidth(lineWidth);
             wr.addVertex(posMat, x1, y2, z1).setColor(cols[1], cols[2], cols[3], cols[0])
-                    .setNormal(0, 0, -1);
+                    .setNormal(0, 0, -1).setLineWidth(lineWidth);
         }
 
         if (noEast) {
             // Face East, Edge Bottom
             wr.addVertex(posMat, x2, y1, z2).setColor(cols[1], cols[2], cols[3], cols[0])
-                    .setNormal(0, 0, -1);
+                    .setNormal(0, 0, -1).setLineWidth(lineWidth);
             wr.addVertex(posMat, x2, y1, z1).setColor(cols[1], cols[2], cols[3], cols[0])
-                    .setNormal(0, 0, -1);
+                    .setNormal(0, 0, -1).setLineWidth(lineWidth);
             // Face East, Edge Top
             wr.addVertex(posMat, x2, y2, z1).setColor(cols[1], cols[2], cols[3], cols[0])
-                    .setNormal(0, 0, 1);
+                    .setNormal(0, 0, 1).setLineWidth(lineWidth);
             wr.addVertex(posMat, x2, y2, z2).setColor(cols[1], cols[2], cols[3], cols[0])
-                    .setNormal(0, 0, 1);
+                    .setNormal(0, 0, 1).setLineWidth(lineWidth);
         }
 
         if (renderLines) {
             if (noNorth || noWest) {
                 // Face North, Edge West
                 wr.addVertex(posMat, x1, y1, z1).setColor(cols[1], cols[2], cols[3], cols[0])
-                        .setNormal(0, 1, 0);
+                        .setNormal(0, 1, 0).setLineWidth(lineWidth);
                 wr.addVertex(posMat, x1, y2, z1).setColor(cols[1], cols[2], cols[3], cols[0])
-                        .setNormal(0, 1, 0);
+                        .setNormal(0, 1, 0).setLineWidth(lineWidth);
             }
 
             if (noNorth || noEast) {
                 // Face North, Edge East
                 wr.addVertex(posMat, x2, y2, z1).setColor(cols[1], cols[2], cols[3], cols[0])
-                        .setNormal(0, -1, 0);
+                        .setNormal(0, -1, 0).setLineWidth(lineWidth);
                 wr.addVertex(posMat, x2, y1, z1).setColor(cols[1], cols[2], cols[3], cols[0])
-                        .setNormal(0, -1, 0);
+                        .setNormal(0, -1, 0).setLineWidth(lineWidth);
             }
 
             if (noSouth || noEast) {
                 // Face South, Edge East
                 wr.addVertex(posMat, x2, y1, z2).setColor(cols[1], cols[2], cols[3], cols[0])
-                        .setNormal(0, 1, 0);
+                        .setNormal(0, 1, 0).setLineWidth(lineWidth);
                 wr.addVertex(posMat, x2, y2, z2).setColor(cols[1], cols[2], cols[3], cols[0])
-                        .setNormal(0, 1, 0);
+                        .setNormal(0, 1, 0).setLineWidth(lineWidth);
             }
             if (noSouth || noWest) {
                 // Face South, Edge West
                 wr.addVertex(posMat, x1, y2, z2).setColor(cols[1], cols[2], cols[3], cols[0])
-                        .setNormal(0, -1, 0);
+                        .setNormal(0, -1, 0).setLineWidth(lineWidth);
                 wr.addVertex(posMat, x1, y1, z2).setColor(cols[1], cols[2], cols[3], cols[0])
-                        .setNormal(0, -1, 0);
+                        .setNormal(0, -1, 0).setLineWidth(lineWidth);
             }
         } else {
             // Bottom Face
             wr.addVertex(posMat, x1, y1, z1).setColor(cols[1], cols[2], cols[3], cols[0])
-                    .setNormal(1, 0, 0);
+                    .setNormal(1, 0, 0).setLineWidth(lineWidth);
             wr.addVertex(posMat, x2, y1, z1).setColor(cols[1], cols[2], cols[3], cols[0])
-                    .setNormal(1, 0, 0);
+                    .setNormal(1, 0, 0).setLineWidth(lineWidth);
             wr.addVertex(posMat, x2, y1, z2).setColor(cols[1], cols[2], cols[3], cols[0])
-                    .setNormal(-1, 0, 0);
+                    .setNormal(-1, 0, 0).setLineWidth(lineWidth);
             wr.addVertex(posMat, x1, y1, z2).setColor(cols[1], cols[2], cols[3], cols[0])
-                    .setNormal(-1, 0, 0);
+                    .setNormal(-1, 0, 0).setLineWidth(lineWidth);
         }
 
     }
