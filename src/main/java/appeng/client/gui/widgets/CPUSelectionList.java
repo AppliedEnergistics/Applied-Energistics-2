@@ -111,7 +111,8 @@ public class CPUSelectionList implements ICompositeWidget {
             if (currentJob != null) {
                 tooltipLines.add(
                         ButtonToolTips.CpuStatusCrafting.text(
-                                Tooltips.ofAmount(currentJob)).append(" ").append(currentJob.what().getDisplayName()));
+                                Tooltips.ofAmount(currentJob),
+                                currentJob.what().getDisplayName()));
                 tooltipLines.add(
                         ButtonToolTips.CpuStatusCraftedIn.text(
                                 Tooltips.ofPercent(cpu.progress()),
