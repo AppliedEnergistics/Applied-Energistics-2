@@ -39,7 +39,7 @@ public enum ButtonToolTips implements LocalizationEnum {
     CpuStatusCoProcessor("%s Co-Processor"),
     CpuStatusCoProcessors("%s Co-Processors"),
     CpuStatusCraftedIn("Crafted %s in %s"),
-    CpuStatusCrafting("Crafting %s"),
+    CpuStatusCrafting("Crafting %s %s"),
     CpuStatusStorage("%s Storage"),
     LockCraftingMode("Lock Crafting"),
     LockCraftingModeNone("Never"),
