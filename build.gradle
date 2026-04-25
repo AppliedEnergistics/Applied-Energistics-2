@@ -41,9 +41,7 @@ sourceSets {
         // TODO 1.21.11
         java {
             exclude 'appeng/integration/modules/rei/**'
-            exclude 'appeng/integration/modules/jade/**'
             exclude 'appeng/integration/modules/theoneprobe/**'
-            exclude 'appeng/integration/modules/wthit/**'
         }
         resources {
             srcDir 'src/generated/resources'
