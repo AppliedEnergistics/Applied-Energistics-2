@@ -26,7 +26,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import org.joml.Matrix4f;
-import org.joml.Quaternionf;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -66,7 +65,7 @@ public class AreaOverlayRenderer {
     }
 
     @SubscribeEvent
-    public void renderWorldLastEvent(RenderLevelStageEvent.AfterLevel event) {
+    public void renderWorldLastEvent(RenderLevelStageEvent.AfterWeather event) {
         var visibleAreas = event.getLevelRenderState().getRenderDataOrDefault(OVERLAY_AREAS, List.of());
 
         if (visibleAreas.isEmpty()) {
@@ -80,9 +79,6 @@ public class AreaOverlayRenderer {
         poseStack.pushPose();
 
         Vec3 projectedView = minecraft.gameRenderer.getMainCamera().position();
-        Quaternionf rotation = new Quaternionf(minecraft.gameRenderer.getMainCamera().rotation());
-        rotation.invert();
-        poseStack.mulPose(rotation);
         poseStack.translate(-projectedView.x, -projectedView.y, -projectedView.z);
 
         for (var visibleArea : visibleAreas) {
