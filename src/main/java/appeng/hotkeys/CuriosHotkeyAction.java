@@ -6,8 +6,9 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 
+import top.theillusivec4.curios.api.CuriosCapability;
+
 import appeng.api.features.HotkeyAction;
-import appeng.integration.modules.curios.CuriosIntegration;
 import appeng.menu.locator.MenuLocators;
 
 public record CuriosHotkeyAction(Predicate<ItemStack> locatable,
@@ -19,7 +20,7 @@ public record CuriosHotkeyAction(Predicate<ItemStack> locatable,
 
     @Override
     public boolean run(Player player) {
-        var cap = player.getCapability(CuriosIntegration.ITEM_HANDLER);
+        var cap = player.getCapability(CuriosCapability.ITEM_HANDLER);
         if (cap == null)
             return false;
         for (int i = 0; i < cap.size(); i++) {
