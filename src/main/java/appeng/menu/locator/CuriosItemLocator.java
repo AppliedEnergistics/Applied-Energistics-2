@@ -17,10 +17,10 @@ import appeng.integration.modules.curios.CuriosIntegration;
 record CuriosItemLocator(int curioSlot, @Nullable BlockHitResult hitResult) implements ItemMenuHostLocator {
     public ItemStack locateItem(Player player) {
         var cap = player.getCapability(CuriosIntegration.ITEM_HANDLER);
-        if (cap == null || curioSlot >= cap.getSlots()) {
+        if (cap == null || curioSlot >= cap.size()) {
             return ItemStack.EMPTY;
         }
-        return cap.getStackInSlot(curioSlot);
+        return cap.getResource(curioSlot).toStack();
     }
 
     public void writeToPacket(FriendlyByteBuf buf) {

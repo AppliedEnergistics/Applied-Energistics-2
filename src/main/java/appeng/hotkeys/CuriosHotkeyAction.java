@@ -22,8 +22,8 @@ public record CuriosHotkeyAction(Predicate<ItemStack> locatable,
         var cap = player.getCapability(CuriosIntegration.ITEM_HANDLER);
         if (cap == null)
             return false;
-        for (int i = 0; i < cap.getSlots(); i++) {
-            if (locatable.test(cap.getStackInSlot(i))) {
+        for (int i = 0; i < cap.size(); i++) {
+            if (locatable.test(cap.getResource(i).toStack())) {
                 if (opener.open(player, MenuLocators.forCurioSlot(i))) {
                     return true;
                 }
