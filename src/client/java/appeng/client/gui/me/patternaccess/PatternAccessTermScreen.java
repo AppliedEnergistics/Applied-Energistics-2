@@ -58,6 +58,7 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import appeng.api.config.Settings;
 import appeng.api.config.ShowPatternProviders;
 import appeng.api.config.TerminalStyle;
+import appeng.api.crafting.PatternDetailsHelper;
 import appeng.api.implementations.blockentities.PatternContainerGroup;
 import appeng.api.storage.ILinkStatus;
 import appeng.client.gui.AEBaseScreen;
@@ -567,17 +568,17 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
     private String getPatternSearchText(ItemStack stack) {
         var level = menu.getPlayer().level();
         var text = new StringBuilder();
-// TODO 1.21.4        var pattern = PatternDetailsHelper.decodePattern(stack, level);
-// TODO 1.21.4
-// TODO 1.21.4        if (pattern != null) {
-// TODO 1.21.4            for (var output : pattern.getOutputs()) {
-// TODO 1.21.4                output.what().getDisplayName().visit(content -> {
-// TODO 1.21.4                    text.append(content.toLowerCase());
-// TODO 1.21.4                    return Optional.empty();
-// TODO 1.21.4                });
-// TODO 1.21.4                text.append('\n');
-// TODO 1.21.4            }
-// TODO 1.21.4        }
+        var pattern = PatternDetailsHelper.decodePattern(stack, level);
+
+        if (pattern != null) {
+            for (var output : pattern.getOutputs()) {
+                output.what().getDisplayName().visit(content -> {
+                    text.append(content.toLowerCase());
+                    return Optional.empty();
+                });
+                text.append('\n');
+            }
+        }
 
         return text.toString();
     }
