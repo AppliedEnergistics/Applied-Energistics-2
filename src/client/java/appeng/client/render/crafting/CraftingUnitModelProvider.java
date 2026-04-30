@@ -65,8 +65,7 @@ public class CraftingUnitModelProvider extends AbstractCraftingUnitModelProvider
     }
 
     private static Material texture(String name) {
-        return new Material(AppEng.makeId("block/crafting/" + name)); // TODO 26.1 - Mithi83 - this needs to be
-                                                                      // double-checked
+        return new Material(AppEng.makeId("block/crafting/" + name));
     }
 
     @Override

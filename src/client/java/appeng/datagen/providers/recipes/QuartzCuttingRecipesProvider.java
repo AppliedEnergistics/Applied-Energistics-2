@@ -24,9 +24,8 @@ public class QuartzCuttingRecipesProvider extends AE2RecipeProvider {
         output.accept(
                 makeKey("network/parts/cable_anchor"),
                 new QuartzCuttingRecipe(
-                        new Recipe.CommonInfo(false), // TODO 26.1 - Mithi83 - check for proper values
-                        new CraftingRecipe.CraftingBookInfo(CraftingBookCategory.MISC, ""), // TODO 26.1 - Mithi83 -
-                                                                                            // check for proper values
+                        new Recipe.CommonInfo(false),
+                        new CraftingRecipe.CraftingBookInfo(CraftingBookCategory.MISC, ""),
                         AEParts.CABLE_ANCHOR.template(4),
                         NonNullList.of(Ingredient.of(items.getOrThrow(ConventionTags.QUARTZ_KNIFE)),
                                 Ingredient.of(items.getOrThrow(AETags.METAL_INGOTS)))),
