@@ -207,16 +207,16 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
 
                         // Indicate invalid patterns
                         var pattern = container.getInventory().getStackInSlot(offset + col);
-                        // TODO 1.21.4 Server needs to tell us which are invalid
-                        // TODO 1.21.4 if (!pattern.isEmpty() && PatternDetailsHelper.decodePattern(pattern, level) ==
-                        // null) {
-                        // TODO 1.21.4 guiGraphics.fill(
-                        // TODO 1.21.4 slot.x,
-                        // TODO 1.21.4 slot.y,
-                        // TODO 1.21.4 slot.x + 16,
-                        // TODO 1.21.4 slot.y + 16,
-                        // TODO 1.21.4 0x7fff0000);
-                        // TODO 1.21.4 }
+
+                        var level = menu.getPlayer().level();
+                        if (!pattern.isEmpty() && PatternDetailsHelper.decodePattern(pattern, level) == null) {
+                            guiGraphics.fill(
+                                    slot.x,
+                                    slot.y,
+                                    slot.x + 16,
+                                    slot.y + 16,
+                                    0x7fff0000);
+                        }
                     }
                 } else if (row instanceof GroupHeaderRow(PatternContainerGroup group)) {
                     if (group.icon() != null) {
