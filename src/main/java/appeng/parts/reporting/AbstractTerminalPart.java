@@ -30,9 +30,6 @@ import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 
 import appeng.api.config.Settings;
-import appeng.api.config.SortDir;
-import appeng.api.config.SortOrder;
-import appeng.api.config.ViewItems;
 import appeng.api.implementations.blockentities.IViewCellStorage;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.parts.IPartItem;
@@ -44,6 +41,7 @@ import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigManagerBuilder;
 import appeng.api.util.KeyTypeSelection;
 import appeng.api.util.KeyTypeSelectionHost;
+import appeng.core.AEConfig;
 import appeng.menu.ISubMenu;
 import appeng.menu.MenuOpener;
 import appeng.menu.locator.MenuLocators;
@@ -79,9 +77,9 @@ public abstract class AbstractTerminalPart extends AbstractDisplayPart
 
     @MustBeInvokedByOverriders
     protected void registerSettings(IConfigManagerBuilder builder) {
-        builder.registerSetting(Settings.SORT_BY, SortOrder.NAME);
-        builder.registerSetting(Settings.VIEW_MODE, ViewItems.ALL);
-        builder.registerSetting(Settings.SORT_DIRECTION, SortDir.ASCENDING);
+        builder.registerSetting(Settings.SORT_BY, AEConfig.instance().getSortOrder());
+        builder.registerSetting(Settings.VIEW_MODE, AEConfig.instance().getViewItems());
+        builder.registerSetting(Settings.SORT_DIRECTION, AEConfig.instance().getSortDir());
     }
 
     @Override

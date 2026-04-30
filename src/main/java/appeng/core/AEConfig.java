@@ -35,7 +35,10 @@ import appeng.api.config.CondenserOutput;
 import appeng.api.config.PowerMultiplier;
 import appeng.api.config.PowerUnit;
 import appeng.api.config.Settings;
+import appeng.api.config.SortDir;
+import appeng.api.config.SortOrder;
 import appeng.api.config.TerminalStyle;
+import appeng.api.config.ViewItems;
 import appeng.api.networking.pathing.ChannelMode;
 import appeng.core.settings.TickRates;
 import appeng.util.EnumCycler;
@@ -171,10 +174,43 @@ public final class AEConfig {
         return client.terminalStyle.get();
     }
 
+    public SortOrder getSortOrder() {
+        return common.sortOrder.get();
+    }
+
+    public SortDir getSortDir() {
+        return common.sortDir.get();
+    }
+
+    public ViewItems getViewItems() {
+        return common.viewItems.get();
+    }
+
     public void setTerminalStyle(TerminalStyle setting) {
         if (setting != client.terminalStyle.get()) {
             client.terminalStyle.set(setting);
             client.spec.save();
+        }
+    }
+
+    public void setSortOrder(SortOrder setting) {
+        if (setting != common.sortOrder.get()) {
+            common.sortOrder.set(setting);
+            common.spec.save();
+        }
+    }
+
+    public void setSortDir(SortDir setting) {
+        if (setting != common.sortDir.get()) {
+            common.sortDir.set(setting);
+            common.spec.save();
+        }
+    }
+
+    public void setViewItems(ViewItems setting) {
+        if (setting != common.viewItems.get()) {
+            common.viewItems.set(setting);
+            common.spec.save();
         }
     }
 
@@ -584,6 +620,10 @@ public final class AEConfig {
 
         public final Map<TickRates, IntValue> tickRateMin = new HashMap<>();
         public final Map<TickRates, IntValue> tickRateMax = new HashMap<>();
+        // Default terminal sorting
+        public EnumValue<SortOrder> sortOrder;
+        public EnumValue<SortDir> sortDir;
+        public EnumValue<ViewItems> viewItems;
 
         public CommonConfig() {
             var builder = new ModConfigSpec.Builder();
@@ -692,7 +732,14 @@ public final class AEConfig {
             vibrationChamberMaxEnergyPerTick = define(builder, "baseMaxEnergyPerGameTick", 40, 1, 1000,
                     "Maximum amount of AE/t the vibration chamber can speed up to when generated energy is being fully consumed.");
             builder.pop();
-
+            builder.comment("Default terminal sort settings");
+            builder.push("defaultTerminalSort");
+            sortOrder = defineEnum(builder, "sortOrder", SortOrder.NAME, "What to sort newly placed terminal by");
+            sortDir = defineEnum(builder, "sortDir", SortDir.ASCENDING,
+                    "What direction to sort newly placed terminals");
+            viewItems = defineEnum(builder, "viewItems", ViewItems.ALL, "What to show in newly placed terminals");
+            builder.pop();
+            
             spec = builder.build();
         }
 
