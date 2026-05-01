@@ -206,7 +206,7 @@ public class PartModelProvider extends ModelSubProvider {
         for (var entry : tunnels.entrySet()) {
             var model = ModelTemplates.createItem("ae2:p2p_tunnel_base", TYPE).create(
                     entry.getKey().asItem(),
-                    new TextureMapping().put(TYPE, makeId(entry.getValue())),
+                    new TextureMapping().put(TYPE, makeMaterial(entry.getValue())),
                     modelOutput);
             blockModels.registerSimpleItemModel(entry.getKey().asItem(), model);
             partModels.composite(
@@ -232,7 +232,7 @@ public class PartModelProvider extends ModelSubProvider {
     private void buildCableItems(ColoredItemDefinition<?> cable, String baseModel, String textureBase) {
         for (var color : AEColor.values()) {
             var item = cable.item(color);
-            var cableTexture = makeId(textureBase + color.name().toLowerCase(Locale.ROOT));
+            var cableTexture = makeMaterial(textureBase + color.name().toLowerCase(Locale.ROOT));
             var model = ModelTemplates.createItem(baseModel, BASE).create(
                     item,
                     new TextureMapping().put(BASE, cableTexture),

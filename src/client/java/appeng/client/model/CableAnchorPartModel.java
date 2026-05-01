@@ -6,15 +6,15 @@ import java.util.Objects;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
-import net.minecraft.client.renderer.block.model.BlockModelPart;
-import net.minecraft.client.renderer.block.model.SimpleModelWrapper;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
+import net.minecraft.client.renderer.block.dispatch.ModelState;
 import net.minecraft.client.resources.model.ModelBaker;
-import net.minecraft.client.resources.model.ModelState;
+import net.minecraft.client.resources.model.SimpleModelWrapper;
+import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.BlockAndTintGetter;
 import net.neoforged.neoforge.model.data.ModelData;
 
 import appeng.client.api.model.parts.PartModel;
@@ -22,17 +22,17 @@ import appeng.core.AppEng;
 import appeng.parts.automation.PartModelData;
 
 public class CableAnchorPartModel implements PartModel {
-    private final BlockModelPart model;
-    private final BlockModelPart shortModel;
+    private final BlockStateModelPart model;
+    private final BlockStateModelPart shortModel;
 
-    public CableAnchorPartModel(BlockModelPart model, BlockModelPart shortModel) {
+    public CableAnchorPartModel(BlockStateModelPart model, BlockStateModelPart shortModel) {
         this.model = model;
         this.shortModel = shortModel;
     }
 
     @Override
     public void collectParts(BlockAndTintGetter level, BlockPos pos, ModelData partModelData, RandomSource random,
-            List<BlockModelPart> parts) {
+            List<BlockStateModelPart> parts) {
         var shortVersion = Objects.requireNonNullElse(partModelData.get(PartModelData.CABLE_ANCHOR_SHORT), false);
 
         if (shortVersion) {
@@ -43,8 +43,13 @@ public class CableAnchorPartModel implements PartModel {
     }
 
     @Override
-    public TextureAtlasSprite particleIcon() {
-        return model.particleIcon();
+    public Material.Baked particleMaterial() {
+        return model.particleMaterial();
+    }
+
+    @Override
+    public boolean canAttachToStraightCable() {
+        return true;
     }
 
     public record Unbaked(Identifier model, Identifier shortModel) implements PartModel.Unbaked {

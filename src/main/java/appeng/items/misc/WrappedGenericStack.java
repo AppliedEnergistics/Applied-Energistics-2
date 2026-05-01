@@ -110,7 +110,7 @@ public class WrappedGenericStack extends AEBaseItem {
         // When trying to stack onto degenerate wrapped stacks, delete them
         var what = unwrapWhat(itemInSlot);
         if (what == null && slot.getItem() == itemInSlot) {
-            LOG.error("Removing a broken wrapped generic stack from player {} slot {}", player, slot.slot);
+            LOG.error("Removing a broken wrapped generic stack from player {} slot {}", player, slot.getSlotIndex());
             slot.setByPlayer(ItemStack.EMPTY, itemInSlot);
             return true;
         }

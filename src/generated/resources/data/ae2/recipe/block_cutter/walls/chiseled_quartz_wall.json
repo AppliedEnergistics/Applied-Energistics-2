@@ -2,7 +2,6 @@
   "type": "minecraft:stonecutting",
   "ingredient": "ae2:chiseled_quartz_block",
   "result": {
-    "count": 1,
     "id": "ae2:chiseled_quartz_wall"
   }
 }

@@ -35,39 +35,49 @@ public class AERecipeExporter implements RecipeExporter {
 
         if (recipe instanceof InscriberRecipe inscriberRecipe) {
             exporter.referenceItem(AEBlocks.INSCRIBER); // Ref items used as icons
-            return exportRecipe(inscriberRecipe);
+            return exportRecipe(exporter, inscriberRecipe);
         } else if (recipe instanceof TransformRecipe transformRecipe) {
             // Ref items used as icons
             exporter.referenceFluid(Fluids.WATER);
             exporter.referenceFluid(Fluids.LAVA);
             exporter.referenceItem(Items.TNT);
-            return exportRecipe(transformRecipe);
+            return exportRecipe(exporter, transformRecipe);
         } else if (recipe instanceof EntropyRecipe entropyRecipe) {
             exporter.referenceItem(AEItems.ENTROPY_MANIPULATOR); // Ref items used as icons
-            return exportRecipe(entropyRecipe);
+            return exportRecipe(exporter, entropyRecipe);
         } else if (recipe instanceof MatterCannonAmmo matterCannonAmmo) {
             exporter.referenceItem(AEItems.MATTER_CANNON); // Ref items used as icons
-            return exportRecipe(matterCannonAmmo);
+            return exportRecipe(exporter, matterCannonAmmo);
         } else if (recipe instanceof ChargerRecipe chargerRecipe) {
             exporter.referenceItem(AEBlocks.CHARGER); // Ref items used as icons
-            return exportRecipe(chargerRecipe);
+            return exportRecipe(exporter, chargerRecipe);
         }
 
         return null;
     }
 
-    private Map<String, Object> exportRecipe(InscriberRecipe recipe) {
-        var resultItem = recipe.getResultItem();
+    private Map<String, Object> exportRecipe(ResourceExporter exporter, InscriberRecipe recipe) {
+        recipe.getTopOptional().ifPresent(exporter::referenceIngredient);
+        exporter.referenceIngredient(recipe.getMiddleInput());
+        recipe.getBottomOptional().ifPresent(exporter::referenceIngredient);
+        exporter.referenceItem(recipe.result().create());
+
+        var resultItem = recipe.result();
         return Map.of(
                 "top", unwrapIngredient(recipe.getTopOptional()),
                 "middle", recipe.getMiddleInput(),
                 "bottom", unwrapIngredient(recipe.getBottomOptional()),
-                "resultItem", resultItem.getItem(),
-                "resultCount", resultItem.getCount(),
+                "resultItem", resultItem.item().value(),
+                "resultCount", resultItem.count(),
                 "consumesTopAndBottom", recipe.getProcessType() == InscriberProcessType.PRESS);
     }
 
-    private Map<String, Object> exportRecipe(TransformRecipe recipe) {
+    private Map<String, Object> exportRecipe(ResourceExporter exporter, TransformRecipe recipe) {
+        for (var fluid : recipe.circumstance.getFluidsForRendering()) {
+            exporter.referenceFluid(fluid);
+        }
+        recipe.ingredients().forEach(exporter::referenceIngredient);
+        exporter.referenceItem(recipe.result().create());
 
         Map<String, Object> circumstanceJson = new HashMap<>();
         var circumstance = recipe.circumstance;
@@ -87,26 +97,31 @@ public class AERecipeExporter implements RecipeExporter {
         }
 
         return Map.of(
-                "resultItem", recipe.getResultItem(),
-                "ingredients", recipe.getIngredients(),
+                "resultItem", recipe.result(),
+                "ingredients", recipe.ingredients(),
                 "circumstance", circumstanceJson);
     }
 
-    private Map<String, Object> exportRecipe(EntropyRecipe recipe) {
+    private Map<String, Object> exportRecipe(ResourceExporter exporter, EntropyRecipe recipe) {
         return Map.of(
                 "mode", recipe.getMode().name().toLowerCase(Locale.ROOT));
     }
 
-    private Map<String, Object> exportRecipe(MatterCannonAmmo recipe) {
+    private Map<String, Object> exportRecipe(ResourceExporter exporter, MatterCannonAmmo recipe) {
+        exporter.referenceIngredient(recipe.getAmmo());
+
         return Map.of(
                 "ammo", recipe.getAmmo(),
                 "damage", MatterCannonItem.getDamageFromPenetration(recipe.getWeight()));
     }
 
-    private Map<String, Object> exportRecipe(ChargerRecipe recipe) {
+    private Map<String, Object> exportRecipe(ResourceExporter exporter, ChargerRecipe recipe) {
+        exporter.referenceIngredient(recipe.ingredient());
+        exporter.referenceItem(recipe.result().create());
+
         return Map.of(
-                "resultItem", recipe.getResultItem(),
-                "ingredient", recipe.getIngredient());
+                "resultItem", recipe.result(),
+                "ingredient", recipe.ingredient());
     }
 
     private Object unwrapIngredient(Optional<Ingredient> ingredient) {

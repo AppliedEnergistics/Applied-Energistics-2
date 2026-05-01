@@ -1,5 +1,7 @@
 package appeng.init.worldgen;
 
+import java.util.Optional;
+
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.core.registries.Registries;
@@ -10,6 +12,7 @@ import net.minecraft.util.valueproviders.ConstantInt;
 import net.minecraft.world.attribute.BedRule;
 import net.minecraft.world.attribute.EnvironmentAttributeMap;
 import net.minecraft.world.attribute.EnvironmentAttributes;
+import net.minecraft.world.level.CardinalLighting;
 import net.minecraft.world.level.dimension.DimensionType;
 
 import appeng.spatial.SpatialStorageChunkGenerator;
@@ -34,6 +37,7 @@ public final class InitDimensionTypes {
                 true, // fixedTime
                 false, // hasSkylight
                 false, // hasCeiling
+                false,
                 1.0, // coordinateScale
                 SpatialStorageChunkGenerator.MIN_Y, // minY
                 SpatialStorageChunkGenerator.HEIGHT, // height
@@ -42,12 +46,13 @@ public final class InitDimensionTypes {
                 1.0f, // ambientLight
                 new DimensionType.MonsterSettings(ConstantInt.of(0), 0),
                 DimensionType.Skybox.OVERWORLD,
-                DimensionType.CardinalLightType.DEFAULT,
+                CardinalLighting.Type.DEFAULT,
                 EnvironmentAttributeMap.builder()
                         .set(EnvironmentAttributes.BED_RULE, BedRule.EXPLODES)
                         .set(EnvironmentAttributes.RESPAWN_ANCHOR_WORKS, false)
                         // TODO 1.21.11: environmental effects SpatialStorageDimensionIds.SKY_PROPERTIES_ID
                         .build(),
-                timelines.getOrThrow(TimelineTags.UNIVERSAL));
+                timelines.getOrThrow(TimelineTags.UNIVERSAL),
+                Optional.empty());
     }
 }

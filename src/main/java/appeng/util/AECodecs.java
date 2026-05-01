@@ -76,7 +76,7 @@ public final class AECodecs {
                 LOG.error("Failed to serialize ItemStack {}: {}", input, error.message());
                 missingContent.set(AEComponents.MISSING_CONTENT_ERROR, error.message());
 
-                return ItemStack.SINGLE_ITEM_CODEC.encodeStart(ops, missingContent).setLifecycle(t.lifecycle());
+                return ItemStack.CODEC.encodeStart(ops, missingContent).setLifecycle(t.lifecycle());
             }
 
             // When the input is a MISSING_CONTENT item and has the original data attached,
@@ -92,9 +92,6 @@ public final class AECodecs {
             return t;
         }
     };
-
-    public static final Codec<ItemStack> FAULT_TOLERANT_SIMPLE_ITEM_CODEC = ItemStack.SINGLE_ITEM_CODEC
-            .mapResult(MISSING_CONTENT_ITEMSTACK_RESULT);
 
     public static final Codec<ItemStack> FAULT_TOLERANT_ITEMSTACK_CODEC = ItemStack.CODEC
             .mapResult(MISSING_CONTENT_ITEMSTACK_RESULT);

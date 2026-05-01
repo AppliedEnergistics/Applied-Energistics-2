@@ -18,27 +18,27 @@
 
 package appeng.client.model;
 
+import java.util.Arrays;
 import java.util.List;
 
 import com.mojang.serialization.MapCodec;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.client.renderer.block.model.BlockModelPart;
-import net.minecraft.client.renderer.block.model.SimpleModelWrapper;
-import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
-import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ModelDebugName;
-import net.minecraft.client.resources.model.QuadCollection;
-import net.minecraft.client.resources.model.SpriteGetter;
+import net.minecraft.client.resources.model.SimpleModelWrapper;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
+import net.minecraft.client.resources.model.geometry.QuadCollection;
+import net.minecraft.client.resources.model.sprite.Material;
+import net.minecraft.client.resources.model.sprite.MaterialBaker;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.client.model.DynamicBlockStateModel;
 import net.neoforged.neoforge.client.model.block.CustomUnbakedBlockStateModel;
@@ -51,37 +51,51 @@ import appeng.core.AppEng;
 import appeng.helpers.Splotch;
 
 public class PaintSplotchesModel implements DynamicBlockStateModel {
-    private static final Material TEXTURE_PAINT1 = new Material(TextureAtlas.LOCATION_BLOCKS,
-            AppEng.makeId("block/paint1"));
-    private static final Material TEXTURE_PAINT2 = new Material(TextureAtlas.LOCATION_BLOCKS,
-            AppEng.makeId("block/paint2"));
-    private static final Material TEXTURE_PAINT3 = new Material(TextureAtlas.LOCATION_BLOCKS,
-            AppEng.makeId("block/paint3"));
+    private static final Material TEXTURE_PAINT1 = new Material(AppEng.makeId("block/paint1"));
+    private static final Material TEXTURE_PAINT2 = new Material(AppEng.makeId("block/paint2"));
+    private static final Material TEXTURE_PAINT3 = new Material(AppEng.makeId("block/paint3"));
 
-    private final TextureAtlasSprite[] textures;
+    private final Material.Baked[] textures;
+    private final int materialFlags;
 
-    public PaintSplotchesModel(SpriteGetter sprites) {
+    public PaintSplotchesModel(MaterialBaker materials) {
         ModelDebugName debugName = getClass()::toString;
-        this.textures = new TextureAtlasSprite[] { sprites.get(TEXTURE_PAINT1, debugName),
-                sprites.get(TEXTURE_PAINT2, debugName), sprites.get(TEXTURE_PAINT3, debugName) };
+        this.textures = new Material.Baked[] { materials.get(TEXTURE_PAINT1, debugName),
+                materials.get(TEXTURE_PAINT2, debugName), materials.get(TEXTURE_PAINT3, debugName) };
+        // Any animated?
+        var materialFlags = 0;
+        var translucent = Arrays.stream(this.textures)
+                .anyMatch(m -> m.forceTranslucent() || m.sprite().contents().transparency().hasTranslucent());
+        if (translucent) {
+            materialFlags |= BakedQuad.FLAG_TRANSLUCENT;
+        }
+        var animated = Arrays.stream(this.textures).anyMatch(m -> m.sprite().contents().isAnimated());
+        if (animated) {
+            materialFlags |= BakedQuad.FLAG_ANIMATED;
+        }
+        this.materialFlags = materialFlags;
     }
 
     @Override
     public void collectParts(BlockAndTintGetter blockAndTintGetter, BlockPos blockPos, BlockState blockState,
-            RandomSource randomSource, List<BlockModelPart> list) {
+            RandomSource randomSource, List<BlockStateModelPart> list) {
         var modelData = blockAndTintGetter.getModelData(blockPos);
         var quadListBuilder = new QuadCollection.Builder();
         getQuads(quadListBuilder, modelData);
         list.add(new SimpleModelWrapper(
                 quadListBuilder.build(),
                 false,
-                textures[0],
-                ChunkSectionLayer.CUTOUT));
+                textures[0]));
     }
 
     @Override
-    public TextureAtlasSprite particleIcon() {
+    public Material.Baked particleMaterial() {
         return textures[0];
+    }
+
+    @Override
+    public @BakedQuad.MaterialFlags int materialFlags() {
+        return materialFlags;
     }
 
     @Override
@@ -102,7 +116,7 @@ public class PaintSplotchesModel implements DynamicBlockStateModel {
 
         @Override
         public PaintSplotchesModel bake(ModelBaker baker) {
-            return new PaintSplotchesModel(baker.sprites());
+            return new PaintSplotchesModel(baker.materials());
         }
 
         @Override
@@ -117,7 +131,7 @@ public class PaintSplotchesModel implements DynamicBlockStateModel {
             // This is the inventory model which should usually not be used other than in
             // special cases
             CubeBuilder builder = new CubeBuilder(quadListBuilder::addUnculledFace);
-            builder.setTexture(this.textures[0]);
+            builder.setTexture(this.textures[0].sprite());
             builder.addCube(0, 0, 0, 16, 16, 16);
             return;
         }
@@ -148,7 +162,7 @@ public class PaintSplotchesModel implements DynamicBlockStateModel {
             pos_x = Math.max(buffer, Math.min(1.0f - buffer, pos_x));
             pos_y = Math.max(buffer, Math.min(1.0f - buffer, pos_y));
 
-            TextureAtlasSprite ico = this.textures[s.getSeed() % this.textures.length];
+            TextureAtlasSprite ico = this.textures[s.getSeed() % this.textures.length].sprite();
             builder.setTexture(ico);
             builder.setCustomUv(s.getSide().getOpposite(), 0, 0, 1, 1);
 

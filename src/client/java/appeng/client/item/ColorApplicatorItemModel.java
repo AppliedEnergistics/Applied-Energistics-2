@@ -4,6 +4,7 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import org.jetbrains.annotations.Nullable;
+import org.joml.Matrix4fc;
 
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.item.ItemModel;
@@ -48,10 +49,10 @@ public class ColorApplicatorItemModel implements ItemModel {
             uncoloredModel.applyToLayer(layer, displayContext);
         } else {
             renderState.appendModelIdentityElement(currentColor);
-            var tint = layer.prepareTintLayers(3);
-            tint[0] = ARGB.opaque(currentColor.blackVariant);
-            tint[1] = ARGB.opaque(currentColor.mediumVariant);
-            tint[2] = ARGB.opaque(currentColor.whiteVariant);
+            var tint = layer.tintLayers();
+            tint.add(ARGB.opaque(currentColor.blackVariant));
+            tint.add(ARGB.opaque(currentColor.mediumVariant));
+            tint.add(ARGB.opaque(currentColor.whiteVariant));
 
             coloredModel.applyToLayer(layer, displayContext);
         }
@@ -73,9 +74,10 @@ public class ColorApplicatorItemModel implements ItemModel {
         }
 
         @Override
-        public ItemModel bake(ItemModel.BakingContext context) {
-            var uncoloredBakedModel = ItemBaseModelWrapper.bake(context.blockModelBaker(), this.uncoloredModel);
-            var coloredBakedModel = ItemBaseModelWrapper.bake(context.blockModelBaker(), this.coloredModel);
+        public ItemModel bake(ItemModel.BakingContext context, Matrix4fc transform) {
+            var uncoloredBakedModel = ItemBaseModelWrapper.bake(context.blockModelBaker(), this.uncoloredModel,
+                    transform);
+            var coloredBakedModel = ItemBaseModelWrapper.bake(context.blockModelBaker(), this.coloredModel, transform);
             return new ColorApplicatorItemModel(uncoloredBakedModel, coloredBakedModel);
         }
 

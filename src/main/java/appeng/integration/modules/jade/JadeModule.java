@@ -8,7 +8,6 @@ import snownee.jade.api.IWailaClientRegistration;
 import snownee.jade.api.IWailaCommonRegistration;
 import snownee.jade.api.IWailaPlugin;
 import snownee.jade.api.WailaPlugin;
-import snownee.jade.api.ui.IElementHelper;
 
 import appeng.api.integrations.igtooltip.ClientRegistration;
 import appeng.api.integrations.igtooltip.CommonRegistration;
@@ -50,8 +49,7 @@ public class JadeModule implements IWailaPlugin {
             public <T extends BlockEntity> void addBlockEntityIcon(Class<T> blockEntityClass,
                     Class<? extends Block> blockClass, Identifier id, IconProvider<? super T> provider,
                     int priority) {
-                var adapter = new IconProviderAdapter<>(id, priority, IElementHelper.get(), provider,
-                        blockEntityClass);
+                var adapter = new IconProviderAdapter<>(id, priority, provider, blockEntityClass);
                 registration.registerBlockIcon(adapter, blockClass);
             }
 

@@ -8,7 +8,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.ItemLike;
 
@@ -129,11 +129,11 @@ public class UpgradeRecipes extends AE2RecipeProvider {
     }
 
     private void cellDisassembly(RecipeOutput output, List<ItemLike> additionalReturn, CellUpgradeTier tier) {
-        List<ItemStack> results = new ArrayList<>();
+        List<ItemStackTemplate> results = new ArrayList<>();
         for (var itemLike : additionalReturn) {
-            results.add(itemLike.asItem().getDefaultInstance());
+            results.add(new ItemStackTemplate(itemLike.asItem()));
         }
-        results.add(tier.component.asItem().getDefaultInstance());
+        results.add(new ItemStackTemplate(tier.component.asItem()));
 
         output.accept(
                 key(tier.cell.id().withPrefix("cell_upgrade/")),

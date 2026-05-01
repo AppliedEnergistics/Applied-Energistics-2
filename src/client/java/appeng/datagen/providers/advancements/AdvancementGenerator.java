@@ -47,7 +47,6 @@ import net.minecraft.advancements.criterion.ItemPredicate;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.advancements.AdvancementSubProvider;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
 import appeng.api.util.AEColor;
@@ -74,7 +73,7 @@ public class AdvancementGenerator implements AdvancementSubProvider {
                         localization.component("achievement.ae2.Root", "Applied Energistics"),
                         localization.component("achievement.ae2.Root.desc",
                                 "When a chest is simply not enough. Acquire Copper to start your AE2 adventure."),
-                        AppEng.makeId("textures/block/sky_stone_brick.png"),
+                        AppEng.makeId("block/sky_stone_brick"),
                         AdvancementType.TASK,
                         false /* showToast */,
                         false /* announceChat */,
@@ -280,7 +279,7 @@ public class AdvancementGenerator implements AdvancementSubProvider {
 
         var facade = Advancement.Builder.advancement()
                 .display(
-                        AEItems.FACADE.get().createFacadeForItemUnchecked(new ItemStack(Items.STONE)),
+                        AEItems.FACADE.get().createFacadeTemplate(Items.STONE.builtInRegistryHolder()),
                         localization.component("achievement.ae2.Facade", "Network Aesthetics"),
                         localization.component("achievement.ae2.Facade.desc", "Craft a Cable Facade"),
                         null /* background */,

@@ -58,7 +58,6 @@
       "translate": "achievement.ae2.StorageCell.desc"
     },
     "icon": {
-      "count": 1,
       "id": "ae2:item_storage_cell_64k"
     },
     "show_toast": false,

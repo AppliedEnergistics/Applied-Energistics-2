@@ -340,7 +340,8 @@ public class AEBaseBlockEntity extends BlockEntity
 
         if (mode == SettingsFrom.MEMORY_CARD) {
             MemoryCardItem.exportGenericSettings(this, builder);
-            builder.set(AEComponents.EXPORTED_SETTINGS_SOURCE, getItemFromBlockEntity().getName());
+            builder.set(AEComponents.EXPORTED_SETTINGS_SOURCE,
+                    getItemFromBlockEntity().getDefaultInstance().getItemName());
         }
     }
 
@@ -385,7 +386,7 @@ public class AEBaseBlockEntity extends BlockEntity
 
     @Override
     public Component getName() {
-        return Objects.requireNonNullElse(this.customName, getItemFromBlockEntity().getName());
+        return Objects.requireNonNullElse(this.customName, getItemFromBlockEntity().getDefaultInstance().getItemName());
     }
 
     @Override

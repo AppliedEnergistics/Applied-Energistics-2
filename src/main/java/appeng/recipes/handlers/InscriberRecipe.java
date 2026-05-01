@@ -26,29 +26,22 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
-import net.minecraft.core.HolderLookup;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.Identifier;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.PlacementInfo;
-import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeBookCategories;
-import net.minecraft.world.item.crafting.RecipeBookCategory;
 import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.display.RecipeDisplay;
 import net.minecraft.world.item.crafting.display.SlotDisplay;
-import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.network.codec.NeoForgeStreamCodecs;
 
-import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
 import appeng.recipes.AERecipeTypes;
+import appeng.recipes.MechanicsRecipe;
 
-public class InscriberRecipe implements Recipe<RecipeInput> {
+public class InscriberRecipe extends MechanicsRecipe<RecipeInput> {
 
     private static final Codec<InscriberProcessType> MODE_CODEC = Codec.stringResolver(
             mode -> switch (mode) {
@@ -65,66 +58,52 @@ public class InscriberRecipe implements Recipe<RecipeInput> {
                     .group(
                             Ingredients.CODEC.fieldOf("ingredients")
                                     .forGetter(InscriberRecipe::getSerializedIngredients),
-                            ItemStack.CODEC.fieldOf("result").forGetter(ir -> ir.output),
+                            ItemStackTemplate.CODEC.fieldOf("result").forGetter(ir -> ir.result),
                             MODE_CODEC.fieldOf("mode").forGetter(ir -> ir.processType))
                     .apply(builder, InscriberRecipe::new));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, InscriberRecipe> STREAM_CODEC = StreamCodec.composite(
             Ingredients.STREAM_CODEC,
             InscriberRecipe::getSerializedIngredients,
-            ItemStack.STREAM_CODEC,
-            InscriberRecipe::getResultItem,
+            ItemStackTemplate.STREAM_CODEC,
+            InscriberRecipe::result,
             NeoForgeStreamCodecs.enumCodec(InscriberProcessType.class),
             InscriberRecipe::getProcessType,
             InscriberRecipe::new);
 
-    @Deprecated(forRemoval = true, since = "1.21.1")
-    public static final Identifier TYPE_ID = AppEng.makeId("inscriber");
-
-    @Deprecated(forRemoval = true, since = "1.21.1")
-    public static final RecipeType<InscriberRecipe> TYPE = AERecipeTypes.INSCRIBER;
+    public static final RecipeSerializer<InscriberRecipe> SERIALIZER = new RecipeSerializer<>(CODEC, STREAM_CODEC);
 
     private final Ingredient middleInput;
     private final Optional<Ingredient> topOptional;
     private final Optional<Ingredient> bottomOptional;
-    private final ItemStack output;
+    private final ItemStackTemplate result;
     private final InscriberProcessType processType;
 
-    private InscriberRecipe(Ingredients ingredients, ItemStack output, InscriberProcessType processType) {
-        this(ingredients.middle(), output, ingredients.top(), ingredients.bottom(), processType);
+    private InscriberRecipe(Ingredients ingredients, ItemStackTemplate result, InscriberProcessType processType) {
+        this(ingredients.middle(), result, ingredients.top(), ingredients.bottom(), processType);
     }
 
-    public InscriberRecipe(Ingredient middleInput, ItemStack output,
+    public InscriberRecipe(Ingredient middleInput, ItemStackTemplate result,
             Optional<Ingredient> topOptional, Optional<Ingredient> bottomOptional, InscriberProcessType processType) {
         this.middleInput = Objects.requireNonNull(middleInput, "middleInput");
-        this.output = Objects.requireNonNull(output, "output");
+        this.result = Objects.requireNonNull(result, "result");
         this.topOptional = Objects.requireNonNull(topOptional, "topOptional");
         this.bottomOptional = Objects.requireNonNull(bottomOptional, "bottomOptional");
         this.processType = Objects.requireNonNull(processType, "processType");
     }
 
-    @Override
-    public boolean matches(RecipeInput inv, Level level) {
-        return false;
-    }
-
-    @Override
-    public ItemStack assemble(RecipeInput inv, HolderLookup.Provider registries) {
-        return getResultItem().copy();
-    }
-
-    public ItemStack getResultItem() {
-        return this.output;
+    public ItemStackTemplate result() {
+        return this.result;
     }
 
     @Override
     public RecipeSerializer<InscriberRecipe> getSerializer() {
-        return InscriberRecipeSerializer.INSTANCE;
+        return SERIALIZER;
     }
 
     @Override
     public RecipeType<InscriberRecipe> getType() {
-        return TYPE;
+        return AERecipeTypes.INSCRIBER;
     }
 
     @Override
@@ -135,18 +114,8 @@ public class InscriberRecipe implements Recipe<RecipeInput> {
                         topOptional.map(Ingredient::display).orElse(SlotDisplay.Empty.INSTANCE),
                         bottomOptional.map(Ingredient::display).orElse(SlotDisplay.Empty.INSTANCE),
                         processType,
-                        new SlotDisplay.ItemStackSlotDisplay(output),
+                        new SlotDisplay.ItemStackSlotDisplay(result),
                         new SlotDisplay.ItemSlotDisplay(AEBlocks.INSCRIBER.asItem())));
-    }
-
-    @Override
-    public PlacementInfo placementInfo() {
-        return PlacementInfo.NOT_PLACEABLE;
-    }
-
-    @Override
-    public RecipeBookCategory recipeBookCategory() {
-        return RecipeBookCategories.CRAFTING_MISC; // TODO 1.21.4
     }
 
     public Ingredient getMiddleInput() {
@@ -163,11 +132,6 @@ public class InscriberRecipe implements Recipe<RecipeInput> {
 
     public InscriberProcessType getProcessType() {
         return processType;
-    }
-
-    @Override
-    public boolean isSpecial() {
-        return true;
     }
 
     private Ingredients getSerializedIngredients() {

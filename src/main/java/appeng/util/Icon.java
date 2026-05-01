@@ -18,6 +18,10 @@
 
 package appeng.util;
 
+import net.minecraft.resources.Identifier;
+
+import appeng.core.AppEng;
+
 /**
  * Edit in {@code assets/ae2/textures/guis/states.png}.
  */
@@ -210,6 +214,10 @@ public enum Icon {
     S_CRAFT(208, 244, 10, 10),
     S_TERMINAL(192, 224, 10, 10),
     S_MACHINE(192, 234, 10, 10);
+
+    public static final Identifier TEXTURE = AppEng.makeId("textures/guis/states.png");
+    public static final int TEXTURE_WIDTH = 256;
+    public static final int TEXTURE_HEIGHT = 256;
 
     public final int x;
     public final int y;

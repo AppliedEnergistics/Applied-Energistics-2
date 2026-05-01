@@ -27,21 +27,19 @@ import java.util.Objects;
 import com.google.common.collect.ImmutableMap;
 import com.mojang.serialization.MapCodec;
 
-import net.minecraft.client.renderer.block.model.BlockModelPart;
-import net.minecraft.client.renderer.block.model.BlockStateModel;
-import net.minecraft.client.renderer.block.model.SimpleModelWrapper;
-import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
-import net.minecraft.client.renderer.texture.TextureAtlas;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.Material;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
 import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ModelDebugName;
-import net.minecraft.client.resources.model.QuadCollection;
+import net.minecraft.client.resources.model.SimpleModelWrapper;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
+import net.minecraft.client.resources.model.geometry.QuadCollection;
+import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.client.model.DynamicBlockStateModel;
 import net.neoforged.neoforge.client.model.block.CustomUnbakedBlockStateModel;
@@ -54,15 +52,26 @@ import appeng.core.AppEng;
  * The baked model that will be used for rendering the spatial pylon.
  */
 public class SpatialPylonModel implements DynamicBlockStateModel {
-    private final Map<SpatialPylonTextureType, TextureAtlasSprite> textures;
+    private final Map<SpatialPylonTextureType, Material.Baked> materials;
+    private final int materialFlags;
 
-    private SpatialPylonModel(Map<SpatialPylonTextureType, TextureAtlasSprite> textures) {
-        this.textures = ImmutableMap.copyOf(textures);
+    private SpatialPylonModel(Map<SpatialPylonTextureType, Material.Baked> materials) {
+        this.materials = ImmutableMap.copyOf(materials);
+        // TODO 26.1: Compute the worst-case flags
+        var materialFlags = 0;
+        if (materials.values().stream().anyMatch(m -> m.sprite().contents().isAnimated())) {
+            materialFlags |= BakedQuad.FLAG_ANIMATED;
+        }
+        if (materials.values().stream()
+                .anyMatch(m -> m.forceTranslucent() || m.sprite().contents().transparency().hasTranslucent())) {
+            materialFlags |= BakedQuad.FLAG_TRANSLUCENT;
+        }
+        this.materialFlags = materialFlags;
     }
 
     @Override
     public void collectParts(BlockAndTintGetter level, BlockPos pos, BlockState blockState, RandomSource random,
-            List<BlockModelPart> parts) {
+            List<BlockStateModelPart> parts) {
         var state = Objects.requireNonNullElse(
                 level.getModelData(pos).get(SpatialPylonBlockEntity.STATE),
                 SpatialPylonBlockEntity.ClientState.DEFAULT);
@@ -115,36 +124,36 @@ public class SpatialPylonModel implements DynamicBlockStateModel {
                 }
             }
 
-            builder.setTextures(this.textures.get(getTextureTypeFromSideOutside(state, ori, Direction.UP)),
-                    this.textures.get(getTextureTypeFromSideOutside(state, ori, Direction.DOWN)),
-                    this.textures.get(getTextureTypeFromSideOutside(state, ori, Direction.NORTH)),
-                    this.textures.get(getTextureTypeFromSideOutside(state, ori, Direction.SOUTH)),
-                    this.textures.get(getTextureTypeFromSideOutside(state, ori, Direction.EAST)),
-                    this.textures.get(getTextureTypeFromSideOutside(state, ori, Direction.WEST)));
+            builder.setTextures(this.materials.get(getTextureTypeFromSideOutside(state, ori, Direction.UP)),
+                    this.materials.get(getTextureTypeFromSideOutside(state, ori, Direction.DOWN)),
+                    this.materials.get(getTextureTypeFromSideOutside(state, ori, Direction.NORTH)),
+                    this.materials.get(getTextureTypeFromSideOutside(state, ori, Direction.SOUTH)),
+                    this.materials.get(getTextureTypeFromSideOutside(state, ori, Direction.EAST)),
+                    this.materials.get(getTextureTypeFromSideOutside(state, ori, Direction.WEST)));
             builder.addCube(0, 0, 0, 16, 16, 16);
 
             if (state.powered()) {
                 builder.setEmissiveMaterial(true);
             }
 
-            builder.setTextures(this.textures.get(getTextureTypeFromSideInside(state, ori, Direction.UP)),
-                    this.textures.get(getTextureTypeFromSideInside(state, ori, Direction.DOWN)),
-                    this.textures.get(getTextureTypeFromSideInside(state, ori, Direction.NORTH)),
-                    this.textures.get(getTextureTypeFromSideInside(state, ori, Direction.SOUTH)),
-                    this.textures.get(getTextureTypeFromSideInside(state, ori, Direction.EAST)),
-                    this.textures.get(getTextureTypeFromSideInside(state, ori, Direction.WEST)));
+            builder.setTextures(this.materials.get(getTextureTypeFromSideInside(state, ori, Direction.UP)),
+                    this.materials.get(getTextureTypeFromSideInside(state, ori, Direction.DOWN)),
+                    this.materials.get(getTextureTypeFromSideInside(state, ori, Direction.NORTH)),
+                    this.materials.get(getTextureTypeFromSideInside(state, ori, Direction.SOUTH)),
+                    this.materials.get(getTextureTypeFromSideInside(state, ori, Direction.EAST)),
+                    this.materials.get(getTextureTypeFromSideInside(state, ori, Direction.WEST)));
         } else {
-            builder.setTexture(this.textures.get(SpatialPylonTextureType.BASE));
+            builder.setTexture(this.materials.get(SpatialPylonTextureType.BASE));
             builder.addCube(0, 0, 0, 16, 16, 16);
 
-            builder.setTexture(this.textures.get(SpatialPylonTextureType.DIM));
+            builder.setTexture(this.materials.get(SpatialPylonTextureType.DIM));
         }
         builder.addCube(0, 0, 0, 16, 16, 16);
 
         // Reset back to default
         builder.setEmissiveMaterial(false);
 
-        parts.add(new SimpleModelWrapper(quadCollection.build(), true, particleIcon(), ChunkSectionLayer.CUTOUT));
+        parts.add(new SimpleModelWrapper(quadCollection.build(), true, particleMaterial()));
     }
 
     private static SpatialPylonTextureType getTextureTypeFromSideOutside(SpatialPylonBlockEntity.ClientState state,
@@ -182,8 +191,20 @@ public class SpatialPylonModel implements DynamicBlockStateModel {
     }
 
     @Override
-    public TextureAtlasSprite particleIcon() {
-        return this.textures.get(SpatialPylonTextureType.DIM);
+    public Material.Baked particleMaterial() {
+        return this.materials.get(SpatialPylonTextureType.DIM);
+    }
+
+    @Override
+    public @BakedQuad.MaterialFlags int materialFlags() {
+        return materialFlags;
+    }
+
+    @Override
+    public @BakedQuad.MaterialFlags int materialFlags(BlockAndTintGetter level, BlockPos pos, BlockState state) {
+        // TODO 26.1: Compute the actual wost-case material flags based on the concrete texture used by the pylon at the
+        // location
+        return DynamicBlockStateModel.super.materialFlags(level, pos, state);
     }
 
     public record Unbaked() implements CustomUnbakedBlockStateModel {
@@ -193,19 +214,18 @@ public class SpatialPylonModel implements DynamicBlockStateModel {
         @Override
         public BlockStateModel bake(ModelBaker baker) {
             ModelDebugName debugName = getClass()::toString;
-            Map<SpatialPylonTextureType, TextureAtlasSprite> pylonTextures = new EnumMap<>(
+            Map<SpatialPylonTextureType, Material.Baked> pylonTextures = new EnumMap<>(
                     SpatialPylonTextureType.class);
 
             for (SpatialPylonTextureType type : SpatialPylonTextureType.values()) {
-                pylonTextures.put(type, baker.sprites().get(getTexturePath(type), debugName));
+                pylonTextures.put(type, baker.materials().get(getTexturePath(type), debugName));
             }
 
             return new SpatialPylonModel(pylonTextures);
         }
 
         private static Material getTexturePath(SpatialPylonTextureType type) {
-            return new Material(TextureAtlas.LOCATION_BLOCKS,
-                    AppEng.makeId("block/spatial_pylon/" + type.name().toLowerCase(Locale.ROOT)));
+            return new Material(AppEng.makeId("block/spatial_pylon/" + type.name().toLowerCase(Locale.ROOT)));
         }
 
         @Override

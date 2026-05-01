@@ -27,7 +27,6 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.core.HolderGetter;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -37,30 +36,25 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.PlacementInfo;
-import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeBookCategories;
-import net.minecraft.world.item.crafting.RecipeBookCategory;
 import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.display.RecipeDisplay;
 import net.minecraft.world.item.crafting.display.SlotDisplay;
 import net.minecraft.world.level.ItemLike;
-import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.common.conditions.NotCondition;
 import net.neoforged.neoforge.common.conditions.TagEmptyCondition;
 
 import appeng.core.AppEng;
 import appeng.core.definitions.AEItems;
 import appeng.recipes.AERecipeTypes;
+import appeng.recipes.MechanicsRecipe;
 
 /**
  * Defines a type of ammo that can be used for the {@link appeng.items.tools.powered.MatterCannonItem}.
  */
-public class MatterCannonAmmo implements Recipe<RecipeInput> {
+public class MatterCannonAmmo extends MechanicsRecipe<RecipeInput> {
     @Deprecated(forRemoval = true, since = "1.21.1")
     public static final Identifier TYPE_ID = AppEng.makeId("matter_cannon");
 
@@ -80,6 +74,8 @@ public class MatterCannonAmmo implements Recipe<RecipeInput> {
             ByteBufCodecs.FLOAT,
             MatterCannonAmmo::getWeight,
             MatterCannonAmmo::new);
+
+    public static final RecipeSerializer<MatterCannonAmmo> SERIALIZER = new RecipeSerializer<>(CODEC, STREAM_CODEC);
 
     private final Ingredient ammo;
 
@@ -108,18 +104,8 @@ public class MatterCannonAmmo implements Recipe<RecipeInput> {
     }
 
     @Override
-    public boolean matches(RecipeInput inv, Level level) {
-        return false;
-    }
-
-    @Override
-    public ItemStack assemble(RecipeInput inv, HolderLookup.Provider registryAccess) {
-        return ItemStack.EMPTY;
-    }
-
-    @Override
     public RecipeSerializer<MatterCannonAmmo> getSerializer() {
-        return MatterCannonAmmoSerializer.INSTANCE;
+        return SERIALIZER;
     }
 
     @Override
@@ -132,16 +118,6 @@ public class MatterCannonAmmo implements Recipe<RecipeInput> {
         return List.of(
                 new MatterCannonAmmoDisplay(ammo.display(), weight,
                         new SlotDisplay.ItemSlotDisplay(AEItems.MATTER_CANNON.asItem())));
-    }
-
-    @Override
-    public PlacementInfo placementInfo() {
-        return PlacementInfo.NOT_PLACEABLE;
-    }
-
-    @Override
-    public RecipeBookCategory recipeBookCategory() {
-        return RecipeBookCategories.CRAFTING_MISC;
     }
 
     public Ingredient getAmmo() {

@@ -38,7 +38,7 @@ import org.slf4j.LoggerFactory;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.ComponentRenderUtils;
 import net.minecraft.client.gui.components.events.GuiEventListener;
@@ -54,7 +54,7 @@ import net.minecraft.network.chat.FontDescription;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.ContainerInput;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -261,11 +261,11 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    public void extractRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         this.updateBeforeRender();
         this.widgets.updateBeforeRender();
 
-        super.render(guiGraphics, mouseX, mouseY, partialTicks);
+        super.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
 
         renderTooltips(guiGraphics, mouseX, mouseY);
 
@@ -276,10 +276,10 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
                 fillRect(guiGraphics, rectangle2d, 0x7f00FF00);
             }
 
-            guiGraphics.hLine(leftPos, leftPos + imageWidth - 1, topPos, 0xFFFFFFFF);
-            guiGraphics.hLine(leftPos, leftPos + imageWidth - 1, topPos + imageHeight - 1, 0xFFFFFFFF);
-            guiGraphics.vLine(leftPos, topPos, topPos + imageHeight, 0xFFFFFFFF);
-            guiGraphics.vLine(leftPos + imageWidth - 1, topPos, topPos + imageHeight - 1, 0xFFFFFFFF);
+            guiGraphics.horizontalLine(leftPos, leftPos + imageWidth - 1, topPos, 0xFFFFFFFF);
+            guiGraphics.horizontalLine(leftPos, leftPos + imageWidth - 1, topPos + imageHeight - 1, 0xFFFFFFFF);
+            guiGraphics.verticalLine(leftPos, topPos, topPos + imageHeight, 0xFFFFFFFF);
+            guiGraphics.verticalLine(leftPos + imageWidth - 1, topPos, topPos + imageHeight - 1, 0xFFFFFFFF);
         }
     }
 
@@ -300,7 +300,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
         var emptyingAction = ContainerItemStrategies.getEmptyingAction(carried);
         if (emptyingAction != null) {
             var wrappedStack = GenericStack.wrapInItemStack(new GenericStack(emptyingAction.what(), 1));
-            if (configInv.isItemValid(slot.slot, wrappedStack)) {
+            if (configInv.isItemValid(slot.getSlotIndex(), wrappedStack)) {
                 return emptyingAction;
             }
         }
@@ -308,7 +308,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
         return null;
     }
 
-    private boolean renderEmptyingTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    private boolean renderEmptyingTooltip(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         // See if we should offer the left-/right-click differentiation for setting a different filter
         var emptyingAction = getEmptyingAction(this.hoveredSlot, menu.getCarried());
         if (emptyingAction != null) {
@@ -326,7 +326,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
     /**
      * Renders a potential tooltip (from one of the possible tooltip sources)
      */
-    private void renderTooltips(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    private void renderTooltips(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         if (renderEmptyingTooltip(guiGraphics, mouseX, mouseY)) {
             return;
         } else if (this.hoveredSlot instanceof AppEngSlot appEngSlot) {
@@ -336,7 +336,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
             }
         }
 
-        this.renderTooltip(guiGraphics, mouseX, mouseY);
+        this.extractTooltip(guiGraphics, mouseX, mouseY);
 
         // The line above should have render a tooltip if this condition is true, and no
         // additional tooltips should be shown
@@ -369,14 +369,14 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
         }
     }
 
-    private void drawTooltipWithHeader(GuiGraphics guiGraphics, Tooltip tooltip, int mouseX, int mouseY) {
+    private void drawTooltipWithHeader(GuiGraphicsExtractor guiGraphics, Tooltip tooltip, int mouseX, int mouseY) {
         drawTooltipWithHeader(guiGraphics, mouseX, mouseY, tooltip.getContent());
     }
 
     /**
      * Draws a tooltip and word-wraps it to a maximum width.
      */
-    public void drawTooltip(GuiGraphics guiGraphics, int x, int y, List<Component> lines) {
+    public void drawTooltip(GuiGraphicsExtractor guiGraphics, int x, int y, List<Component> lines) {
         if (lines.isEmpty()) {
             return;
         }
@@ -399,7 +399,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
     /**
      * Draws a tooltip and word-wraps it to a maximum width.
      */
-    public void drawTooltipWithHeader(GuiGraphics guiGraphics, int x, int y, List<Component> lines) {
+    public void drawTooltipWithHeader(GuiGraphicsExtractor guiGraphics, int x, int y, List<Component> lines) {
         if (lines.isEmpty()) {
             return;
         }
@@ -422,7 +422,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
     }
 
     @Override
-    protected final void renderLabels(GuiGraphics guiGraphics, int x, int y) {
+    protected final void extractLabels(GuiGraphicsExtractor guiGraphics, int x, int y) {
         final int ox = this.leftPos;
         final int oy = this.topPos;
 
@@ -439,7 +439,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
         }
     }
 
-    private void drawText(GuiGraphics guiGraphics, Text text, @Nullable TextOverride override) {
+    private void drawText(GuiGraphicsExtractor guiGraphics, Text text, @Nullable TextOverride override) {
         // Don't draw if the screen decided to hide this
         if (override != null && override.isHidden()) {
             return;
@@ -479,12 +479,12 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
             }
 
             if (text.getScale() == 1) {
-                guiGraphics.drawString(font, line, x, y, color, false);
+                guiGraphics.text(font, line, x, y, color, false);
             } else {
                 guiGraphics.pose().pushMatrix();
                 guiGraphics.pose().translate(x, y);
                 guiGraphics.pose().scale(scale);
-                guiGraphics.drawString(
+                guiGraphics.text(
                         font,
                         line,
                         0,
@@ -497,27 +497,28 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
         }
     }
 
-    public void drawFG(GuiGraphics guiGraphics, int offsetX, int offsetY, int mouseX, int mouseY) {
+    public void drawFG(GuiGraphicsExtractor guiGraphics, int offsetX, int offsetY, int mouseX, int mouseY) {
     }
 
     @Override
-    protected final void renderBg(GuiGraphics guiGraphics, float f, int x,
-            int y) {
+    public void extractContents(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+        this.drawBG(graphics, leftPos, topPos, mouseX, mouseY, a);
 
-        this.drawBG(guiGraphics, leftPos, topPos, x, y, f);
-
-        guiGraphics.nextStratum();
-
-        widgets.drawBackgroundLayer(guiGraphics, getBounds(true), new Point(x - leftPos, y - topPos));
+        widgets.drawBackgroundLayer(graphics, getBounds(true), new Point(mouseX - leftPos, mouseY - topPos));
 
         for (Slot slot : this.getInventorySlots()) {
             if (slot instanceof IOptionalSlot) {
-                drawOptionalSlotBackground(guiGraphics, (IOptionalSlot) slot, false);
+                drawOptionalSlotBackground(graphics, (IOptionalSlot) slot, false);
             }
         }
+
+        // TODO 26.1 - Mithi83 - double-check the order of rendering in here
+        super.extractContents(graphics, mouseX, mouseY, a);
+
+        graphics.nextStratum();
     }
 
-    private void drawOptionalSlotBackground(GuiGraphics guiGraphics, IOptionalSlot slot, boolean alwaysDraw) {
+    private void drawOptionalSlotBackground(GuiGraphicsExtractor guiGraphics, IOptionalSlot slot, boolean alwaysDraw) {
         // If a slot is optional and doesn't currently render, we still need to provide a background for it
         if (alwaysDraw || slot.isRenderDisabled()) {
             // If the slot is disabled, shade the background overlay
@@ -629,7 +630,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
     }
 
     @Override
-    protected void slotClicked(@Nullable Slot slot, int slotIdx, int mouseButton, ClickType clickType) {
+    protected void slotClicked(@Nullable Slot slot, int slotIdx, int mouseButton, ContainerInput clickType) {
 
         // Do not further process clicks on client-only slots
         if (getMenu().isClientSideSlot(slot)) {
@@ -642,7 +643,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
         }
 
         // Prevent cloning of wrapped itemstacks
-        if (clickType == ClickType.CLONE && slot != null && GenericStack.isWrapped(slot.getItem())) {
+        if (clickType == ContainerInput.CLONE && slot != null && GenericStack.isWrapped(slot.getItem())) {
             return;
         }
 
@@ -707,7 +708,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
                     if (inventorySlot != null && inventorySlot.mayPickup(getPlayer()) && inventorySlot.hasItem()
                             && isSameInventory(inventorySlot, slot)
                             && AbstractContainerMenu.canItemQuickReplace(inventorySlot, this.dbl_whichItem, true)) {
-                        this.slotClicked(inventorySlot, inventorySlot.index, 0, ClickType.QUICK_MOVE);
+                        this.slotClicked(inventorySlot, inventorySlot.index, 0, ContainerInput.QUICK_MOVE);
                     }
                 }
                 this.dbl_whichItem = ItemStack.EMPTY;
@@ -742,7 +743,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
 
         if (getMenu().getCarried().isEmpty() && theSlot != null) {
             if (this.minecraft.options.keySwapOffhand.matches(event)) {
-                this.slotClicked(theSlot, theSlot.index, Inventory.SLOT_OFFHAND, ClickType.SWAP);
+                this.slotClicked(theSlot, theSlot.index, Inventory.SLOT_OFFHAND, ContainerInput.SWAP);
                 return true;
             }
 
@@ -750,18 +751,18 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
                 if (getMinecraft().options.keyHotbarSlots[j].matches(event)) {
                     final List<Slot> slots = this.getInventorySlots();
                     for (Slot s : slots) {
-                        if (s.slot == j && s.container == this.menu.getPlayerInventory()
+                        if (s.getSlotIndex() == j && s.container == this.menu.getPlayerInventory()
                                 && !s.mayPickup(this.menu.getPlayerInventory().player)) {
                             return false;
                         }
                     }
 
                     if (theSlot.getMaxStackSize() == 64) {
-                        this.slotClicked(theSlot, theSlot.index, j, ClickType.SWAP);
+                        this.slotClicked(theSlot, theSlot.index, j, ContainerInput.SWAP);
                         return true;
                     } else {
                         for (Slot s : slots) {
-                            if (s.slot == j
+                            if (s.getSlotIndex() == j
                                     && s.container == this.menu.getPlayerInventory()) {
                                 ServerboundPacket message = new SwapSlotsPacket(s.index, theSlot.index);
                                 ClientPacketDistributor.sendToServer(message);
@@ -786,7 +787,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
         return super.isHovering(slot, x, y);
     }
 
-    public void drawBG(GuiGraphics guiGraphics, int offsetX, int offsetY, int mouseX, int mouseY,
+    public void drawBG(GuiGraphicsExtractor guiGraphics, int offsetX, int offsetY, int mouseX, int mouseY,
             float partialTicks) {
 
         guiGraphics.nextStratum();
@@ -808,9 +809,9 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
 
     }
 
-    public void drawItem(GuiGraphics guiGraphics, int x, int y, ItemStack is) {
-        guiGraphics.renderItem(is, x, y);
-        guiGraphics.renderItemDecorations(font, is, x, y);
+    public void drawItem(GuiGraphicsExtractor guiGraphics, int x, int y, ItemStack is) {
+        guiGraphics.item(is, x, y);
+        guiGraphics.itemDecorations(font, is, x, y);
     }
 
     protected Component getGuiDisplayName(Component in) {
@@ -821,7 +822,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
      * This overrides the base-class method through some access transformer hackery...
      */
     @Override
-    public void renderSlot(GuiGraphics guiGraphics, Slot s, int mouseX, int mouseY) {
+    public void extractSlot(GuiGraphicsExtractor guiGraphics, Slot s, int mouseX, int mouseY) {
         if (s instanceof AppEngSlot appEngSlot) {
             try {
                 renderAppEngSlot(guiGraphics, appEngSlot, mouseX, mouseY);
@@ -829,11 +830,11 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
                 AELog.warn("[AppEng] AE prevented crash while drawing slot: " + err);
             }
         } else {
-            super.renderSlot(guiGraphics, s, mouseX, mouseY);
+            super.extractSlot(guiGraphics, s, mouseX, mouseY);
         }
     }
 
-    private void renderAppEngSlot(GuiGraphics guiGraphics, AppEngSlot s, int mouseX, int mouseY) {
+    private void renderAppEngSlot(GuiGraphicsExtractor guiGraphics, AppEngSlot s, int mouseX, int mouseY) {
         var is = s.getItem();
 
         // If the slot has a background icon, render it, but only if the slot is empty
@@ -850,7 +851,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
             guiGraphics.fill(s.x, s.y, 16 + s.x, 16 + s.y, 0x66ff6666);
         }
 
-        super.renderSlot(guiGraphics, s, mouseX, mouseY);
+        super.extractSlot(guiGraphics, s, mouseX, mouseY);
     }
 
     @Override
@@ -893,7 +894,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
         return result;
     }
 
-    protected void fillRect(GuiGraphics guiGraphics, Rect2i rect, int color) {
+    protected void fillRect(GuiGraphicsExtractor guiGraphics, Rect2i rect, int color) {
         guiGraphics.fill(rect.getX(), rect.getY(), rect.getX() + rect.getWidth(), rect.getY() + rect.getHeight(),
                 color);
     }
@@ -982,7 +983,8 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
      * Renders a highlight for the given slot to indicate the mouse is currently hovering over it.
      */
     // TODO 1.21.8 Unused
-    protected void renderSlotHighlight(GuiGraphics guiGraphics, Slot slot, int mouseX, int mouseY, float partialTick) {
+    protected void renderSlotHighlight(GuiGraphicsExtractor guiGraphics, Slot slot, int mouseX, int mouseY,
+            float partialTick) {
         if (!slot.isHighlightable()) {
             return;
         }
@@ -1000,10 +1002,10 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
 
         // Same as the Vanilla method, just with dynamic width and height
         // Added a custom slot highlight effect - RID
-        guiGraphics.hLine(x, x + w, y - 1, 0xFFdaffff);
-        guiGraphics.hLine(x - 1, x + w, y + h, 0xFFdaffff);
-        guiGraphics.vLine(x - 1, y - 2, y + h, 0xFFdaffff);
-        guiGraphics.vLine(x + w, y - 2, y + h, 0xFFdaffff);
+        guiGraphics.horizontalLine(x, x + w, y - 1, 0xFFdaffff);
+        guiGraphics.horizontalLine(x - 1, x + w, y + h, 0xFFdaffff);
+        guiGraphics.verticalLine(x - 1, y - 2, y + h, 0xFFdaffff);
+        guiGraphics.verticalLine(x + w, y - 2, y + h, 0xFFdaffff);
         guiGraphics.fillGradient(x, y, x + w, y + h, 0x669cd3ff, 0x669cd3ff);
     }
 

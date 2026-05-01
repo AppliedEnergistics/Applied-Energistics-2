@@ -68,7 +68,7 @@ public final class TinyTNTPrimedEntity extends PrimedTnt implements IEntityWithC
             @Nullable LivingEntity igniter) {
         super(AEEntities.TINY_TNT_PRIMED.get(), level);
         this.setPos(x, y, z);
-        double d0 = level.random.nextDouble() * ((float) Math.PI * 2F);
+        double d0 = level.getRandom().nextDouble() * ((float) Math.PI * 2F);
         this.setDeltaMovement(-Math.sin(d0) * 0.02D, 0.2F, -Math.cos(d0) * 0.02D);
         this.setFuse(80);
         this.xo = x;
@@ -88,7 +88,7 @@ public final class TinyTNTPrimedEntity extends PrimedTnt implements IEntityWithC
      */
     @Override
     public void tick() {
-        this.updateInWaterStateAndDoFluidPushing();
+        this.updateFluidInteraction();
 
         this.xo = this.getX();
         this.yo = this.getY();
@@ -136,7 +136,7 @@ public final class TinyTNTPrimedEntity extends PrimedTnt implements IEntityWithC
     protected void explode() {
         this.level().playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.GENERIC_EXPLODE.value(),
                 SoundSource.BLOCKS, 4.0F,
-                (1.0F + (this.level().random.nextFloat() - this.level().random.nextFloat()) * 0.2F) * 32.9F);
+                (1.0F + (this.level().getRandom().nextFloat() - this.level().getRandom().nextFloat()) * 0.2F) * 32.9F);
 
         if (this.isInWater()) {
             return;

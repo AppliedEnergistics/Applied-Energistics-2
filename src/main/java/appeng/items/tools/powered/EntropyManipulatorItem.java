@@ -208,7 +208,7 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
             this.extractAEPower(item, ENERGY_PER_USE, Actionable.MODULATE);
             level.playSound(p, offsetPos.getX() + 0.5D, offsetPos.getY() + 0.5D, offsetPos.getZ() + 0.5D,
                     SoundEvents.FLINTANDSTEEL_USE, SoundSource.PLAYERS, 1.0F,
-                    level.random.nextFloat() * 0.4F + 0.8F);
+                    level.getRandom().nextFloat() * 0.4F + 0.8F);
             level.setBlockAndUpdate(offsetPos, Blocks.FIRE.defaultBlockState());
         }
         return true;
@@ -237,7 +237,7 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
                 return false;
             }
 
-            ItemStack result = recipe.get().assemble(tempInv, level.registryAccess());
+            ItemStack result = recipe.get().assemble(tempInv);
             if (result.getItem() instanceof BlockItem) {
                 Block smeltedBlock = Block.byItem(result.getItem());
                 if (smeltedBlock == block) {
@@ -265,7 +265,7 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
 
         level.playSound(p, pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D,
                 SoundEvents.FLINTANDSTEEL_USE, SoundSource.PLAYERS, 1.0F,
-                level.random.nextFloat() * 0.4F + 0.8F);
+                level.getRandom().nextFloat() * 0.4F + 0.8F);
 
         if (smeltedBlockState == null) {
             level.setBlock(pos, Blocks.AIR.defaultBlockState(), 3);
@@ -305,14 +305,14 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
 
         if (!level.isClientSide()) {
             for (var drop : recipe.getDrops()) {
-                Containers.dropItemStack(level, pos.getX(), pos.getY(), pos.getZ(), drop.copy());
+                Containers.dropItemStack(level, pos.getX(), pos.getY(), pos.getZ(), drop.create());
             }
         }
 
         if (recipe.getMode() == EntropyMode.HEAT && !level.isClientSide()) {
             // Same effect as emptying a water bucket in the nether (see BucketItem)
             level.playSound(null, pos, SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 0.5F,
-                    2.6F + (level.random.nextFloat() - level.random.nextFloat()) * 0.8F);
+                    2.6F + (level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.8F);
             for (int l = 0; l < 8; ++l) {
                 level.addParticle(ParticleTypes.LARGE_SMOKE, pos.getX() + Math.random(),
                         pos.getY() + Math.random(), pos.getZ() + Math.random(), 0.0D, 0.0D, 0.0D);

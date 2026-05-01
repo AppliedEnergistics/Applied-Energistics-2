@@ -20,10 +20,8 @@ package appeng.client.gui.style;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.data.AtlasIds;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
-import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.neoforged.neoforge.fluids.FluidStack;
 
 import appeng.api.stacks.AEFluidKey;
@@ -42,19 +40,24 @@ public final class FluidBlitter {
 
     public static Blitter create(FluidStack stack) {
         if (stack.isEmpty() && stack.getFluid() != Fluids.EMPTY) {
-            stack = new FluidStack(stack.getFluidHolder(), 1, stack.getComponentsPatch());
+            stack = new FluidStack(stack.typeHolder(), 1, stack.getComponentsPatch());
         }
 
         Fluid fluid = stack.getFluid();
 
-        var attributes = IClientFluidTypeExtensions.of(fluid);
-        TextureAtlasSprite sprite = Minecraft.getInstance()
-                .getAtlasManager()
-                .getAtlasOrThrow(AtlasIds.BLOCKS)
-                .getSprite(attributes.getStillTexture(stack));
+        var fluidModel = Minecraft.getInstance().getModelManager().getFluidStateModelSet()
+                .get(fluid.defaultFluidState());
+
+        TextureAtlasSprite sprite = fluidModel.stillMaterial().sprite();
+
+        var color = -1;
+        var tintSource = fluidModel.fluidTintSource();
+        if (tintSource != null) {
+            color = tintSource.colorAsStack(stack);
+        }
 
         return Blitter.sprite(sprite)
-                .colorRgb(attributes.getTintColor(stack))
+                .colorRgb(color)
                 // Most fluid texture have transparency, but we want an opaque slot
                 .blending(false);
     }

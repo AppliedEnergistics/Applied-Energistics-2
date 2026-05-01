@@ -54,6 +54,8 @@ import appeng.datagen.providers.tags.DataComponentTypeTagProvider;
 import appeng.datagen.providers.tags.FluidTagsProvider;
 import appeng.datagen.providers.tags.ItemTagsProvider;
 import appeng.datagen.providers.tags.PoiTypeTagsProvider;
+import appeng.datagen.providers.tags.VillagerTradeTagsProvider;
+import appeng.init.InitVillager;
 import appeng.init.worldgen.InitBiomes;
 import appeng.init.worldgen.InitDimensionTypes;
 import appeng.init.worldgen.InitStructures;
@@ -85,6 +87,7 @@ public class AE2DataGenerators {
         pack.addProvider(packOutput -> new FluidTagsProvider(packOutput, registries));
         pack.addProvider(packOutput -> new BiomeTagsProvider(packOutput, registries));
         pack.addProvider(packOutput -> new PoiTypeTagsProvider(packOutput, registries));
+        pack.addProvider(packOutput -> new VillagerTradeTagsProvider(packOutput, registries));
         pack.addProvider(packOutput -> new DataComponentTypeTagProvider(packOutput, registries,
                 localization));
 
@@ -117,7 +120,9 @@ public class AE2DataGenerators {
                 .add(Registries.STRUCTURE, InitStructures::initDatagenStructures)
                 .add(Registries.STRUCTURE_SET, InitStructures::initDatagenStructureSets)
                 .add(Registries.BIOME, InitBiomes::init)
-                .add(Registries.DAMAGE_TYPE, AEDamageTypes::init);
+                .add(Registries.DAMAGE_TYPE, AEDamageTypes::init)
+                .add(Registries.TRADE_SET, InitVillager::bootstrapTradeSets)
+                .add(Registries.VILLAGER_TRADE, InitVillager::bootstrapTrades);
     }
 
     private static <T extends DataProvider> DataProvider.Factory<T> bindRegistries(

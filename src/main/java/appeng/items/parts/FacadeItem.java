@@ -20,12 +20,16 @@ package appeng.items.parts;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
+import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.EmptyBlockGetter;
 import net.minecraft.world.level.Level;
@@ -172,8 +176,14 @@ public class FacadeItem extends AEBaseItem implements IFacadeItem {
 
     public ItemStack createFacadeForItemUnchecked(ItemStack itemStack) {
         var is = new ItemStack(this);
-        is.set(AEComponents.FACADE_ITEM, itemStack.getItemHolder());
+        is.set(AEComponents.FACADE_ITEM, itemStack.typeHolder());
         return is;
+    }
+
+    public ItemStackTemplate createFacadeTemplate(Holder<Item> item) {
+        return new ItemStackTemplate(this, DataComponentPatch.builder()
+                .set(AEComponents.FACADE_ITEM, item)
+                .build());
     }
 
     @Override

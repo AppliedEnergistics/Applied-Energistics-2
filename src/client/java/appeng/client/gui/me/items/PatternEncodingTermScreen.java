@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -124,7 +124,7 @@ public class PatternEncodingTermScreen<C extends PatternEncodingTermMenu> extend
      * When in processing mode, show a hint in the tooltip that middle-click will open the amount entry dialog.
      */
     @Override
-    protected void renderTooltip(GuiGraphics guiGraphics, int x, int y) {
+    protected void extractTooltip(GuiGraphicsExtractor guiGraphics, int x, int y) {
         if (this.menu.getCarried().isEmpty() && menu.canModifyAmountForSlot(this.hoveredSlot)) {
             var itemTooltip = new ArrayList<>(getTooltipFromContainerItem(this.hoveredSlot.getItem()));
             var unwrapped = GenericStack.fromItemStack(this.hoveredSlot.getItem());
@@ -134,7 +134,7 @@ public class PatternEncodingTermScreen<C extends PatternEncodingTermMenu> extend
             itemTooltip.add(Tooltips.getSetAmountTooltip());
             drawTooltip(guiGraphics, x, y, itemTooltip);
         } else {
-            super.renderTooltip(guiGraphics, x, y);
+            super.extractTooltip(guiGraphics, x, y);
         }
     }
 
@@ -154,8 +154,8 @@ public class PatternEncodingTermScreen<C extends PatternEncodingTermMenu> extend
     }
 
     @Override
-    public void renderSlot(GuiGraphics guiGraphics, Slot s, int mouseX, int mouseY) {
-        super.renderSlot(guiGraphics, s, mouseX, mouseY);
+    public void extractSlot(GuiGraphicsExtractor guiGraphics, Slot s, int mouseX, int mouseY) {
+        super.extractSlot(guiGraphics, s, mouseX, mouseY);
 
         if (shouldShowCraftableIndicatorForSlot(s)) {
             guiGraphics.nextStratum();

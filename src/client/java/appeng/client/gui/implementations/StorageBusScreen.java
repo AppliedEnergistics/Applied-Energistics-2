@@ -18,7 +18,7 @@
 
 package appeng.client.gui.implementations;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
@@ -74,7 +74,7 @@ public class StorageBusScreen extends UpgradeableScreen<StorageBusMenu> {
     }
 
     @Override
-    public void drawFG(GuiGraphics guiGraphics, int offsetX, int offsetY, int mouseX, int mouseY) {
+    public void drawFG(GuiGraphicsExtractor guiGraphics, int offsetX, int offsetY, int mouseX, int mouseY) {
         super.drawFG(guiGraphics, offsetX, offsetY, mouseX, mouseY);
 
         var poseStack = guiGraphics.pose();
@@ -83,9 +83,9 @@ public class StorageBusScreen extends UpgradeableScreen<StorageBusMenu> {
         poseStack.scale(0.6f);
         var color = style.getColor(PaletteColor.DEFAULT_TEXT_COLOR);
         if (menu.getConnectedTo() != null) {
-            guiGraphics.drawString(font, GuiText.AttachedTo.text(menu.getConnectedTo()), 0, 0, color.toARGB(), false);
+            guiGraphics.text(font, GuiText.AttachedTo.text(menu.getConnectedTo()), 0, 0, color.toARGB(), false);
         } else {
-            guiGraphics.drawString(font, GuiText.Unattached.text(), 0, 0, color.toARGB(), false);
+            guiGraphics.text(font, GuiText.Unattached.text(), 0, 0, color.toARGB(), false);
         }
         poseStack.popMatrix();
     }

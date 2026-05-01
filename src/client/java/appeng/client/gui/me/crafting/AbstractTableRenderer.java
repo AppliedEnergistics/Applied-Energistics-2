@@ -22,7 +22,7 @@ import java.util.List;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 
@@ -68,7 +68,8 @@ public abstract class AbstractTableRenderer<T> {
         this.rows = rows;
     }
 
-    public final void render(GuiGraphics guiGraphics, int mouseX, int mouseY, List<T> entries, int scrollOffset) {
+    public final void render(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, List<T> entries,
+            int scrollOffset) {
         mouseX -= screen.getGuiLeft();
         mouseY -= screen.getGuiTop();
 
@@ -111,7 +112,7 @@ public abstract class AbstractTableRenderer<T> {
                 pose.scale(TEXT_SCALE);
                 for (Component line : lines) {
                     final int w = fontRenderer.width(line);
-                    guiGraphics.drawString(fontRenderer, line,
+                    guiGraphics.text(fontRenderer, line,
                             (int) ((itemX - 2 - w * TEXT_SCALE) * INV_TEXT_SCALE),
                             (int) (textY * INV_TEXT_SCALE), textColor, false);
                     textY += lineHeight + LINE_SPACING;

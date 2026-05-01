@@ -2,11 +2,9 @@ package appeng.recipes.game;
 
 import com.mojang.serialization.MapCodec;
 
-import net.minecraft.core.HolderLookup;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -20,14 +18,12 @@ import appeng.api.upgrades.IUpgradeableItem;
 public class AddItemUpgradeRecipe extends CustomRecipe {
     public static final AddItemUpgradeRecipe INSTANCE = new AddItemUpgradeRecipe();
 
-    private AddItemUpgradeRecipe() {
-        super(CraftingBookCategory.MISC);
-    }
-
     public static final MapCodec<AddItemUpgradeRecipe> CODEC = MapCodec.unit(INSTANCE);
 
     public static final StreamCodec<RegistryFriendlyByteBuf, AddItemUpgradeRecipe> STREAM_CODEC = StreamCodec
             .unit(INSTANCE);
+
+    public static final RecipeSerializer<AddItemUpgradeRecipe> SERIALIZER = new RecipeSerializer<>(CODEC, STREAM_CODEC);
 
     private static ItemStack attemptUpgrade(CraftingInput input) {
         if (input.ingredientCount() < 2) {
@@ -70,13 +66,13 @@ public class AddItemUpgradeRecipe extends CustomRecipe {
     }
 
     @Override
-    public ItemStack assemble(CraftingInput container, HolderLookup.Provider registries) {
+    public ItemStack assemble(CraftingInput container) {
         return attemptUpgrade(container);
     }
 
     @Override
     public RecipeSerializer<AddItemUpgradeRecipe> getSerializer() {
-        return AddItemUpgradeRecipeSerializer.INSTANCE;
+        return SERIALIZER;
     }
 
 }

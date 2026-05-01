@@ -7,7 +7,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.Level;
@@ -16,7 +16,7 @@ public interface AEKeyRenderer<T, S> {
     /**
      * Draw the stack, for example the item or the fluid sprite, but not the amount.
      */
-    void drawInGui(Minecraft minecraft, GuiGraphics guiGraphics, int x, int y, T stack);
+    void drawInGui(Minecraft minecraft, GuiGraphicsExtractor guiGraphics, int x, int y, T stack);
 
     Class<S> stateClass();
 

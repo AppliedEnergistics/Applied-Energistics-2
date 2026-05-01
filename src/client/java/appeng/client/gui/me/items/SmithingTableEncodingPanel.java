@@ -2,7 +2,7 @@ package appeng.client.gui.me.items;
 
 import java.util.List;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.SimpleContainer;
@@ -72,7 +72,7 @@ public class SmithingTableEncodingPanel extends EncodingModePanel {
     }
 
     @Override
-    public void drawBackgroundLayer(GuiGraphics guiGraphics, Rect2i bounds, Point mouse) {
+    public void drawBackgroundLayer(GuiGraphicsExtractor guiGraphics, Rect2i bounds, Point mouse) {
         BG.dest(bounds.getX() + 8, bounds.getY() + bounds.getHeight() - 165).blit(guiGraphics);
     }
 
@@ -90,7 +90,7 @@ public class SmithingTableEncodingPanel extends EncodingModePanel {
         if (recipe == null) {
             resultSlot.set(ItemStack.EMPTY);
         } else {
-            resultSlot.set(recipe.value().assemble(recipeInput, level.registryAccess()));
+            resultSlot.set(recipe.value().assemble(recipeInput));
         }
     }
 

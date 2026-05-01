@@ -69,7 +69,7 @@ public class FakeSlot extends AppEngSlot {
 
     // Used by item list mod dragging ghost items to determine if this is a valid destination
     public boolean canSetFilterTo(ItemStack stack) {
-        return slot < getInventory().size() && getInventory().isItemValid(slot, stack);
+        return getSlotIndex() < getInventory().size() && getInventory().isItemValid(getSlotIndex(), stack);
     }
 
     // Used by the item list mod dropping ghost ingredients on this slot
@@ -85,8 +85,8 @@ public class FakeSlot extends AppEngSlot {
             var realInv = configInv.getDelegate();
             if (realInv.getMode() == ConfigInventory.Mode.CONFIG_STACKS) {
                 var newFilter = configInv.convertToSuitableStack(is);
-                if (newFilter != null && newFilter.what().equals(realInv.getKey(slot))) {
-                    realInv.insert(slot, newFilter.what(), newFilter.amount(), Actionable.MODULATE);
+                if (newFilter != null && newFilter.what().equals(realInv.getKey(getSlotIndex()))) {
+                    realInv.insert(getSlotIndex(), newFilter.what(), newFilter.amount(), Actionable.MODULATE);
                     return;
                 }
             }
@@ -103,7 +103,7 @@ public class FakeSlot extends AppEngSlot {
                 var newFilter = configInv.convertToSuitableStack(is);
 
                 if (newFilter != null) {
-                    realInv.extract(slot, newFilter.what(), newFilter.amount(), Actionable.MODULATE);
+                    realInv.extract(getSlotIndex(), newFilter.what(), newFilter.amount(), Actionable.MODULATE);
                     return;
                 }
             }

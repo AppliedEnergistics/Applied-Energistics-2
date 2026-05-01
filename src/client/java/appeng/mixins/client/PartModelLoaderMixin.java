@@ -22,6 +22,6 @@ public class PartModelLoaderMixin {
             Operation<CompletableFuture<BlockStateModelLoader.LoadedModels>> operation) {
         var partModelReload = AppEngClient.instance().getPartModels().reload(resourceManager, executor);
         return partModelReload.thenCombine(operation.call(resourceManager, executor),
-                (unused, loadedModels) -> loadedModels);
+                (_, loadedModels) -> loadedModels);
     }
 }

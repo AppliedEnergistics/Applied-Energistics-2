@@ -23,20 +23,26 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import org.joml.Quaternionf;
 
 import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.block.BlockModelResolver;
+import net.minecraft.client.renderer.block.model.BlockDisplayContext;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.TntMinecartRenderer;
 import net.minecraft.client.renderer.entity.state.TntRenderState;
-import net.minecraft.client.renderer.state.CameraRenderState;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.util.Mth;
 
-import appeng.core.definitions.AEBlocks;
 import appeng.entity.TinyTNTPrimedEntity;
 
 public class TinyTNTPrimedRenderer extends EntityRenderer<TinyTNTPrimedEntity, TntRenderState> {
+    private static final BlockDisplayContext BLOCK_DISPLAY_CONTEXT = BlockDisplayContext.create();
+
+    private final BlockModelResolver blockModelResolver;
+
     public TinyTNTPrimedRenderer(EntityRendererProvider.Context context) {
         super(context);
         this.shadowRadius = 0.25F;
+        blockModelResolver = context.getBlockModelResolver();
     }
 
     @Override
@@ -45,9 +51,11 @@ public class TinyTNTPrimedRenderer extends EntityRenderer<TinyTNTPrimedEntity, T
     }
 
     @Override
-    public void extractRenderState(TinyTNTPrimedEntity p_entity, TntRenderState reusedState, float partialTick) {
-        super.extractRenderState(p_entity, reusedState, partialTick);
-        reusedState.fuseRemainingInTicks = p_entity.getFuse();
+    public void extractRenderState(TinyTNTPrimedEntity entity, TntRenderState state, float partialTick) {
+        super.extractRenderState(entity, state, partialTick);
+        state.fuseRemainingInTicks = entity.getFuse();
+        blockModelResolver.update(state.blockState, entity.getBlockState(), BLOCK_DISPLAY_CONTEXT);
+
     }
 
     @Override
@@ -77,13 +85,15 @@ public class TinyTNTPrimedRenderer extends EntityRenderer<TinyTNTPrimedEntity, T
         poseStack.mulPose(new Quaternionf().rotationY(Mth.DEG_TO_RAD * -90.0F));
         poseStack.translate(-0.5D, -0.5D, 0.5D);
         poseStack.mulPose(new Quaternionf().rotationY(Mth.DEG_TO_RAD * 90.0F));
-        TntMinecartRenderer.submitWhiteSolidBlock(
-                AEBlocks.TINY_TNT.block().defaultBlockState(),
-                poseStack,
-                nodes,
-                renderState.lightCoords,
-                renderState.fuseRemainingInTicks / 5 % 2 == 0,
-                renderState.outlineColor);
+        if (!renderState.blockState.isEmpty()) {
+            TntMinecartRenderer.submitWhiteSolidBlock(
+                    renderState.blockState,
+                    poseStack,
+                    nodes,
+                    renderState.lightCoords,
+                    renderState.fuseRemainingInTicks / 5 % 2 == 0,
+                    renderState.outlineColor);
+        }
         poseStack.popPose();
 
         super.submit(renderState, poseStack, nodes, cameraRenderState);

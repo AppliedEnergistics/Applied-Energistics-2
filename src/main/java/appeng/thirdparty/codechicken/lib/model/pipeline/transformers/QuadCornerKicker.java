@@ -25,9 +25,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.AxisDirection;
 import net.minecraft.core.Vec3i;
 import net.minecraft.world.phys.AABB;
-
-import appeng.thirdparty.fabric.MutableQuadView;
-import appeng.thirdparty.fabric.RenderContext;
+import net.neoforged.neoforge.client.model.quad.MutableQuad;
 
 /**
  * This transformer is a little complicated. Basically a Facade / Cover can use this to 'kick' the edges in of quads to
@@ -37,7 +35,7 @@ import appeng.thirdparty.fabric.RenderContext;
  *
  * @author covers1624
  */
-public class QuadCornerKicker implements RenderContext.QuadTransform {
+public class QuadCornerKicker implements QuadTransform {
 
     public static final QuadCornerKicker INSTANCE = new QuadCornerKicker();
 
@@ -101,23 +99,23 @@ public class QuadCornerKicker implements RenderContext.QuadTransform {
     }
 
     @Override
-    public boolean transform(MutableQuadView quad) {
-        int side = quad.nominalFace().ordinal();
+    public boolean transform(MutableQuad quad) {
+        int side = quad.direction().ordinal();
         if (side != this.mySide && side != (this.mySide ^ 1)) {
             for (int hoz : horizonals[this.mySide]) {
                 if (side != hoz && side != (hoz ^ 1) && (this.facadeMask & 1 << hoz) != 0) {
                     Corner corner = Corner.fromSides(this.mySide ^ 1, side, hoz);
                     for (int i = 0; i < 4; i++) {
-                        float x = quad.posByIndex(i, 0);
-                        float y = quad.posByIndex(i, 1);
-                        float z = quad.posByIndex(i, 2);
+                        float x = quad.positionComponent(i, 0);
+                        float y = quad.positionComponent(i, 1);
+                        float z = quad.positionComponent(i, 2);
                         if (epsComp(x, corner.pX(this.box)) && epsComp(y, corner.pY(this.box))
                                 && epsComp(z, corner.pZ(this.box))) {
                             Vec3i vec = Direction.values()[hoz].getUnitVec3i();
                             x -= vec.getX() * this.thickness;
                             y -= vec.getY() * this.thickness;
                             z -= vec.getZ() * this.thickness;
-                            quad.pos(i, x, y, z);
+                            quad.setPosition(i, x, y, z);
                         }
                     }
                 }

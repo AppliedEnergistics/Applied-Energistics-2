@@ -35,6 +35,8 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.saveddata.SavedDataType;
 
+import appeng.core.AppEng;
+
 /**
  * A compass region stores information about the occurrence of skystone blocks in a region of 1024x1024 chunks.
  */
@@ -45,7 +47,7 @@ final class CompassRegion extends SavedData {
 
     private static final Codec<Section> SECTION_CODEC = RecordCodecBuilder.create(builder -> builder.group(
             Codec.INT.fieldOf("index").forGetter(Section::index),
-            ExtraCodecs.BIT_SET.fieldOf("index").forGetter(Section::bits)).apply(builder, Section::new));
+            ExtraCodecs.BIT_SET.fieldOf("bits").forGetter(Section::bits)).apply(builder, Section::new));
 
     private List<Section> sections() {
         return sections.entrySet().stream().map(
@@ -54,7 +56,7 @@ final class CompassRegion extends SavedData {
 
     private static final BiFunction<Integer, Integer, SavedDataType<CompassRegion>> TYPE = Util
             .memoize((regionX, regionZ) -> new SavedDataType<>(
-                    "ae2_compass_" + regionX + "_" + regionZ,
+                    AppEng.makeId("compass_" + regionX + "_" + regionZ),
                     () -> new CompassRegion(regionX, regionZ),
                     RecordCodecBuilder.create(builder -> builder.group(
                             SECTION_CODEC.listOf().fieldOf("sections").forGetter(CompassRegion::sections))
@@ -92,7 +94,7 @@ final class CompassRegion extends SavedData {
     public static CompassRegion get(ServerLevel level, ChunkPos chunkPos) {
         Objects.requireNonNull(chunkPos, "chunkPos");
 
-        return get(level, chunkPos.x, chunkPos.z);
+        return get(level, chunkPos.x(), chunkPos.z());
     }
 
     /**

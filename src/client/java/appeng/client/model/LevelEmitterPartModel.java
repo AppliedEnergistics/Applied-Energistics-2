@@ -8,15 +8,15 @@ import com.mojang.math.Transformation;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
-import net.minecraft.client.renderer.block.model.BlockModelPart;
-import net.minecraft.client.renderer.block.model.SimpleModelWrapper;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
+import net.minecraft.client.renderer.block.dispatch.ModelState;
 import net.minecraft.client.resources.model.ModelBaker;
-import net.minecraft.client.resources.model.ModelState;
+import net.minecraft.client.resources.model.SimpleModelWrapper;
+import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.BlockAndTintGetter;
 import net.neoforged.neoforge.model.data.ModelData;
 
 import appeng.client.api.model.parts.PartModel;
@@ -27,13 +27,13 @@ import appeng.parts.automation.PartModelData;
  * Adds model parts based on the status of the level emitter.
  */
 public record LevelEmitterPartModel(
-        BlockModelPart onBaked,
-        BlockModelPart offBaked,
+        BlockStateModelPart onBaked,
+        BlockStateModelPart offBaked,
         Transformation transformation) implements PartModel {
 
     @Override
     public void collectParts(BlockAndTintGetter level, BlockPos pos, ModelData partModelData, RandomSource random,
-            List<BlockModelPart> parts) {
+            List<BlockStateModelPart> parts) {
         var on = Objects.requireNonNullElse(partModelData.get(PartModelData.LEVEL_EMITTER_ON), false);
 
         if (on) {
@@ -44,8 +44,8 @@ public record LevelEmitterPartModel(
     }
 
     @Override
-    public TextureAtlasSprite particleIcon() {
-        return onBaked.particleIcon();
+    public Material.Baked particleMaterial() {
+        return onBaked.particleMaterial();
     }
 
     public record Unbaked(Identifier on, Identifier off) implements PartModel.Unbaked {

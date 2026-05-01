@@ -5,7 +5,7 @@ import java.util.Objects;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.core.RegistryAccess;
@@ -59,7 +59,7 @@ public final class StonecuttingEncodingPanel extends EncodingModePanel {
     }
 
     @Override
-    public void drawBackgroundLayer(GuiGraphics guiGraphics, Rect2i bounds, Point mouse) {
+    public void drawBackgroundLayer(GuiGraphicsExtractor guiGraphics, Rect2i bounds, Point mouse) {
         BG.dest(bounds.getX() + 8, bounds.getY() + bounds.getHeight() - 165).blit(guiGraphics);
         drawRecipes(guiGraphics, bounds, mouse);
     }
@@ -68,7 +68,7 @@ public final class StonecuttingEncodingPanel extends EncodingModePanel {
         return Objects.requireNonNull(Minecraft.getInstance().level).registryAccess();
     }
 
-    private void drawRecipes(GuiGraphics guiGraphics, Rect2i bounds, Point mouse) {
+    private void drawRecipes(GuiGraphicsExtractor guiGraphics, Rect2i bounds, Point mouse) {
         var recipes = menu.getStonecuttingRecipes();
         var startIndex = scrollbar.getCurrentScroll() * COLS;
         var endIndex = startIndex + ROWS * COLS;
@@ -91,14 +91,14 @@ public final class StonecuttingEncodingPanel extends EncodingModePanel {
             var renderX = bounds.getX() + slotBounds.getX();
             var renderY = bounds.getY() + slotBounds.getY();
             blitter.dest(renderX, renderY).blit(guiGraphics);
-            ItemStack resultItem = recipe.value().result();
+            ItemStack resultItem = recipe.value().result().create();
 
             if (selected || mouse.isIn(slotBounds)) {
-                guiGraphics.renderItem(resultItem, renderX + 2, renderY + 3);
-                guiGraphics.renderItemDecorations(Minecraft.getInstance().font, resultItem, renderX + 2, renderY + 3);
+                guiGraphics.item(resultItem, renderX + 2, renderY + 3);
+                guiGraphics.itemDecorations(Minecraft.getInstance().font, resultItem, renderX + 2, renderY + 3);
             } else {
-                guiGraphics.renderItem(resultItem, renderX + 2, renderY + 2);
-                guiGraphics.renderItemDecorations(Minecraft.getInstance().font, resultItem, renderX + 2, renderY + 2);
+                guiGraphics.item(resultItem, renderX + 2, renderY + 2);
+                guiGraphics.itemDecorations(Minecraft.getInstance().font, resultItem, renderX + 2, renderY + 2);
             }
         }
     }
@@ -121,7 +121,7 @@ public final class StonecuttingEncodingPanel extends EncodingModePanel {
     public Tooltip getTooltip(int mouseX, int mouseY) {
         var recipe = getRecipeAt(new Point(mouseX, mouseY));
         if (recipe != null) {
-            var lines = screen.getTooltipFromContainerItem(recipe.value().result());
+            var lines = screen.getTooltipFromContainerItem(recipe.value().result().create());
 
             return new Tooltip(lines);
         }

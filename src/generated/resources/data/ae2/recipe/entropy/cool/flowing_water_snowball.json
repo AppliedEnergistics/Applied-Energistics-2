@@ -9,7 +9,6 @@
   "output": {
     "drops": [
       {
-        "count": 1,
         "id": "minecraft:snowball"
       }
     ]

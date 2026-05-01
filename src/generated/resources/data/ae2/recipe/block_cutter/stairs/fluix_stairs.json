@@ -2,7 +2,6 @@
   "type": "minecraft:stonecutting",
   "ingredient": "ae2:fluix_block",
   "result": {
-    "count": 1,
     "id": "ae2:fluix_stairs"
   }
 }

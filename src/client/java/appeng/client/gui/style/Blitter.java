@@ -20,16 +20,17 @@ package appeng.client.gui.style;
 
 import java.util.Objects;
 
+import com.mojang.blaze3d.pipeline.ColorTargetState;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 
 import org.joml.Matrix3x2f;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.render.TextureSetup;
-import net.minecraft.client.gui.render.state.BlitRenderState;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.renderer.state.gui.BlitRenderState;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.data.AtlasIds;
@@ -46,7 +47,7 @@ import appeng.util.Icon;
 public final class Blitter {
     public static final RenderPipeline GUI_TEXTURED_OPAQUE = RenderPipelines.GUI_TEXTURED.toBuilder()
             .withLocation(AppEng.makeId("pipeline/gui_textured_opaque"))
-            .withoutBlend()
+            .withColorTargetState(ColorTargetState.DEFAULT)
             .build();
 
     // This assumption is obviously bogus, but currently all textures are this size,
@@ -69,7 +70,6 @@ public final class Blitter {
     private Rect2i destRect = new Rect2i(0, 0, 0, 0);
     private boolean blending = true;
     private TextureTransform transform = TextureTransform.NONE;
-    private int zOffset;
 
     Blitter(Identifier texture, int referenceWidth, int referenceHeight) {
         this.texture = texture;
@@ -111,12 +111,28 @@ public final class Blitter {
     public static Blitter sprite(TextureAtlasSprite sprite) {
         var atlas = (TextureAtlas) Minecraft.getInstance().getTextureManager().getTexture(sprite.atlasLocation());
 
+        var padding = sprite.padding;
         return new Blitter(sprite.atlasLocation(), atlas.getWidth(), atlas.getHeight())
                 .src(
-                        sprite.getX(),
-                        sprite.getY(),
+                        sprite.getX() + padding,
+                        sprite.getY() + padding,
                         sprite.contents().width(),
                         sprite.contents().height());
+    }
+
+    /**
+     * Creates a blitter from a texture atlas sprite.
+     */
+    public static Blitter spriteSubRegion(TextureAtlasSprite sprite, int left, int top, int right, int bottom) {
+        var atlas = (TextureAtlas) Minecraft.getInstance().getTextureManager().getTexture(sprite.atlasLocation());
+
+        var padding = sprite.padding;
+        return new Blitter(sprite.atlasLocation(), atlas.getWidth(), atlas.getHeight())
+                .src(
+                        sprite.getX() + padding + left,
+                        sprite.getY() + padding + top,
+                        sprite.contents().width() - left - right,
+                        sprite.contents().height() - top - bottom);
     }
 
     public static Blitter guiSprite(Identifier resourceLocation) {
@@ -126,10 +142,7 @@ public final class Blitter {
     }
 
     public static Blitter icon(Icon icon) {
-        Identifier TEXTURE = AppEng.makeId("textures/guis/states.png");
-        int TEXTURE_WIDTH = 256;
-        int TEXTURE_HEIGHT = 256;
-        return Blitter.texture(TEXTURE, TEXTURE_WIDTH, TEXTURE_HEIGHT)
+        return Blitter.texture(Icon.TEXTURE, Icon.TEXTURE_WIDTH, Icon.TEXTURE_HEIGHT)
                 .src(icon.x, icon.y, icon.width, icon.height);
     }
 
@@ -270,12 +283,7 @@ public final class Blitter {
         return color(r, g, b);
     }
 
-    public Blitter zOffset(int offset) {
-        this.zOffset = offset;
-        return this;
-    }
-
-    public void blit(GuiGraphics guiGraphics) {
+    public void blit(GuiGraphicsExtractor guiGraphics) {
         // With no source rectangle, we'll use the entirety of the texture. This happens rarely though.
         float minU, minV, maxU, maxV;
         if (srcRect == null) {

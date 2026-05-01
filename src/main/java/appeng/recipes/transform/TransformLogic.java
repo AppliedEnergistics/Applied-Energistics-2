@@ -18,7 +18,6 @@ import net.minecraft.server.packs.resources.SimplePreparableReloadListener;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
@@ -39,21 +38,21 @@ public final class TransformLogic {
 
     public static boolean canTransformInFluid(ItemEntity entity, FluidState fluid) {
         if (entity.level() instanceof ServerLevel serverLevel) {
-            return getTransformableItems(serverLevel, fluid.getType()).contains(entity.getItem().getItemHolder());
+            return getTransformableItems(serverLevel, fluid.getType()).contains(entity.getItem().typeHolder());
         }
         return false;
     }
 
     public static boolean canTransformInAnyFluid(ItemEntity entity) {
         if (entity.level() instanceof ServerLevel serverLevel) {
-            return getTransformableItemsAnyFluid(serverLevel).contains(entity.getItem().getItemHolder());
+            return getTransformableItemsAnyFluid(serverLevel).contains(entity.getItem().typeHolder());
         }
         return false;
     }
 
     public static boolean canTransformInExplosion(ItemEntity entity) {
         if (entity.level() instanceof ServerLevel serverLevel) {
-            return getTransformableItemsExplosion(serverLevel).contains(entity.getItem().getItemHolder());
+            return getTransformableItemsExplosion(serverLevel).contains(entity.getItem().typeHolder());
         }
         return false;
     }
@@ -102,17 +101,15 @@ public final class TransformLogic {
             }
 
             if (missingIngredients.isEmpty()) {
-                var items = new ArrayList<ItemStack>(consumedItems.size());
                 for (var e : consumedItems.reference2IntEntrySet()) {
                     var itemEntity = e.getKey();
-                    items.add(itemEntity.getItem().split(e.getIntValue()));
+                    itemEntity.getItem().split(e.getIntValue());
 
                     if (itemEntity.getItem().getCount() <= 0) {
                         itemEntity.discard();
                     }
                 }
-                var recipeInput = new TransformRecipeInput(items);
-                var craftResult = recipe.assemble(recipeInput, level.registryAccess());
+                var craftResult = recipe.createResult();
 
                 var random = level.getRandom();
                 final double x = Math.floor(entity.getX()) + .25d + random.nextDouble() * .5;

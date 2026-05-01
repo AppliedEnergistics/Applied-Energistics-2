@@ -16,8 +16,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.datafix.DataFixers;
 import net.minecraft.world.level.ChunkPos;
-import net.minecraft.world.level.saveddata.SavedData;
-import net.minecraft.world.level.storage.DimensionDataStorage;
+import net.minecraft.world.level.storage.SavedDataStorage;
 import net.neoforged.testframework.junit.EphemeralTestServerProvider;
 
 @ExtendWith(EphemeralTestServerProvider.class)
@@ -38,8 +37,8 @@ class ServerCompassServiceTest {
         var cp1 = new ChunkPos(1, 0);
         var cp2 = new ChunkPos(-1023, 0);
 
-        var dimensionalDataStorage = new DimensionDataStorage(
-                new SavedData.Context(level, 0L),
+        var dimensionalDataStorage = new SavedDataStorage(
+                level,
                 tempDir,
                 DataFixers.getDataFixer(),
                 server.registryAccess());
@@ -47,10 +46,10 @@ class ServerCompassServiceTest {
 
         var region1 = CompassRegion.get(level, cp1);
         var region2 = CompassRegion.get(level, cp2);
-        region1.setHasCompassTarget(cp1.x, cp1.z, 0, true);
-        assertTrue(region1.hasCompassTarget(cp1.x, cp1.z, 0));
-        assertFalse(region2.hasCompassTarget(cp2.x, cp2.z, 0));
-        region2.setHasCompassTarget(cp2.x, cp2.z, 0, true);
+        region1.setHasCompassTarget(cp1.x(), cp1.z(), 0, true);
+        assertTrue(region1.hasCompassTarget(cp1.x(), cp1.z(), 0));
+        assertFalse(region2.hasCompassTarget(cp2.x(), cp2.z(), 0));
+        region2.setHasCompassTarget(cp2.x(), cp2.z(), 0, true);
     }
 
 }

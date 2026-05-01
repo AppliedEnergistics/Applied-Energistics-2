@@ -8,18 +8,19 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import org.apache.commons.lang3.mutable.MutableBoolean;
 
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CraftingBookCategory;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.NormalCraftingRecipe;
 import net.minecraft.world.item.crafting.PlacementInfo;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.display.RecipeDisplay;
 import net.minecraft.world.item.crafting.display.ShapelessCraftingRecipeDisplay;
@@ -32,40 +33,44 @@ import net.neoforged.neoforge.server.ServerLifecycleHooks;
 import appeng.core.ConventionTags;
 import appeng.core.definitions.AEItems;
 
-public class QuartzCuttingRecipe implements CraftingRecipe {
+public class QuartzCuttingRecipe extends NormalCraftingRecipe {
     public static final MapCodec<QuartzCuttingRecipe> CODEC = RecordCodecBuilder.mapCodec((builder) -> builder.group(
-            ItemStack.STRICT_CODEC.fieldOf("result").forGetter(QuartzCuttingRecipe::getResult),
-            Ingredient.CODEC.listOf().fieldOf("ingredients").forGetter(QuartzCuttingRecipe::getIngredients))
+            Recipe.CommonInfo.MAP_CODEC.forGetter(o -> o.commonInfo),
+            CraftingRecipe.CraftingBookInfo.MAP_CODEC.forGetter(o -> o.bookInfo),
+            ItemStackTemplate.CODEC.fieldOf("result").forGetter(QuartzCuttingRecipe::result),
+            Ingredient.CODEC.listOf().fieldOf("ingredients").forGetter(QuartzCuttingRecipe::ingredients))
             .apply(builder, QuartzCuttingRecipe::new));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, QuartzCuttingRecipe> STREAM_CODEC = StreamCodec.composite(
-            ItemStack.STREAM_CODEC, QuartzCuttingRecipe::getResult,
-            Ingredient.CONTENTS_STREAM_CODEC.apply(ByteBufCodecs.list()), QuartzCuttingRecipe::getIngredients,
+            Recipe.CommonInfo.STREAM_CODEC, o -> o.commonInfo,
+            CraftingRecipe.CraftingBookInfo.STREAM_CODEC, o -> o.bookInfo,
+            ItemStackTemplate.STREAM_CODEC, QuartzCuttingRecipe::result,
+            Ingredient.CONTENTS_STREAM_CODEC.apply(ByteBufCodecs.list()), QuartzCuttingRecipe::ingredients,
             QuartzCuttingRecipe::new);
 
-    final ItemStack result;
+    public static final RecipeSerializer<QuartzCuttingRecipe> SERIALIZER = new RecipeSerializer<>(CODEC, STREAM_CODEC);
+
+    final ItemStackTemplate result;
     final List<Ingredient> ingredients;
     private final boolean isSimple;
 
-    public QuartzCuttingRecipe(ItemStack result, List<Ingredient> ingredients) {
+    public QuartzCuttingRecipe(Recipe.CommonInfo commonInfo, CraftingRecipe.CraftingBookInfo bookInfo,
+            ItemStackTemplate result, List<Ingredient> ingredients) {
+        super(commonInfo, bookInfo);
         this.result = result;
         this.ingredients = ingredients;
         this.isSimple = ingredients.stream().allMatch(Ingredient::isSimple);
     }
 
     public RecipeSerializer<QuartzCuttingRecipe> getSerializer() {
-        return QuartzCuttingRecipeSerializer.INSTANCE;
+        return SERIALIZER;
     }
 
-    public CraftingBookCategory category() {
-        return CraftingBookCategory.MISC;
-    }
-
-    public ItemStack getResultItem(HolderLookup.Provider registries) {
+    public ItemStackTemplate result() {
         return this.result;
     }
 
-    public List<Ingredient> getIngredients() {
+    public List<Ingredient> ingredients() {
         return this.ingredients;
     }
 
@@ -89,12 +94,9 @@ public class QuartzCuttingRecipe implements CraftingRecipe {
         }
     }
 
-    public ItemStack assemble(CraftingInput input, HolderLookup.Provider registries) {
-        return this.result.copy();
-    }
-
-    private ItemStack getResult() {
-        return result;
+    @Override
+    public ItemStack assemble(CraftingInput input) {
+        return this.result.create();
     }
 
     @Override
@@ -107,7 +109,7 @@ public class QuartzCuttingRecipe implements CraftingRecipe {
     }
 
     @Override
-    public PlacementInfo placementInfo() {
+    protected PlacementInfo createPlacementInfo() {
         return PlacementInfo.create(ingredients);
     }
 
@@ -134,8 +136,8 @@ public class QuartzCuttingRecipe implements CraftingRecipe {
                     }
                 }
                 remainingItems.set(i, broken.getValue() ? ItemStack.EMPTY : result);
-            } else if (!item.getCraftingRemainder().isEmpty()) {
-                remainingItems.set(i, item.getCraftingRemainder());
+            } else if (item.getCraftingRemainder() != null) {
+                remainingItems.set(i, item.getCraftingRemainder().create());
             }
         }
 

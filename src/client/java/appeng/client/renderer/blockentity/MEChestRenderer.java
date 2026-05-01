@@ -24,38 +24,40 @@ import java.util.function.Function;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import org.jetbrains.annotations.Nullable;
+import org.joml.Matrix4f;
+import org.joml.Matrix4fc;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LevelRenderer;
-import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.SimpleModelWrapper;
-import net.minecraft.client.renderer.block.model.SingleVariant;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
-import net.minecraft.client.renderer.state.CameraRenderState;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.ModelManager;
-import net.minecraft.client.resources.model.QuadCollection;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
+import net.minecraft.client.resources.model.geometry.QuadCollection;
 import net.minecraft.core.Direction;
+import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.client.RenderTypeHelper;
 import net.neoforged.neoforge.client.model.quad.QuadTransforms;
 
 import appeng.api.client.StorageCellModels;
 import appeng.api.orientation.BlockOrientation;
 import appeng.blockentity.storage.MEChestBlockEntity;
 import appeng.client.render.AERenderTypes;
-import appeng.thirdparty.fabric.ModelHelper;
+import appeng.util.Platform;
 
 /**
  * The block entity renderer for ME chests takes care of rendering the right model for the inserted cell, as well as the
  * LED.
  */
 public class MEChestRenderer implements BlockEntityRenderer<MEChestBlockEntity, MEChestRenderState> {
+
+    private static final Matrix4fc IDENTITY = new Matrix4f();
 
     private final ModelManager modelManager;
 
@@ -77,9 +79,9 @@ public class MEChestRenderer implements BlockEntityRenderer<MEChestBlockEntity, 
         // Calculate the lightlevel in front of the drive for lighting the exposed cell model.
         if (be.getLevel() != null) {
             var frontPos = be.getBlockPos().relative(be.getFront());
-            state.frontLightCoords = LevelRenderer.getLightColor(be.getLevel(), frontPos);
+            state.frontLightCoords = LevelRenderer.getLightCoords(be.getLevel(), frontPos);
         } else {
-            state.frontLightCoords = LightTexture.FULL_BRIGHT;
+            state.frontLightCoords = LightCoordsUtil.FULL_BRIGHT;
         }
 
         var blockOrientation = BlockOrientation.get(be);
@@ -92,6 +94,7 @@ public class MEChestRenderer implements BlockEntityRenderer<MEChestBlockEntity, 
 
         var cellItem = be.getCellItem(0);
         if (cellItem == null) {
+            state.cellModel.clear();
             return; // No cell inserted into chest
         }
 
@@ -101,7 +104,12 @@ public class MEChestRenderer implements BlockEntityRenderer<MEChestBlockEntity, 
         if (cellModelKey == null) {
             cellModelKey = StorageCellModels.getDefaultStandaloneModel();
         }
-        state.cellModel = modelManager.getStandaloneModel(cellModelKey);
+        var model = modelManager.getStandaloneModel(cellModelKey);
+        var blockAndTintGetter = (BlockAndTintGetter) be.getLevel();
+        var modelParts = state.cellModel.setupModel(IDENTITY, model.hasMaterialFlag(blockAndTintGetter,
+                be.getBlockPos(), be.getBlockState(), BakedQuad.FLAG_TRANSLUCENT));
+        model.collectParts(blockAndTintGetter, be.getBlockPos(), be.getBlockState(),
+                state.cellModel.scratchRandomSource(42L), modelParts);
     }
 
     @Override
@@ -109,7 +117,7 @@ public class MEChestRenderer implements BlockEntityRenderer<MEChestBlockEntity, 
             CameraRenderState cameraRenderState) {
 
         var cellModel = state.cellModel;
-        if (cellModel == null) {
+        if (cellModel.isEmpty()) {
             return;
         }
 
@@ -122,15 +130,11 @@ public class MEChestRenderer implements BlockEntityRenderer<MEChestBlockEntity, 
         // we need to move them into place for the slot on the ME chest
         poseStack.translate(5 / 16.0, 4 / 16.0, 0);
 
-        var rotatedModelQuads = rotateQuadCullFaces(cellModel::getQuads, state.blockOrientation);
-        var chunkSectionLayer = cellModel.getRenderType(state.blockState);
-        var renderType = RenderTypeHelper.getEntityRenderType(chunkSectionLayer);
-        nodes.submitBlockModel(
+        // TODO 26.1: Might not be necessary anymore, check lighting on cell
+        // var rotatedModelQuads = rotateQuadCullFaces(cellModel::getQuads, state.blockOrientation);
+        state.cellModel.submit(
                 poseStack,
-                renderType,
-                new SingleVariant(new SimpleModelWrapper(rotatedModelQuads, cellModel.useAmbientOcclusion(),
-                        cellModel.particleIcon(), chunkSectionLayer)),
-                1, 1, 1,
+                nodes,
                 state.frontLightCoords,
                 OverlayTexture.NO_OVERLAY,
                 0);
@@ -150,8 +154,7 @@ public class MEChestRenderer implements BlockEntityRenderer<MEChestBlockEntity, 
     private static QuadCollection rotateQuadCullFaces(Function<Direction, List<BakedQuad>> quadCollection,
             BlockOrientation r) {
         var rotated = new QuadCollection.Builder();
-        for (int cullFaceIdx = 0; cullFaceIdx <= ModelHelper.NULL_FACE_ID; cullFaceIdx++) {
-            Direction cullFace = ModelHelper.faceFromIndex(cullFaceIdx);
+        for (var cullFace : Platform.CULL_FACES) {
             if (cullFace != null) {
                 cullFace = r.resultingRotate(cullFace); // This fixes the incorrect lightmap position
             }

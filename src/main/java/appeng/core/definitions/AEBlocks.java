@@ -159,11 +159,11 @@ public final class AEBlocks {
     public static final BlockDefinition<MysteriousCubeBlock> MYSTERIOUS_CUBE = block("Mysterious Cube", AEBlockIds.MYSTERIOUS_CUBE, MysteriousCubeBlock::new);
     public static final BlockDefinition<NotSoMysteriousCubeBlock> NOT_SO_MYSTERIOUS_CUBE = block("Not So Mysterious Cube", AEBlockIds.NOT_SO_MYSTERIOUS_CUBE, NotSoMysteriousCubeBlock::new);
 
-    public static final BlockDefinition<InscriberBlock> INSCRIBER = block("Inscriber", AEBlockIds.INSCRIBER, p -> new InscriberBlock(metalProps(p).noOcclusion()));
+    public static final BlockDefinition<InscriberBlock> INSCRIBER = block("Inscriber", AEBlockIds.INSCRIBER, p -> new InscriberBlock(metalProps(p).noOcclusion().lightLevel(_ -> 2)));
     public static final BlockDefinition<WirelessAccessPointBlock> WIRELESS_ACCESS_POINT = block("ME Wireless Access Point", AEBlockIds.WIRELESS_ACCESS_POINT, WirelessAccessPointBlock::new);
-    public static final BlockDefinition<ChargerBlock> CHARGER = block("Charger", AEBlockIds.CHARGER, ChargerBlock::new);
+    public static final BlockDefinition<ChargerBlock> CHARGER = block("Charger", AEBlockIds.CHARGER, p -> new ChargerBlock(p.lightLevel(_ -> 2)));
 
-    public static final BlockDefinition<TinyTNTBlock> TINY_TNT = block("Tiny TNT", AEBlockIds.TINY_TNT, p -> new TinyTNTBlock(defaultProps(p, MapColor.FIRE, SoundType.GRAVEL).strength(0).noOcclusion()));
+    public static final BlockDefinition<TinyTNTBlock> TINY_TNT = block("Tiny TNT", AEBlockIds.TINY_TNT, p -> new TinyTNTBlock(defaultProps(p, MapColor.FIRE, SoundType.GRAVEL).strength(0).noOcclusion().lightLevel(_ -> 2)));
 
     public static final BlockDefinition<QuantumRingBlock> QUANTUM_RING = block("ME Quantum Ring", AEBlockIds.QUANTUM_RING, QuantumRingBlock::new);
     public static final BlockDefinition<QuantumLinkChamberBlock> QUANTUM_LINK = block("ME Quantum Link Chamber", AEBlockIds.QUANTUM_LINK, QuantumLinkChamberBlock::new);

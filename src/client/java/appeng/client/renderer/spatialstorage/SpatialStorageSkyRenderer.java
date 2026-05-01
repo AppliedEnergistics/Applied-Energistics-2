@@ -32,13 +32,14 @@ import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
 
 import org.joml.Matrix4f;
+import org.joml.Matrix4fc;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.state.LevelRenderState;
-import net.minecraft.client.renderer.state.SkyRenderState;
+import net.minecraft.client.renderer.state.level.LevelRenderState;
+import net.minecraft.client.renderer.state.level.SkyRenderState;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.neoforged.neoforge.client.CustomSkyboxRenderer;
@@ -62,8 +63,8 @@ public class SpatialStorageSkyRenderer implements CustomSkyboxRenderer, AutoClos
             new Quaternionf().rotationZ(Mth.DEG_TO_RAD * -90.0F), };
 
     @Override
-    public boolean renderSky(LevelRenderState levelRenderState, SkyRenderState skyRenderState, Matrix4f modelViewMatrix,
-            Runnable setupFog) {
+    public boolean renderSky(LevelRenderState levelRenderState, SkyRenderState skyRenderState,
+            Matrix4fc modelViewMatrix, Runnable setupFog) {
         var poseStack = new PoseStack();
         poseStack.mulPose(modelViewMatrix);
 
@@ -100,7 +101,7 @@ public class SpatialStorageSkyRenderer implements CustomSkyboxRenderer, AutoClos
         return true;
     }
 
-    private void renderSparkles(GpuBuffer sparklesVertices, Matrix4f modelViewMatrix, float fade) {
+    private void renderSparkles(GpuBuffer sparklesVertices, Matrix4fc modelViewMatrix, float fade) {
         GpuBufferSlice dynamicTransforms = RenderSystem.getDynamicUniforms()
                 .writeTransform(modelViewMatrix, new Vector4f(fade, fade, fade, 1.0F), new Vector3f(), new Matrix4f());
 

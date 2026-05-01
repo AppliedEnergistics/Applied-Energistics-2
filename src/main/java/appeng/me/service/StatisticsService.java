@@ -104,7 +104,7 @@ public class StatisticsService implements IGridService, IGridServiceProvider {
      * Mark the chunk of the {@link BlockPos} as location of the network.
      */
     private boolean addChunk(ServerLevel level, BlockPos pos) {
-        final ChunkPos position = new ChunkPos(pos);
+        final ChunkPos position = ChunkPos.containing(pos);
 
         if (!this.getChunks(level).contains(position)) {
             this.grid.postEvent(new GridChunkEvent.GridChunkAdded(level, position));
@@ -120,7 +120,7 @@ public class StatisticsService implements IGridService, IGridServiceProvider {
      * gridnodes are removed as well.
      */
     private boolean removeChunk(ServerLevel level, BlockPos pos) {
-        final ChunkPos position = new ChunkPos(pos);
+        final ChunkPos position = ChunkPos.containing(pos);
         boolean ret = this.getChunks(level).remove(position);
 
         if (ret && !this.getChunks(level).contains(position)) {

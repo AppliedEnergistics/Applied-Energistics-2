@@ -244,7 +244,7 @@ public class PatternEncodingTermMenu extends MEStorageMenu {
         if (this.currentRecipe == null) {
             is = ItemStack.EMPTY;
         } else {
-            is = this.currentRecipe.value().assemble(input, level.registryAccess());
+            is = this.currentRecipe.value().assemble(input);
         }
 
         this.craftOutputSlot.setResultItem(is);
@@ -400,7 +400,7 @@ public class PatternEncodingTermMenu extends MEStorageMenu {
             return null;
         }
 
-        var output = AEItemKey.of(recipe.value().assemble(input, level.registryAccess()));
+        var output = AEItemKey.of(recipe.value().assemble(input));
 
         return PatternDetailsHelper.encodeSmithingTablePattern(recipe, template, base, addition, output,
                 encodingLogic.isSubstitution());

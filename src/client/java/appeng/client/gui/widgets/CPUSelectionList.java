@@ -7,7 +7,7 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
@@ -168,7 +168,7 @@ public class CPUSelectionList implements ICompositeWidget {
     }
 
     @Override
-    public void drawBackgroundLayer(GuiGraphics guiGraphics, Rect2i bounds, Point mouse) {
+    public void drawBackgroundLayer(GuiGraphicsExtractor guiGraphics, Rect2i bounds, Point mouse) {
         var x = bounds.getX() + this.bounds.getX();
         var y = bounds.getY() + this.bounds.getY();
         background.dest(
@@ -198,7 +198,7 @@ public class CPUSelectionList implements ICompositeWidget {
             pose.pushMatrix();
             pose.translate(x + 3, y + 2);
             pose.scale(0.666f);
-            guiGraphics.drawString(font, name, 0, 0, textColor.toARGB(), false);
+            guiGraphics.text(font, name, 0, 0, textColor.toARGB(), false);
             pose.popMatrix();
 
             var infoBar = new InfoBar();

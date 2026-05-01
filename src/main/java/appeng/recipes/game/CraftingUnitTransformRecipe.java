@@ -5,7 +5,6 @@ import java.util.List;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -13,24 +12,20 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.PlacementInfo;
-import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeBookCategories;
-import net.minecraft.world.item.crafting.RecipeBookCategory;
 import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.display.RecipeDisplay;
 import net.minecraft.world.item.crafting.display.SlotDisplay;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 
 import appeng.recipes.AERecipeTypes;
+import appeng.recipes.MechanicsRecipe;
 
 /**
  * Used to handle upgrading and removal of upgrades for crafting units (in-world).
  */
-public class CraftingUnitTransformRecipe implements Recipe<RecipeInput> {
+public class CraftingUnitTransformRecipe extends MechanicsRecipe<RecipeInput> {
     public static final MapCodec<CraftingUnitTransformRecipe> CODEC = RecordCodecBuilder.mapCodec((builder) -> builder
             .group(
                     BuiltInRegistries.BLOCK.byNameCodec().fieldOf("upgraded_block")
@@ -46,6 +41,9 @@ public class CraftingUnitTransformRecipe implements Recipe<RecipeInput> {
                     ByteBufCodecs.registry(BuiltInRegistries.ITEM.key()),
                     CraftingUnitTransformRecipe::getUpgradeItem,
                     CraftingUnitTransformRecipe::new);
+
+    public static final RecipeSerializer<CraftingUnitTransformRecipe> SERIALIZER = new RecipeSerializer<>(CODEC,
+            STREAM_CODEC);
 
     private final Block upgradedBlock;
     private final Item upgradeItem;
@@ -93,26 +91,6 @@ public class CraftingUnitTransformRecipe implements Recipe<RecipeInput> {
     }
 
     @Override
-    public boolean matches(RecipeInput input, Level level) {
-        return false;
-    }
-
-    @Override
-    public ItemStack assemble(RecipeInput input, HolderLookup.Provider registries) {
-        return ItemStack.EMPTY;
-    }
-
-    @Override
-    public PlacementInfo placementInfo() {
-        return PlacementInfo.NOT_PLACEABLE;
-    }
-
-    @Override
-    public RecipeBookCategory recipeBookCategory() {
-        return RecipeBookCategories.CRAFTING_MISC;
-    }
-
-    @Override
     public List<RecipeDisplay> display() {
         return List.of(
                 new CraftingUnitTransformDisplay(upgradedBlock, new SlotDisplay.ItemSlotDisplay(upgradeItem)));
@@ -120,7 +98,7 @@ public class CraftingUnitTransformRecipe implements Recipe<RecipeInput> {
 
     @Override
     public RecipeSerializer<CraftingUnitTransformRecipe> getSerializer() {
-        return CraftingUnitTransformRecipeSerializer.INSTANCE;
+        return SERIALIZER;
     }
 
     @Override

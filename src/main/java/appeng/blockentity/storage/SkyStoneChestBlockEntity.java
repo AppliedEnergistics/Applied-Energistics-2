@@ -60,7 +60,7 @@ public class SkyStoneChestBlockEntity extends AEBaseInvBlockEntity implements Cl
             var y = pos.getY() + 0.5D;
             var z = pos.getZ() + 0.5D;
             level.playSound(null, x, y, z, event, SoundSource.BLOCKS,
-                    0.5F, level.random.nextFloat() * 0.1F + 0.9F);
+                    0.5F, level.getRandom().nextFloat() * 0.1F + 0.9F);
         }
 
         protected void openerCountChanged(Level level, BlockPos pos, BlockState state, int p_155364_, int x) {

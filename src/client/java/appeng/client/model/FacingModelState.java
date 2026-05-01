@@ -2,8 +2,8 @@ package appeng.client.model;
 
 import com.mojang.math.Quadrant;
 
-import net.minecraft.client.resources.model.BlockModelRotation;
-import net.minecraft.client.resources.model.ModelState;
+import net.minecraft.client.renderer.block.dispatch.BlockModelRotation;
+import net.minecraft.client.renderer.block.dispatch.ModelState;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 

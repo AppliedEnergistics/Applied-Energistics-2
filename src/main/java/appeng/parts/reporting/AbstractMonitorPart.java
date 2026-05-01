@@ -189,8 +189,8 @@ public abstract class AbstractMonitorPart extends AbstractDisplayPart
             }
 
             this.isLocked = !this.isLocked;
-            player.displayClientMessage(
-                    (this.isLocked ? PlayerMessages.isNowLocked : PlayerMessages.isNowUnlocked).text(), true);
+            player.sendOverlayMessage(
+                    (this.isLocked ? PlayerMessages.isNowLocked : PlayerMessages.isNowUnlocked).text());
             this.getHost().markForSave();
             this.getHost().markForUpdate();
             return true;

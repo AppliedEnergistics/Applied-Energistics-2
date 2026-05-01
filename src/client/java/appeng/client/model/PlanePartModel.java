@@ -10,22 +10,19 @@ import com.mojang.math.Transformation;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
-import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.BlockModelPart;
-import net.minecraft.client.renderer.block.model.SimpleModelWrapper;
-import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
-import net.minecraft.client.renderer.texture.TextureAtlas;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.Material;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
+import net.minecraft.client.renderer.block.dispatch.ModelState;
 import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ModelDebugName;
-import net.minecraft.client.resources.model.ModelState;
-import net.minecraft.client.resources.model.QuadCollection;
+import net.minecraft.client.resources.model.SimpleModelWrapper;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
+import net.minecraft.client.resources.model.geometry.QuadCollection;
+import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.core.BlockMath;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.BlockAndTintGetter;
 import net.neoforged.neoforge.client.model.quad.QuadTransforms;
 import net.neoforged.neoforge.model.data.ModelData;
 
@@ -42,13 +39,13 @@ public class PlanePartModel implements PartModel {
     private final Map<PlaneConnections, SimpleModelWrapper> onParts;
     private final Map<PlaneConnections, SimpleModelWrapper> offParts;
 
-    private final TextureAtlasSprite frontOnSprite;
-    private final TextureAtlasSprite frontOffSprite;
+    private final Material.Baked frontOnSprite;
+    private final Material.Baked frontOffSprite;
 
-    public PlanePartModel(TextureAtlasSprite frontOnSprite,
-            TextureAtlasSprite frontOffSprite,
-            TextureAtlasSprite sidesSprite,
-            TextureAtlasSprite backSprite,
+    public PlanePartModel(Material.Baked frontOnSprite,
+            Material.Baked frontOffSprite,
+            Material.Baked sidesSprite,
+            Material.Baked backSprite,
             Transformation transformation) {
         this.frontOnSprite = frontOnSprite;
         this.frontOffSprite = frontOffSprite;
@@ -63,19 +60,17 @@ public class PlanePartModel implements PartModel {
             this.onParts.put(permutation, new SimpleModelWrapper(
                     buildQuads(frontOnSprite, sidesSprite, backSprite, permutation, quadTransformer),
                     true,
-                    frontOnSprite,
-                    ChunkSectionLayer.SOLID));
+                    frontOnSprite));
             this.offParts.put(permutation, new SimpleModelWrapper(
                     buildQuads(frontOffSprite, sidesSprite, backSprite, permutation, quadTransformer),
                     true,
-                    frontOffSprite,
-                    ChunkSectionLayer.SOLID));
+                    frontOffSprite));
         }
     }
 
-    private static QuadCollection buildQuads(TextureAtlasSprite frontSprite,
-            TextureAtlasSprite sidesSprite,
-            TextureAtlasSprite backSprite,
+    private static QuadCollection buildQuads(Material.Baked frontSprite,
+            Material.Baked sidesSprite,
+            Material.Baked backSprite,
             PlaneConnections permutation,
             UnaryOperator<BakedQuad> quadTransformer) {
         var quads = new QuadCollection.Builder();
@@ -98,7 +93,7 @@ public class PlanePartModel implements PartModel {
 
     @Override
     public void collectParts(BlockAndTintGetter level, BlockPos pos, ModelData partModelData, RandomSource random,
-            List<BlockModelPart> parts) {
+            List<BlockStateModelPart> parts) {
         var connections = partModelData.get(PartModelData.CONNECTIONS);
         if (connections == null) {
             connections = DEFAULT_PERMUTATION;
@@ -113,7 +108,7 @@ public class PlanePartModel implements PartModel {
     }
 
     @Override
-    public TextureAtlasSprite particleIcon() {
+    public Material.Baked particleMaterial() {
         return frontOffSprite;
     }
 
@@ -140,12 +135,12 @@ public class PlanePartModel implements PartModel {
         public PartModel bake(ModelBaker baker, ModelState modelState) {
             ModelDebugName debugName = getClass()::toString;
 
-            var frontOnSprite = baker.sprites().get(new Material(TextureAtlas.LOCATION_BLOCKS, frontOnTexture),
+            var frontOnSprite = baker.materials().get(new Material(frontOnTexture),
                     debugName);
-            var frontOffSprite = baker.sprites().get(new Material(TextureAtlas.LOCATION_BLOCKS, frontOffTexture),
+            var frontOffSprite = baker.materials().get(new Material(frontOffTexture),
                     debugName);
-            var sidesSprite = baker.sprites().get(new Material(TextureAtlas.LOCATION_BLOCKS, sidesTexture), debugName);
-            var backSprite = baker.sprites().get(new Material(TextureAtlas.LOCATION_BLOCKS, backTexture), debugName);
+            var sidesSprite = baker.materials().get(new Material(sidesTexture), debugName);
+            var backSprite = baker.materials().get(new Material(backTexture), debugName);
 
             return new PlanePartModel(
                     frontOnSprite,

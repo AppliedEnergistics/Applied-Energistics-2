@@ -79,7 +79,7 @@ public final class ServerCompassService {
         if (chunkPos == null) {
             return null;
         }
-        var chunk = level.getChunkSource().getChunk(chunkPos.x, chunkPos.z, false);
+        var chunk = level.getChunkSource().getChunk(chunkPos.x(), chunkPos.z(), false);
         if (chunk == null) {
             // Do not chunk-load a chunk to check for a precise block position
             return chunkPos.getMiddleBlockPosition(0);
@@ -104,8 +104,8 @@ public final class ServerCompassService {
 
     @Nullable
     private static ChunkPos findClosestMeteoriteChunk(ServerLevel level, ChunkPos chunkPos) {
-        var cx = chunkPos.x;
-        var cz = chunkPos.z;
+        var cx = chunkPos.x();
+        var cz = chunkPos.z();
 
         // Am I standing on it?
         if (CompassRegion.hasCompassTarget(level, cx, cz)) {
@@ -201,8 +201,8 @@ public final class ServerCompassService {
         var chunkResults = new ConcurrentHashMap<ChunkPos, boolean[]>();
         for (var x = -256; x <= 256; x++) {
             for (var z = -256; z <= 256; z++) {
-                var cp = new ChunkPos(center.x + x, center.z + z);
-                futures.add(chunkSource.getChunkFuture(cp.x, cp.z, ChunkStatus.EMPTY, false)
+                var cp = new ChunkPos(center.x() + x, center.z() + z);
+                futures.add(chunkSource.getChunkFuture(cp.x(), cp.z(), ChunkStatus.EMPTY, false)
                         .thenAccept(result -> {
                             var chunk = result.orElse(null);
                             if (chunk == null) {
@@ -214,7 +214,7 @@ public final class ServerCompassService {
                                 // This causes the meteorite to generate and the chunk section to be marked
                                 // automatically
                                 if (!chunk.getReferencesForStructure(meteorite).isEmpty()) {
-                                    chunkSource.getChunkFuture(cp.x, cp.z, ChunkStatus.FEATURES, true);
+                                    chunkSource.getChunkFuture(cp.x(), cp.z(), ChunkStatus.FEATURES, true);
                                 }
                             }
                         }));
@@ -231,7 +231,7 @@ public final class ServerCompassService {
             var region = CompassRegion.get(level, entry.getKey());
             for (int i = 0; i < entry.getValue().length; i++) {
                 boolean hasBlock = entry.getValue()[i];
-                region.setHasCompassTarget(entry.getKey().x, entry.getKey().z, i, hasBlock);
+                region.setHasCompassTarget(entry.getKey().x(), entry.getKey().z(), i, hasBlock);
                 if (hasBlock) {
                     hits++;
                 }
@@ -266,8 +266,8 @@ public final class ServerCompassService {
     }
 
     private static void updateArea(CompassRegion compassRegion, ChunkAccess chunk, int sectionIndex) {
-        int cx = chunk.getPos().x;
-        int cz = chunk.getPos().z;
+        int cx = chunk.getPos().x();
+        int cz = chunk.getPos().z();
 
         var section = chunk.getSections()[sectionIndex];
         if (section.hasOnlyAir()) {

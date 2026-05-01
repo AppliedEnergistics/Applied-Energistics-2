@@ -46,7 +46,7 @@ public class CraftingPatternHelper {
 
         var recipe = level.recipeAccess().getRecipeFor(RecipeType.CRAFTING, recipeInput, level).orElseThrow();
 
-        var result = recipe.value().assemble(recipeInput, level.registryAccess());
+        var result = recipe.value().assemble(recipeInput);
 
         return PatternDetailsHelper.encodeCraftingPattern(
                 recipe,
@@ -72,7 +72,7 @@ public class CraftingPatternHelper {
             actualInputs[i] = i < inputs.length ? inputs[i] : ItemStack.EMPTY;
         }
 
-        var result = recipe.value().assemble(recipeInput, level.registryAccess());
+        var result = recipe.value().assemble(recipeInput);
 
         return PatternDetailsHelper.encodeCraftingPattern(
                 recipe,
@@ -92,7 +92,7 @@ public class CraftingPatternHelper {
         while (it.hasNext()) {
             var holder = it.next();
             StonecutterRecipe recipe = holder.value();
-            if (recipe.assemble(input, level.registryAccess()).is(outputItem.asItem())) {
+            if (recipe.assemble(input).is(outputItem.asItem())) {
                 foundRecipe = holder;
                 break;
             }
@@ -123,7 +123,7 @@ public class CraftingPatternHelper {
                             + addition);
         }
 
-        var result = foundRecipe.value().assemble(input, level.registryAccess());
+        var result = foundRecipe.value().assemble(input);
 
         return PatternDetailsHelper.encodeSmithingTablePattern(
                 foundRecipe,

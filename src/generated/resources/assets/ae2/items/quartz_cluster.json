@@ -1,6 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "ae2:block/quartz_cluster"
+    "model": "ae2:item/quartz_cluster"
   }
 }

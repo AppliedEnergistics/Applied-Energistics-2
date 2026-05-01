@@ -6,29 +6,29 @@ import java.util.Objects;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
-import net.minecraft.client.renderer.block.model.BlockModelPart;
-import net.minecraft.client.renderer.block.model.SimpleModelWrapper;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
+import net.minecraft.client.renderer.block.dispatch.ModelState;
 import net.minecraft.client.resources.model.ModelBaker;
-import net.minecraft.client.resources.model.ModelState;
+import net.minecraft.client.resources.model.SimpleModelWrapper;
+import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.BlockAndTintGetter;
 import net.neoforged.neoforge.model.data.ModelData;
 
 import appeng.client.api.model.parts.PartModel;
 import appeng.core.AppEng;
 import appeng.parts.automation.PartModelData;
 
-public record LockableMonitorPartModel(BlockModelPart unpoweredUnlockedModel,
-        BlockModelPart poweredUnlockedModel,
-        BlockModelPart unpoweredLockedModel,
-        BlockModelPart poweredLockedModel) implements PartModel {
+public record LockableMonitorPartModel(BlockStateModelPart unpoweredUnlockedModel,
+        BlockStateModelPart poweredUnlockedModel,
+        BlockStateModelPart unpoweredLockedModel,
+        BlockStateModelPart poweredLockedModel) implements PartModel {
 
     @Override
     public void collectParts(BlockAndTintGetter level, BlockPos pos, ModelData partModelData, RandomSource random,
-            List<BlockModelPart> parts) {
+            List<BlockStateModelPart> parts) {
         var locked = Objects.requireNonNullElse(partModelData.get(PartModelData.MONITOR_LOCKED), false);
         var statusIndicator = Objects.requireNonNullElse(partModelData.get(PartModelData.STATUS_INDICATOR),
                 PartModelData.StatusIndicatorState.UNPOWERED);
@@ -49,8 +49,8 @@ public record LockableMonitorPartModel(BlockModelPart unpoweredUnlockedModel,
     }
 
     @Override
-    public TextureAtlasSprite particleIcon() {
-        return unpoweredLockedModel.particleIcon();
+    public Material.Baked particleMaterial() {
+        return unpoweredLockedModel.particleMaterial();
     }
 
     public record Unbaked(Identifier unpoweredUnlockedModel,

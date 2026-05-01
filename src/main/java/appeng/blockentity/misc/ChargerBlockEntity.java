@@ -189,8 +189,8 @@ public class ChargerBlockEntity extends AENetworkedPoweredBlockEntity implements
                 if (this.level != null && this.level.getRandom().nextFloat() > 0.8f) {
                     this.extractAEPower(this.getInternalMaxPower(), Actionable.MODULATE, PowerMultiplier.CONFIG);
 
-                    var charged = Objects.requireNonNull(ChargerRecipes.findRecipe(level, myItem)).result;
-                    this.inv.setItemDirect(0, charged.copy());
+                    var charged = Objects.requireNonNull(ChargerRecipes.findRecipe(level, myItem)).result().create();
+                    this.inv.setItemDirect(0, charged);
 
                     changed = true;
                 }

@@ -5,7 +5,6 @@
     "ae2:inverted_toggle_bus"
   ],
   "result": {
-    "count": 1,
     "id": "ae2:toggle_bus"
   }
 }

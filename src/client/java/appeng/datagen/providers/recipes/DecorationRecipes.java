@@ -105,7 +105,7 @@ public class DecorationRecipes extends AE2RecipeProvider {
                 .define('#', inputBlock).unlockedBy(criterionName(block), has(inputBlock))
                 .save(output, prefix("shaped/stairs/", block.id()));
 
-        SingleItemRecipeBuilder.stonecutting(Ingredient.of(inputBlock), RecipeCategory.MISC, outputBlock)
+        SingleItemRecipeBuilder.stonecutting(Ingredient.of(inputBlock), RecipeCategory.MISC, outputBlock, 1)
                 .unlockedBy(criterionName(block), has(inputBlock))
                 .save(output, prefix("block_cutter/stairs/", stairs.id()));
 
@@ -125,7 +125,7 @@ public class DecorationRecipes extends AE2RecipeProvider {
                 .define('#', inputBlock).unlockedBy(criterionName(block), has(inputBlock))
                 .save(output, prefix("shaped/walls/", block.id()));
 
-        SingleItemRecipeBuilder.stonecutting(Ingredient.of(inputBlock), RecipeCategory.MISC, outputBlock)
+        SingleItemRecipeBuilder.stonecutting(Ingredient.of(inputBlock), RecipeCategory.MISC, outputBlock, 1)
                 .unlockedBy(criterionName(block), has(inputBlock))
                 .save(output, prefix("block_cutter/walls/", wall.id()));
 

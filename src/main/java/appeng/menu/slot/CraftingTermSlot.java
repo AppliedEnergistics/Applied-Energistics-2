@@ -215,7 +215,7 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
                 return ItemStack.EMPTY;
             }
 
-            is = r.value().assemble(recipeInput, level.registryAccess());
+            is = r.value().assemble(recipeInput);
 
             if (inv != null) {
                 var filter = ViewCellItem.createItemFilter(this.menu.getViewCells());
@@ -282,7 +282,7 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
                             craftingInputItems.set(slot, itemKey.toStack());
                             var adjustedCraftingInput = CraftingInput.of(gridWidth, gridHeight, craftingInputItems);
                             if (r.matches(adjustedCraftingInput, level)
-                                    && ItemStack.matches(r.assemble(adjustedCraftingInput, level.registryAccess()),
+                                    && ItemStack.matches(r.assemble(adjustedCraftingInput),
                                             output)) {
                                 if (filter == null || filter.isListed(itemKey)) {
                                     var ex = src.extract(itemKey, 1, Actionable.MODULATE, mySrc);

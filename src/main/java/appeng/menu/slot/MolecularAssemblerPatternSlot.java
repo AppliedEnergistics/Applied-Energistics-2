@@ -53,11 +53,11 @@ public class MolecularAssemblerPatternSlot extends AppEngSlot implements IOption
     @Override
     public boolean isSlotEnabled() {
         // Always enabled when there's an item in the inventory (otherwise you can't take it out...)
-        if (!getInventory().getStackInSlot(slot).isEmpty()) {
+        if (!getInventory().getStackInSlot(getSlotIndex()).isEmpty()) {
             return true;
         }
 
-        return slot >= 0 && slot < 9 && menu.isInputSlotEnabled(slot);
+        return getSlotIndex() >= 0 && getSlotIndex() < 9 && menu.isInputSlotEnabled(getSlotIndex());
     }
 
     @Override

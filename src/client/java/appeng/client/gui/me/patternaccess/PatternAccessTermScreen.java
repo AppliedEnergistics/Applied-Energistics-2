@@ -36,7 +36,7 @@ import com.google.common.collect.HashMultimap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.CharacterEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.Rect2i;
@@ -45,7 +45,7 @@ import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.ContainerInput;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
@@ -58,6 +58,7 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import appeng.api.config.Settings;
 import appeng.api.config.ShowPatternProviders;
 import appeng.api.config.TerminalStyle;
+import appeng.api.crafting.PatternDetailsHelper;
 import appeng.api.implementations.blockentities.PatternContainerGroup;
 import appeng.api.storage.ILinkStatus;
 import appeng.client.gui.AEBaseScreen;
@@ -182,7 +183,7 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
     }
 
     @Override
-    public void drawFG(GuiGraphics guiGraphics, int offsetX, int offsetY, int mouseX,
+    public void drawFG(GuiGraphicsExtractor guiGraphics, int offsetX, int offsetY, int mouseX,
             int mouseY) {
 
         this.menu.slots.removeIf(slot -> slot instanceof PatternSlot);
@@ -206,16 +207,16 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
 
                         // Indicate invalid patterns
                         var pattern = container.getInventory().getStackInSlot(offset + col);
-                        // TODO 1.21.4 Server needs to tell us which are invalid
-                        // TODO 1.21.4 if (!pattern.isEmpty() && PatternDetailsHelper.decodePattern(pattern, level) ==
-                        // null) {
-                        // TODO 1.21.4 guiGraphics.fill(
-                        // TODO 1.21.4 slot.x,
-                        // TODO 1.21.4 slot.y,
-                        // TODO 1.21.4 slot.x + 16,
-                        // TODO 1.21.4 slot.y + 16,
-                        // TODO 1.21.4 0x7fff0000);
-                        // TODO 1.21.4 }
+
+                        var level = menu.getPlayer().level();
+                        if (!pattern.isEmpty() && PatternDetailsHelper.decodePattern(pattern, level) == null) {
+                            guiGraphics.fill(
+                                    slot.x,
+                                    slot.y,
+                                    slot.x + 16,
+                                    slot.y + 16,
+                                    0x7fff0000);
+                        }
                     }
                 } else if (row instanceof GroupHeaderRow(PatternContainerGroup group)) {
                     if (group.icon() != null) {
@@ -242,7 +243,7 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
                     var text = Language.getInstance().getVisualOrder(
                             this.font.substrByWidth(displayName, TEXT_MAX_WIDTH - 10));
 
-                    guiGraphics.drawString(font, text, GUI_PADDING_X + PATTERN_PROVIDER_NAME_MARGIN_X + 10,
+                    guiGraphics.text(font, text, GUI_PADDING_X + PATTERN_PROVIDER_NAME_MARGIN_X + 10,
                             GUI_PADDING_Y + GUI_HEADER_HEIGHT + i * ROW_HEIGHT, textColor, false);
                 }
             }
@@ -252,7 +253,7 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
         renderLinkStatus(guiGraphics, getMenu().getLinkStatus());
     }
 
-    private void renderLinkStatus(GuiGraphics guiGraphics, ILinkStatus linkStatus) {
+    private void renderLinkStatus(GuiGraphicsExtractor guiGraphics, ILinkStatus linkStatus) {
         // Draw an overlay indicating the grid is disconnected
         if (!linkStatus.connected()) {
             var renderContext = new SimpleRenderContext(LytRect.empty(), guiGraphics);
@@ -274,7 +275,7 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
     }
 
     @Override
-    protected void renderTooltip(GuiGraphics guiGraphics, int x, int y) {
+    protected void extractTooltip(GuiGraphicsExtractor guiGraphics, int x, int y) {
         // Draw line tooltip
         if (hoveredSlot == null) {
             var hoveredLineIndex = getHoveredLineIndex(x, y);
@@ -286,7 +287,7 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
                 }
             }
         }
-        super.renderTooltip(guiGraphics, x, y);
+        super.extractTooltip(guiGraphics, x, y);
     }
 
     private int getHoveredLineIndex(int x, int y) {
@@ -317,7 +318,7 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
     }
 
     @Override
-    protected void slotClicked(Slot slot, int slotIdx, int mouseButton, ClickType clickType) {
+    protected void slotClicked(Slot slot, int slotIdx, int mouseButton, ContainerInput clickType) {
         if (slot instanceof PatternSlot) {
             InventoryAction action = null;
 
@@ -343,7 +344,7 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
 
             if (action != null) {
                 PatternSlot machineSlot = (PatternSlot) slot;
-                final InventoryActionPacket p = new InventoryActionPacket(action, machineSlot.slot,
+                final InventoryActionPacket p = new InventoryActionPacket(action, machineSlot.getSlotIndex(),
                         machineSlot.getMachineInv().getServerId());
                 ClientPacketDistributor.sendToServer(p);
             }
@@ -351,7 +352,7 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
             return;
         }
 
-        if (clickType == ClickType.QUICK_MOVE && menu.isPlayerSideSlot(slot)) {
+        if (clickType == ContainerInput.QUICK_MOVE && menu.isPlayerSideSlot(slot)) {
             Set<Long> visiblePatternContainers = new LinkedHashSet<>();
             for (var row : this.rows) {
                 if (row instanceof SlotsRow slotsRow) {
@@ -370,7 +371,7 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
     }
 
     @Override
-    public void drawBG(GuiGraphics guiGraphics, int offsetX, int offsetY, int mouseX,
+    public void drawBG(GuiGraphicsExtractor guiGraphics, int offsetX, int offsetY, int mouseX,
             int mouseY, float partialTicks) {
         // Draw the top of the dialog
         blit(guiGraphics, offsetX, offsetY, HEADER_BBOX);
@@ -567,17 +568,17 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
     private String getPatternSearchText(ItemStack stack) {
         var level = menu.getPlayer().level();
         var text = new StringBuilder();
-// TODO 1.21.4        var pattern = PatternDetailsHelper.decodePattern(stack, level);
-// TODO 1.21.4
-// TODO 1.21.4        if (pattern != null) {
-// TODO 1.21.4            for (var output : pattern.getOutputs()) {
-// TODO 1.21.4                output.what().getDisplayName().visit(content -> {
-// TODO 1.21.4                    text.append(content.toLowerCase());
-// TODO 1.21.4                    return Optional.empty();
-// TODO 1.21.4                });
-// TODO 1.21.4                text.append('\n');
-// TODO 1.21.4            }
-// TODO 1.21.4        }
+        var pattern = PatternDetailsHelper.decodePattern(stack, level);
+
+        if (pattern != null) {
+            for (var output : pattern.getOutputs()) {
+                output.what().getDisplayName().visit(content -> {
+                    text.append(content.toLowerCase());
+                    return Optional.empty();
+                });
+                text.append('\n');
+            }
+        }
 
         return text.toString();
     }
@@ -630,7 +631,7 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
     /**
      * A version of blit that lets us pass a source rectangle
      */
-    private void blit(GuiGraphics guiGraphics, int offsetX, int offsetY, Rect2i srcRect) {
+    private void blit(GuiGraphicsExtractor guiGraphics, int offsetX, int offsetY, Rect2i srcRect) {
         var texture = AppEng.makeId("textures/guis/patternaccessterminal.png");
         guiGraphics.blit(
                 RenderPipelines.GUI_TEXTURED,

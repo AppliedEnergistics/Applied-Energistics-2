@@ -23,7 +23,7 @@ import java.time.Duration;
 import com.mojang.blaze3d.platform.InputConstants;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.data.AtlasIds;
 import net.minecraft.resources.Identifier;
@@ -104,7 +104,7 @@ public class Scrollbar implements IScrollSource, ICompositeWidget {
      * The GUI is assumed to already contain a prebaked scrollbar track in its background.
      */
     @Override
-    public void drawForegroundLayer(GuiGraphics guiGraphics, Rect2i bounds, Point mouse) {
+    public void drawForegroundLayer(GuiGraphicsExtractor guiGraphics, Rect2i bounds, Point mouse) {
         // Draw the track (nice for debugging)
         // guiGraphics.fill( displayX, displayY, this.displayX + width, this.displayY +
         // height, 0xffff0000);

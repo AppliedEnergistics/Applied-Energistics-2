@@ -23,7 +23,7 @@ import java.util.List;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.client.sounds.SoundManager;
@@ -59,7 +59,7 @@ public abstract class IconButton extends Button implements ITooltip {
     }
 
     @Override
-    public void renderContents(GuiGraphics guiGraphics, int mouseX, int mouseY, float partial) {
+    public void extractContents(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partial) {
 
         if (this.visible) {
             var icon = this.getIcon();
@@ -74,16 +74,16 @@ public abstract class IconButton extends Button implements ITooltip {
 
             if (this.halfSize) {
                 if (!disableBackground) {
-                    Blitter.icon(Icon.TOOLBAR_BUTTON_BACKGROUND).dest(getX(), getY()).zOffset(10).blit(guiGraphics);
+                    Blitter.icon(Icon.TOOLBAR_BUTTON_BACKGROUND).dest(getX(), getY()).blit(guiGraphics);
                 }
                 if (item != null) {
-                    guiGraphics.renderItem(new ItemStack(item), getX(), getY());
+                    guiGraphics.item(new ItemStack(item), getX(), getY());
                 } else if (icon != null) {
                     Blitter blitter = Blitter.icon(icon);
                     if (!this.active) {
                         blitter.opacity(0.5f);
                     }
-                    blitter.dest(getX(), getY()).zOffset(20).blit(guiGraphics);
+                    blitter.dest(getX(), getY()).blit(guiGraphics);
                 }
             } else {
                 if (!disableBackground) {
@@ -92,13 +92,12 @@ public abstract class IconButton extends Button implements ITooltip {
 
                     Blitter.icon(bgIcon)
                             .dest(getX() - 1, getY() + yOffset, 18, 20)
-                            .zOffset(2)
                             .blit(guiGraphics);
                 }
                 if (item != null) {
-                    guiGraphics.renderItem(new ItemStack(item), getX(), getY() + 1 + yOffset);
+                    guiGraphics.item(new ItemStack(item), getX(), getY() + 1 + yOffset);
                 } else if (icon != null) {
-                    Blitter.icon(icon).dest(getX(), getY() + 1 + yOffset).zOffset(3).blit(guiGraphics);
+                    Blitter.icon(icon).dest(getX(), getY() + 1 + yOffset).blit(guiGraphics);
                 }
             }
         }

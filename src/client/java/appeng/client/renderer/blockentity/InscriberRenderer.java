@@ -25,7 +25,6 @@ import org.jetbrains.annotations.Nullable;
 import org.joml.Quaternionf;
 
 import net.minecraft.client.renderer.LevelRenderer;
-import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
@@ -33,13 +32,13 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.item.ItemModelResolver;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
-import net.minecraft.client.renderer.state.CameraRenderState;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.Material;
-import net.minecraft.client.resources.model.MaterialSet;
+import net.minecraft.client.resources.model.sprite.SpriteGetter;
+import net.minecraft.client.resources.model.sprite.SpriteId;
 import net.minecraft.core.Direction;
+import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
@@ -57,15 +56,14 @@ public final class InscriberRenderer implements BlockEntityRenderer<InscriberBlo
 
     private static final float ITEM_RENDER_SCALE = 1.0f / 1.2f;
 
-    private static final Material TEXTURE_INSIDE = new Material(TextureAtlas.LOCATION_BLOCKS,
-            AppEng.makeId("block/inscriber_inside"));
+    private static final SpriteId TEXTURE_INSIDE = Sheets.BLOCKS_MAPPER.apply(AppEng.makeId("inscriber_inside"));
 
     private final ItemModelResolver itemModelResolver;
-    private final MaterialSet materials;
+    private final SpriteGetter sprites;
 
     public InscriberRenderer(BlockEntityRendererProvider.Context context) {
         this.itemModelResolver = context.itemModelResolver();
-        this.materials = context.materials();
+        this.sprites = context.sprites();
     }
 
     @Override
@@ -80,9 +78,9 @@ public final class InscriberRenderer implements BlockEntityRenderer<InscriberBlo
         // Calculate the lightlevel in front of the drive for lighting the exposed cell model.
         if (be.getLevel() != null) {
             var frontPos = be.getBlockPos().relative(be.getFront());
-            state.frontLightCoords = LevelRenderer.getLightColor(be.getLevel(), frontPos);
+            state.frontLightCoords = LevelRenderer.getLightCoords(be.getLevel(), frontPos);
         } else {
-            state.frontLightCoords = LightTexture.FULL_BRIGHT;
+            state.frontLightCoords = LightCoordsUtil.FULL_BRIGHT;
         }
 
         state.orientation = BlockOrientation.get(be);
@@ -137,7 +135,7 @@ public final class InscriberRenderer implements BlockEntityRenderer<InscriberBlo
                     // The "PRESS" type will consume the presses so they should not render after
                     // completing the press animation
                     renderPresses = ir.getProcessType() == InscriberProcessType.INSCRIBE;
-                    middleItem = ir.getResultItem().copy();
+                    middleItem = ir.result().create();
                 }
             }
         } else {
@@ -169,7 +167,7 @@ public final class InscriberRenderer implements BlockEntityRenderer<InscriberBlo
         poseStack.mulPose(state.orientation.getQuaternion());
         poseStack.translate(-0.5F, -0.5F, -0.5F);
 
-        var tas = materials.get(TEXTURE_INSIDE);
+        var tas = sprites.get(TEXTURE_INSIDE);
 
         var combinedOverlay = OverlayTexture.NO_OVERLAY;
         var combinedLight = state.frontLightCoords;
@@ -265,13 +263,13 @@ public final class InscriberRenderer implements BlockEntityRenderer<InscriberBlo
         });
 
         // render items.
-        renderItem(poseStack, state.middleItem, 0, combinedLight, nodes);
+        item(poseStack, state.middleItem, 0, combinedLight, nodes);
 
         if (!state.topItem.isEmpty()) {
-            renderItem(poseStack, state.topItem, press, combinedLight, nodes);
+            item(poseStack, state.topItem, press, combinedLight, nodes);
         }
         if (!state.bottomItem.isEmpty()) {
-            renderItem(poseStack, state.bottomItem, press, combinedLight, nodes);
+            item(poseStack, state.bottomItem, press, combinedLight, nodes);
         }
 
         poseStack.popPose();
@@ -287,7 +285,7 @@ public final class InscriberRenderer implements BlockEntityRenderer<InscriberBlo
         vb.setNormal(pose, front.getStepX(), front.getStepY(), front.getStepZ());
     }
 
-    private void renderItem(PoseStack poseStack, ItemStackRenderState stack, float o, int lightCoords,
+    private void item(PoseStack poseStack, ItemStackRenderState stack, float o, int lightCoords,
             SubmitNodeCollector nodes) {
 
         if (!stack.isEmpty()) {

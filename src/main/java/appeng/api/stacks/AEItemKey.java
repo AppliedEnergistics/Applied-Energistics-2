@@ -20,6 +20,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
@@ -33,17 +34,13 @@ import appeng.core.AELog;
 
 public final class AEItemKey extends AEKey {
 
-    /**
-     * We currently cannot directly use {@link ItemStack#SINGLE_ITEM_CODEC} since it is wrapped up in a lazy codec,
-     * which prevents the dispatch codec from recognizing it as a MapCodec, making it unable to inline the fields.
-     */
     public static final MapCodec<AEItemKey> MAP_CODEC = RecordCodecBuilder.mapCodec(
             builder -> builder.group(
                     BuiltInRegistries.ITEM.holderByNameCodec().validate(
                             item -> item.is(Items.AIR.builtInRegistryHolder())
                                     ? DataResult.error(() -> "Item must not be minecraft:air")
                                     : DataResult.success(item))
-                            .fieldOf("id").forGetter(key -> key.stack.getItemHolder()),
+                            .fieldOf("id").forGetter(key -> key.stack.typeHolder()),
                     DataComponentPatch.CODEC.optionalFieldOf("components", DataComponentPatch.EMPTY)
                             .forGetter(key -> key.stack.getComponentsPatch()))
                     .apply(builder, (item, componentPatch) -> new AEItemKey(new ItemStack(item, 1, componentPatch))));
@@ -60,6 +57,15 @@ public final class AEItemKey extends AEKey {
         this.hashCode = ItemStack.hashItemAndComponents(stack);
         this.maxStackSize = stack.getMaxStackSize();
         this.damage = stack.getDamageValue();
+    }
+
+    @Nullable
+    public static AEItemKey of(@Nullable ItemStackTemplate stack) {
+        if (stack == null) {
+            return null;
+        }
+
+        return new AEItemKey(stack.create());
     }
 
     @Nullable

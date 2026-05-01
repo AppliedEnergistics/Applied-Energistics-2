@@ -8,7 +8,7 @@ import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.item.ItemModelResolver;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
@@ -33,13 +33,13 @@ public class ItemKeyRenderer implements AEKeyRenderer<AEItemKey, ItemStackRender
     }
 
     @Override
-    public void drawInGui(Minecraft minecraft, GuiGraphics guiGraphics, int x, int y, AEItemKey stack) {
+    public void drawInGui(Minecraft minecraft, GuiGraphicsExtractor guiGraphics, int x, int y, AEItemKey stack) {
         var poseStack = guiGraphics.pose();
         poseStack.pushMatrix();
 
         var displayStack = stack.getReadOnlyStack();
-        guiGraphics.renderItem(displayStack, x, y);
-        guiGraphics.renderItemDecorations(minecraft.font, displayStack, x, y, "");
+        guiGraphics.item(displayStack, x, y);
+        guiGraphics.itemDecorations(minecraft.font, displayStack, x, y, "");
 
         poseStack.popMatrix();
     }

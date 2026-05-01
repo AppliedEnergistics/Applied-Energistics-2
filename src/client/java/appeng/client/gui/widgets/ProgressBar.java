@@ -22,7 +22,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.renderer.Rect2i;
@@ -60,7 +60,7 @@ public class ProgressBar extends AbstractWidget implements ITooltip {
     }
 
     @Override
-    public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    public void extractWidgetRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         if (this.visible) {
             int max = this.source.getMaxProgress();
             int current = this.source.getCurrentProgress();

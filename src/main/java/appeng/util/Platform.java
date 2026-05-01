@@ -24,18 +24,19 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Stream;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.mojang.authlib.GameProfile;
 
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
@@ -47,7 +48,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Containers;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
@@ -55,6 +55,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.fml.ModList;
+import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.fml.loading.FMLLoader;
 import net.neoforged.fml.util.thread.SidedThreadGroups;
 import net.neoforged.neoforge.common.util.FakePlayerFactory;
@@ -66,12 +67,16 @@ import appeng.api.config.SortOrder;
 import appeng.api.implementations.items.IAEItemPowerStorage;
 import appeng.api.util.DimensionalBlockPos;
 import appeng.core.AEConfig;
-import appeng.core.AELog;
 import appeng.hooks.VisualStateSaving;
 import appeng.hooks.ticking.TickHandler;
 import appeng.util.helpers.P2PHelper;
 
 public class Platform {
+
+    private static final Logger LOG = LoggerFactory.getLogger(Platform.class);
+
+    public static final Direction[] CULL_FACES = Stream.concat(Direction.stream(), Stream.of((Direction) null))
+            .toArray(Direction[]::new);
 
     @VisibleForTesting
     public static ThreadGroup serverThreadGroup = SidedThreadGroups.SERVER;
@@ -89,17 +94,6 @@ public class Platform {
     private static final Class<?> ponderLevelClass = findPonderLevelClass(
             "com.simibubi.create.foundation.ponder.PonderWorld");
 
-    // This hack is used to allow tests and the guidebook to provide a recipe manager before the client loads a world
-    public static RecipeManager fallbackClientRecipeManager;
-    public static RegistryAccess fallbackClientRegistryAccess;
-
-    public static RegistryAccess getClientRegistryAccess() {
-        if (Minecraft.getInstance() != null && Minecraft.getInstance().level != null) {
-            return Minecraft.getInstance().level.registryAccess();
-        }
-        return Objects.requireNonNull(Platform.fallbackClientRegistryAccess);
-    }
-
     private static Class<?> findPonderLevelClass(String className) {
         if (!hasClientClasses()) {
             return null; // Don't attempt this on a dedicated server
@@ -108,7 +102,8 @@ public class Platform {
         try {
             return Class.forName(className);
         } catch (ClassNotFoundException ignored) {
-            AELog.warn("Unable to find class %s. Integration with PonderJS disabled.", className);
+            LOG.atLevel(FMLEnvironment.isProduction() ? org.slf4j.event.Level.DEBUG : org.slf4j.event.Level.WARN)
+                    .log("Unable to find class {}. Integration with PonderJS disabled.", className);
             return null;
         }
     }
@@ -327,7 +322,7 @@ public class Platform {
      * This means that it must both be fully loaded, and close enough to a ticking ticket.
      */
     public static boolean areBlockEntitiesTicking(@Nullable Level level, BlockPos pos) {
-        return areBlockEntitiesTicking(level, ChunkPos.asLong(pos));
+        return areBlockEntitiesTicking(level, ChunkPos.pack(pos));
     }
 
     public static boolean areBlockEntitiesTicking(@Nullable Level level, long chunkPos) {

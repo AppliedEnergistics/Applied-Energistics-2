@@ -29,23 +29,16 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.Identifier;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.PlacementInfo;
-import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeBookCategories;
-import net.minecraft.world.item.crafting.RecipeBookCategory;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateHolder;
@@ -54,14 +47,14 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.neoforged.neoforge.network.codec.NeoForgeStreamCodecs;
 
-import appeng.core.AppEng;
 import appeng.items.tools.powered.EntropyManipulatorItem;
 import appeng.recipes.AERecipeTypes;
+import appeng.recipes.MechanicsRecipe;
 
 /**
  * A special recipe used for the {@link EntropyManipulatorItem}.
  */
-public class EntropyRecipe implements Recipe<RecipeInput> {
+public class EntropyRecipe extends MechanicsRecipe<RecipeInput> {
 
     public static final MapCodec<EntropyRecipe> CODEC = RecordCodecBuilder.mapCodec(builder -> builder.group(
             EntropyMode.CODEC.fieldOf("mode").forGetter(EntropyRecipe::getMode),
@@ -77,8 +70,7 @@ public class EntropyRecipe implements Recipe<RecipeInput> {
             EntropyRecipe::getOutput,
             EntropyRecipe::new);
 
-    @Deprecated(forRemoval = true, since = "1.21.1")
-    public static final Identifier TYPE_ID = AppEng.makeId("entropy");
+    public static final RecipeSerializer<EntropyRecipe> SERIALIZER = new RecipeSerializer<>(CODEC, STREAM_CODEC);
 
     private final EntropyMode mode;
     private final Input input;
@@ -91,33 +83,13 @@ public class EntropyRecipe implements Recipe<RecipeInput> {
     }
 
     @Override
-    public boolean matches(RecipeInput inv, Level level) {
-        return false;
-    }
-
-    @Override
-    public ItemStack assemble(RecipeInput inv, HolderLookup.Provider registries) {
-        return ItemStack.EMPTY;
-    }
-
-    @Override
     public RecipeSerializer<EntropyRecipe> getSerializer() {
-        return EntropyRecipeSerializer.INSTANCE;
+        return SERIALIZER;
     }
 
     @Override
     public RecipeType<EntropyRecipe> getType() {
         return AERecipeTypes.ENTROPY;
-    }
-
-    @Override
-    public PlacementInfo placementInfo() {
-        return PlacementInfo.NOT_PLACEABLE;
-    }
-
-    @Override
-    public RecipeBookCategory recipeBookCategory() {
-        return RecipeBookCategories.CRAFTING_MISC;
     }
 
     public EntropyMode getMode() {
@@ -134,7 +106,7 @@ public class EntropyRecipe implements Recipe<RecipeInput> {
         return output.fluid().map(fluidOutput -> fluidOutput.apply(originalFluidState)).orElse(null);
     }
 
-    public List<ItemStack> getDrops() {
+    public List<ItemStackTemplate> getDrops() {
         return this.output.drops();
     }
 
@@ -238,12 +210,12 @@ public class EntropyRecipe implements Recipe<RecipeInput> {
                 FluidInput::new);
     }
 
-    public record Output(Optional<BlockOutput> block, Optional<FluidOutput> fluid, List<ItemStack> drops) {
+    public record Output(Optional<BlockOutput> block, Optional<FluidOutput> fluid, List<ItemStackTemplate> drops) {
 
         public static Codec<Output> CODEC = RecordCodecBuilder.create(builder -> builder.group(
                 BlockOutput.CODEC.optionalFieldOf("block").forGetter(Output::block),
                 FluidOutput.CODEC.optionalFieldOf("fluid").forGetter(Output::fluid),
-                ItemStack.CODEC.listOf().optionalFieldOf("drops", List.of()).forGetter(Output::drops))
+                ItemStackTemplate.CODEC.listOf().optionalFieldOf("drops", List.of()).forGetter(Output::drops))
                 .apply(builder, Output::new));
 
         public static StreamCodec<RegistryFriendlyByteBuf, Output> STREAM_CODEC = StreamCodec.composite(
@@ -251,7 +223,7 @@ public class EntropyRecipe implements Recipe<RecipeInput> {
                 Output::block,
                 FluidOutput.STREAM_CODEC.apply(ByteBufCodecs::optional),
                 Output::fluid,
-                ItemStack.OPTIONAL_LIST_STREAM_CODEC,
+                ItemStackTemplate.STREAM_CODEC.apply(ByteBufCodecs.list()),
                 Output::drops,
                 Output::new);
     }

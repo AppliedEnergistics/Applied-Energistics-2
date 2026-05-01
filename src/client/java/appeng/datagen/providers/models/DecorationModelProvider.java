@@ -38,15 +38,14 @@ import net.minecraft.client.data.models.model.ModelLocationUtils;
 import net.minecraft.client.data.models.model.ModelTemplates;
 import net.minecraft.client.data.models.model.TextureMapping;
 import net.minecraft.client.data.models.model.TextureSlot;
-import net.minecraft.client.renderer.block.model.VariantMutator;
+import net.minecraft.client.renderer.block.dispatch.VariantMutator;
+import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.SlabBlock;
 import net.minecraft.world.level.block.StairBlock;
 import net.minecraft.world.level.block.WallBlock;
 
 import appeng.block.misc.QuartzFixtureBlock;
-import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.BlockDefinition;
 
@@ -84,11 +83,11 @@ public class DecorationModelProvider extends ModelSubProvider {
                                                 modelOutput)),
                                 "athena:ctm",
                                 Map.of(
-                                        "center", AppEng.makeId("block/smooth_sky_stone_block_center"),
-                                        "empty", AppEng.makeId("block/smooth_sky_stone_block_empty"),
-                                        "horizontal", AppEng.makeId("block/smooth_sky_stone_block_h"),
-                                        "vertical", AppEng.makeId("block/smooth_sky_stone_block_v"),
-                                        "particle", AppEng.makeId("block/smooth_sky_stone_block")))));
+                                        "center", makeMaterial("block/smooth_sky_stone_block_center"),
+                                        "empty", makeMaterial("block/smooth_sky_stone_block_empty"),
+                                        "horizontal", makeMaterial("block/smooth_sky_stone_block_h"),
+                                        "vertical", makeMaterial("block/smooth_sky_stone_block_v"),
+                                        "particle", makeMaterial("block/smooth_sky_stone_block")))));
         stairsBlock(AEBlocks.SMOOTH_SKY_STONE_STAIRS, AEBlocks.SMOOTH_SKY_STONE_BLOCK);
         slabBlock(AEBlocks.SMOOTH_SKY_STONE_SLAB, AEBlocks.SMOOTH_SKY_STONE_BLOCK);
         wall(AEBlocks.SMOOTH_SKY_STONE_WALL, getBlockTexture(AEBlocks.SMOOTH_SKY_STONE_BLOCK));
@@ -128,7 +127,7 @@ public class DecorationModelProvider extends ModelSubProvider {
                                 modelOutput)),
                                 "athena:pillar",
                                 Map.of(
-                                        "bottom", AppEng.makeId("block/quartz_pillar_bottom"),
+                                        "bottom", makeMaterial("block/quartz_pillar_bottom"),
                                         "center", sideTexture,
                                         "self", sideTexture,
                                         "top", topTexture,
@@ -160,11 +159,11 @@ public class DecorationModelProvider extends ModelSubProvider {
                                 TextureMapping.cube(AEBlocks.CUT_QUARTZ_BLOCK.block()), modelOutput)),
                                 "athena:ctm",
                                 Map.of(
-                                        "center", AppEng.makeId("block/cut_quartz_block_center"),
-                                        "empty", AppEng.makeId("block/smooth_quartz_block"),
-                                        "horizontal", AppEng.makeId("block/cut_quartz_block_h"),
-                                        "vertical", AppEng.makeId("block/cut_quartz_block_v"),
-                                        "particle", AppEng.makeId("block/cut_quartz_block")))));
+                                        "center", makeMaterial("block/cut_quartz_block_center"),
+                                        "empty", makeMaterial("block/smooth_quartz_block"),
+                                        "horizontal", makeMaterial("block/cut_quartz_block_h"),
+                                        "vertical", makeMaterial("block/cut_quartz_block_v"),
+                                        "particle", makeMaterial("block/cut_quartz_block")))));
         stairsBlock(AEBlocks.CUT_QUARTZ_STAIRS, AEBlocks.CUT_QUARTZ_BLOCK);
         slabBlock(AEBlocks.CUT_QUARTZ_SLAB, AEBlocks.CUT_QUARTZ_BLOCK);
         wall(AEBlocks.CUT_QUARTZ_WALL, getBlockTexture(AEBlocks.CUT_QUARTZ_BLOCK));
@@ -178,11 +177,11 @@ public class DecorationModelProvider extends ModelSubProvider {
                                 TextureMapping.cube(AEBlocks.QUARTZ_BLOCK.block()), modelOutput)),
                                 "athena:ctm",
                                 Map.of(
-                                        "center", AppEng.makeId("block/quartz_block_center"),
-                                        "empty", AppEng.makeId("block/quartz_block_empty"),
-                                        "horizontal", AppEng.makeId("block/quartz_block_h"),
-                                        "vertical", AppEng.makeId("block/quartz_block_v"),
-                                        "particle", AppEng.makeId("block/quartz_block")))));
+                                        "center", makeMaterial("block/quartz_block_center"),
+                                        "empty", makeMaterial("block/quartz_block_empty"),
+                                        "horizontal", makeMaterial("block/quartz_block_h"),
+                                        "vertical", makeMaterial("block/quartz_block_v"),
+                                        "particle", makeMaterial("block/quartz_block")))));
         stairsBlock(AEBlocks.QUARTZ_STAIRS, AEBlocks.QUARTZ_BLOCK);
         slabBlock(AEBlocks.QUARTZ_SLAB, AEBlocks.QUARTZ_BLOCK);
         wall(AEBlocks.QUARTZ_WALL, getBlockTexture(AEBlocks.QUARTZ_BLOCK));
@@ -275,7 +274,7 @@ public class DecorationModelProvider extends ModelSubProvider {
     }
 
     private MultiVariant applyAthena(MultiVariant delegate, String loader,
-            Map<String, Identifier> ctmTextures) {
+            Map<String, Material> ctmTextures) {
         /*
          * {
          * 
@@ -291,7 +290,7 @@ public class DecorationModelProvider extends ModelSubProvider {
         return delegate;
     }
 
-    private void wall(BlockDefinition<? extends WallBlock> blockDef, Identifier texture) {
+    private void wall(BlockDefinition<? extends WallBlock> blockDef, Material texture) {
         var block = blockDef.block();
 
         var textures = new TextureMapping().put(TextureSlot.WALL, texture);
@@ -316,7 +315,7 @@ public class DecorationModelProvider extends ModelSubProvider {
     }
 
     private void slabBlock(BlockDefinition<? extends SlabBlock> blockDef, BlockDefinition<?> doubleModelDonor,
-            Identifier topTexture, Identifier sideTexture, Identifier bottomTexture) {
+            Material topTexture, Material sideTexture, Material bottomTexture) {
         var block = blockDef.block();
 
         var textures = new TextureMapping()
@@ -341,8 +340,8 @@ public class DecorationModelProvider extends ModelSubProvider {
         stairsBlock(stairsBlock, blockTexture, blockTexture, blockTexture);
     }
 
-    private void stairsBlock(BlockDefinition<? extends StairBlock> blockDef, Identifier topTexture,
-            Identifier sideTexture, Identifier bottomTexture) {
+    private void stairsBlock(BlockDefinition<? extends StairBlock> blockDef, Material topTexture,
+            Material sideTexture, Material bottomTexture) {
         var block = blockDef.block();
 
         var textures = new TextureMapping()

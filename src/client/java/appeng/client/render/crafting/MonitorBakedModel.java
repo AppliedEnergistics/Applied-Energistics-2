@@ -18,7 +18,7 @@
 
 package appeng.client.render.crafting;
 
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.model.data.ModelData;
@@ -29,6 +29,7 @@ import appeng.api.util.AEColor;
 import appeng.block.crafting.CraftingMonitorBlock;
 import appeng.blockentity.crafting.CraftingMonitorModelData;
 import appeng.client.render.CubeBuilder;
+import appeng.client.render.MaterialUtil;
 
 /**
  * The baked model for the crafting monitor. Please note that this model doesn't handle the item being displayed. That
@@ -37,25 +38,31 @@ import appeng.client.render.CubeBuilder;
  */
 public class MonitorBakedModel extends CraftingCubeModel {
 
-    private final TextureAtlasSprite chassisTexture;
+    private final Material.Baked chassisTexture;
 
-    private final TextureAtlasSprite baseTexture;
+    private final Material.Baked baseTexture;
 
-    private final TextureAtlasSprite lightDarkTexture;
+    private final Material.Baked lightDarkTexture;
 
-    private final TextureAtlasSprite lightMediumTexture;
+    private final Material.Baked lightMediumTexture;
 
-    private final TextureAtlasSprite lightBrightTexture;
+    private final Material.Baked lightBrightTexture;
 
-    public MonitorBakedModel(TextureAtlasSprite ringCorner, TextureAtlasSprite ringHor, TextureAtlasSprite ringVer,
-            TextureAtlasSprite chassisTexture, TextureAtlasSprite baseTexture, TextureAtlasSprite lightDarkTexture,
-            TextureAtlasSprite lightMediumTexture, TextureAtlasSprite lightBrightTexture) {
+    public MonitorBakedModel(Material.Baked ringCorner, Material.Baked ringHor, Material.Baked ringVer,
+            Material.Baked chassisTexture, Material.Baked baseTexture, Material.Baked lightDarkTexture,
+            Material.Baked lightMediumTexture, Material.Baked lightBrightTexture) {
         super(ringCorner, ringHor, ringVer);
         this.chassisTexture = chassisTexture;
         this.baseTexture = baseTexture;
         this.lightDarkTexture = lightDarkTexture;
         this.lightMediumTexture = lightMediumTexture;
         this.lightBrightTexture = lightBrightTexture;
+        this.materialFlags = this.materialFlags | MaterialUtil.getMaterialFlags(
+                chassisTexture,
+                baseTexture,
+                lightDarkTexture,
+                lightMediumTexture,
+                lightBrightTexture);
     }
 
     @Override

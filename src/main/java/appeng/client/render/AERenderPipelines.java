@@ -1,8 +1,10 @@
 package appeng.client.render;
 
 import com.mojang.blaze3d.pipeline.BlendFunction;
+import com.mojang.blaze3d.pipeline.ColorTargetState;
+import com.mojang.blaze3d.pipeline.DepthStencilState;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
-import com.mojang.blaze3d.platform.DepthTestFunction;
+import com.mojang.blaze3d.platform.CompareOp;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
 
@@ -20,7 +22,7 @@ public final class AERenderPipelines {
      */
     public static final RenderPipeline LINES_BEHIND_BLOCK = RenderPipelines.LINES.toBuilder()
             .withLocation(AppEng.makeId("pipeline/lines_behind_block"))
-            .withDepthTestFunction(DepthTestFunction.GREATER_DEPTH_TEST)
+            .withDepthStencilState(new DepthStencilState(CompareOp.GREATER_THAN, false))
             .build();
 
     public static final RenderPipeline SPATIAL_SKYBOX = RenderPipeline
@@ -28,8 +30,8 @@ public final class AERenderPipelines {
             .withLocation(AppEng.makeId("pipeline/spatial_skybox"))
             .withVertexShader("core/position_color")
             .withFragmentShader("core/position_color")
-            .withoutBlend()
-            .withDepthWrite(false)
+            .withColorTargetState(ColorTargetState.DEFAULT)
+            .withDepthStencilState(new DepthStencilState(CompareOp.LESS_THAN_OR_EQUAL, false))
             .withVertexFormat(DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS)
             .build();
 
@@ -38,8 +40,8 @@ public final class AERenderPipelines {
             .withLocation(AppEng.makeId("pipeline/spatial_skybox_sparkles"))
             .withVertexShader("core/position_color")
             .withFragmentShader("core/position_color")
-            .withBlend(BlendFunction.ADDITIVE)
-            .withDepthWrite(false)
+            .withColorTargetState(new ColorTargetState(BlendFunction.ADDITIVE))
+            .withDepthStencilState(new DepthStencilState(CompareOp.LESS_THAN_OR_EQUAL, false))
             .withVertexFormat(DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS)
             .build();
 
@@ -48,24 +50,22 @@ public final class AERenderPipelines {
             .withLocation(AppEng.makeId("pipeline/area_overlay_face"))
             .withVertexShader("core/position_color")
             .withFragmentShader("core/position_color")
-            .withBlend(BlendFunction.TRANSLUCENT)
-            .withDepthTestFunction(DepthTestFunction.LEQUAL_DEPTH_TEST)
-            .withDepthWrite(false)
+            .withColorTargetState(new ColorTargetState(BlendFunction.TRANSLUCENT))
+            .withDepthStencilState(new DepthStencilState(CompareOp.LESS_THAN_OR_EQUAL, false))
             .withCull(false)
             .withVertexFormat(DefaultVertexFormat.POSITION_COLOR_NORMAL, VertexFormat.Mode.QUADS)
             .build();
 
     public static final RenderPipeline AREA_OVERLAY_LINE = RenderPipeline.builder(RenderPipelines.LINES_SNIPPET)
             .withLocation(AppEng.makeId("pipeline/area_overlay_line"))
-            .withDepthTestFunction(DepthTestFunction.LEQUAL_DEPTH_TEST)
-            .withBlend(BlendFunction.ADDITIVE)
+            .withDepthStencilState(DepthStencilState.DEFAULT)
+            .withColorTargetState(new ColorTargetState(BlendFunction.ADDITIVE))
             .build();
 
     public static final RenderPipeline AREA_OVERLAY_LINE_OCCLUDED = RenderPipeline
             .builder(RenderPipelines.LINES_SNIPPET)
             .withLocation(AppEng.makeId("pipeline/area_overlay_line_occluded"))
-            .withDepthTestFunction(DepthTestFunction.GREATER_DEPTH_TEST)
-            .withDepthWrite(false)
+            .withDepthStencilState(new DepthStencilState(CompareOp.GREATER_THAN, false))
             .build();
 
     public static final RenderPipeline STORAGE_CELL_LEDS = RenderPipeline
@@ -74,12 +74,13 @@ public final class AERenderPipelines {
             .withVertexShader("core/position_color")
             .withFragmentShader("core/position_color")
             .withVertexFormat(DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS)
+            .withDepthStencilState(DepthStencilState.DEFAULT)
             .build();
 
     public static final RenderPipeline LIGHTNING_FX = RenderPipeline
             .builder(RenderPipelines.PARTICLE_SNIPPET)
             .withLocation(AppEng.makeId("pipeline/lightning_fx"))
-            .withBlend(BlendFunction.TRANSLUCENT)
+            .withColorTargetState(new ColorTargetState(BlendFunction.TRANSLUCENT))
             .withCull(false)
             .build();
 

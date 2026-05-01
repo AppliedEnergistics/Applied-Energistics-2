@@ -149,7 +149,7 @@ public class CraftingTermMenu extends MEStorageMenu implements ICraftingGridMenu
         if (this.currentRecipe == null) {
             this.outputSlot.set(ItemStack.EMPTY);
         } else {
-            this.outputSlot.set(this.currentRecipe.value().assemble(testInput, level.registryAccess()));
+            this.outputSlot.set(this.currentRecipe.value().assemble(testInput));
         }
     }
 

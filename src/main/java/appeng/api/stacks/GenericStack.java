@@ -26,6 +26,8 @@ import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 
 import appeng.api.ids.AEComponents;
 import appeng.core.definitions.AEItems;
@@ -183,6 +185,30 @@ public record GenericStack(AEKey what, long amount) {
             return null;
         }
         return new GenericStack(key, stack.getAmount());
+    }
+
+    /**
+     * Converts a given item resource and amount into a generic stack. If the resource is empty, null is returned.
+     */
+    @Nullable
+    public static GenericStack from(ItemResource resource, long amount) {
+        var key = AEItemKey.of(resource);
+        if (key == null) {
+            return null;
+        }
+        return new GenericStack(key, amount);
+    }
+
+    /**
+     * Converts a given fluid resource and amount into a generic stack. If the resource is empty, null is returned.
+     */
+    @Nullable
+    public static GenericStack from(FluidResource resource, long amount) {
+        var key = AEFluidKey.of(resource);
+        if (key == null) {
+            return null;
+        }
+        return new GenericStack(key, amount);
     }
 
     public static long getStackSizeOrZero(@Nullable GenericStack stack) {

@@ -24,19 +24,19 @@ import java.util.List;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
-import net.minecraft.client.renderer.block.model.BlockModelPart;
-import net.minecraft.client.renderer.block.model.BlockStateModel;
-import net.minecraft.client.renderer.block.model.SimpleModelWrapper;
-import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
 import net.minecraft.client.resources.model.ModelBaker;
-import net.minecraft.client.resources.model.QuadCollection;
+import net.minecraft.client.resources.model.SimpleModelWrapper;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
+import net.minecraft.client.resources.model.geometry.QuadCollection;
+import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.client.model.DynamicBlockStateModel;
 import net.neoforged.neoforge.client.model.block.CustomUnbakedBlockStateModel;
@@ -45,8 +45,8 @@ import net.neoforged.neoforge.model.data.ModelData;
 import appeng.block.crafting.CraftingUnitType;
 import appeng.blockentity.crafting.CraftingCubeModelData;
 import appeng.client.render.CubeBuilder;
+import appeng.client.render.MaterialUtil;
 import appeng.core.AppEng;
-import appeng.thirdparty.fabric.ModelHelper;
 import appeng.util.Platform;
 
 /**
@@ -55,21 +55,24 @@ import appeng.util.Platform;
  * "inner" part of each block to the subclasses of this class.
  */
 public abstract class CraftingCubeModel implements DynamicBlockStateModel {
-    private final TextureAtlasSprite ringCorner;
+    private final Material.Baked ringCorner;
 
-    private final TextureAtlasSprite ringHor;
+    private final Material.Baked ringHor;
 
-    private final TextureAtlasSprite ringVer;
+    private final Material.Baked ringVer;
 
-    CraftingCubeModel(TextureAtlasSprite ringCorner, TextureAtlasSprite ringHor, TextureAtlasSprite ringVer) {
+    protected int materialFlags;
+
+    CraftingCubeModel(Material.Baked ringCorner, Material.Baked ringHor, Material.Baked ringVer) {
         this.ringCorner = ringCorner;
         this.ringHor = ringHor;
         this.ringVer = ringVer;
+        this.materialFlags = MaterialUtil.getMaterialFlags(ringCorner, ringHor, ringVer);
     }
 
     @Override
     public void collectParts(BlockAndTintGetter level, BlockPos pos, BlockState state, RandomSource random,
-            List<BlockModelPart> parts) {
+            List<BlockStateModelPart> parts) {
 
         var extraData = level.getModelData(pos);
 
@@ -77,11 +80,8 @@ public abstract class CraftingCubeModel implements DynamicBlockStateModel {
 
         // TODO: Redesign this by allowing a CubeBuilder to directly emit to a QuadCollection with correct cull faces
         var quadCollection = new QuadCollection.Builder();
-        for (int cullFaceIdx = 0; cullFaceIdx < ModelHelper.NULL_FACE_ID; cullFaceIdx++) {
-            Direction cullFace = ModelHelper.faceFromIndex(cullFaceIdx);
-
+        for (var cullFace : Direction.values()) {
             CubeBuilder builder = new CubeBuilder(quad -> quadCollection.addCulledFace(cullFace, quad));
-
             builder.setDrawFaces(EnumSet.of(cullFace));
 
             // Add the quads for the ring that frames the entire multi-block structure
@@ -118,7 +118,7 @@ public abstract class CraftingCubeModel implements DynamicBlockStateModel {
             this.addInnerCube(cullFace, state, extraData, builder, x1, y1, z1, x2, y2, z2);
         }
 
-        parts.add(new SimpleModelWrapper(quadCollection.build(), false, ringCorner, ChunkSectionLayer.CUTOUT));
+        parts.add(new SimpleModelWrapper(quadCollection.build(), false, ringCorner));
     }
 
     private void addRing(CubeBuilder builder, Direction side, EnumSet<Direction> connections) {
@@ -250,9 +250,17 @@ public abstract class CraftingCubeModel implements DynamicBlockStateModel {
             float x1, float y1, float z1, float x2, float y2, float z2);
 
     @Override
-    public TextureAtlasSprite particleIcon() {
+    public Material.Baked particleMaterial() {
         return ringCorner;
     }
+
+    @Override
+    public @BakedQuad.MaterialFlags int materialFlags() {
+        return materialFlags;
+    }
+
+    // TODO 26.1: Should implement the location ware materialFlags method to return the flags for the actually used
+    // materials
 
     public record Unbaked(CraftingUnitType type) implements CustomUnbakedBlockStateModel {
         public static final Identifier ID = AppEng.makeId("crafting_cube");
@@ -264,7 +272,7 @@ public abstract class CraftingCubeModel implements DynamicBlockStateModel {
         @Override
         public BlockStateModel bake(ModelBaker baker) {
             var provider = new CraftingUnitModelProvider(type);
-            return provider.bake(baker.sprites());
+            return provider.bake(baker.materials());
         }
 
         @Override

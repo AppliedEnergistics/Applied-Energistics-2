@@ -2,7 +2,7 @@ package appeng.client.render;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
@@ -62,26 +62,26 @@ public class StorageCellClientTooltipComponent implements ClientTooltipComponent
     }
 
     @Override
-    public void renderText(GuiGraphics guiGraphics, Font font, int x, int y) {
+    public void extractText(GuiGraphicsExtractor guiGraphics, Font font, int x, int y) {
         var yoff = (16 - font.lineHeight) / 2;
 
         var content = tooltipComponent.content();
         if (!content.isEmpty()) {
             var xoff = content.size() * 17;
             if (tooltipComponent.hasMoreContent()) {
-                guiGraphics.drawString(font, "\u2026", x + xoff + 2, y + 2, -1, false);
+                guiGraphics.text(font, "\u2026", x + xoff + 2, y + 2, -1, false);
             }
             y += 17;
         }
 
         var upgrades = tooltipComponent.upgrades();
         if (!upgrades.isEmpty()) {
-            guiGraphics.drawString(font, upgradesLabel, x, y + yoff, 0x7E7E7E, false);
+            guiGraphics.text(font, upgradesLabel, x, y + yoff, 0x7E7E7E, false);
         }
     }
 
     @Override
-    public void renderImage(Font font, int x, int y, int width, int height, GuiGraphics guiGraphics) {
+    public void extractImage(Font font, int x, int y, int width, int height, GuiGraphicsExtractor guiGraphics) {
         var content = tooltipComponent.content();
         if (!content.isEmpty()) {
             var xoff = 0;
@@ -106,7 +106,7 @@ public class StorageCellClientTooltipComponent implements ClientTooltipComponent
         if (!upgrades.isEmpty()) {
             var xoff = font.width(upgradesLabel) + 2;
             for (ItemStack upgrade : upgrades) {
-                guiGraphics.renderItem(upgrade, x + xoff, y);
+                guiGraphics.item(upgrade, x + xoff, y);
                 xoff += 17;
             }
         }

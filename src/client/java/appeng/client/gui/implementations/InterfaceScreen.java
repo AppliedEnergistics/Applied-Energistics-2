@@ -56,7 +56,7 @@ public class InterfaceScreen<C extends InterfaceMenu> extends UpgradeableScreen<
             var button = new SetAmountButton(btn -> {
                 var idx = amountButtons.indexOf(btn);
                 var configSlot = configSlots.get(idx);
-                menu.openSetAmountMenu(configSlot.slot);
+                menu.openSetAmountMenu(configSlot.getSlotIndex());
             });
             button.setDisableBackground(true);
             button.setMessage(ButtonToolTips.InterfaceSetStockAmount.text());

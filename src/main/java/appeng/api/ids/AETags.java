@@ -27,6 +27,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.trading.VillagerTrade;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluid;
 
@@ -83,6 +84,27 @@ public final class AETags {
      */
     public static final TagKey<Block> GROWTH_ACCELERATABLE = blockTag("ae2:growth_acceleratable");
 
+    /**
+     * A level 1 trade for the AE2 villager.
+     */
+    public static final TagKey<VillagerTrade> VILLAGER_TRADE_LEVEL_1 = villagerTrade("ae2:fluix_researcher/level_1");
+    /**
+     * A level 2 trade for the AE2 villager.
+     */
+    public static final TagKey<VillagerTrade> VILLAGER_TRADE_LEVEL_2 = villagerTrade("ae2:fluix_researcher/level_2");
+    /**
+     * A level 3 trade for the AE2 villager.
+     */
+    public static final TagKey<VillagerTrade> VILLAGER_TRADE_LEVEL_3 = villagerTrade("ae2:fluix_researcher/level_3");
+    /**
+     * A level 4 trade for the AE2 villager.
+     */
+    public static final TagKey<VillagerTrade> VILLAGER_TRADE_LEVEL_4 = villagerTrade("ae2:fluix_researcher/level_4");
+    /**
+     * A level 5 trade for the AE2 villager.
+     */
+    public static final TagKey<VillagerTrade> VILLAGER_TRADE_LEVEL_5 = villagerTrade("ae2:fluix_researcher/level_5");
+
     private static TagKey<Item> itemTag(String name) {
         return TagKey.create(Registries.ITEM, Identifier.parse(name));
     }
@@ -93,6 +115,10 @@ public final class AETags {
 
     private static TagKey<Block> blockTag(String name) {
         return TagKey.create(Registries.BLOCK, Identifier.parse(name));
+    }
+
+    private static TagKey<VillagerTrade> villagerTrade(String name) {
+        return TagKey.create(Registries.VILLAGER_TRADE, Identifier.parse(name));
     }
 
 }

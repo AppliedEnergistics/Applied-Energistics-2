@@ -37,7 +37,7 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.world.level.BlockAndLightGetter;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
@@ -348,7 +348,7 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
     public static ThreadLocal<Direction> RENDERING_FACADE_DIRECTION = new ThreadLocal<>();
 
     @Override
-    public BlockState getAppearance(BlockState state, BlockAndTintGetter renderView, BlockPos pos, Direction side,
+    public BlockState getAppearance(BlockState state, BlockAndLightGetter renderView, BlockPos pos, Direction side,
             @Nullable BlockState sourceState, @Nullable BlockPos sourcePos) {
         ModelData modelData;
         if (renderView instanceof ServerLevel) {

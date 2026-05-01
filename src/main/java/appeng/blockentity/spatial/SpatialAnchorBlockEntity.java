@@ -113,7 +113,7 @@ public class SpatialAnchorBlockEntity extends AENetworkedBlockEntity
         data.writeBoolean(this.isActive());
         data.writeBoolean(displayOverlay);
         if (this.displayOverlay) {
-            data.writeLongArray(chunks.stream().mapToLong(ChunkPos::toLong).toArray());
+            data.writeLongArray(chunks.stream().mapToLong(ChunkPos::pack).toArray());
         }
     }
 
@@ -134,7 +134,7 @@ public class SpatialAnchorBlockEntity extends AENetworkedBlockEntity
         AreaOverlayManager.getInstance().removeArea(this);
 
         if (this.displayOverlay) {
-            this.chunks.addAll(Arrays.stream(data.readLongArray(null)).mapToObj(ChunkPos::new)
+            this.chunks.addAll(Arrays.stream(data.readLongArray()).mapToObj(ChunkPos::unpack)
                     .collect(Collectors.toSet()));
             // Register it again to render the overlay
             AreaOverlayManager.getInstance().showArea(this);
@@ -378,9 +378,9 @@ public class SpatialAnchorBlockEntity extends AENetworkedBlockEntity
 
         // Temporarily load an area after a spatial transfer until the network is constructed and cleanup is performed.
         int d = SPATIAL_TRANSFER_TEMPORARY_CHUNK_RANGE;
-        ChunkPos center = new ChunkPos(this.getBlockPos());
-        for (int x = center.x - d; x <= center.x + d; x++) {
-            for (int z = center.z - d; z <= center.z + d; z++) {
+        ChunkPos center = ChunkPos.containing(this.getBlockPos());
+        for (int x = center.x() - d; x <= center.x() + d; x++) {
+            for (int z = center.z() - d; z <= center.z() + d; z++) {
                 this.force(new ChunkPos(x, z));
             }
         }

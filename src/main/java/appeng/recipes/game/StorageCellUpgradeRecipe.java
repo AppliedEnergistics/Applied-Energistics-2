@@ -5,7 +5,6 @@ import java.util.List;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -14,7 +13,6 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -32,7 +30,6 @@ public class StorageCellUpgradeRecipe extends CustomRecipe {
     private final Item resultComponent;
 
     public StorageCellUpgradeRecipe(Item inputCell, Item inputComponent, Item resultCell, Item resultComponent) {
-        super(CraftingBookCategory.MISC);
         this.inputCell = inputCell;
         this.inputComponent = inputComponent;
         this.resultCell = resultCell;
@@ -57,6 +54,9 @@ public class StorageCellUpgradeRecipe extends CustomRecipe {
                     ByteBufCodecs.registry(Registries.ITEM), StorageCellUpgradeRecipe::getResultCell,
                     ByteBufCodecs.registry(Registries.ITEM), StorageCellUpgradeRecipe::getResultComponent,
                     StorageCellUpgradeRecipe::new);
+
+    public static final RecipeSerializer<StorageCellUpgradeRecipe> SERIALIZER = new RecipeSerializer<>(CODEC,
+            STREAM_CODEC);
 
     public Item getInputCell() {
         return inputCell;
@@ -101,7 +101,7 @@ public class StorageCellUpgradeRecipe extends CustomRecipe {
     }
 
     @Override
-    public ItemStack assemble(CraftingInput container, HolderLookup.Provider registries) {
+    public ItemStack assemble(CraftingInput container) {
         ItemStack foundCell = ItemStack.EMPTY;
         var componentsFound = 0;
 
@@ -140,7 +140,8 @@ public class StorageCellUpgradeRecipe extends CustomRecipe {
                 // We replace the cell with the component since it is unstackable and forced to be in match
                 remainder.set(i, new ItemStack(resultComponent));
             } else {
-                remainder.set(i, stack.getCraftingRemainder());
+                var stackRemainder = stack.getCraftingRemainder();
+                remainder.set(i, stackRemainder != null ? stackRemainder.create() : ItemStack.EMPTY);
             }
         }
 
@@ -149,7 +150,7 @@ public class StorageCellUpgradeRecipe extends CustomRecipe {
 
     @Override
     public RecipeSerializer<StorageCellUpgradeRecipe> getSerializer() {
-        return StorageCellUpgradeRecipeSerializer.INSTANCE;
+        return SERIALIZER;
     }
 
     @Override

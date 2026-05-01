@@ -28,7 +28,7 @@ import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button.OnPress;
 import net.minecraft.client.renderer.Rect2i;
@@ -225,9 +225,9 @@ public class WidgetContainer {
     }
 
     /**
-     * @see ICompositeWidget#drawBackgroundLayer(GuiGraphics, Rect2i, Point)
+     * @see ICompositeWidget#drawBackgroundLayer(GuiGraphicsExtractor, Rect2i, Point)
      */
-    public void drawBackgroundLayer(GuiGraphics guiGraphics, Rect2i bounds, Point mouse) {
+    public void drawBackgroundLayer(GuiGraphicsExtractor guiGraphics, Rect2i bounds, Point mouse) {
         for (var widget : compositeWidgets.values()) {
             if (widget.isVisible()) {
                 widget.drawBackgroundLayer(guiGraphics, bounds, mouse);
@@ -236,9 +236,9 @@ public class WidgetContainer {
     }
 
     /**
-     * @see ICompositeWidget#drawForegroundLayer(GuiGraphics, Rect2i, Point)
+     * @see ICompositeWidget#drawForegroundLayer(GuiGraphicsExtractor, Rect2i, Point)
      */
-    public void drawForegroundLayer(GuiGraphics poseStack, Rect2i bounds, Point mouse) {
+    public void drawForegroundLayer(GuiGraphicsExtractor poseStack, Rect2i bounds, Point mouse) {
         for (var widget : compositeWidgets.values()) {
             if (widget.isVisible()) {
                 widget.drawForegroundLayer(poseStack, bounds, mouse);

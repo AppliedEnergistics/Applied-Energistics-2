@@ -43,14 +43,12 @@ public final class AERenderTypes {
                     .bufferSize(65535)
                     .createRenderSetup());
 
-    // TODO 1.21.11: Where this is used, the lineWidth vertex attribute has to be set to 3
     public static final RenderType AREA_OVERLAY_LINE = RenderType.create(
             "ae2_area_overlay_line",
             RenderSetup.builder(AERenderPipelines.AREA_OVERLAY_LINE)
                     .bufferSize(65535)
                     .createRenderSetup());
 
-    // TODO 1.21.11: Where this is used, the lineWidth vertex attribute has to be set to 3
     public static final RenderType AREA_OVERLAY_LINE_OCCLUDED = RenderType.create(
             "ae2_area_overlay_line_occluded",
             RenderSetup.builder(AERenderPipelines.AREA_OVERLAY_LINE_OCCLUDED)

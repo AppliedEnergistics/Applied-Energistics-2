@@ -32,18 +32,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.minecraft.SharedConstants;
-import net.minecraft.client.renderer.block.model.BlockModelPart;
-import net.minecraft.client.renderer.block.model.BlockStateModel;
-import net.minecraft.client.renderer.block.model.SimpleModelWrapper;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
+import net.minecraft.client.renderer.block.dispatch.ModelState;
 import net.minecraft.client.resources.model.ModelBaker;
-import net.minecraft.client.resources.model.ModelState;
+import net.minecraft.client.resources.model.SimpleModelWrapper;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
+import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.client.model.ComposedModelState;
 import net.neoforged.neoforge.client.model.DynamicBlockStateModel;
@@ -60,15 +61,15 @@ public class DriveModel implements DynamicBlockStateModel {
     private static final Identifier MODEL_BASE = Identifier.parse("ae2:block/drive_base");
     private static final Transformation[] BAY_TRANSLATIONS = buildBayTranslations();
 
-    private final BlockModelPart baseModel;
+    private final BlockStateModelPart baseModel;
 
     // Indices are the bay indices
-    private final BlockModelPart[] defaultCellModels;
-    private final Map<Item, BlockModelPart[]> cellModels;
+    private final BlockStateModelPart[] defaultCellModels;
+    private final Map<Item, BlockStateModelPart[]> cellModels;
 
-    public DriveModel(BlockModelPart baseModel,
-            Map<Item, BlockModelPart[]> cellModels,
-            BlockModelPart[] defaultCellModels) {
+    public DriveModel(BlockStateModelPart baseModel,
+            Map<Item, BlockStateModelPart[]> cellModels,
+            BlockStateModelPart[] defaultCellModels) {
         this.baseModel = baseModel;
         this.defaultCellModels = defaultCellModels;
         this.cellModels = cellModels;
@@ -107,7 +108,7 @@ public class DriveModel implements DynamicBlockStateModel {
 
     @Override
     public void collectParts(BlockAndTintGetter level, BlockPos pos, BlockState state, RandomSource random,
-            List<BlockModelPart> parts) {
+            List<BlockStateModelPart> parts) {
         parts.add(baseModel);
 
         var cells = level.getModelData(pos).get(DriveModelData.STATE);
@@ -129,13 +130,18 @@ public class DriveModel implements DynamicBlockStateModel {
     }
 
     @Override
-    public TextureAtlasSprite particleIcon() {
-        return baseModel.particleIcon();
+    public Material.Baked particleMaterial() {
+        return baseModel.particleMaterial();
+    }
+
+    @Override
+    public @BakedQuad.MaterialFlags int materialFlags() {
+        return baseModel.materialFlags();
     }
 
     // Determine which drive chassis to show based on the used cell
     @Nullable
-    public BlockModelPart getCellChassisModel(Item cell, int row, int col) {
+    public BlockStateModelPart getCellChassisModel(Item cell, int row, int col) {
         if (cell == null) {
             return null;
         }
@@ -160,7 +166,7 @@ public class DriveModel implements DynamicBlockStateModel {
 
         @Override
         public BlockStateModel bake(ModelBaker baker) {
-            final Map<Item, BlockModelPart[]> cellModels = new IdentityHashMap<>();
+            final Map<Item, BlockStateModelPart[]> cellModels = new IdentityHashMap<>();
             var modelState = variant.modelState().asModelState();
 
             ModelState[] bayTransforms = new ModelState[BAY_TRANSLATIONS.length];
@@ -188,10 +194,10 @@ public class DriveModel implements DynamicBlockStateModel {
             return new DriveModel(baseModel, cellModels, defaultCells);
         }
 
-        private BlockModelPart @NotNull [] preBakeCellInBays(ModelBaker baker, ModelState[] bayTransforms,
+        private BlockStateModelPart @NotNull [] preBakeCellInBays(ModelBaker baker, ModelState[] bayTransforms,
                 Identifier location) {
             // Bake each cell pre-translated into each of the bays
-            var cellsInBay = new BlockModelPart[BAY_TRANSLATIONS.length];
+            var cellsInBay = new BlockStateModelPart[BAY_TRANSLATIONS.length];
             for (int i = 0; i < bayTransforms.length; i++) {
                 cellsInBay[i] = SimpleModelWrapper.bake(baker, location, bayTransforms[i]);
             }

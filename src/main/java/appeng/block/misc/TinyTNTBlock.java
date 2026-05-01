@@ -61,11 +61,6 @@ public class TinyTNTBlock extends AEBaseBlock {
     }
 
     @Override
-    protected int getLightBlock(BlockState state) {
-        return 2; // FIXME: Validate that this is the correct value range
-    }
-
-    @Override
     public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
         return SHAPE;
     }
@@ -156,7 +151,7 @@ public class TinyTNTBlock extends AEBaseBlock {
             final TinyTNTPrimedEntity primedTinyTNTEntity = new TinyTNTPrimedEntity(level, pos.getX() + 0.5F,
                     pos.getY(), pos.getZ() + 0.5F, explosion.getIndirectSourceEntity());
             primedTinyTNTEntity
-                    .setFuse(level.random.nextInt(primedTinyTNTEntity.getFuse() / 4)
+                    .setFuse(level.getRandom().nextInt(primedTinyTNTEntity.getFuse() / 4)
                             + primedTinyTNTEntity.getFuse() / 8);
             level.addFreshEntity(primedTinyTNTEntity);
         }

@@ -63,11 +63,6 @@ public class ChargerBlock extends AEBaseEntityBlock<ChargerBlockEntity> {
     }
 
     @Override
-    public int getLightBlock(BlockState state) {
-        return 2; // FIXME Double check this (esp. value range)
-    }
-
-    @Override
     protected InteractionResult useItemOn(ItemStack heldItem, BlockState state, Level level, BlockPos pos,
             Player player, InteractionHand hand, BlockHitResult hit) {
         if (level instanceof ServerLevel serverLevel

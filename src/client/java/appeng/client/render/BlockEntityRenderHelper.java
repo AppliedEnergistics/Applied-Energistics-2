@@ -6,9 +6,9 @@ import org.joml.Quaternionf;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.util.FormattedCharSequence;
+import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.util.Mth;
 
 import appeng.api.orientation.BlockOrientation;
@@ -47,7 +47,7 @@ public final class BlockEntityRenderHelper {
         poseStack.pushPose();
         poseStack.translate(0, .5f / 16f, 0);
         poseStack.scale(scale, scale, scale);
-        what.submit(poseStack, nodes, LightTexture.FULL_BRIGHT);
+        what.submit(poseStack, nodes, LightCoordsUtil.FULL_BRIGHT);
         poseStack.popPose();
     }
 
@@ -75,7 +75,7 @@ public final class BlockEntityRenderHelper {
                 poseStack.scale(0.5f, 0.5f, 0.5f);
                 poseStack.scale(1.0f / 62.0f, -1.0f / 62.0f, 1.0f / 62.0f);
                 poseStack.translate(-0.5f * textWidth, -0.5f * Minecraft.getInstance().font.lineHeight, 0.5f);
-                nodes.submitText(poseStack, 0, 0, text, false, Font.DisplayMode.NORMAL, LightTexture.FULL_BRIGHT,
+                nodes.submitText(poseStack, 0, 0, text, false, Font.DisplayMode.NORMAL, LightCoordsUtil.FULL_BRIGHT,
                         textColor, 0, 0);
                 poseStack.popPose();
             }

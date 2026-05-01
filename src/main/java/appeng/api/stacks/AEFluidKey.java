@@ -37,7 +37,7 @@ public final class AEFluidKey extends AEKey {
                             holder -> holder.is(Fluids.EMPTY.builtInRegistryHolder())
                                     ? DataResult.error(() -> "Fluid must not be minecraft:empty")
                                     : DataResult.success(holder))
-                            .fieldOf("id").forGetter(key -> key.stack.getFluidHolder()),
+                            .fieldOf("id").forGetter(key -> key.stack.typeHolder()),
                     DataComponentPatch.CODEC.optionalFieldOf("components", DataComponentPatch.EMPTY)
                             .forGetter(key -> key.stack.getComponentsPatch()))
                     .apply(instance, (fluidHolder,

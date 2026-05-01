@@ -23,7 +23,7 @@ import java.util.function.Consumer;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.Rect2i;
@@ -103,7 +103,7 @@ public interface ICompositeWidget {
      * @param bounds      The bounds of the current dialog in window coordinates.
      * @param mouse       The current mouse position relative to the dialogs origin.
      */
-    default void drawBackgroundLayer(GuiGraphics guiGraphics, Rect2i bounds, Point mouse) {
+    default void drawBackgroundLayer(GuiGraphicsExtractor guiGraphics, Rect2i bounds, Point mouse) {
     }
 
     /**
@@ -113,7 +113,7 @@ public interface ICompositeWidget {
      * @param bounds      The bounds of the current dialog in dialog coordinates (x,y are 0).
      * @param mouse       The current mouse position relative to the dialogs origin.
      */
-    default void drawForegroundLayer(GuiGraphics guiGraphics, Rect2i bounds, Point mouse) {
+    default void drawForegroundLayer(GuiGraphicsExtractor guiGraphics, Rect2i bounds, Point mouse) {
     }
 
     /**

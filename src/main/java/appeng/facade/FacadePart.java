@@ -104,7 +104,7 @@ public class FacadePart implements IFacadePart {
     }
 
     private boolean handleInteraction(Player player, boolean shouldCycleState, ItemStack heldItem) {
-        var holder = getBlockState().getBlockHolder();
+        var holder = getBlockState().typeHolder();
         var statedefinition = holder.value().getStateDefinition();
         var properties = statedefinition.getProperties();
         if (properties.isEmpty()) {

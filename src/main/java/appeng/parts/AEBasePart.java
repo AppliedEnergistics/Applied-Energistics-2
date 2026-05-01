@@ -154,7 +154,7 @@ public abstract class AEBasePart
 
     @Override
     public Component getName() {
-        return Objects.requireNonNullElse(this.customName, partItem.asItem().getName());
+        return Objects.requireNonNullElse(this.customName, partItem.asItem().getDefaultInstance().getItemName());
     }
 
     @Override
@@ -320,7 +320,8 @@ public abstract class AEBasePart
 
         if (mode == SettingsFrom.MEMORY_CARD) {
             MemoryCardItem.exportGenericSettings(this, builder);
-            builder.set(AEComponents.EXPORTED_SETTINGS_SOURCE, getPartItem().asItem().getName());
+            builder.set(AEComponents.EXPORTED_SETTINGS_SOURCE,
+                    getPartItem().asItem().getDefaultInstance().getItemName());
         }
     }
 
@@ -348,7 +349,7 @@ public abstract class AEBasePart
             partItem = AEBlocks.PATTERN_PROVIDER.asItem();
         }
 
-        var name = partItem.getName();
+        var name = partItem.getDefaultInstance().getItemName();
 
         if (InteractionUtil.isInAlternateUseMode(player)) {
             var settings = exportSettings(SettingsFrom.MEMORY_CARD);

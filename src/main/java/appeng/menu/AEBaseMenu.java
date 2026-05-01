@@ -49,7 +49,7 @@ import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.ContainerInput;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
@@ -225,9 +225,9 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
     }
 
     @Override
-    public void clicked(int slotId, int button, ClickType clickType, Player player) {
+    public void clicked(int slotId, int button, ContainerInput clickType, Player player) {
         // Do not allow swapping with off-hand if the off-hand slot is locked
-        if (clickType == ClickType.SWAP && isPlayerInventorySlotLocked(Inventory.SLOT_OFFHAND)) {
+        if (clickType == ContainerInput.SWAP && isPlayerInventorySlotLocked(Inventory.SLOT_OFFHAND)) {
             return;
         }
 
@@ -595,7 +595,7 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
                 && appEngSlot.getInventory() instanceof ConfigMenuInventory configInv
                 && configInv.getDelegate().getMode() == GenericStackInv.Mode.STORAGE) {
             var realInv = configInv.getDelegate();
-            var realInvSlot = appEngSlot.slot;
+            var realInvSlot = appEngSlot.getSlotIndex();
 
             if (action == InventoryAction.FILL_ITEM || action == InventoryAction.FILL_ENTIRE_ITEM) {
                 var what = realInv.getKey(realInvSlot);

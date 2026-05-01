@@ -160,7 +160,7 @@ class AEItemKeyTest {
         void deserializeFromTagWithoutChannel() {
             var tag = new CompoundTag();
 
-            assertMissingContent(tag, "Input does not contain a key [#t]: MapLike[{}]");
+            assertMissingContent(tag, "No key #t in MapLike[{}]");
         }
 
         @Test

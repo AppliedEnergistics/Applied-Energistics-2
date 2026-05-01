@@ -58,7 +58,6 @@
       "translate": "achievement.ae2.PortableCell.desc"
     },
     "icon": {
-      "count": 1,
       "id": "ae2:portable_item_cell_1k"
     },
     "show_toast": false,

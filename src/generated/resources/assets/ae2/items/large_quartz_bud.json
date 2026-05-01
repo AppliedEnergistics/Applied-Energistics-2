@@ -1,6 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "ae2:block/large_quartz_bud"
+    "model": "ae2:item/large_quartz_bud"
   }
 }

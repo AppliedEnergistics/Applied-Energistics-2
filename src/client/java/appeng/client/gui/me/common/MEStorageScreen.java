@@ -35,14 +35,14 @@ import org.slf4j.LoggerFactory;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.CharacterEvent;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.data.AtlasIds;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.ContainerInput;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
@@ -226,7 +226,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
 
     protected void handleGridInventoryEntryMouseClick(@Nullable GridInventoryEntry entry,
             int mouseButton,
-            ClickType clickType) {
+            ContainerInput clickType) {
         if (entry != null) {
             AELog.debug("Clicked on grid inventory entry serial=%s, key=%s", entry.getSerial(), entry.getWhat());
         }
@@ -236,7 +236,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
         // Holding shift tries to fill the entire container, while only transferring a single unit otherwise.
         if (mouseButton == 0 && entry != null && ContainerItemStrategies.isKeySupported(entry.getWhat())) {
             InventoryAction action;
-            if (clickType != ClickType.QUICK_MOVE) {
+            if (clickType != ContainerInput.QUICK_MOVE) {
                 action = InventoryAction.FILL_ITEM; // Simple click fills item in hand or puts filled item in hand
             } else {
                 // Shift-click on fluid with an empty hand -> move filled container to player
@@ -253,7 +253,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
         if (mouseButton == 1 && !menu.getCarried().isEmpty()) {
             var emptyingAction = ContainerItemStrategies.getEmptyingAction(menu.getCarried());
             if (emptyingAction != null && menu.isKeyVisible(emptyingAction.what())) {
-                menu.handleInteraction(-1, clickType == ClickType.QUICK_MOVE ? InventoryAction.EMPTY_ENTIRE_ITEM
+                menu.handleInteraction(-1, clickType == ContainerInput.QUICK_MOVE ? InventoryAction.EMPTY_ENTIRE_ITEM
                         : InventoryAction.EMPTY_ITEM);
                 return;
             }
@@ -261,7 +261,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
 
         if (entry == null) {
             // The only interaction allowed on an empty virtual slot is putting down the currently held item
-            if (clickType == ClickType.PICKUP && !getMenu().getCarried().isEmpty()) {
+            if (clickType == ContainerInput.PICKUP && !getMenu().getCarried().isEmpty()) {
                 InventoryAction action = mouseButton == 1 ? InventoryAction.SPLIT_OR_PLACE_SINGLE
                         : InventoryAction.PICKUP_OR_SET_DOWN;
                 menu.handleInteraction(-1, action);
@@ -441,7 +441,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
     }
 
     @Override
-    public void drawFG(GuiGraphics guiGraphics, int offsetX, int offsetY, int mouseX,
+    public void drawFG(GuiGraphicsExtractor guiGraphics, int offsetX, int offsetY, int mouseX,
             int mouseY) {
         this.currentMouseX = mouseX;
         this.currentMouseY = mouseY;
@@ -465,7 +465,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
         renderLinkStatus(guiGraphics, getMenu().getLinkStatus());
     }
 
-    private void renderLinkStatus(GuiGraphics guiGraphics, ILinkStatus linkStatus) {
+    private void renderLinkStatus(GuiGraphicsExtractor guiGraphics, ILinkStatus linkStatus) {
         // Draw an overlay indicating the grid is disconnected
         if (!linkStatus.connected()) {
             var renderContext = new SimpleRenderContext(LytRect.empty(), guiGraphics);
@@ -489,16 +489,14 @@ public class MEStorageScreen<C extends MEStorageMenu>
         }
     }
 
-    private void renderPinnedRowDecorations(GuiGraphics guiGraphics) {
+    private void renderPinnedRowDecorations(GuiGraphicsExtractor guiGraphics) {
         for (Slot slot : menu.slots) {
             if (slot instanceof RepoSlot repoSlot) {
                 var entry = repoSlot.getEntry();
                 if (entry != null && PendingCraftingJobs.hasPendingJob(entry.getWhat())) {
                     var sprite = minecraft.getAtlasManager().getAtlasOrThrow(AtlasIds.BLOCKS)
                             .getSprite(AppEng.makeId("block/molecular_assembler_lights"));
-                    Blitter.sprite(sprite)
-                            .src(sprite.getX() + 2, sprite.getY() + 2, sprite.contents().width() - 4,
-                                    sprite.contents().height() - 4)
+                    Blitter.spriteSubRegion(sprite, 2, 2, 2, 2)
                             .dest(slot.x - 1, slot.y - 1, 18, 18)
                             .blit(guiGraphics);
                 }
@@ -519,7 +517,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
         if (Minecraft.getInstance().options.keyPickItem.matchesMouse(event)) {
             Slot slot = this.getHoveredSlot(event.x(), event.y());
             if (slot instanceof RepoSlot repoSlot && repoSlot.isCraftable()) {
-                handleGridInventoryEntryMouseClick(repoSlot.getEntry(), event.button(), ClickType.CLONE);
+                handleGridInventoryEntryMouseClick(repoSlot.getEntry(), event.button(), ContainerInput.CLONE);
                 return true;
             }
         }
@@ -548,7 +546,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
     }
 
     @Override
-    protected void slotClicked(Slot slot, int slotIdx, int mouseButton, ClickType clickType) {
+    protected void slotClicked(Slot slot, int slotIdx, int mouseButton, ContainerInput clickType) {
         if (slot instanceof RepoSlot repoSlot) {
             handleGridInventoryEntryMouseClick(repoSlot.getEntry(), mouseButton, clickType);
             return;
@@ -574,7 +572,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
     }
 
     @Override
-    public void drawBG(GuiGraphics guiGraphics, int offsetX, int offsetY, int mouseX,
+    public void drawBG(GuiGraphicsExtractor guiGraphics, int offsetX, int offsetY, int mouseX,
             int mouseY, float partialTicks) {
 
         guiGraphics.nextStratum();
@@ -611,13 +609,13 @@ public class MEStorageScreen<C extends MEStorageMenu>
         }
 
         if (this.searchField != null) {
-            this.searchField.render(guiGraphics, mouseX, mouseY, partialTicks);
+            this.searchField.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
         }
 
     }
 
     @Override
-    public void renderSlot(GuiGraphics guiGraphics, Slot s, int mouseX, int mouseY) {
+    public void extractSlot(GuiGraphicsExtractor guiGraphics, Slot s, int mouseX, int mouseY) {
         if (s instanceof RepoSlot repoSlot) {
             if (this.menu.getLinkStatus().connected()) {
                 GridInventoryEntry entry = repoSlot.getEntry();
@@ -654,7 +652,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
             return;
         }
 
-        super.renderSlot(guiGraphics, s, mouseX, mouseY);
+        super.extractSlot(guiGraphics, s, mouseX, mouseY);
     }
 
     /**
@@ -665,7 +663,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
     }
 
     @Override
-    protected void renderTooltip(GuiGraphics guiGraphics, int x, int y) {
+    protected void extractTooltip(GuiGraphicsExtractor guiGraphics, int x, int y) {
         if (this.hoveredSlot instanceof RepoSlot repoSlot) {
             var carried = menu.getCarried();
             if (!carried.isEmpty()) {
@@ -692,10 +690,11 @@ public class MEStorageScreen<C extends MEStorageMenu>
             return;
         }
 
-        super.renderTooltip(guiGraphics, x, y);
+        super.extractTooltip(guiGraphics, x, y);
     }
 
-    protected void renderGridInventoryEntryTooltip(GuiGraphics guiGraphics, GridInventoryEntry entry, int x, int y) {
+    protected void renderGridInventoryEntryTooltip(GuiGraphicsExtractor guiGraphics, GridInventoryEntry entry, int x,
+            int y) {
 
         var currentToolTip = AEKeyRendering.getTooltip(entry.getWhat());
 

@@ -9,18 +9,18 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.BlockHitResult;
 
-import appeng.integration.modules.curios.CuriosIntegration;
+import top.theillusivec4.curios.api.CuriosCapability;
 
 /**
  * Implements {@link ItemMenuHostLocator} for items equipped in curios slots.
  */
 record CuriosItemLocator(int curioSlot, @Nullable BlockHitResult hitResult) implements ItemMenuHostLocator {
     public ItemStack locateItem(Player player) {
-        var cap = player.getCapability(CuriosIntegration.ITEM_HANDLER);
-        if (cap == null || curioSlot >= cap.getSlots()) {
+        var cap = player.getCapability(CuriosCapability.ITEM_HANDLER);
+        if (cap == null || curioSlot >= cap.size()) {
             return ItemStack.EMPTY;
         }
-        return cap.getStackInSlot(curioSlot);
+        return cap.getResource(curioSlot).toStack();
     }
 
     public void writeToPacket(FriendlyByteBuf buf) {

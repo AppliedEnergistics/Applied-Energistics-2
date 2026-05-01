@@ -30,16 +30,18 @@ base {
     archivesName = "appliedenergistics2"
 }
 
-neoForge.version = project.neoforge_version
+neoForge.enable {
+    version = project.neoforge_version
+    // Disable recompilation if the "CI" environment variable is set to true. It is automatically set by GitHub Actions.
+    disableRecompilation = System.getenv("CI") == "true"
+}
 
 sourceSets {
     main {
         // TODO 1.21.11
         java {
             exclude 'appeng/integration/modules/rei/**'
-            exclude 'appeng/integration/modules/jade/**'
             exclude 'appeng/integration/modules/theoneprobe/**'
-            exclude 'appeng/integration/modules/wthit/**'
         }
         resources {
             srcDir 'src/generated/resources'
@@ -85,7 +87,7 @@ dependencies {
     compileOnly "me.shedaniel:RoughlyEnoughItems-neoforge:${project.rei_version}"
     compileOnly "mcp.mobius.waila:wthit-api:neo-${project.wthit_version}"
     compileOnly "curse.maven:jade-324717:${project.jade_file_id}"
-    compileOnly "mcjty.theoneprobe:theoneprobe:${project.top_version}"
+    clientCompileOnly "mezz.jei:jei-${project.jei_minecraft_version}-neoforge-api:${project.jei_version}"
 
     switch (project.runtime_itemlist_mod) {
         case "emi":
@@ -93,6 +95,9 @@ dependencies {
             break
         case "rei":
             localRuntimeOnly "me.shedaniel:RoughlyEnoughItems-neoforge:${project.rei_version}"
+            break
+        case "jei":
+            localRuntimeOnly "mezz.jei:jei-${project.jei_minecraft_version}-neoforge:${project.jei_version}"
             break
     }
 
@@ -103,11 +108,9 @@ dependencies {
         case "jade":
             localRuntimeOnly "curse.maven:jade-324717:${project.jade_file_id}"
             break
-        case "top":
-            localRuntimeOnly "mcjty.theoneprobe:theoneprobe:${project.top_version}"
-            break
     }
 
+    compileOnly "top.theillusivec4.curios:curios-neoforge:${project.curios_version}:api"
     if (project.runtime_curio == "true") {
         localRuntimeOnly("top.theillusivec4.curios:curios-neoforge:${project.curios_version}")
     }
@@ -126,7 +129,7 @@ dependencies {
     testImplementation("org.junit.platform:junit-platform-launcher")
     testImplementation("org.assertj:assertj-core")
     testImplementation("com.google.guava:guava-testlib:21.0")
-    testImplementation("org.mockito:mockito-junit-jupiter:5.12.0")
+    testImplementation("org.mockito:mockito-junit-jupiter:${project.mockito_version}")
     testImplementation("net.neoforged:testframework:${project.neoforge_version}")
 }
 
@@ -228,8 +231,8 @@ final generateModMetadata = tasks.register('generateModMetadata', ProcessResourc
             'version',
             'minecraft_version',
             'neoforge_version_range',
-            'top_version_range',
             'jade_version_range',
+            'jei_version',
             'guideme_version'
     ].collectEntries { [it, project[it]] }
 
@@ -271,12 +274,6 @@ tasks.register('apiJar', Jar) {
     from sourceSets.main.output
     from sourceSets.main.allJava
     publicApiIncludePatterns(it)
-}
-
-artifacts {
-    archives javadocJar
-    archives sourcesJar
-    archives apiJar
 }
 
 //////////////////
@@ -367,6 +364,21 @@ spotless {
         indentWithSpaces(2)
         endWithNewline()
     }
+}
+
+//////////////// Add static site export
+tasks.named('runGuideexport').configure {
+    outputs.dir('build/guide')
+}
+
+tasks.register('createStaticSite', JavaExec) {
+    inputs.dir('build/guide')
+    outputs.dir('build/website')
+    group = 'mod development'
+    //dependsOn runGuideexport
+    classpath.from(sourceSets.client.runtimeClasspath)
+    mainClass = 'guideme.internal.web.StaticSiteGenerator'
+    args '--data', 'build/guide', '--output', 'build/website'
 }
 
 ////////////////

@@ -20,7 +20,7 @@ package appeng.client.hooks;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -42,7 +42,7 @@ public final class GuiGraphicsHooks {
      * This hook will exchange the rendered item model for encoded patterns to the item being crafted by them if shift
      * is held.
      */
-    public static boolean onRenderGuiItem(GuiGraphics guiGraphics, @Nullable LivingEntity livingEntity,
+    public static boolean onRenderGuiItem(GuiGraphicsExtractor guiGraphics, @Nullable LivingEntity livingEntity,
             @Nullable Level level, ItemStack stack, int x, int y, int seed) {
         var minecraft = Minecraft.getInstance();
 
@@ -81,11 +81,11 @@ public final class GuiGraphicsHooks {
         return false;
     }
 
-    private static void renderInstead(GuiGraphics guiGraphics, @Nullable LivingEntity livingEntity,
+    private static void renderInstead(GuiGraphicsExtractor guiGraphics, @Nullable LivingEntity livingEntity,
             @Nullable Level level, ItemStack stack, int x, int y, int seed) {
         OVERRIDING_FOR.set(stack);
         try {
-            guiGraphics.renderItem(livingEntity, level, stack, x, y, seed);
+            guiGraphics.item(livingEntity, level, stack, x, y, seed);
         } finally {
             OVERRIDING_FOR.remove();
         }

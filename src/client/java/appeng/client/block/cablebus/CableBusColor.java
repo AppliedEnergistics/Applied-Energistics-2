@@ -18,11 +18,13 @@
 
 package appeng.client.block.cablebus;
 
-import org.jetbrains.annotations.Nullable;
+import java.util.List;
+import java.util.stream.IntStream;
 
-import net.minecraft.client.color.block.BlockColor;
+import net.minecraft.client.color.block.BlockTintSource;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.util.ARGB;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -33,10 +35,25 @@ import appeng.parts.CableBusContainer;
 /**
  * Exposes the cable bus color as tint indices 0 (dark variant), 1 (medium variant) and 2 (bright variant).
  */
-public class CableBusColor implements BlockColor {
+public class CableBusColor implements BlockTintSource {
+
+    public static List<BlockTintSource> TINT_SOURCES = IntStream.range(0, 5)
+            .<BlockTintSource>mapToObj(CableBusColor::new)
+            .toList();
+
+    private final int tintIndex;
+
+    public CableBusColor(int tintIndex) {
+        this.tintIndex = tintIndex;
+    }
 
     @Override
-    public int getColor(BlockState state, @Nullable BlockAndTintGetter level, @Nullable BlockPos pos, int tintIndex) {
+    public int color(BlockState state) {
+        return AEColor.TRANSPARENT.getVariantByTintIndex(tintIndex);
+    }
+
+    @Override
+    public int colorInWorld(BlockState state, BlockAndTintGetter level, BlockPos pos) {
 
         AEColor busColor = AEColor.TRANSPARENT;
 
@@ -48,7 +65,7 @@ public class CableBusColor implements BlockColor {
             }
         }
 
-        return busColor.getVariantByTintIndex(tintIndex);
+        return ARGB.opaque(busColor.getVariantByTintIndex(tintIndex));
 
     }
 }

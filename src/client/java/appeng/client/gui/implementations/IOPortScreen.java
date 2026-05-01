@@ -18,7 +18,7 @@
 
 package appeng.client.gui.implementations;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
@@ -65,7 +65,7 @@ public class IOPortScreen extends UpgradeableScreen<IOPortMenu> {
     }
 
     @Override
-    public void drawBG(GuiGraphics guiGraphics, int offsetX, int offsetY, int mouseX,
+    public void drawBG(GuiGraphicsExtractor guiGraphics, int offsetX, int offsetY, int mouseX,
             int mouseY, float partialTicks) {
         super.drawBG(guiGraphics, offsetX, offsetY, mouseX, mouseY, partialTicks);
 

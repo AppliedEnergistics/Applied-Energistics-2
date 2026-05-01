@@ -8,16 +8,14 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.data.AtlasIds;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.ARGB;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 
 import appeng.api.stacks.AEFluidKey;
 import appeng.client.api.AEKeyRenderer;
@@ -26,7 +24,7 @@ import appeng.util.Platform;
 
 public class FluidKeyRenderer implements AEKeyRenderer<AEFluidKey, FluidKeyRenderer.RenderState> {
     @Override
-    public void drawInGui(Minecraft minecraft, GuiGraphics guiGraphics, int x, int y, AEFluidKey what) {
+    public void drawInGui(Minecraft minecraft, GuiGraphicsExtractor guiGraphics, int x, int y, AEFluidKey what) {
         FluidBlitter.create(what)
                 .dest(x, y, 16, 16)
                 .blit(guiGraphics);
@@ -45,11 +43,15 @@ public class FluidKeyRenderer implements AEKeyRenderer<AEFluidKey, FluidKeyRende
     @Override
     public void extract(RenderState state, AEFluidKey what, @Nullable Level level, int seed) {
         var fluidStack = what.toStack(1);
-        var renderProps = IClientFluidTypeExtensions.of(what.getFluid());
-        var texture = renderProps.getStillTexture(fluidStack);
-        state.color = renderProps.getTintColor(fluidStack);
-        state.sprite = Minecraft.getInstance().getAtlasManager().getAtlasOrThrow(AtlasIds.BLOCKS)
-                .getSprite(texture);
+        var fluidModel = Minecraft.getInstance().getModelManager().getFluidStateModelSet()
+                .get(what.getFluid().defaultFluidState());
+        var tintSource = fluidModel.fluidTintSource();
+        if (tintSource != null) {
+            state.color = tintSource.colorAsStack(fluidStack);
+        } else {
+            state.color = -1;
+        }
+        state.sprite = fluidModel.stillMaterial().sprite();
     }
 
     @Override

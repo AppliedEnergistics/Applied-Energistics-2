@@ -3,7 +3,7 @@ package appeng.util;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.fluids.FluidUtil;
+import net.neoforged.neoforge.transfer.fluid.FluidUtil;
 
 import appeng.api.stacks.GenericStack;
 
@@ -20,12 +20,7 @@ public final class GenericContainerHelper {
             return null;
         }
 
-        var content = FluidUtil.getFluidContained(stack).orElse(null);
-        if (content != null) {
-            return GenericStack.fromFluidStack(content);
-        } else {
-            return null;
-        }
+        return GenericStack.fromFluidStack(FluidUtil.getFirstStackContained(stack));
     }
 
 }

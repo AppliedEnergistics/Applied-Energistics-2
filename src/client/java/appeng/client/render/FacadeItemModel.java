@@ -24,35 +24,38 @@ import java.util.Set;
 import java.util.function.Consumer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.QuadInstance;
 import com.mojang.serialization.MapCodec;
 
 import org.jetbrains.annotations.Nullable;
+import org.joml.Matrix4fc;
 import org.joml.Vector3fc;
 
 import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.block.model.BlockModelPart;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
 import net.minecraft.client.renderer.item.ItemModel;
 import net.minecraft.client.renderer.item.ItemModelResolver;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.special.SpecialModelRenderer;
 import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ResolvableModel;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.ItemOwner;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.EmptyBlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.client.RenderTypeHelper;
 
 import appeng.api.implementations.items.IFacadeItem;
 import appeng.client.render.cablebus.FacadeBuilder;
 import appeng.core.AppEng;
 import appeng.items.parts.FacadeItem;
-import appeng.thirdparty.fabric.ModelHelper;
+import appeng.util.Platform;
 
 /**
  * The model class for facades. Since facades wrap existing models, they don't declare any dependencies here other than
@@ -92,7 +95,7 @@ public class FacadeItemModel implements ItemModel {
         renderState.appendModelIdentityElement(facadeBlockState);
 
         var facadeLayer = renderState.newLayer();
-        facadeLayer.setTransform(baseModel.renderProperties().transforms().getTransform(displayContext));
+        baseModel.renderProperties().applyToLayer(facadeLayer, displayContext);
         facadeLayer.setupSpecialModel(new FacadeSpecialRender(), facadeBlockState);
         // We use the extents of the stem, which is certainly not quite correct.
         facadeLayer.setExtents(baseModel.extents());
@@ -101,49 +104,46 @@ public class FacadeItemModel implements ItemModel {
     public class FacadeSpecialRender implements SpecialModelRenderer<BlockState> {
         @Override
         public void submit(@Nullable BlockState blockState,
-                ItemDisplayContext displayContext,
                 PoseStack poseStack,
-                SubmitNodeCollector nodes,
-                int packedLight,
-                int packedOverlay,
-                boolean hasFoilType,
-                int seed) {
+                SubmitNodeCollector submitNodeCollector,
+                int lightCoords,
+                int overlayCoords,
+                boolean hasFoil,
+                final int outlineColor) {
             if (blockState == null) {
                 return;
             }
 
             // This is the actual layer showing the facade itself
-            var blockModelParts = new ArrayList<BlockModelPart>();
+            var blockModelParts = new ArrayList<BlockStateModelPart>();
             facadeBuilder.collectFacadePartsInternal(
                     false,
                     direction -> direction == Direction.NORTH ? blockState : null,
-                    EmptyBlockAndTintGetter.INSTANCE,
+                    BlockAndTintGetter.EMPTY,
                     List.of(),
                     Set.of(),
                     BlockPos.ZERO,
                     blockModelParts::add);
 
-            float[] brightness = new float[4];
-            var lightmap = new int[] {
-                    packedLight,
-                    packedLight,
-                    packedLight,
-                    packedLight,
-            };
+            var qi = new QuadInstance();
+            qi.setOverlayCoords(overlayCoords);
+            qi.setLightCoords(lightCoords);
             for (var blockModelPart : blockModelParts) {
-                var renderType = RenderTypeHelper.getEntityRenderType(blockModelPart.getRenderType(blockState));
+                // TODO 26.1: Probably incorrect
+                var renderType = (blockModelPart.materialFlags() & BakedQuad.FLAG_TRANSLUCENT) != 0
+                        ? Sheets.translucentBlockItemSheet()
+                        : Sheets.cutoutBlockItemSheet();
 
-                nodes.submitCustomGeometry(poseStack, renderType, (pose, consumer) -> {
-                    for (int cullFaceIdx = 0; cullFaceIdx <= ModelHelper.NULL_FACE_ID; cullFaceIdx++) {
-                        var cullFace = ModelHelper.faceFromIndex(cullFaceIdx);
+                submitNodeCollector.submitCustomGeometry(poseStack, renderType, (pose, consumer) -> {
+                    for (var cullFace : Platform.CULL_FACES) {
                         for (var quad : blockModelPart.getQuads(cullFace)) {
-                            var shade = (quad.shade() && quad.direction() != null) ? getShade(quad.direction()) : 1f;
-                            brightness[0] = shade;
-                            brightness[1] = shade;
-                            brightness[2] = shade;
-                            brightness[3] = shade;
-                            consumer.putBulkData(
-                                    pose, quad, brightness, 1f, 1f, 1f, 1f, lightmap, packedOverlay);
+                            var shade = (quad.materialInfo().shade() && quad.direction() != null)
+                                    ? getShade(quad.direction())
+                                    : 1f;
+                            qi.setColor(-1);
+                            qi.scaleColor(shade);
+                            consumer.putBakedQuad(
+                                    pose, quad, qi);
                         }
                     }
                 });
@@ -188,10 +188,10 @@ public class FacadeItemModel implements ItemModel {
         }
 
         @Override
-        public ItemModel bake(ItemModel.BakingContext context) {
+        public ItemModel bake(ItemModel.BakingContext context, Matrix4fc transform) {
 
             return new FacadeItemModel(
-                    ItemBaseModelWrapper.bake(context.blockModelBaker(), MODEL_BASE),
+                    ItemBaseModelWrapper.bake(context.blockModelBaker(), MODEL_BASE, transform),
                     context.blockModelBaker(),
                     context.missingItemModel());
         }

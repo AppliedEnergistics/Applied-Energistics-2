@@ -104,7 +104,7 @@ public class AESmithingTablePattern implements IPatternDetails, IMolecularAssemb
             throw new IllegalStateException("The recipe " + recipeId + " no longer matches the encoded input.");
         }
 
-        this.output = this.recipe.assemble(testFrame, level.registryAccess());
+        this.output = this.recipe.assemble(testFrame);
         if (this.output.isEmpty()) {
             throw new IllegalStateException("The recipe " + recipeId + " produced an empty item stack result.");
         }
@@ -179,7 +179,7 @@ public class AESmithingTablePattern implements IPatternDetails, IMolecularAssemb
                 container.size() >= 3 ? container.getItem(2) : ItemStack.EMPTY);
 
         if (recipe.matches(testFrame, level)) {
-            return recipe.assemble(testFrame, level.registryAccess());
+            return recipe.assemble(testFrame);
         }
         return ItemStack.EMPTY;
     }
@@ -222,7 +222,7 @@ public class AESmithingTablePattern implements IPatternDetails, IMolecularAssemb
         }
 
         return recipe.matches(testInput, level)
-                && ItemStack.matches(output, recipe.assemble(testInput, level.registryAccess()));
+                && ItemStack.matches(output, recipe.assemble(testInput));
     }
 
     @Override

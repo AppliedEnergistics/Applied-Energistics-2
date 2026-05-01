@@ -23,7 +23,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -34,13 +34,13 @@ import appeng.client.hooks.GuiGraphicsHooks;
  * This mixin specifically targets rendering of items in the user interface to allow us to customize _only_ the UI
  * representation of an item, and none of the others (held items, in-world, etc.)
  */
-@Mixin(GuiGraphics.class)
+@Mixin(GuiGraphicsExtractor.class)
 public abstract class GuiGraphicsMixin {
     @SuppressWarnings("ConstantConditions")
-    @Inject(method = "Lnet/minecraft/client/gui/GuiGraphics;renderItem(Lnet/minecraft/world/entity/LivingEntity;Lnet/minecraft/world/level/Level;Lnet/minecraft/world/item/ItemStack;III)V", at = @At(value = "HEAD"), cancellable = true)
+    @Inject(method = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;item(Lnet/minecraft/world/entity/LivingEntity;Lnet/minecraft/world/level/Level;Lnet/minecraft/world/item/ItemStack;III)V", at = @At(value = "HEAD"), cancellable = true)
     protected void renderGuiItem(@Nullable LivingEntity livingEntity, @Nullable Level level, ItemStack stack, int x,
             int y, int seed, CallbackInfo ci) {
-        var self = (GuiGraphics) (Object) this;
+        var self = (GuiGraphicsExtractor) (Object) this;
 
         if (GuiGraphicsHooks.onRenderGuiItem(self, livingEntity, level, stack, x, y, seed)) {
             ci.cancel();

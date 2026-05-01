@@ -1,6 +1,6 @@
 package appeng.init;
 
-import net.minecraft.core.cauldron.CauldronInteraction;
+import net.minecraft.core.cauldron.CauldronInteractions;
 
 import appeng.core.definitions.AEItems;
 import appeng.items.tools.MemoryCardItem;
@@ -11,7 +11,7 @@ public class InitCauldronInteraction {
         // Undye all dyeable items
         for (var def : AEItems.getItems()) {
             if (def.asItem() instanceof AbstractPortableCell || def.asItem() instanceof MemoryCardItem) {
-                CauldronInteraction.WATER.map().put(def.asItem(), CauldronInteraction::dyedItemIteration);
+                CauldronInteractions.WATER.put(def.asItem(), CauldronInteractions::dyedItemIteration);
             }
         }
     }

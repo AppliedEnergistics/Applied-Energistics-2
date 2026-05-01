@@ -53,7 +53,7 @@ public class VibrantFX extends SingleQuadParticle {
     }
 
     @Override
-    public int getLightColor(float par1) {
+    public int getLightCoords(float par1) {
         // This just means full brightness
         return 15 << 20 | 15 << 4;
     }

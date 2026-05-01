@@ -132,7 +132,7 @@ public class FluidPlacementStrategy implements PlacementStrategy {
         }
 
         level.playSound(null, pos, SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 0.5F,
-                2.6F + (level.random.nextFloat() - level.random.nextFloat()) * 0.8F);
+                2.6F + (level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.8F);
 
         for (int l = 0; l < 8; ++l) {
             level.addParticle(

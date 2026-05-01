@@ -178,7 +178,7 @@ public class SpatialStoragePlot {
      */
     public String getRegionFilename() {
         BlockPos origin = this.getOrigin();
-        ChunkPos originChunk = new ChunkPos(origin);
+        ChunkPos originChunk = ChunkPos.containing(origin);
 
         return String.format(Locale.ROOT, "r.%d.%d.mca", originChunk.getRegionX(), originChunk.getRegionZ());
     }

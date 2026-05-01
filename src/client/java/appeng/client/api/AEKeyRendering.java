@@ -34,7 +34,7 @@ import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 
 import appeng.api.stacks.AEKey;
@@ -79,7 +79,7 @@ public class AEKeyRendering {
         return renderHandler;
     }
 
-    public static void drawInGui(Minecraft minecraft, GuiGraphics guiGraphics, int x, int y, AEKey what) {
+    public static void drawInGui(Minecraft minecraft, GuiGraphicsExtractor guiGraphics, int x, int y, AEKey what) {
         getOrThrow(what).drawInGui(minecraft, guiGraphics, x, y, what);
     }
 

@@ -1,6 +1,6 @@
 package appeng.client.gui.widgets;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.Rect2i;
 
 import appeng.client.Point;
@@ -38,7 +38,7 @@ public class BackgroundPanel implements ICompositeWidget {
     }
 
     @Override
-    public void drawBackgroundLayer(GuiGraphics guiGraphics, Rect2i bounds, Point mouse) {
+    public void drawBackgroundLayer(GuiGraphicsExtractor guiGraphics, Rect2i bounds, Point mouse) {
         background.dest(bounds.getX() + x, bounds.getY() + y).blit(guiGraphics);
     }
 }

@@ -145,7 +145,7 @@ public abstract class AbstractReportingPart extends AEBasePart implements IMonit
             var te = getHost().getBlockEntity();
             Level level = te.getLevel();
             var pos = te.getBlockPos().relative(this.getSide());
-            this.opacity = level.getBlockState(pos).getLightBlock();
+            this.opacity = level.getLightEmission(pos);
         }
 
         return Math.max(0, emit - opacity);

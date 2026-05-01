@@ -12,8 +12,8 @@ import net.minecraft.client.particle.ParticleGroup;
 import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.culling.Frustum;
-import net.minecraft.client.renderer.state.CameraRenderState;
-import net.minecraft.client.renderer.state.ParticleGroupRenderState;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
+import net.minecraft.client.renderer.state.level.ParticleGroupRenderState;
 import net.minecraft.util.Mth;
 
 import appeng.client.render.AERenderTypes;

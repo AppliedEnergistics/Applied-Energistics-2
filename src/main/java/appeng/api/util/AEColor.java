@@ -28,7 +28,7 @@ import java.util.List;
 
 import com.mojang.serialization.Codec;
 
-import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.StringRepresentable;

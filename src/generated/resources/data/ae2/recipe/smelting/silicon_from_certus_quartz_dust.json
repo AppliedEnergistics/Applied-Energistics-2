@@ -5,7 +5,6 @@
   "experience": 0.35,
   "ingredient": "#c:dusts/certus_quartz",
   "result": {
-    "count": 1,
     "id": "ae2:silicon"
   }
 }

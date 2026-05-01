@@ -18,16 +18,17 @@
 
 package appeng.client.render.model;
 
-import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.QuadInstance;
 import com.mojang.math.Transformation;
 import com.mojang.serialization.MapCodec;
 
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
+import org.joml.Matrix4fc;
 import org.joml.Quaternionf;
 import org.joml.Vector2f;
 import org.joml.Vector3fc;
@@ -35,13 +36,14 @@ import org.joml.Vector3fc;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.item.ItemModel;
 import net.minecraft.client.renderer.item.ItemModelResolver;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.special.SpecialModelRenderer;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.ItemOwner;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
@@ -59,8 +61,7 @@ import appeng.hooks.CompassManager;
  */
 public class MeteoriteCompassModel implements ItemModel {
 
-    private static final Identifier MODEL_POINTER = Identifier.parse(
-            "ae2:item/meteorite_compass_pointer");
+    private static final Identifier MODEL_POINTER = AppEng.makeId("item/meteorite_compass_pointer");
 
     private final ItemBaseModelWrapper pointer;
 
@@ -76,12 +77,14 @@ public class MeteoriteCompassModel implements ItemModel {
             ItemDisplayContext displayContext, @Nullable ClientLevel level, @Nullable ItemOwner owner, int seed) {
         Float target = null;
         if (level != null && owner != null) {
-            var lookVector = new Vec3(1, 0, 0).yRot(owner.getVisualRotationYInDegrees());
+            float ownerRotation = owner.getVisualRotationYInDegrees();
+            var lookVector = Vec3.Z_AXIS.yRot(-Mth.DEG_TO_RAD * ownerRotation);
             target = getAnimatedRotation(owner.position(), lookVector);
         }
 
         var pointerLayer = renderState.newLayer();
-        pointerLayer.setTransform(pointer.renderProperties().transforms().getTransform(displayContext));
+        pointerLayer.setLocalTransform(pointer.transformation());
+        pointer.renderProperties().applyToLayer(pointerLayer, displayContext);
         pointerLayer.setupSpecialModel(rotatedPointerRenderer, target);
         renderState.setAnimated();
         renderState.appendModelIdentityElement(this);
@@ -93,7 +96,7 @@ public class MeteoriteCompassModel implements ItemModel {
     public static Float getAnimatedRotation(Vec3 pos, Vec3 viewVector) {
 
         // Only query for a meteor position if we know our own position
-        var ourChunkPos = new ChunkPos(BlockPos.containing(pos));
+        var ourChunkPos = ChunkPos.containing(BlockPos.containing(pos));
         var closestMeteorite = CompassManager.INSTANCE.getClosestMeteorite(ourChunkPos, true);
 
         // No close meteorite was found -> spin slowly
@@ -133,7 +136,6 @@ public class MeteoriteCompassModel implements ItemModel {
     private record RotatedPointerRenderer(ItemBaseModelWrapper pointer) implements SpecialModelRenderer<Float> {
         @Override
         public void submit(@Nullable Float target,
-                ItemDisplayContext displayContext,
                 PoseStack poseStack,
                 SubmitNodeCollector nodes,
                 int packedLight,
@@ -153,11 +155,14 @@ public class MeteoriteCompassModel implements ItemModel {
             UnaryOperator<BakedQuad> transformer = q -> QuadTransforms.applyTransformation(q,
                     new Transformation(transformation));
 
-            var renderType = Objects.requireNonNullElse(pointer.renderType(), Sheets.translucentItemSheet());
+            var qi = new QuadInstance();
+            qi.setLightCoords(packedLight);
+            qi.setOverlayCoords(packedOverlay);
+            var renderType = Sheets.translucentItemSheet();
             nodes.submitCustomGeometry(poseStack, renderType, (pose, buffer) -> {
                 for (var bakedQuad : this.pointer.quads()) {
                     bakedQuad = transformer.apply(bakedQuad);
-                    buffer.putBulkData(pose, bakedQuad, 1f, 1f, 1f, 1f, packedLight, packedOverlay);
+                    buffer.putBakedQuad(pose, bakedQuad, qi);
                 }
             });
         }
@@ -177,8 +182,8 @@ public class MeteoriteCompassModel implements ItemModel {
         public static final MapCodec<Unbaked> MAP_CODEC = MapCodec.unit(Unbaked::new);
 
         @Override
-        public ItemModel bake(BakingContext context) {
-            var pointerModel = ItemBaseModelWrapper.bake(context.blockModelBaker(), MODEL_POINTER);
+        public ItemModel bake(BakingContext context, Matrix4fc transform) {
+            var pointerModel = ItemBaseModelWrapper.bake(context.blockModelBaker(), MODEL_POINTER, transform);
             return new MeteoriteCompassModel(pointerModel);
         }
 

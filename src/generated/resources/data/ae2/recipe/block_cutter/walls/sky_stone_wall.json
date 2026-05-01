@@ -2,7 +2,6 @@
   "type": "minecraft:stonecutting",
   "ingredient": "ae2:sky_stone_block",
   "result": {
-    "count": 1,
     "id": "ae2:sky_stone_wall"
   }
 }

@@ -18,22 +18,29 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.junit.jupiter.MockitoSettings;
 
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.neoforged.testframework.junit.EphemeralTestServerProvider;
 
 import appeng.util.BootstrapMinecraft;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.filter.IAEItemFilter;
 
 @BootstrapMinecraft
+@ExtendWith(EphemeralTestServerProvider.class)
 class InternalInventoryTest {
+
+    public InternalInventoryTest(MinecraftServer server) {
+    }
 
     @Nested
     class SubInventory {

@@ -34,27 +34,22 @@ import com.google.common.cache.Weigher;
 import com.mojang.serialization.MapCodec;
 
 import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.BlockModelPart;
-import net.minecraft.client.renderer.block.model.BlockStateModel;
-import net.minecraft.client.renderer.block.model.SimpleModelWrapper;
-import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
-import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
 import net.minecraft.client.resources.model.ModelBaker;
-import net.minecraft.client.resources.model.QuadCollection;
+import net.minecraft.client.resources.model.SimpleModelWrapper;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
+import net.minecraft.client.resources.model.geometry.QuadCollection;
+import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.client.model.DynamicBlockStateModel;
 import net.neoforged.neoforge.client.model.block.CustomUnbakedBlockStateModel;
-import net.neoforged.neoforge.model.data.ModelData;
 
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartItem;
@@ -62,7 +57,6 @@ import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
 import appeng.block.networking.CableBusRenderState;
 import appeng.block.networking.CableCoreType;
-import appeng.blockentity.AEModelData;
 import appeng.client.AppEngClient;
 import appeng.client.api.model.parts.PartModel;
 import appeng.client.model.FacingModelState;
@@ -73,24 +67,8 @@ import appeng.core.AppEng;
  */
 public class CableBusModel implements DynamicBlockStateModel {
 
-    private static final Logger LOG = LoggerFactory.getLogger(CableBusModel.class);
-
     // The number of quads overall that will be cached
     private static final int CACHE_QUAD_COUNT = 5000;
-
-    /**
-     * Lookup table to match the spin of a part with an up direction.
-     * <p>
-     * DUNSWE for the facing index, 4 spin values per facing.
-     */
-    private static final Direction[] SPIN_TO_DIRECTION = new Direction[] {
-            Direction.NORTH, Direction.WEST, Direction.SOUTH, Direction.EAST, // DOWN
-            Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST, // UP
-            Direction.UP, Direction.WEST, Direction.DOWN, Direction.EAST, // NORTH
-            Direction.UP, Direction.EAST, Direction.DOWN, Direction.WEST, // SOUTH
-            Direction.UP, Direction.SOUTH, Direction.DOWN, Direction.NORTH, // WEST
-            Direction.UP, Direction.NORTH, Direction.DOWN, Direction.SOUTH // EAST
-    };
 
     private final LoadingCache<CableBusRenderState, SimpleModelWrapper> cableModelCache;
 
@@ -100,17 +78,17 @@ public class CableBusModel implements DynamicBlockStateModel {
 
     private final Map<IPartItem<?>, PartModel[]> partModels;
 
-    private final TextureAtlasSprite particleTexture;
+    private final Material.Baked particleTexture;
 
     private final SimpleModelWrapper emptyCableModel;
 
     private CableBusModel(CableBuilder cableBuilder, FacadeBuilder facadeBuilder,
-            Map<IPartItem<?>, PartModel[]> partModels, TextureAtlasSprite particleTexture) {
+            Map<IPartItem<?>, PartModel[]> partModels, Material.Baked particleTexture) {
         this.cableBuilder = cableBuilder;
         this.facadeBuilder = facadeBuilder;
         this.particleTexture = particleTexture;
         this.partModels = partModels;
-        this.emptyCableModel = new SimpleModelWrapper(QuadCollection.EMPTY, false, particleTexture, null);
+        this.emptyCableModel = new SimpleModelWrapper(QuadCollection.EMPTY, false, particleTexture);
         this.cableModelCache = CacheBuilder.newBuilder()//
                 .maximumWeight(CACHE_QUAD_COUNT)//
                 .weigher((Weigher<CableBusRenderState, SimpleModelWrapper>) (key, value) -> value.quads().getAll()
@@ -125,7 +103,7 @@ public class CableBusModel implements DynamicBlockStateModel {
 
     @Override
     public void collectParts(BlockAndTintGetter level, BlockPos pos, BlockState state, RandomSource random,
-            List<BlockModelPart> parts) {
+            List<BlockStateModelPart> parts) {
         var data = level.getModelData(pos);
 
         var renderState = data.get(CableBusRenderState.PROPERTY);
@@ -134,7 +112,7 @@ public class CableBusModel implements DynamicBlockStateModel {
         }
 
         // The core parts of the cable will only be rendered in the CUTOUT layer.
-        // Facades will add themselves to what ever the block would be rendered with,
+        // Facades will add themselves to whatever the block would be rendered with,
         // except when transparent facades are enabled, they are forced to TRANSPARENT.
 
         // First, handle the cable at the center of the cable bus
@@ -171,14 +149,27 @@ public class CableBusModel implements DynamicBlockStateModel {
     }
 
     @Override
-    public TextureAtlasSprite particleIcon() {
+    public Material.Baked particleMaterial() {
         return particleTexture;
     }
 
     @Override
-    public TextureAtlasSprite particleIcon(BlockAndTintGetter level, BlockPos pos, BlockState state) {
-        // TODO: Determine dynamic particle icon based on attached parts
-        return DynamicBlockStateModel.super.particleIcon(level, pos, state);
+    public @BakedQuad.MaterialFlags int materialFlags() {
+        // Since we can attach practically any other model via a facade,
+        // we can only return the worst-case flags here
+        return BakedQuad.FLAG_TRANSLUCENT | BakedQuad.FLAG_ANIMATED;
+    }
+
+    @Override
+    public @BakedQuad.MaterialFlags int materialFlags(BlockAndTintGetter level, BlockPos pos, BlockState state) {
+        // TODO 26.1: Determine flags based on attached part models
+        return materialFlags();
+    }
+
+    @Override
+    public Material.Baked particleMaterial(BlockAndTintGetter level, BlockPos pos, BlockState state) {
+        // TODO 26.1: Determine dynamic particle icon based on attached parts
+        return DynamicBlockStateModel.super.particleMaterial(level, pos, state);
     }
 
     // Determines whether a cable is connected to exactly two sides that are
@@ -208,15 +199,6 @@ public class CableBusModel implements DynamicBlockStateModel {
         return firstType == secondType && cableType == firstType && cableType == secondType;
     }
 
-    private static int getPartSpin(ModelData partModelData) {
-        var spin = partModelData.get(AEModelData.SPIN);
-        if (spin != null) {
-            return spin;
-        }
-
-        return 0;
-    }
-
     private SimpleModelWrapper createCableModel(CableBusRenderState renderState) {
         var quads = new QuadCollection.Builder();
         getCableQuads(renderState, quads::addUnculledFace);
@@ -230,7 +212,7 @@ public class CableBusModel implements DynamicBlockStateModel {
         if (quadCollection.getAll().isEmpty()) {
             return emptyCableModel;
         }
-        return new SimpleModelWrapper(quadCollection, true, particleTexture, ChunkSectionLayer.CUTOUT);
+        return new SimpleModelWrapper(quadCollection, true, particleTexture);
     }
 
     private void getCableQuads(CableBusRenderState renderState, Consumer<BakedQuad> quadsOut) {
@@ -245,11 +227,7 @@ public class CableBusModel implements DynamicBlockStateModel {
         // If the connection is straight, no busses are attached, and no covered core
         // has been forced (in case of glass
         // cables), then render the cable as a simplified straight line.
-        boolean noAttachments = false; /*
-                                        * TODO !renderState.getAttachments().values().stream()
-                                        * .anyMatch(IPartModel::requireCableConnection);
-                                        */
-        if (noAttachments && isStraightLine(cableType, connectionTypes)) {
+        if (isStraightLine(cableType, connectionTypes) && canAllAttachmentsRenderOnStraightCable(renderState)) {
             Direction facing = connectionTypes.keySet().iterator().next();
 
             switch (cableType) {
@@ -338,8 +316,26 @@ public class CableBusModel implements DynamicBlockStateModel {
         }
     }
 
+    /**
+     * {@return true if there aren't any attachments or all of them can render on a straight cable without requiring a
+     * cable connecting core}.
+     */
+    private boolean canAllAttachmentsRenderOnStraightCable(CableBusRenderState renderState) {
+        for (var partRenderState : renderState.getAttachments().values()) {
+            var modelsOnSide = partModels.get(partRenderState.partItem());
+            if (modelsOnSide != null) {
+                for (var modelOnSide : modelsOnSide) {
+                    if (!modelOnSide.canAttachToStraightCable()) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
     @Nullable
-    private TextureAtlasSprite getCableParticleTexture(CableBusRenderState renderState) {
+    private Material.Baked getCableParticleTexture(CableBusRenderState renderState) {
         CableCoreType coreType = CableCoreType.fromCableType(renderState.getCableType());
         AEColor cableColor = renderState.getCableColor();
         if (coreType != null) {
@@ -351,8 +347,8 @@ public class CableBusModel implements DynamicBlockStateModel {
     /**
      * Gets a list of texture sprites appropriate for particles (digging, etc.) given the render state for a cable bus.
      */
-    public List<TextureAtlasSprite> getParticleTextures(CableBusRenderState renderState) {
-        List<TextureAtlasSprite> result = new ArrayList<>();
+    public List<Material.Baked> getParticleMaterials(CableBusRenderState renderState) {
+        List<Material.Baked> result = new ArrayList<>();
 
         var cableParticleTexture = getCableParticleTexture(renderState);
         if (cableParticleTexture != null) {
@@ -364,19 +360,12 @@ public class CableBusModel implements DynamicBlockStateModel {
             var side = entry.getKey();
             var partState = entry.getValue();
             var modelsBySide = partModels.get(partState.partItem());
-            if (modelsBySide == null) {
-                continue; // TODO How to handle this?
+            if (modelsBySide != null) {
+                result.add(modelsBySide[side.ordinal()].particleMaterial());
             }
-
-            var model = modelsBySide[side.ordinal()];
-            // TODO model.particleTexture();
         }
 
         return result;
-    }
-
-    private boolean isMissingTexture(TextureAtlasSprite particleTexture) {
-        return particleTexture.contents().name().equals(MissingTextureAtlasSprite.getLocation());
     }
 
     public record Unbaked() implements CustomUnbakedBlockStateModel {
@@ -385,9 +374,9 @@ public class CableBusModel implements DynamicBlockStateModel {
 
         @Override
         public BlockStateModel bake(ModelBaker baker) {
-            var spriteGetter = baker.sprites();
+            var materials = baker.materials();
 
-            var cableBuilder = new CableBuilder(spriteGetter);
+            var cableBuilder = new CableBuilder(materials);
 
             FacadeBuilder facadeBuilder = baker.compute(FacadeBuilder.SHARED_KEY);
 

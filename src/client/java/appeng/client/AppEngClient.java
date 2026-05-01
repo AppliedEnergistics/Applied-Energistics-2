@@ -68,6 +68,7 @@ import net.neoforged.neoforge.client.event.RegisterItemModelsEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.client.event.RegisterParticleGroupsEvent;
 import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
+import net.neoforged.neoforge.client.event.RegisterPictureInPictureRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterRangeSelectItemModelPropertyEvent;
 import net.neoforged.neoforge.client.event.RegisterRenderPipelinesEvent;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
@@ -91,7 +92,6 @@ import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKeyType;
 import appeng.api.util.AEColor;
-import appeng.block.qnb.QnbFormedModel;
 import appeng.client.api.AEKeyRendering;
 import appeng.client.api.model.parts.CompositePartModel;
 import appeng.client.api.model.parts.RegisterPartModelsEvent;
@@ -110,6 +110,7 @@ import appeng.client.guidebook.ConfigValueTagExtension;
 import appeng.client.guidebook.PartAnnotationStrategy;
 import appeng.client.hooks.BlockAttackHook;
 import appeng.client.hooks.RenderBlockOutlineHook;
+import appeng.client.integrations.itemlists.FluidBlockPictureInPictureRenderer;
 import appeng.client.item.ColorApplicatorItemModel;
 import appeng.client.item.EnergyFillLevelProperty;
 import appeng.client.item.PortableCellColorTintSource;
@@ -121,6 +122,7 @@ import appeng.client.model.P2PFrequencyPartModel;
 import appeng.client.model.PaintSplotchesModel;
 import appeng.client.model.PartModels;
 import appeng.client.model.PlanePartModel;
+import appeng.client.model.QnbFormedModel;
 import appeng.client.model.SpatialPylonModel;
 import appeng.client.model.StatusIndicatorPartModel;
 import appeng.client.render.AEColorItemTintSource;
@@ -289,14 +291,14 @@ public class AppEngClient extends AppEngBase {
         modEventBus.addListener(this::registerItemModels);
         modEventBus.addListener(this::registerEnvironmentalEffectRenderers);
         modEventBus.addListener(this::registerItemTintSources);
-        modEventBus.addListener(this::registerBlockColors);
+        modEventBus.addListener(this::registerBlockTintSources);
+        modEventBus.addListener(this::registerPipRenderers);
 
         RenderBlockOutlineHook.install();
 
         var areaOverlayRenderer = new AreaOverlayRenderer();
         NeoForge.EVENT_BUS.register(areaOverlayRenderer);
 
-        modEventBus.addListener(this::registerReloadListener);
         modEventBus.addListener(this::registerPartRenderers);
         modEventBus.addListener(this::registerPartModelTypes);
         modEventBus.addListener(this::initCustomClientRegistries);
@@ -376,10 +378,14 @@ public class AppEngClient extends AppEngBase {
     }
 
     private void registerReloadListeners(AddClientReloadListenersEvent event) {
+        event.addListener(PartRendererDispatcher.ID, partRendererDispatcher);
+        // The block entity render for parts needs access to the formed PartRendererDispatcher
+        event.addDependency(VanillaClientListeners.BLOCK_ENTITY_RENDERER, PartRendererDispatcher.ID);
+
         event.addListener(AppEng.makeId("styles"), StyleManager.getReloadListener());
     }
 
-    private void wheelEvent(final InputEvent.MouseScrollingEvent me) {
+    private void wheelEvent(InputEvent.MouseScrollingEvent me) {
         if (me.getScrollDeltaY() == 0) {
             return;
         }
@@ -438,12 +444,13 @@ public class AppEngClient extends AppEngBase {
         // This should asynchronously update the chunk meshes and as part of that use the new facade render mode
         var viewDistance = (int) Math.ceil(mc.levelRenderer.getLastViewDistance());
         ChunkPos.rangeClosed(mc.player.chunkPosition(), viewDistance).forEach(chunkPos -> {
-            var chunk = mc.level.getChunkSource().getChunkNow(chunkPos.x, chunkPos.z);
+            var chunk = mc.level.getChunkSource().getChunkNow(chunkPos.x(), chunkPos.z());
             if (chunk != null) {
                 for (var i = 0; i < chunk.getSectionsCount(); i++) {
                     var section = chunk.getSection(i);
                     if (section.maybeHas(state -> state.is(AEBlocks.CABLE_BUS.block()))) {
-                        mc.levelRenderer.setSectionDirty(chunkPos.x, chunk.getSectionYFromSectionIndex(i), chunkPos.z);
+                        mc.levelRenderer.setSectionDirty(chunkPos.x(), chunk.getSectionYFromSectionIndex(i),
+                                chunkPos.z());
                     }
                 }
             }
@@ -471,7 +478,7 @@ public class AppEngClient extends AppEngBase {
     @Override
     public void sendSystemMessage(Player player, Component text) {
         if (player == Minecraft.getInstance().player) {
-            Minecraft.getInstance().gui.getChat().addMessage(text);
+            Minecraft.getInstance().gui.getChat().addServerSystemMessage(text);
         }
         super.sendSystemMessage(player, text);
     }
@@ -544,12 +551,6 @@ public class AppEngClient extends AppEngBase {
         return partRendererDispatcher;
     }
 
-    private void registerReloadListener(AddClientReloadListenersEvent event) {
-        event.addListener(PartRendererDispatcher.ID, partRendererDispatcher);
-        // The block entity render for parts needs access to the formed PartRendererDispatcher
-        event.addDependency(VanillaClientListeners.BLOCK_ENTITY_RENDERER, PartRendererDispatcher.ID);
-    }
-
     private void registerRenderPipelines(RegisterRenderPipelinesEvent event) {
         event.registerPipeline(AERenderPipelines.LINES_BEHIND_BLOCK);
         event.registerPipeline(AERenderPipelines.LIGHTNING_FX);
@@ -616,10 +617,10 @@ public class AppEngClient extends AppEngBase {
         for (var cellModelKey : StorageCellModels.standaloneModels().values()) {
             // TODO 1.21.8 Investigate what model debug name vs. model key vs. resource location is
             event.register(cellModelKey,
-                    SimpleUnbakedStandaloneModel.simpleModelWrapper(Identifier.parse(cellModelKey.getName())));
+                    SimpleUnbakedStandaloneModel.blockStateModel(Identifier.parse(cellModelKey.getName())));
         }
         event.register(StorageCellModels.getDefaultStandaloneModel(), SimpleUnbakedStandaloneModel
-                .simpleModelWrapper(Identifier.parse(StorageCellModels.getDefaultStandaloneModel().getName())));
+                .blockStateModel(Identifier.parse(StorageCellModels.getDefaultStandaloneModel().getName())));
     }
 
     private void registerItemModelProperties(RegisterRangeSelectItemModelPropertyEvent event) {
@@ -650,15 +651,19 @@ public class AppEngClient extends AppEngBase {
         event.register(AEColorItemTintSource.ID, AEColorItemTintSource.MAP_CODEC);
     }
 
-    public void registerBlockColors(RegisterColorHandlersEvent.Block event) {
-        event.register(new StaticBlockColor(AEColor.TRANSPARENT), AEBlocks.WIRELESS_ACCESS_POINT.block());
-        event.register(new CableBusColor(), AEBlocks.CABLE_BUS.block());
-        event.register(ColorableBlockEntityBlockColor.INSTANCE, AEBlocks.ME_CHEST.block());
+    public void registerBlockTintSources(RegisterColorHandlersEvent.BlockTintSources event) {
+        event.register(StaticBlockColor.createTintSources(AEColor.TRANSPARENT), AEBlocks.WIRELESS_ACCESS_POINT.block());
+        event.register(CableBusColor.TINT_SOURCES, AEBlocks.CABLE_BUS.block());
+        event.register(ColorableBlockEntityBlockColor.TINT_SOURCES, AEBlocks.ME_CHEST.block());
     }
 
     private void receiveRecipes(RecipesReceivedEvent event) {
         recipeMap = event.getRecipeMap();
         knownRecipeTypes.clear();
         knownRecipeTypes.addAll(event.getRecipeTypes());
+    }
+
+    private void registerPipRenderers(RegisterPictureInPictureRenderersEvent event) {
+        event.register(FluidBlockPictureInPictureRenderer.State.class, FluidBlockPictureInPictureRenderer::new);
     }
 }

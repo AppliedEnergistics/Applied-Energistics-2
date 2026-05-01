@@ -6,8 +6,6 @@ import com.google.common.primitives.Ints;
 
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
-import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.item.ItemResource;
@@ -51,7 +49,7 @@ public abstract class HandlerStrategy<C, S> {
 
         @Override
         public ExternalStorageFacade getFacade(ResourceHandler<ItemResource> handler) {
-            return ExternalStorageFacade.of(IItemHandler.of(handler));
+            return ExternalStorageFacade.ofItemHandler(handler);
         }
 
         @Override
@@ -90,7 +88,7 @@ public abstract class HandlerStrategy<C, S> {
 
         @Override
         public ExternalStorageFacade getFacade(ResourceHandler<FluidResource> handler) {
-            return ExternalStorageFacade.of(IFluidHandler.of(handler));
+            return ExternalStorageFacade.ofFluidHandler(handler);
         }
 
         @Override

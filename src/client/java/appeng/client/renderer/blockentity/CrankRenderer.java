@@ -5,22 +5,24 @@ import java.util.Objects;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import org.jetbrains.annotations.Nullable;
+import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.block.model.BlockModelPart;
-import net.minecraft.client.renderer.block.model.BlockStateModel;
-import net.minecraft.client.renderer.block.model.SingleVariant;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
+import net.minecraft.client.renderer.block.dispatch.SingleVariant;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
-import net.minecraft.client.renderer.state.CameraRenderState;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.client.RenderTypeHelper;
 import net.neoforged.neoforge.client.model.standalone.StandaloneModelKey;
 
 import appeng.api.orientation.BlockOrientation;
@@ -30,13 +32,13 @@ import appeng.core.AppEng;
 public class CrankRenderer implements BlockEntityRenderer<CrankBlockEntity, CrankRenderState> {
 
     public static final Identifier HANDLE_MODEL_ID = AppEng.makeId("block/crank_handle");
-    public static final StandaloneModelKey<BlockModelPart> HANDLE_MODEL = new StandaloneModelKey<>(
+    public static final StandaloneModelKey<BlockStateModelPart> HANDLE_MODEL = new StandaloneModelKey<>(
             HANDLE_MODEL_ID::toString);
 
     private final BlockStateModel handleModel;
 
     public CrankRenderer(BlockEntityRendererProvider.Context context) {
-        var modelManager = context.blockRenderDispatcher().getBlockModelShaper().getModelManager();
+        var modelManager = Minecraft.getInstance().getModelManager();
         handleModel = new SingleVariant(Objects.requireNonNull(modelManager.getStandaloneModel(HANDLE_MODEL)));
     }
 
@@ -52,6 +54,10 @@ public class CrankRenderer implements BlockEntityRenderer<CrankBlockEntity, Cran
 
         state.orientation = BlockOrientation.get(be);
         state.visibleRotation = be.getVisibleRotation();
+        var parts = state.modelRenderState.setupModel(new Matrix4f(), handleModel.hasMaterialFlag(
+                (BlockAndTintGetter) be.getLevel(), be.getBlockPos(), be.getBlockState(), BakedQuad.FLAG_TRANSLUCENT));
+        handleModel.collectParts((BlockAndTintGetter) be.getLevel(), be.getBlockPos(), be.getBlockState(),
+                state.modelRenderState.scratchRandomSource(42L), parts);
     }
 
     @Override
@@ -66,14 +72,7 @@ public class CrankRenderer implements BlockEntityRenderer<CrankBlockEntity, Cran
         rotation.rotateY(-Mth.DEG_TO_RAD * state.visibleRotation);
         poseStack.rotateAround(rotation, 0.5f, 0.5f, 0.5f);
 
-        nodes.submitBlockModel(
-                poseStack,
-                RenderTypeHelper.getEntityRenderType(ChunkSectionLayer.SOLID),
-                handleModel,
-                1, 1, 1,
-                state.lightCoords,
-                OverlayTexture.NO_OVERLAY,
-                0);
+        state.modelRenderState.submit(poseStack, nodes, state.lightCoords, OverlayTexture.NO_OVERLAY, 0);
 
         poseStack.popPose();
     }

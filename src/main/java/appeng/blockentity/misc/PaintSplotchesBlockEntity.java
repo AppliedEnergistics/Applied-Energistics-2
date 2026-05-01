@@ -20,7 +20,6 @@ package appeng.blockentity.misc;
 
 import java.util.ArrayList;
 import java.util.Base64;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -201,7 +200,7 @@ public class PaintSplotchesBlockEntity extends AEBaseBlockEntity {
         }
     }
 
-    public Collection<Splotch> getDots() {
+    public List<Splotch> getDots() {
         if (this.dots == null) {
             return Collections.emptyList();
         }
@@ -211,7 +210,6 @@ public class PaintSplotchesBlockEntity extends AEBaseBlockEntity {
 
     @Override
     public ModelData getModelData() {
-        // FIXME update trigger
-        return ModelData.builder().with(SPLOTCHES, new PaintSplotches(this.dots)).build();
+        return ModelData.builder().with(SPLOTCHES, new PaintSplotches(getDots())).build();
     }
 }
