@@ -47,6 +47,11 @@ public class CableAnchorPartModel implements PartModel {
         return model.particleMaterial();
     }
 
+    @Override
+    public boolean canAttachToStraightCable() {
+        return true;
+    }
+
     public record Unbaked(Identifier model, Identifier shortModel) implements PartModel.Unbaked {
         public static final Identifier ID = AppEng.makeId("cable_anchor");
         public static final MapCodec<Unbaked> MAP_CODEC = RecordCodecBuilder.mapCodec(builder -> builder.group(

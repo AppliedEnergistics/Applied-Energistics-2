@@ -227,11 +227,7 @@ public class CableBusModel implements DynamicBlockStateModel {
         // If the connection is straight, no busses are attached, and no covered core
         // has been forced (in case of glass
         // cables), then render the cable as a simplified straight line.
-        boolean noAttachments = false; /*
-                                        * TODO !renderState.getAttachments().values().stream()
-                                        * .anyMatch(IPartModel::requireCableConnection);
-                                        */
-        if (noAttachments && isStraightLine(cableType, connectionTypes)) {
+        if (isStraightLine(cableType, connectionTypes) && canAllAttachmentsRenderOnStraightCable(renderState)) {
             Direction facing = connectionTypes.keySet().iterator().next();
 
             switch (cableType) {
@@ -318,6 +314,24 @@ public class CableBusModel implements DynamicBlockStateModel {
                     break;
             }
         }
+    }
+
+    /**
+     * {@return true if there aren't any attachments or all of them can render on a straight cable without requiring a
+     * cable connecting core}.
+     */
+    private boolean canAllAttachmentsRenderOnStraightCable(CableBusRenderState renderState) {
+        for (var partRenderState : renderState.getAttachments().values()) {
+            var modelsOnSide = partModels.get(partRenderState.partItem());
+            if (modelsOnSide != null) {
+                for (var modelOnSide : modelsOnSide) {
+                    if (!modelOnSide.canAttachToStraightCable()) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
     }
 
     @Nullable

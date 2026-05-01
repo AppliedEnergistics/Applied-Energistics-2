@@ -34,6 +34,14 @@ public interface PartModel {
     Material.Baked particleMaterial();
 
     /**
+     * @return True if the model supports attaching to a straight cable without forcing it to show as a connecting
+     *         junction.
+     */
+    default boolean canAttachToStraightCable() {
+        return false;
+    }
+
+    /**
      * An unbaked {@link PartModel} which is what is deserialized from the JSON file and ultimately used to produce a
      * {@link PartModel} and its dependencies.
      */
