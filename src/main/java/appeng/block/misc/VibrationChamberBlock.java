@@ -44,8 +44,8 @@ public final class VibrationChamberBlock extends AEBaseEntityBlock<VibrationCham
     // Indicates that the vibration chamber is currently working
     public static final BooleanProperty ACTIVE = BooleanProperty.create("active");
 
-    public VibrationChamberBlock() {
-        super(metalProps().strength(4.2F));
+    public VibrationChamberBlock(Properties p) {
+        super(metalProps(p).strength(4.2F));
         this.registerDefaultState(this.defaultBlockState().setValue(ACTIVE, false));
     }
 
@@ -69,10 +69,10 @@ public final class VibrationChamberBlock extends AEBaseEntityBlock<VibrationCham
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player,
             BlockHitResult hitResult) {
         if (level.getBlockEntity(pos) instanceof VibrationChamberBlockEntity be) {
-            if (!level.isClientSide) {
+            if (!level.isClientSide()) {
                 MenuOpener.open(VibrationChamberMenu.TYPE, player, MenuLocators.forBlockEntity(be));
             }
-            return InteractionResult.sidedSuccess(level.isClientSide());
+            return InteractionResult.SUCCESS;
         }
 
         return super.useWithoutItem(state, level, pos, player, hitResult);

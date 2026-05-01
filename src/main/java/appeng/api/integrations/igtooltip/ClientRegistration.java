@@ -2,7 +2,7 @@ package appeng.api.integrations.igtooltip;
 
 import org.jetbrains.annotations.ApiStatus;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
@@ -16,52 +16,52 @@ import appeng.api.integrations.igtooltip.providers.NameProvider;
 public interface ClientRegistration {
     default <T extends BlockEntity> void addBlockEntityBody(Class<T> blockEntityClass,
             Class<? extends Block> blockClass,
-            ResourceLocation id,
+            Identifier id,
             BodyProvider<? super T> provider) {
         addBlockEntityBody(blockEntityClass, blockClass, id, provider, 1000);
     }
 
     <T extends BlockEntity> void addBlockEntityBody(Class<T> blockEntityClass,
             Class<? extends Block> blockClass,
-            ResourceLocation id,
+            Identifier id,
             BodyProvider<? super T> provider,
             int priority);
 
     default <T extends BlockEntity> void addBlockEntityIcon(Class<T> blockEntityClass,
             Class<? extends Block> blockClass,
-            ResourceLocation id,
+            Identifier id,
             IconProvider<? super T> provider) {
         addBlockEntityIcon(blockEntityClass, blockClass, id, provider, TooltipProvider.DEFAULT_PRIORITY);
     }
 
     <T extends BlockEntity> void addBlockEntityIcon(Class<T> blockEntityClass,
             Class<? extends Block> blockClass,
-            ResourceLocation id,
+            Identifier id,
             IconProvider<? super T> provider,
             int priority);
 
     default <T extends BlockEntity> void addBlockEntityName(Class<T> blockEntityClass,
             Class<? extends Block> blockClass,
-            ResourceLocation id,
+            Identifier id,
             NameProvider<? super T> provider) {
         addBlockEntityName(blockEntityClass, blockClass, id, provider, TooltipProvider.DEFAULT_PRIORITY);
     }
 
     <T extends BlockEntity> void addBlockEntityName(Class<T> blockEntityClass,
             Class<? extends Block> blockClass,
-            ResourceLocation id, NameProvider<? super T> provider,
+            Identifier id, NameProvider<? super T> provider,
             int priority);
 
     default <T extends BlockEntity> void addBlockEntityModName(Class<T> blockEntityClass,
             Class<? extends Block> blockClass,
-            ResourceLocation id,
+            Identifier id,
             ModNameProvider<? super T> provider) {
         addBlockEntityModName(blockEntityClass, blockClass, id, provider, 1000);
     }
 
     <T extends BlockEntity> void addBlockEntityModName(Class<T> blockEntityClass,
             Class<? extends Block> blockClass,
-            ResourceLocation id,
+            Identifier id,
             ModNameProvider<? super T> provider,
             int priority);
 

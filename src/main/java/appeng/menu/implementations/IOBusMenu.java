@@ -23,7 +23,6 @@ import net.minecraft.world.inventory.MenuType;
 
 import appeng.api.util.KeyTypeSelection;
 import appeng.api.util.KeyTypeSelectionHost;
-import appeng.client.gui.implementations.IOBusScreen;
 import appeng.core.definitions.AEItems;
 import appeng.menu.guisync.GuiSync;
 import appeng.menu.interfaces.KeyTypeSelectionMenu;
@@ -34,7 +33,7 @@ import appeng.parts.automation.ImportBusPart;
 /**
  * Used for {@link ImportBusPart}, {@link ExportBusPart}.
  *
- * @see IOBusScreen
+ * @see appeng.client.gui.implementations.IOBusScreen
  */
 public class IOBusMenu extends UpgradeableMenu<IOBusPart> implements KeyTypeSelectionMenu {
 

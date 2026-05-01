@@ -85,13 +85,13 @@ public class P2PTestPlots {
                 .add(Fluids.WATER);
         plot.test(helper -> {
             helper.succeedWhen(() -> {
-                var tank = (SkyStoneTankBlockEntity) helper.getBlockEntity(outputPos);
-                var storage = tank.getTank();
+                var tank = helper.getBlockEntity(outputPos, SkyStoneTankBlockEntity.class);
+                var storage = tank.getFluidHandler();
                 helper.check(
-                        storage.getFluid().is(Fluids.WATER),
+                        storage.getResource(0).is(Fluids.WATER),
                         "No water stored");
                 helper.check(
-                        storage.getFluidAmount() > 0,
+                        storage.getAmountAsLong(0) > 0,
                         "No amount >0 stored");
             });
         });
@@ -111,12 +111,12 @@ public class P2PTestPlots {
             helper.startSequence()
                     .thenIdle(10)
                     .thenWaitUntil(() -> {
-                        var cell = (EnergyCellBlockEntity) helper.getBlockEntity(cellPos);
+                        var cell = helper.getBlockEntity(cellPos, EnergyCellBlockEntity.class);
                         cellEnergy.setValue(cell.getAECurrentPower());
                     })
                     .thenIdle(10)
                     .thenWaitUntil(() -> {
-                        var cell = (EnergyCellBlockEntity) helper.getBlockEntity(cellPos);
+                        var cell = helper.getBlockEntity(cellPos, EnergyCellBlockEntity.class);
                         helper.check(
                                 cell.getAECurrentPower() > cellEnergy.getValue(),
                                 "Cell should start charging through the P2P tunnel");
@@ -236,12 +236,12 @@ public class P2PTestPlots {
                     .thenWaitUntil(() -> {
                         var inputTunnel = helper.getPart(p2pOutputPos, Direction.EAST, MEP2PTunnelPart.class);
                         if (inputTunnel.getMainNode().isOnline()) {
-                            helper.fail("should be offline", p2pOutputPos);
+                            throw helper.assertionException(p2pOutputPos, "should be offline");
                         }
                     })
                     .thenWaitUntil(() -> {
                         if (lightPanel.getValue().getMainNode().isOnline()) {
-                            helper.fail("should be offline", p2pOutputPos.east());
+                            throw helper.assertionException(p2pOutputPos.east(), "should be offline");
                         }
                     })
                     // This toggles the toggle bus and will make the P2P get its channel back
@@ -249,12 +249,12 @@ public class P2PTestPlots {
                     .thenWaitUntil(() -> {
                         var inputTunnel = helper.getPart(p2pOutputPos, Direction.EAST, MEP2PTunnelPart.class);
                         if (!inputTunnel.getMainNode().isOnline()) {
-                            helper.fail("should be online", p2pOutputPos);
+                            throw helper.assertionException(p2pOutputPos, "should be online");
                         }
                     })
                     .thenWaitUntil(() -> {
                         if (!lightPanel.getValue().getMainNode().isOnline()) {
-                            helper.fail("should be online", p2pOutputPos.east());
+                            throw helper.assertionException(p2pOutputPos.east(), "should be online");
                         }
                     })
                     .thenSucceed();

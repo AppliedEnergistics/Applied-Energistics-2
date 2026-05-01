@@ -18,7 +18,13 @@
 
 package appeng.util.inv;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.transfer.CombinedResourceHandler;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 
 import appeng.api.inventories.BaseInternalInventory;
 import appeng.api.inventories.InternalInventory;
@@ -129,5 +135,17 @@ public class CombinedInternalInventory extends BaseInternalInventory {
         var handler = this.getHandlerFromIndex(index);
         int targetSlot = this.getSlotFromIndex(slot, index);
         handler.sendChangeNotification(targetSlot);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    protected ResourceHandler<ItemResource> createResourceHandler() {
+        List<ResourceHandler<ItemResource>> parts = new ArrayList<>(this.inventories.length);
+
+        for (InternalInventory inventory : this.inventories) {
+            parts.add(inventory.toResourceHandler());
+        }
+
+        return new CombinedResourceHandler<>(parts.toArray(ResourceHandler[]::new));
     }
 }

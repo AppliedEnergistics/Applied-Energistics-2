@@ -18,7 +18,6 @@ relevant during mod initialization:
 | `appeng.api.features.GridLinkables` | For working with and adding items that can be linked to a grid in the security station.                          |
 | `appeng.api.storage.StorageCells` | For working with and adding items that serve as storage cells for grids.                                         |
 | `appeng.api.features.Locatables` | For discovering quantum network bridges based on their unique keys, regardless of location. |
-| `appeng.api.parts.PartModels` | For registering JSON block models used by custom cable bus parts.                                                |
 | `appeng.api.features.P2PTunnelAttunement` | For registering new items that attune P2P tunnels to specific types when right-clicked.                |
 | `appeng.api.client.StorageCellModels` | For customizing the models of storage cells when they're inserted into drives or ME chests.                      |
 
@@ -240,6 +239,81 @@ count how many upgrades of a type are present.
 For the machine version created by `forMachine`, you are responsible for saving the inventory yourself from the
 change callback. For the item version created by `forItem`, the upgrade inventory will automatically save itself 
 to the provided ´ItemStack` whenever its content changes.
+
+## Custom Parts
+
+To implement a custom part that is attachable to an AE2 cable bus, you need to implement a custom item that 
+implements the `IPartItem` interface. 
+This item will represent the type of part, by implementing the interface, players can attach this item to cables.
+Look at `AEBasePart` for a base implementation.
+
+To define the model for your part, when it is attached to a cable bus, you need to write a part model.
+AE2 uses a system similar to blockstate and item models for defining part models. 
+
+For each item implementing `IPartItem`, AE2 will look for a JSON file at: `assets/<item_namespace>/ae2/parts/<item_id>.json`.
+We recommend data-genning these files. Currently the AE2 datagen for part models is not part of API but can be found at 
+`AE2ModelProvider` and `appeng.datagen.providers.models.PartModelOutput`.
+
+### Static Part Models
+
+If your part model uses a simple static block model, you can use `appeng.client.api.model.parts.StaticPartModel.Unbaked`
+and serialize that using the provided `MAP_CODEC` to get a working part model file.
+
+Example that loads the block model from `assets/ae2/models/part/energy_acceptor.json`:
+
+```json
+{
+  "model": {
+    "type": "ae2:model",
+    "model": "ae2:part/energy_acceptor"
+  }
+}
+```
+
+### Composite Part Models
+
+There is also `appeng.client.api.model.parts.CompositePartModel.Unbaked` to combine multiple other part models.
+
+An example that combines a static model with a custom model:
+
+```json
+{
+  "model": {
+    "type": "ae2:composite",
+    "models": [
+      {
+        "type": "ae2:model",
+        "model": "ae2:part/p2p_tunnel_fe"
+      },
+      {
+        "type": "ae2:p2p_tunnel_frequency"
+      }
+    ]
+  }
+}
+```
+
+### Custom Part Models
+
+If you need a dynamic part model that builds its geometry based on some runtime state, implement the `PartModel` and
+`PartModel.Unbaked` interfaces, respectively. This system follows the custom item and blockstate model system closely,
+so the same techniques apply here.
+
+It means for example, that you will define a custom `MAP_CODEC` to deserialize the JSON object into your custom unbaked
+part model, and register this codec using an identifier, which will be used as the `type` in the JSON object.
+
+A simple example that toggles between two static models based on some part property can be found in the `appeng.client.model.LevelEmitterPartModel`.
+
+To register your custom part model codec and ID, listen to the `RegisterPartModelsEvent` event.
+
+### Dynamic Part Renderer
+
+If your part requires fully dynamic rendering similar to a BlockEntityRenderer, you need to implement the `appeng.client.api.renderer.parts.PartRenderer`
+interface, and register it by listening to the `appeng.client.api.renderer.parts.RegisterPartRendererEvent` event.
+
+The renderer works similar to how block entity rendering now works: You have to write a class that encapsulates the entire
+world state that your renderer relies on, which will be filled on the main thread, and then implement a second render
+method that can actually submit the render calls based on that state.
 
 # Changes from 1.17 and before to 1.18
 

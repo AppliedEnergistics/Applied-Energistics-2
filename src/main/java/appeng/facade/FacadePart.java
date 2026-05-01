@@ -20,10 +20,10 @@ package appeng.facade;
 
 import java.util.Objects;
 
-import net.minecraft.Util;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Util;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -104,7 +104,7 @@ public class FacadePart implements IFacadePart {
     }
 
     private boolean handleInteraction(Player player, boolean shouldCycleState, ItemStack heldItem) {
-        var holder = getBlockState().getBlockHolder();
+        var holder = getBlockState().typeHolder();
         var statedefinition = holder.value().getStateDefinition();
         var properties = statedefinition.getProperties();
         if (properties.isEmpty()) {

@@ -32,9 +32,9 @@ import net.minecraft.world.item.ItemStack;
 
 import appeng.api.inventories.InternalInventory;
 import appeng.api.stacks.GenericStack;
-import appeng.client.gui.Icon;
 import appeng.core.AELog;
 import appeng.menu.AEBaseMenu;
+import appeng.util.Icon;
 
 public class AppEngSlot extends Slot {
     private static final Container EMPTY_INVENTORY = new SimpleContainer(0);
@@ -107,7 +107,7 @@ public class AppEngSlot extends Slot {
             return ItemStack.EMPTY;
         }
 
-        if (this.slot >= this.inventory.size()) {
+        if (getSlotIndex() >= this.inventory.size()) {
             return ItemStack.EMPTY;
         }
 

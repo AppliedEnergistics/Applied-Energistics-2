@@ -8,7 +8,7 @@ import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
 
 import net.neoforged.fml.ModList;
-import net.neoforged.fml.loading.LoadingModList;
+import net.neoforged.fml.loading.FMLLoader;
 import net.neoforged.fml.loading.moddiscovery.ModInfo;
 
 /**
@@ -26,7 +26,7 @@ public class ConfigPlugin implements IMixinConfigPlugin {
 
     @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
-        if ("appeng.mixins.PonderWorldMixin".equals(mixinClassName)) {
+        if ("appeng.mixins.client.PonderWorldMixin".equals(mixinClassName)) {
             return isModLoaded("create");
         }
         return true;
@@ -51,7 +51,8 @@ public class ConfigPlugin implements IMixinConfigPlugin {
 
     private static boolean isModLoaded(String modId) {
         if (ModList.get() == null) {
-            return LoadingModList.get().getMods().stream().map(ModInfo::getModId).anyMatch(modId::equals);
+            return FMLLoader.getCurrent().getLoadingModList().getMods().stream().map(ModInfo::getModId)
+                    .anyMatch(modId::equals);
         }
         return ModList.get().isLoaded(modId);
     }

@@ -3,11 +3,9 @@
   "cell": "ae2:item_storage_cell_64k",
   "cell_disassembly_items": [
     {
-      "count": 1,
       "id": "ae2:item_cell_housing"
     },
     {
-      "count": 1,
       "id": "ae2:cell_component_64k"
     }
   ]

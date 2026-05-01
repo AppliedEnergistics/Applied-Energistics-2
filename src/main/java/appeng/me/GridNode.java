@@ -45,10 +45,11 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 import it.unimi.dsi.fastutil.objects.Reference2IntMap;
 
@@ -447,15 +448,14 @@ public class GridNode implements IGridNode, IPathItem, IDebugExportable {
         return myGrid.getEnergyService().isNetworkPowered();
     }
 
-    public void loadFromNBT(String name, CompoundTag nodeDataContainer) {
+    public void loadFromNBT(String name, ValueInput input) {
         this.owningPlayerId = -1;
 
         var oldNodeData = this.savedData;
-        if (nodeDataContainer.get(name) instanceof CompoundTag newNodeData) {
+        var newNodeData = input.read(name, CompoundTag.CODEC).orElse(null);
+        if (newNodeData != null) {
             this.savedData = newNodeData;
-            if (newNodeData.contains("p", Tag.TAG_INT)) {
-                this.owningPlayerId = newNodeData.getInt("p");
-            }
+            this.owningPlayerId = newNodeData.getIntOr("p", 0);
         } else {
             this.savedData = null;
         }
@@ -469,8 +469,8 @@ public class GridNode implements IGridNode, IPathItem, IDebugExportable {
     }
 
     private boolean areTagsEqualIgnoringPlayerId(CompoundTag newData, CompoundTag oldData) {
-        Set<String> newKeys = newData != null ? newData.getAllKeys() : Set.of();
-        Set<String> oldKeys = oldData != null ? oldData.getAllKeys() : Set.of();
+        Set<String> newKeys = newData != null ? newData.keySet() : Set.of();
+        Set<String> oldKeys = oldData != null ? oldData.keySet() : Set.of();
         for (var newKey : newKeys) {
             if ("p".equals(newKey)) {
                 continue; // Ignore player ID
@@ -490,16 +490,14 @@ public class GridNode implements IGridNode, IPathItem, IDebugExportable {
         return true;
     }
 
-    public void saveToNBT(String name, CompoundTag nodeData) {
+    public void saveToNBT(String name, ValueOutput output) {
         if (this.myGrid != null) {
 
             var node = new CompoundTag();
             node.putInt("p", this.owningPlayerId);
             this.myGrid.saveNodeData(this, node);
 
-            nodeData.put(name, node);
-        } else {
-            nodeData.remove(name);
+            output.store(name, CompoundTag.CODEC, node);
         }
     }
 
@@ -784,6 +782,6 @@ public class GridNode implements IGridNode, IPathItem, IDebugExportable {
                 "id", id, "owner", machineId), writer);
 
         writer.name("level");
-        writer.value(level.dimension().location().toString());
+        writer.value(level.dimension().identifier().toString());
     }
 }

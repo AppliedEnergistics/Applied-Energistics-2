@@ -19,11 +19,11 @@
 package appeng.block.spatial;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Explosion;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
@@ -39,8 +39,8 @@ import appeng.block.AEBaseBlock;
  */
 public class MatrixFrameBlock extends AEBaseBlock {
 
-    public MatrixFrameBlock() {
-        super(Properties.of().strength(-1.0F, 6000000.0F).noOcclusion().noLootTable());
+    public MatrixFrameBlock(Properties properties) {
+        super(properties.strength(-1.0F, 6000000.0F).noOcclusion().noLootTable());
     }
 
     @Override
@@ -71,12 +71,12 @@ public class MatrixFrameBlock extends AEBaseBlock {
     }
 
     @Override
-    public void wasExploded(Level level, BlockPos pos, Explosion explosion) {
-        // Don't explode.
+    public void onBlockExploded(BlockState state, ServerLevel level, BlockPos pos, Explosion explosion) {
+        // Immune to explosions
     }
 
     @Override
-    public boolean propagatesSkylightDown(BlockState state, BlockGetter reader, BlockPos pos) {
+    protected boolean propagatesSkylightDown(BlockState state) {
         return true;
     }
 

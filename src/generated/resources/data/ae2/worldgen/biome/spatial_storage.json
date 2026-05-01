@@ -1,12 +1,13 @@
 {
-  "carvers": {},
-  "creature_spawn_probability": 0.0,
+  "attributes": {
+    "neoforge:custom_clouds": "ae2:spatial_storage",
+    "neoforge:custom_skybox": "ae2:spatial_storage",
+    "neoforge:custom_weather_effects": "ae2:spatial_storage"
+  },
+  "carvers": [],
   "downfall": 0.5,
   "effects": {
-    "fog_color": 0,
-    "sky_color": 1118481,
-    "water_color": 4159204,
-    "water_fog_color": 329011
+    "water_color": "#3f76e4"
   },
   "features": [],
   "has_precipitation": false,

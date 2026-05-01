@@ -2,7 +2,8 @@
   "parent": "ae2:item/part_base",
   "textures": {
     "channelsOdd": "ae2:part/cable/smart/channels_00",
-    "channelsEven": "ae2:part/cable/smart/channels_10"
+    "channelsEven": "ae2:part/cable/smart/channels_10",
+    "particle": "#base"
   },
   "elements": [
     {

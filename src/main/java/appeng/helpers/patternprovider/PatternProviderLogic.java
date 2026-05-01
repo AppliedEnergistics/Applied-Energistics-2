@@ -30,19 +30,17 @@ import org.slf4j.LoggerFactory;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentMap;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Nameable;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.ItemContainerContents;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.LockCraftingMode;
@@ -161,72 +159,66 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
         ICraftingProvider.requestUpdate(mainNode);
     }
 
-    public void writeToNBT(CompoundTag tag, HolderLookup.Provider registries) {
-        this.configManager.writeToNBT(tag, registries);
-        this.patternInventory.writeToNBT(tag, NBT_MEMORY_CARD_PATTERNS, registries);
-        tag.putInt(NBT_PRIORITY, this.priority);
+    public void writeToNBT(ValueOutput output) {
+        this.configManager.writeToNBT(output);
+        this.patternInventory.writeToNBT(output, NBT_MEMORY_CARD_PATTERNS);
+        output.putInt(NBT_PRIORITY, this.priority);
         if (unlockEvent == UnlockCraftingEvent.REDSTONE_POWER) {
-            tag.putByte(NBT_UNLOCK_EVENT, (byte) 1);
+            output.putByte(NBT_UNLOCK_EVENT, (byte) 1);
         } else if (unlockEvent == UnlockCraftingEvent.RESULT) {
             if (unlockStack != null) {
-                tag.putByte(NBT_UNLOCK_EVENT, (byte) 2);
-                tag.put(NBT_UNLOCK_STACK, GenericStack.writeTag(registries, unlockStack));
+                output.putByte(NBT_UNLOCK_EVENT, (byte) 2);
+                GenericStack.writeTag(output.child(NBT_UNLOCK_STACK), unlockStack);
             } else {
                 LOG.error("Saving pattern provider {}, locked waiting for stack, but stack is null!", host);
             }
         } else if (unlockEvent == UnlockCraftingEvent.REDSTONE_PULSE) {
-            tag.putByte(NBT_UNLOCK_EVENT, (byte) 3);
+            output.putByte(NBT_UNLOCK_EVENT, (byte) 3);
         }
 
-        ListTag sendListTag = new ListTag();
+        var sendListTag = output.childrenList(NBT_SEND_LIST);
         for (var toSend : sendList) {
-            sendListTag.add(GenericStack.writeTag(registries, toSend));
+            GenericStack.writeTag(sendListTag.addChild(), toSend);
         }
-        tag.put(NBT_SEND_LIST, sendListTag);
-        if (sendDirection != null) {
-            tag.putByte(NBT_SEND_DIRECTION, (byte) sendDirection.get3DDataValue());
-        }
-
-        tag.put(NBT_RETURN_INV, this.returnInv.writeToTag(registries));
+        output.storeNullable(NBT_SEND_DIRECTION, Direction.CODEC, sendDirection);
+        this.returnInv.writeToTag(output.childrenList(NBT_RETURN_INV));
     }
 
-    public void readFromNBT(CompoundTag tag, HolderLookup.Provider registries) {
-        this.configManager.readFromNBT(tag, registries);
-        this.patternInventory.readFromNBT(tag, NBT_MEMORY_CARD_PATTERNS, registries);
-        this.priority = tag.getInt(NBT_PRIORITY);
+    public void readFromNBT(ValueInput input) {
+        this.configManager.readFromNBT(input);
+        this.patternInventory.readFromNBT(input, NBT_MEMORY_CARD_PATTERNS);
+        this.priority = input.getIntOr(NBT_PRIORITY, 0);
 
-        var unlockEventType = tag.getByte(NBT_UNLOCK_EVENT);
+        var unlockEventType = input.getByteOr(NBT_UNLOCK_EVENT, (byte) 0);
         this.unlockEvent = switch (unlockEventType) {
             case 0 -> null;
             case 1 -> UnlockCraftingEvent.REDSTONE_POWER;
             case 2 -> UnlockCraftingEvent.RESULT;
             case 3 -> UnlockCraftingEvent.REDSTONE_PULSE;
             default -> {
-                LOG.error("Unknown unlock event type {} in NBT for pattern provider: {}", unlockEventType, tag);
+                LOG.error("Unknown unlock event type {} in NBT for pattern provider: {}", unlockEventType, input);
                 yield null;
             }
         };
         if (this.unlockEvent == UnlockCraftingEvent.RESULT) {
-            this.unlockStack = GenericStack.readTag(registries, tag.getCompound(NBT_UNLOCK_STACK));
+            this.unlockStack = GenericStack.readTag(input.childOrEmpty(NBT_UNLOCK_STACK));
             if (this.unlockStack == null) {
-                LOG.error("Could not load unlock stack for pattern provider from NBT: {}", tag);
+                LOG.error("Could not load unlock stack for pattern provider from NBT: {}", input);
             }
         } else {
             this.unlockStack = null;
         }
 
-        var sendListTag = tag.getList("sendList", Tag.TAG_COMPOUND);
-        for (int i = 0; i < sendListTag.size(); ++i) {
-            var stack = GenericStack.readTag(registries, sendListTag.getCompound(i));
+        var sendListTag = input.childrenListOrEmpty("sendList");
+        for (var sendListEntry : sendListTag) {
+            var stack = GenericStack.readTag(sendListEntry);
             if (stack != null) {
                 this.addToSendList(stack.what(), stack.amount());
             }
         }
-        if (tag.contains("sendDirection")) {
-            sendDirection = Direction.from3DDataValue(tag.getByte("sendDirection"));
-        }
+        sendDirection = input.read("sendDirection", Direction.CODEC).orElse(null);
 
-        this.returnInv.readFromTag(tag.getList("returnInv", Tag.TAG_COMPOUND), registries);
+        this.returnInv.readFromTag(input.childrenListOrEmpty("returnInv"));
     }
 
     public IConfigManager getConfigManager() {
@@ -248,18 +240,27 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
         this.updatePatterns();
     }
 
+    @Nullable
+    private ServerLevel getServerLevel() {
+        return this.host.getBlockEntity().getLevel() instanceof ServerLevel serverLevel ? serverLevel : null;
+    }
+
     @Override
     public boolean isClientSide() {
-        Level level = this.host.getBlockEntity().getLevel();
-        return level == null || level.isClientSide();
+        return getServerLevel() == null;
     }
 
     public void updatePatterns() {
+        var serverLevel = getServerLevel();
+        if (serverLevel == null) {
+            return;
+        }
+
         patterns.clear();
         patternInputs.clear();
 
         for (var stack : this.patternInventory) {
-            var details = PatternDetailsHelper.decodePattern(stack, this.host.getBlockEntity().getLevel());
+            var details = PatternDetailsHelper.decodePattern(stack, serverLevel);
 
             if (details != null) {
                 patterns.add(details);
@@ -593,7 +594,7 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
     public void importSettings(DataComponentMap input, @Nullable Player player) {
         var patterns = input.getOrDefault(AEComponents.EXPORTED_PATTERNS, ItemContainerContents.EMPTY);
 
-        if (player != null && !player.level().isClientSide) {
+        if (player instanceof ServerPlayer serverPlayer) {
             clearPatternInventory(player);
 
             var desiredPatterns = new AppEngInternalInventory(patternInventory.size());
@@ -611,7 +612,7 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
 
                 // Don't restore junk
                 var pattern = PatternDetailsHelper.decodePattern(desiredPatterns.getStackInSlot(i),
-                        host.getBlockEntity().getLevel());
+                        serverPlayer.level());
                 if (pattern == null) {
                     continue; // Skip junk / broken recipes
                 }
@@ -634,7 +635,7 @@ public class PatternProviderLogic implements InternalInventoryHost, ICraftingPro
 
             // Warn about not being able to restore all patterns due to lack of blank patterns
             if (blankPatternsUsed > blankPatternsAvailable) {
-                player.sendSystemMessage(
+                serverPlayer.sendSystemMessage(
                         PlayerMessages.MissingBlankPatterns.text(blankPatternsUsed - blankPatternsAvailable));
             }
         }

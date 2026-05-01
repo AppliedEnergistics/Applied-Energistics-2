@@ -1,8 +1,11 @@
 {
   "parent": "block/orientable",
   "textures": {
-    "particle": "ae2:block/skychest",
-    "0": "ae2:block/skychest"
+    "0": "ae2:block/skychest",
+    "particle": "#0",
+    "front": "#0",
+    "top": "#0",
+    "side": "#0"
   },
   "elements": [
     {

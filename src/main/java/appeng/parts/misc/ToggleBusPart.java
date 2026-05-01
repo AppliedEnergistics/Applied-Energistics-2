@@ -20,15 +20,13 @@ package appeng.parts.misc;
 
 import java.util.EnumSet;
 
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.model.data.ModelData;
 
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.GridHelper;
@@ -38,31 +36,11 @@ import appeng.api.networking.IManagedGridNode;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartHost;
 import appeng.api.parts.IPartItem;
-import appeng.api.parts.IPartModel;
 import appeng.api.util.AECableType;
-import appeng.core.AppEng;
-import appeng.items.parts.PartModels;
 import appeng.parts.AEBasePart;
-import appeng.parts.PartModel;
+import appeng.parts.automation.PartModelData;
 
 public class ToggleBusPart extends AEBasePart {
-
-    @PartModels
-    public static final ResourceLocation MODEL_BASE = AppEng.makeId("part/toggle_bus_base");
-    @PartModels
-    public static final ResourceLocation MODEL_STATUS_OFF = AppEng.makeId(
-            "part/toggle_bus_status_off");
-    @PartModels
-    public static final ResourceLocation MODEL_STATUS_ON = AppEng.makeId(
-            "part/toggle_bus_status_on");
-    @PartModels
-    public static final ResourceLocation MODEL_STATUS_HAS_CHANNEL = AppEng.makeId(
-            "part/toggle_bus_status_has_channel");
-
-    public static final IPartModel MODELS_OFF = new PartModel(MODEL_BASE, MODEL_STATUS_OFF);
-    public static final IPartModel MODELS_ON = new PartModel(MODEL_BASE, MODEL_STATUS_ON);
-    public static final IPartModel MODELS_HAS_CHANNEL = new PartModel(MODEL_BASE, MODEL_STATUS_HAS_CHANNEL);
-
     private final IManagedGridNode outerNode = GridHelper
             .createManagedNode(this, NodeListener.INSTANCE)
             .setTagName("outer")
@@ -97,15 +75,15 @@ public class ToggleBusPart extends AEBasePart {
     }
 
     @Override
-    public void writeVisualStateToNBT(CompoundTag data) {
-        super.writeVisualStateToNBT(data);
-        data.putBoolean("on", isEnabled());
+    public void writeVisualStateToNBT(ValueOutput output) {
+        super.writeVisualStateToNBT(output);
+        output.putBoolean("on", isEnabled());
     }
 
     @Override
-    public void readVisualStateFromNBT(CompoundTag data) {
-        super.readVisualStateFromNBT(data);
-        this.clientSideEnabled = data.getBoolean("on");
+    public void readVisualStateFromNBT(ValueInput input) {
+        super.readVisualStateFromNBT(input);
+        this.clientSideEnabled = input.getBooleanOr("on", false);
     }
 
     protected boolean isEnabled() {
@@ -122,7 +100,7 @@ public class ToggleBusPart extends AEBasePart {
     }
 
     @Override
-    public void onNeighborChanged(BlockGetter level, BlockPos pos, BlockPos neighbor) {
+    public void onRedstoneLevelMayHaveChanged() {
         final boolean oldHasRedstone = this.hasRedstone;
         this.hasRedstone = this.getHost().hasRedstone();
 
@@ -133,15 +111,15 @@ public class ToggleBusPart extends AEBasePart {
     }
 
     @Override
-    public void readFromNBT(CompoundTag extra, HolderLookup.Provider registries) {
-        super.readFromNBT(extra, registries);
-        this.getOuterNode().loadFromNBT(extra);
+    public void readFromNBT(ValueInput extra) {
+        super.readFromNBT(extra);
+        this.getOuterNode().deserialize(extra);
     }
 
     @Override
-    public void writeToNBT(CompoundTag extra, HolderLookup.Provider registries) {
-        super.writeToNBT(extra, registries);
-        this.getOuterNode().saveToNBT(extra);
+    public void writeToNBT(ValueOutput extra) {
+        super.writeToNBT(extra);
+        this.getOuterNode().serialize(extra);
     }
 
     @Override
@@ -199,13 +177,16 @@ public class ToggleBusPart extends AEBasePart {
     }
 
     @Override
-    public IPartModel getStaticModels() {
+    public void collectModelData(ModelData.Builder builder) {
+        super.collectModelData(builder);
+
+        // Overwrite the original state
         if (isEnabled() && this.isActive() && this.isPowered()) {
-            return MODELS_HAS_CHANNEL;
+            builder.with(PartModelData.STATUS_INDICATOR, PartModelData.StatusIndicatorState.ACTIVE);
         } else if (isEnabled() && this.isPowered()) {
-            return MODELS_ON;
+            builder.with(PartModelData.STATUS_INDICATOR, PartModelData.StatusIndicatorState.POWERED);
         } else {
-            return MODELS_OFF;
+            builder.with(PartModelData.STATUS_INDICATOR, PartModelData.StatusIndicatorState.UNPOWERED);
         }
     }
 }

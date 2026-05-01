@@ -45,7 +45,7 @@ jobs:
 
   # Attach the guide as a release artifact if we're building a tag which might be a release
   attach-release-artifact:
-    if: startsWith(github.ref, 'refs/tags/fabric/v') || startsWith(github.ref, 'refs/tags/neoforge/v')
+    if: startsWith(github.ref, 'refs/tags/v')
     needs: export-guide
     name: Attach Release Artifact
     runs-on: ubuntu-latest
@@ -73,7 +73,7 @@ jobs:
     name: Publish Release to Web
     runs-on: ubuntu-latest
     environment: Production
-    if: startsWith(github.ref, 'refs/tags/neoforge/v')
+    if: startsWith(github.ref, 'refs/tags/v')
     steps:
       - uses: actions/download-artifact@v4
         with:
@@ -83,7 +83,7 @@ jobs:
       - id: versions
         name: Determine Game and Mod-Version
         run: |
-          GAME_VERSION=$(jq -r .gameVersion 'build/guide/index.json')
+          GAME_VERSION=$(jq -r .gameMajorVersion 'build/guide/index.json')
           echo "Game-Version: $GAME_VERSION"
           
           echo "GAME_VERSION=$GAME_VERSION" >> "$GITHUB_OUTPUT"

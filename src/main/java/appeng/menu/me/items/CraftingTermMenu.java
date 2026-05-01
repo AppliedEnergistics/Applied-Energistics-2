@@ -29,6 +29,7 @@ import com.google.common.base.Preconditions;
 
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
@@ -39,7 +40,7 @@ import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 
@@ -53,6 +54,7 @@ import appeng.helpers.ICraftingGridMenu;
 import appeng.helpers.InventoryAction;
 import appeng.me.storage.LinkStatusRespectingInventory;
 import appeng.menu.SlotSemantics;
+import appeng.menu.guisync.ClientActionKey;
 import appeng.menu.implementations.MenuTypeBuilder;
 import appeng.menu.me.common.MEStorageMenu;
 import appeng.menu.me.crafting.CraftConfirmMenu;
@@ -73,7 +75,7 @@ public class CraftingTermMenu extends MEStorageMenu implements ICraftingGridMenu
             .create(CraftingTermMenu::new, ITerminalHost.class)
             .build("craftingterm");
 
-    private static final String ACTION_CLEAR_TO_PLAYER = "clearToPlayer";
+    private static final ClientActionKey<Void> ACTION_CLEAR_TO_PLAYER = new ClientActionKey<>("clearToPlayer");
 
     private final ISegmentedInventory craftingInventoryHost;
     private final CraftingMatrixSlot[] craftingSlots = new CraftingMatrixSlot[9];
@@ -104,7 +106,10 @@ public class CraftingTermMenu extends MEStorageMenu implements ICraftingGridMenu
                 this.energySource, linkStatusInventory, craftingGridInv, craftingGridInv, this),
                 SlotSemantics.CRAFTING_RESULT);
 
-        updateCurrentRecipeAndOutput(true);
+        var serverLevel = getServerLevel();
+        if (serverLevel != null) {
+            updateCurrentRecipeAndOutput(serverLevel, true);
+        }
 
         registerClientAction(ACTION_CLEAR_TO_PLAYER, this::clearToPlayerInventory);
     }
@@ -120,10 +125,13 @@ public class CraftingTermMenu extends MEStorageMenu implements ICraftingGridMenu
 
     @Override
     public void slotsChanged(Container inventory) {
-        updateCurrentRecipeAndOutput(false);
+        var level = getServerLevel();
+        if (level != null) {
+            updateCurrentRecipeAndOutput(level, false);
+        }
     }
 
-    private void updateCurrentRecipeAndOutput(boolean forceUpdate) {
+    private void updateCurrentRecipeAndOutput(ServerLevel level, boolean forceUpdate) {
         var testItems = new ArrayList<ItemStack>(this.craftingSlots.length);
         for (var craftingSlot : this.craftingSlots) {
             testItems.add(craftingSlot.getItem().copy());
@@ -134,15 +142,14 @@ public class CraftingTermMenu extends MEStorageMenu implements ICraftingGridMenu
             return;
         }
 
-        var level = getPlayer().level();
-        this.currentRecipe = level.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, testInput, level)
+        this.currentRecipe = level.recipeAccess().getRecipeFor(RecipeType.CRAFTING, testInput, level)
                 .orElse(null);
         this.lastTestedInput = testInput;
 
         if (this.currentRecipe == null) {
             this.outputSlot.set(ItemStack.EMPTY);
         } else {
-            this.outputSlot.set(this.currentRecipe.value().assemble(testInput, level.registryAccess()));
+            this.outputSlot.set(this.currentRecipe.value().assemble(testInput));
         }
     }
 
@@ -167,7 +174,7 @@ public class CraftingTermMenu extends MEStorageMenu implements ICraftingGridMenu
         Preconditions.checkState(isClientSide());
         CraftingMatrixSlot slot = craftingSlots[0];
         var p = new InventoryActionPacket(InventoryAction.MOVE_REGION, slot.index, 0);
-        PacketDistributor.sendToServer(p);
+        ClientPacketDistributor.sendToServer(p);
     }
 
     @Override
@@ -207,7 +214,7 @@ public class CraftingTermMenu extends MEStorageMenu implements ICraftingGridMenu
         // Otherwise recipes that need 4x<item> will not correctly show missing items if at least 1 of <item> is in
         // the grid.
         var reservedGridAmounts = new Object2IntOpenHashMap<>();
-        var playerItems = getPlayerInventory().items;
+        var playerItems = getPlayerInventory().getNonEquipmentItems();
         var reservedPlayerItems = new int[playerItems.size()];
 
         for (var entry : ingredients.entrySet()) {
@@ -240,11 +247,16 @@ public class CraftingTermMenu extends MEStorageMenu implements ICraftingGridMenu
 
             // Check the terminal once again, but this time for craftable items
             if (!found) {
-                for (var stack : ingredient.getItems()) {
-                    if (isCraftable(stack)) {
-                        craftableSlots.add(entry.getKey());
-                        found = true;
-                        break;
+                var clientRepo = getClientRepo();
+
+                if (clientRepo != null) {
+                    for (var stack : clientRepo.getAllEntries()) {
+                        if (stack.isCraftable() && stack.getWhat() instanceof AEItemKey itemKey
+                                && ingredient.test(itemKey.getReadOnlyStack())) {
+                            craftableSlots.add(entry.getKey());
+                            found = true;
+                            break;
+                        }
                     }
                 }
             }

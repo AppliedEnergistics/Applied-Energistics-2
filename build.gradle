@@ -30,13 +30,36 @@ base {
     archivesName = "appliedenergistics2"
 }
 
-neoForge.version = project.neoforge_version
+neoForge.enable {
+    version = project.neoforge_version
+    // Disable recompilation if the "CI" environment variable is set to true. It is automatically set by GitHub Actions.
+    disableRecompilation = System.getenv("CI") == "true"
+}
 
 sourceSets {
     main {
+        // TODO 1.21.11
+        java {
+            exclude 'appeng/integration/modules/rei/**'
+            exclude 'appeng/integration/modules/theoneprobe/**'
+        }
         resources {
             srcDir 'src/generated/resources'
         }
+    }
+    client {
+        compileClasspath += main.output
+        runtimeClasspath += main.output
+
+        // TODO 1.21.11
+        java {
+            exclude 'appeng/client/integration/rei/**'
+            exclude 'appeng/client/integration/emi/**'
+        }
+    }
+    test {
+        compileClasspath += client.output
+        runtimeClasspath += client.output
     }
     buildtools
 }
@@ -44,29 +67,27 @@ sourceSets {
 configurations {
     localRuntimeOnly
     buildtoolsImplementation.extendsFrom(compileClasspath)
-    // Dependencies only used for the guide export, but not shipped
-    guideExportOnly
-    configurations.compileClasspath.extendsFrom(guideExportOnly)
-    configurations.runtimeClasspath.extendsFrom(guideExportOnly)
-
     runtimeClasspath.extendsFrom localRuntimeOnly
+    clientRuntimeClasspath.extendsFrom localRuntimeOnly
 }
 
 import appengbuild.*
 import com.diffplug.gradle.spotless.JsonExtension
 
 dependencies {
-    // Used for the guide export
-    guideExportOnly("org.bytedeco:ffmpeg-platform:${ffmpeg_version}")
+    // Dependencies only used for the guide export, but not shipped
+    localRuntimeOnly("org.bytedeco:ffmpeg-platform:${ffmpeg_version}")
 
     implementation("org.appliedenergistics:guideme:${guideme_version}")
+    clientImplementation("org.appliedenergistics:guideme:${guideme_version}")
 
     // compile against provided APIs
-    compileOnly "dev.emi:emi-neoforge:${emi_version}:api"
+    clientCompileOnly "dev.emi:emi-neoforge:${emi_version}:api"
+    clientCompileOnly "me.shedaniel:RoughlyEnoughItems-neoforge:${project.rei_version}"
     compileOnly "me.shedaniel:RoughlyEnoughItems-neoforge:${project.rei_version}"
     compileOnly "mcp.mobius.waila:wthit-api:neo-${project.wthit_version}"
     compileOnly "curse.maven:jade-324717:${project.jade_file_id}"
-    compileOnly "mcjty.theoneprobe:theoneprobe:${project.top_version}"
+    clientCompileOnly "mezz.jei:jei-${project.jei_minecraft_version}-neoforge-api:${project.jei_version}"
 
     switch (project.runtime_itemlist_mod) {
         case "emi":
@@ -74,6 +95,9 @@ dependencies {
             break
         case "rei":
             localRuntimeOnly "me.shedaniel:RoughlyEnoughItems-neoforge:${project.rei_version}"
+            break
+        case "jei":
+            localRuntimeOnly "mezz.jei:jei-${project.jei_minecraft_version}-neoforge:${project.jei_version}"
             break
     }
 
@@ -84,11 +108,9 @@ dependencies {
         case "jade":
             localRuntimeOnly "curse.maven:jade-324717:${project.jade_file_id}"
             break
-        case "top":
-            localRuntimeOnly "mcjty.theoneprobe:theoneprobe:${project.top_version}"
-            break
     }
 
+    compileOnly "top.theillusivec4.curios:curios-neoforge:${project.curios_version}:api"
     if (project.runtime_curio == "true") {
         localRuntimeOnly("top.theillusivec4.curios:curios-neoforge:${project.curios_version}")
     }
@@ -107,7 +129,7 @@ dependencies {
     testImplementation("org.junit.platform:junit-platform-launcher")
     testImplementation("org.assertj:assertj-core")
     testImplementation("com.google.guava:guava-testlib:21.0")
-    testImplementation("org.mockito:mockito-junit-jupiter:5.12.0")
+    testImplementation("org.mockito:mockito-junit-jupiter:${project.mockito_version}")
     testImplementation("net.neoforged:testframework:${project.neoforge_version}")
 }
 
@@ -126,9 +148,12 @@ dependencies {
 neoForge {
     validateAccessTransformers = true
 
+    addModdingDependenciesTo sourceSets.client
+
     mods {
         ae2 {
             sourceSet sourceSets.main
+            sourceSet sourceSets.client
         }
     }
 
@@ -143,6 +168,7 @@ neoForge {
         client {
             client()
             systemProperty('appeng.tests', 'true')
+            sourceSet = sourceSets.client
         }
         gametestWorld {
             client()
@@ -150,28 +176,33 @@ neoForge {
                     '--username', 'AE2Dev', '--quickPlaySingleplayer', 'GametestWorld'
             ]
             systemProperty('appeng.tests', 'true')
+            sourceSet = sourceSets.client
         }
         guide {
             client()
 
             systemProperty('guideme.showOnStartup', 'ae2:guide')
+            sourceSet = sourceSets.client
         }
         server {
             server()
         }
         data {
-            data()
+            clientData()
             programArguments = [
                     '--mod', 'ae2',
                     '--all',
                     '--output', file('src/generated/resources/').absolutePath,
                     '--existing', file('src/main/resources').absolutePath
             ]
+            sourceSet = sourceSets.client
         }
         guideexport {
             client()
-            systemProperty('appeng.runGuideExportAndExit', 'true')
-            systemProperty('appeng.guideExportFolder', file('build/guide').absolutePath)
+            systemProperty('guideme.exportOnStartupAndExit', 'ae2:guide')
+            systemProperty('guideme.exportDestination.ae2.guide', file('build/guide').absolutePath)
+            systemProperty('guideme.exportModVersion.ae2.guide', project.version)
+            sourceSet = sourceSets.client
         }
         // Use to run the tests
         gametest {
@@ -185,8 +216,6 @@ neoForge {
         testedMod = mods.ae2
     }
 }
-
-configurations.additionalRuntimeClasspath.extendsFrom configurations.guideExportOnly
 
 //////////////
 // Artifacts
@@ -202,8 +231,8 @@ final generateModMetadata = tasks.register('generateModMetadata', ProcessResourc
             'version',
             'minecraft_version',
             'neoforge_version_range',
-            'top_version_range',
             'jade_version_range',
+            'jei_version',
             'guideme_version'
     ].collectEntries { [it, project[it]] }
 
@@ -215,6 +244,7 @@ sourceSets.main.resources.srcDir generateModMetadata
 neoForge.ideSyncTask generateModMetadata
 
 tasks.named('jar', Jar) {
+    from(sourceSets.client.output)
     exclude '/.cache'
     from('guidebook') {
         into 'assets/ae2/ae2guide'
@@ -225,6 +255,7 @@ static void publicApiIncludePatterns(PatternFilterable spec) {
     spec.exclude "**/*Internal.*"
     spec.exclude "**/*Internal\$*.*"
     spec.include "appeng/api/**"
+    spec.include "appeng/client/api/**"
 }
 
 tasks.named('javadoc', Javadoc) {
@@ -243,12 +274,6 @@ tasks.register('apiJar', Jar) {
     from sourceSets.main.output
     from sourceSets.main.allJava
     publicApiIncludePatterns(it)
-}
-
-artifacts {
-    archives javadocJar
-    archives sourcesJar
-    archives apiJar
 }
 
 //////////////////
@@ -339,6 +364,21 @@ spotless {
         indentWithSpaces(2)
         endWithNewline()
     }
+}
+
+//////////////// Add static site export
+tasks.named('runGuideexport').configure {
+    outputs.dir('build/guide')
+}
+
+tasks.register('createStaticSite', JavaExec) {
+    inputs.dir('build/guide')
+    outputs.dir('build/website')
+    group = 'mod development'
+    //dependsOn runGuideexport
+    classpath.from(sourceSets.client.runtimeClasspath)
+    mainClass = 'guideme.internal.web.StaticSiteGenerator'
+    args '--data', 'build/guide', '--output', 'build/website'
 }
 
 ////////////////

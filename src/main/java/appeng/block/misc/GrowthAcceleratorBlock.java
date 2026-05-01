@@ -26,24 +26,21 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 import appeng.api.orientation.IOrientationStrategy;
 import appeng.api.orientation.OrientationStrategies;
 import appeng.block.AEBaseEntityBlock;
 import appeng.blockentity.misc.GrowthAcceleratorBlockEntity;
-import appeng.client.render.effects.ParticleTypes;
 import appeng.core.AEConfig;
-import appeng.core.AppEngClient;
+import appeng.core.particles.ParticleTypes;
 import appeng.util.Platform;
 
 public class GrowthAcceleratorBlock extends AEBaseEntityBlock<GrowthAcceleratorBlockEntity> {
 
     public static final BooleanProperty POWERED = BooleanProperty.create("powered");
 
-    public GrowthAcceleratorBlock() {
-        super(metalProps());
+    public GrowthAcceleratorBlock(Properties p) {
+        super(metalProps(p));
         this.registerDefaultState(this.defaultBlockState().setValue(POWERED, false));
     }
 
@@ -64,7 +61,6 @@ public class GrowthAcceleratorBlock extends AEBaseEntityBlock<GrowthAcceleratorB
         return OrientationStrategies.facing();
     }
 
-    @OnlyIn(Dist.CLIENT)
     @Override
     public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource r) {
         if (!AEConfig.instance().isEnableEffects()) {
@@ -73,7 +69,7 @@ public class GrowthAcceleratorBlock extends AEBaseEntityBlock<GrowthAcceleratorB
 
         final GrowthAcceleratorBlockEntity cga = this.getBlockEntity(level, pos);
 
-        if (cga != null && cga.isPowered() && AppEngClient.instance().shouldAddParticles(r)) {
+        if (cga != null && cga.isPowered()) {
             final double d0 = r.nextFloat() - 0.5F;
             final double d1 = r.nextFloat() - 0.5F;
 

@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
 
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import io.netty.buffer.Unpooled;
@@ -15,20 +14,15 @@ import io.netty.buffer.Unpooled;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.world.entity.player.Player;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.network.connection.ConnectionType;
 
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.KeyCounter;
 import appeng.api.storage.AEKeyFilter;
-import appeng.core.AELog;
 import appeng.core.network.ClientboundPacket;
 import appeng.core.network.CustomAppEngPayload;
 import appeng.menu.me.common.GridInventoryEntry;
 import appeng.menu.me.common.IncrementalUpdateHelper;
-import appeng.menu.me.common.MEStorageMenu;
 
 public record MEInventoryUpdatePacket(
         boolean fullUpdate,
@@ -246,32 +240,17 @@ public record MEInventoryUpdatePacket(
         return new GridInventoryEntry(serial, what, storedAmount, requestableAmount, craftable);
     }
 
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    public void handleOnClient(Player player) {
-        if (player.containerMenu.containerId == containerId
-                && player.containerMenu instanceof MEStorageMenu meMenu) {
-            var clientRepo = meMenu.getClientRepo();
-            if (clientRepo == null) {
-                AELog.info("Ignoring ME inventory update packet because no client repo is available.");
-                return;
-            }
-
-            // In singleplayer, we're just getting the exact same instance that the builder created
-            // so it has the pre-encoded data.
-            var actualEntries = entries;
-            if (actualEntries == null && encodedEntries != null) {
-                actualEntries = decodeEntriesPayload(encodedEntryCount, encodedEntries);
-            }
-
-            if (actualEntries != null) {
-                clientRepo.handleUpdate(fullUpdate, actualEntries);
-            }
+    public List<GridInventoryEntry> getActualEntries() {
+        // In singleplayer, we're just getting the exact same instance that the builder created
+        // so it has the pre-encoded data.
+        var actualEntries = entries;
+        if (actualEntries == null && encodedEntries != null) {
+            actualEntries = decodeEntriesPayload(encodedEntryCount, encodedEntries);
         }
+        return actualEntries;
     }
 
-    @NotNull
-    private static ArrayList<GridInventoryEntry> decodeEntriesPayload(int entryCount, RegistryFriendlyByteBuf data) {
+    private static List<GridInventoryEntry> decodeEntriesPayload(int entryCount, RegistryFriendlyByteBuf data) {
         // We need to access the current screen to know which storage channel was used to serialize this data
         var entries = new ArrayList<GridInventoryEntry>(entryCount);
         for (int i = 0; i < entryCount; i++) {

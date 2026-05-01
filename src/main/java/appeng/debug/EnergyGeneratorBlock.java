@@ -25,8 +25,8 @@ import appeng.core.AEConfig;
 
 public class EnergyGeneratorBlock extends AEBaseEntityBlock<EnergyGeneratorBlockEntity> {
 
-    public EnergyGeneratorBlock() {
-        super(metalProps());
+    public EnergyGeneratorBlock(Properties p) {
+        super(metalProps(p));
     }
 
     @Override

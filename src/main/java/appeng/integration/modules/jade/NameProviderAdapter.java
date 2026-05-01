@@ -1,7 +1,7 @@
 package appeng.integration.modules.jade;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import snownee.jade.api.BlockAccessor;
 import snownee.jade.api.IBlockComponentProvider;
@@ -16,7 +16,7 @@ class NameProviderAdapter<T> extends BaseProvider implements IBlockComponentProv
 
     private final Class<T> objectClass;
 
-    public NameProviderAdapter(ResourceLocation id, int priority, NameProvider<? super T> provider,
+    public NameProviderAdapter(Identifier id, int priority, NameProvider<? super T> provider,
             Class<T> objectClass) {
         super(id, priority);
         this.provider = provider;

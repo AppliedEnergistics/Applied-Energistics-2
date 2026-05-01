@@ -66,7 +66,7 @@ import appeng.blockentity.spatial.SpatialPylonBlockEntity;
 import appeng.blockentity.storage.DriveBlockEntity;
 import appeng.blockentity.storage.IOPortBlockEntity;
 import appeng.blockentity.storage.MEChestBlockEntity;
-import appeng.blockentity.storage.SkyChestBlockEntity;
+import appeng.blockentity.storage.SkyStoneChestBlockEntity;
 import appeng.blockentity.storage.SkyStoneTankBlockEntity;
 import appeng.core.AppEng;
 import appeng.debug.CubeGeneratorBlockEntity;
@@ -156,9 +156,9 @@ public final class AEBlockEntities {
     public static final DeferredBlockEntityType<PaintSplotchesBlockEntity> PAINT = create("paint",
             PaintSplotchesBlockEntity.class,
             PaintSplotchesBlockEntity::new, AEBlocks.PAINT);
-    public static final DeferredBlockEntityType<SkyChestBlockEntity> SKY_CHEST = create("sky_chest",
-            SkyChestBlockEntity.class,
-            SkyChestBlockEntity::new, AEBlocks.SKY_STONE_CHEST, AEBlocks.SMOOTH_SKY_STONE_CHEST);
+    public static final DeferredBlockEntityType<SkyStoneChestBlockEntity> SKY_CHEST = create("sky_chest",
+            SkyStoneChestBlockEntity.class,
+            SkyStoneChestBlockEntity::new, AEBlocks.SKY_STONE_CHEST, AEBlocks.SMOOTH_SKY_STONE_CHEST);
 
     public static final DeferredBlockEntityType<SkyStoneTankBlockEntity> SKY_STONE_TANK = create("sky_tank",
             SkyStoneTankBlockEntity.class,
@@ -229,7 +229,7 @@ public final class AEBlockEntities {
                     .map(BlockDefinition::block)
                     .toArray(AEBaseEntityBlock[]::new);
 
-            var type = BlockEntityType.Builder.of(supplier, blocks).build(null);
+            var type = new BlockEntityType<>(supplier, blocks);
             typeHolder.setPlain(type); // Makes it available to the supplier used above
 
             AEBaseBlockEntity.registerBlockEntityItem(type, blockDefinitions[0].asItem());

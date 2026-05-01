@@ -1,0 +1,886 @@
+{
+  "multipart": [
+    {
+      "apply": {
+        "type": "ae2:spinnable_variant",
+        "model": "ae2:block/me_chest_base"
+      },
+      "when": {
+        "facing": "north",
+        "spin": "0"
+      }
+    },
+    {
+      "apply": {
+        "type": "ae2:spinnable_variant",
+        "model": "ae2:block/me_chest_base",
+        "z": 270
+      },
+      "when": {
+        "facing": "north",
+        "spin": "1"
+      }
+    },
+    {
+      "apply": {
+        "type": "ae2:spinnable_variant",
+        "model": "ae2:block/me_chest_base",
+        "z": 180
+      },
+      "when": {
+        "facing": "north",
+        "spin": "2"
+      }
+    },
+    {
+      "apply": {
+        "type": "ae2:spinnable_variant",
+        "model": "ae2:block/me_chest_base",
+        "z": 90
+      },
+      "when": {
+        "facing": "north",
+        "spin": "3"
+      }
+    },
+    {
+      "apply": {
+        "type": "ae2:spinnable_variant",
+        "model": "ae2:block/me_chest_base",
+        "y": 90
+      },
+      "when": {
+        "facing": "east",
+        "spin": "0"
+      }
+    },
+    {
+      "apply": {
+        "type": "ae2:spinnable_variant",
+        "model": "ae2:block/me_chest_base",
+        "y": 90,
+        "z": 270
+      },
+      "when": {
+        "facing": "east",
+        "spin": "1"
+      }
+    },
+    {
+      "apply": {
+        "type": "ae2:spinnable_variant",
+        "model": "ae2:block/me_chest_base",
+        "y": 90,
+        "z": 180
+      },
+      "when": {
+        "facing": "east",
+        "spin": "2"
+      }
+    },
+    {
+      "apply": {
+        "type": "ae2:spinnable_variant",
+        "model": "ae2:block/me_chest_base",
+        "y": 90,
+        "z": 90
+      },
+      "when": {
+        "facing": "east",
+        "spin": "3"
+      }
+    },
+    {
+      "apply": {
+        "type": "ae2:spinnable_variant",
+        "model": "ae2:block/me_chest_base",
+        "y": 180
+      },
+      "when": {
+        "facing": "south",
+        "spin": "0"
+      }
+    },
+    {
+      "apply": {
+        "type": "ae2:spinnable_variant",
+        "model": "ae2:block/me_chest_base",
+        "y": 180,
+        "z": 90
+      },
+      "when": {
+        "facing": "south",
+        "spin": "1"
+      }
+    },
+    {
+      "apply": {
+        "type": "ae2:spinnable_variant",
+        "model": "ae2:block/me_chest_base",
+        "y": 180,
+        "z": 180
+      },
+      "when": {
+        "facing": "south",
+        "spin": "2"
+      }
+    },
+    {
+      "apply": {
+        "type": "ae2:spinnable_variant",
+        "model": "ae2:block/me_chest_base",
+        "y": 180,
+        "z": 270
+      },
+      "when": {
+        "facing": "south",
+        "spin": "3"
+      }
+    },
+    {
+      "apply": {
+        "type": "ae2:spinnable_variant",
+        "model": "ae2:block/me_chest_base",
+        "y": 270
+      },
+      "when": {
+        "facing": "west",
+        "spin": "0"
+      }
+    },
+    {
+      "apply": {
+        "type": "ae2:spinnable_variant",
+        "model": "ae2:block/me_chest_base",
+        "y": 270,
+        "z": 270
+      },
+      "when": {
+        "facing": "west",
+        "spin": "1"
+      }
+    },
+    {
+      "apply": {
+        "type": "ae2:spinnable_variant",
+        "model": "ae2:block/me_chest_base",
+        "y": 270,
+        "z": 180
+      },
+      "when": {
+        "facing": "west",
+        "spin": "2"
+      }
+    },
+    {
+      "apply": {
+        "type": "ae2:spinnable_variant",
+        "model": "ae2:block/me_chest_base",
+        "y": 270,
+        "z": 90
+      },
+      "when": {
+        "facing": "west",
+        "spin": "3"
+      }
+    },
+    {
+      "apply": {
+        "type": "ae2:spinnable_variant",
+        "model": "ae2:block/me_chest_base",
+        "x": 270,
+        "z": 180
+      },
+      "when": {
+        "facing": "up",
+        "spin": "0"
+      }
+    },
+    {
+      "apply": {
+        "type": "ae2:spinnable_variant",
+        "model": "ae2:block/me_chest_base",
+        "x": 270,
+        "z": 90
+      },
+      "when": {
+        "facing": "up",
+        "spin": "1"
+      }
+    },
+    {
+      "apply": {
+        "type": "ae2:spinnable_variant",
+        "model": "ae2:block/me_chest_base",
+        "x": 270
+      },
+      "when": {
+        "facing": "up",
+        "spin": "2"
+      }
+    },
+    {
+      "apply": {
+        "type": "ae2:spinnable_variant",
+        "model": "ae2:block/me_chest_base",
+        "x": 270,
+        "z": 270
+      },
+      "when": {
+        "facing": "up",
+        "spin": "3"
+      }
+    },
+    {
+      "apply": {
+        "type": "ae2:spinnable_variant",
+        "model": "ae2:block/me_chest_base",
+        "x": 90
+      },
+      "when": {
+        "facing": "down",
+        "spin": "0"
+      }
+    },
+    {
+      "apply": {
+        "type": "ae2:spinnable_variant",
+        "model": "ae2:block/me_chest_base",
+        "x": 90,
+        "z": 270
+      },
+      "when": {
+        "facing": "down",
+        "spin": "1"
+      }
+    },
+    {
+      "apply": {
+        "type": "ae2:spinnable_variant",
+        "model": "ae2:block/me_chest_base",
+        "x": 90,
+        "z": 180
+      },
+      "when": {
+        "facing": "down",
+        "spin": "2"
+      }
+    },
+    {
+      "apply": {
+        "type": "ae2:spinnable_variant",
+        "model": "ae2:block/me_chest_base",
+        "x": 90,
+        "z": 90
+      },
+      "when": {
+        "facing": "down",
+        "spin": "3"
+      }
+    },
+    {
+      "apply": {
+        "type": "ae2:spinnable_variant",
+        "model": "ae2:block/me_chest_lights_off"
+      },
+      "when": {
+        "facing": "north",
+        "lights_on": "false",
+        "spin": "0"
+      }
+    },
+    {
+      "apply": {
+        "type": "ae2:spinnable_variant",
+        "model": "ae2:block/me_chest_lights_off",
+        "z": 270
+      },
+      "when": {
+        "facing": "north",
+        "lights_on": "false",
+        "spin": "1"
+      }
+    },
+    {
+      "apply": {
+        "type": "ae2:spinnable_variant",
+        "model": "ae2:block/me_chest_lights_off",
+        "z": 180
+      },
+      "when": {
+        "facing": "north",
+        "lights_on": "false",
+        "spin": "2"
+      }
+    },
+    {
+      "apply": {
+        "type": "ae2:spinnable_variant",
+        "model": "ae2:block/me_chest_lights_off",
+        "z": 90
+      },
+      "when": {
+        "facing": "north",
+        "lights_on": "false",
+        "spin": "3"
+      }
+    },
+    {
+      "apply": {
+        "type": "ae2:spinnable_variant",
+        "model": "ae2:block/me_chest_lights_off",
+        "y": 90
+      },
+      "when": {
+        "facing": "east",
+        "lights_on": "false",
+        "spin": "0"
+      }
+    },
+    {
+      "apply": {
+        "type": "ae2:spinnable_variant",
+        "model": "ae2:block/me_chest_lights_off",
+        "y": 90,
+        "z": 270
+      },
+      "when": {
+        "facing": "east",
+        "lights_on": "false",
+        "spin": "1"
+      }
+    },
+    {
+      "apply": {
+        "type": "ae2:spinnable_variant",
+        "model": "ae2:block/me_chest_lights_off",
+        "y": 90,
+        "z": 180
+      },
+      "when": {
+        "facing": "east",
+        "lights_on": "false",
+        "spin": "2"
+      }
+    },
+    {
+      "apply": {
+        "type": "ae2:spinnable_variant",
+        "model": "ae2:block/me_chest_lights_off",
+        "y": 90,
+        "z": 90
+      },
+      "when": {
+        "facing": "east",
+        "lights_on": "false",
+        "spin": "3"
+      }
+    },
+    {
+      "apply": {
+        "type": "ae2:spinnable_variant",
+        "model": "ae2:block/me_chest_lights_off",
+        "y": 180
+      },
+      "when": {
+        "facing": "south",
+        "lights_on": "false",
+        "spin": "0"
+      }
+    },
+    {
+      "apply": {
+        "type": "ae2:spinnable_variant",
+        "model": "ae2:block/me_chest_lights_off",
+        "y": 180,
+        "z": 90
+      },
+      "when": {
+        "facing": "south",
+        "lights_on": "false",
+        "spin": "1"
+      }
+    },
+    {
+      "apply": {
+        "type": "ae2:spinnable_variant",
+        "model": "ae2:block/me_chest_lights_off",
+        "y": 180,
+        "z": 180
+      },
+      "when": {
+        "facing": "south",
+        "lights_on": "false",
+        "spin": "2"
+      }
+    },
+    {
+      "apply": {
+        "type": "ae2:spinnable_variant",
+        "model": "ae2:block/me_chest_lights_off",
+        "y": 180,
+        "z": 270
+      },
+      "when": {
+        "facing": "south",
+        "lights_on": "false",
+        "spin": "3"
+      }
+    },
+    {
+      "apply": {
+        "type": "ae2:spinnable_variant",
+        "model": "ae2:block/me_chest_lights_off",
+        "y": 270
+      },
+      "when": {
+        "facing": "west",
+        "lights_on": "false",
+        "spin": "0"
+      }
+    },
+    {
+      "apply": {
+        "type": "ae2:spinnable_variant",
+        "model": "ae2:block/me_chest_lights_off",
+        "y": 270,
+        "z": 270
+      },
+      "when": {
+        "facing": "west",
+        "lights_on": "false",
+        "spin": "1"
+      }
+    },
+    {
+      "apply": {
+        "type": "ae2:spinnable_variant",
+        "model": "ae2:block/me_chest_lights_off",
+        "y": 270,
+        "z": 180
+      },
+      "when": {
+        "facing": "west",
+        "lights_on": "false",
+        "spin": "2"
+      }
+    },
+    {
+      "apply": {
+        "type": "ae2:spinnable_variant",
+        "model": "ae2:block/me_chest_lights_off",
+        "y": 270,
+        "z": 90
+      },
+      "when": {
+        "facing": "west",
+        "lights_on": "false",
+        "spin": "3"
+      }
+    },
+    {
+      "apply": {
+        "type": "ae2:spinnable_variant",
+        "model": "ae2:block/me_chest_lights_off",
+        "x": 270,
+        "z": 180
+      },
+      "when": {
+        "facing": "up",
+        "lights_on": "false",
+        "spin": "0"
+      }
+    },
+    {
+      "apply": {
+        "type": "ae2:spinnable_variant",
+        "model": "ae2:block/me_chest_lights_off",
+        "x": 270,
+        "z": 90
+      },
+      "when": {
+        "facing": "up",
+        "lights_on": "false",
+        "spin": "1"
+      }
+    },
+    {
+      "apply": {
+        "type": "ae2:spinnable_variant",
+        "model": "ae2:block/me_chest_lights_off",
+        "x": 270
+      },
+      "when": {
+        "facing": "up",
+        "lights_on": "false",
+        "spin": "2"
+      }
+    },
+    {
+      "apply": {
+        "type": "ae2:spinnable_variant",
+        "model": "ae2:block/me_chest_lights_off",
+        "x": 270,
+        "z": 270
+      },
+      "when": {
+        "facing": "up",
+        "lights_on": "false",
+        "spin": "3"
+      }
+    },
+    {
+      "apply": {
+        "type": "ae2:spinnable_variant",
+        "model": "ae2:block/me_chest_lights_off",
+        "x": 90
+      },
+      "when": {
+        "facing": "down",
+        "lights_on": "false",
+        "spin": "0"
+      }
+    },
+    {
+      "apply": {
+        "type": "ae2:spinnable_variant",
+        "model": "ae2:block/me_chest_lights_off",
+        "x": 90,
+        "z": 270
+      },
+      "when": {
+        "facing": "down",
+        "lights_on": "false",
+        "spin": "1"
+      }
+    },
+    {
+      "apply": {
+        "type": "ae2:spinnable_variant",
+        "model": "ae2:block/me_chest_lights_off",
+        "x": 90,
+        "z": 180
+      },
+      "when": {
+        "facing": "down",
+        "lights_on": "false",
+        "spin": "2"
+      }
+    },
+    {
+      "apply": {
+        "type": "ae2:spinnable_variant",
+        "model": "ae2:block/me_chest_lights_off",
+        "x": 90,
+        "z": 90
+      },
+      "when": {
+        "facing": "down",
+        "lights_on": "false",
+        "spin": "3"
+      }
+    },
+    {
+      "apply": {
+        "type": "ae2:spinnable_variant",
+        "model": "ae2:block/me_chest_lights_on"
+      },
+      "when": {
+        "facing": "north",
+        "lights_on": "true",
+        "spin": "0"
+      }
+    },
+    {
+      "apply": {
+        "type": "ae2:spinnable_variant",
+        "model": "ae2:block/me_chest_lights_on",
+        "z": 270
+      },
+      "when": {
+        "facing": "north",
+        "lights_on": "true",
+        "spin": "1"
+      }
+    },
+    {
+      "apply": {
+        "type": "ae2:spinnable_variant",
+        "model": "ae2:block/me_chest_lights_on",
+        "z": 180
+      },
+      "when": {
+        "facing": "north",
+        "lights_on": "true",
+        "spin": "2"
+      }
+    },
+    {
+      "apply": {
+        "type": "ae2:spinnable_variant",
+        "model": "ae2:block/me_chest_lights_on",
+        "z": 90
+      },
+      "when": {
+        "facing": "north",
+        "lights_on": "true",
+        "spin": "3"
+      }
+    },
+    {
+      "apply": {
+        "type": "ae2:spinnable_variant",
+        "model": "ae2:block/me_chest_lights_on",
+        "y": 90
+      },
+      "when": {
+        "facing": "east",
+        "lights_on": "true",
+        "spin": "0"
+      }
+    },
+    {
+      "apply": {
+        "type": "ae2:spinnable_variant",
+        "model": "ae2:block/me_chest_lights_on",
+        "y": 90,
+        "z": 270
+      },
+      "when": {
+        "facing": "east",
+        "lights_on": "true",
+        "spin": "1"
+      }
+    },
+    {
+      "apply": {
+        "type": "ae2:spinnable_variant",
+        "model": "ae2:block/me_chest_lights_on",
+        "y": 90,
+        "z": 180
+      },
+      "when": {
+        "facing": "east",
+        "lights_on": "true",
+        "spin": "2"
+      }
+    },
+    {
+      "apply": {
+        "type": "ae2:spinnable_variant",
+        "model": "ae2:block/me_chest_lights_on",
+        "y": 90,
+        "z": 90
+      },
+      "when": {
+        "facing": "east",
+        "lights_on": "true",
+        "spin": "3"
+      }
+    },
+    {
+      "apply": {
+        "type": "ae2:spinnable_variant",
+        "model": "ae2:block/me_chest_lights_on",
+        "y": 180
+      },
+      "when": {
+        "facing": "south",
+        "lights_on": "true",
+        "spin": "0"
+      }
+    },
+    {
+      "apply": {
+        "type": "ae2:spinnable_variant",
+        "model": "ae2:block/me_chest_lights_on",
+        "y": 180,
+        "z": 90
+      },
+      "when": {
+        "facing": "south",
+        "lights_on": "true",
+        "spin": "1"
+      }
+    },
+    {
+      "apply": {
+        "type": "ae2:spinnable_variant",
+        "model": "ae2:block/me_chest_lights_on",
+        "y": 180,
+        "z": 180
+      },
+      "when": {
+        "facing": "south",
+        "lights_on": "true",
+        "spin": "2"
+      }
+    },
+    {
+      "apply": {
+        "type": "ae2:spinnable_variant",
+        "model": "ae2:block/me_chest_lights_on",
+        "y": 180,
+        "z": 270
+      },
+      "when": {
+        "facing": "south",
+        "lights_on": "true",
+        "spin": "3"
+      }
+    },
+    {
+      "apply": {
+        "type": "ae2:spinnable_variant",
+        "model": "ae2:block/me_chest_lights_on",
+        "y": 270
+      },
+      "when": {
+        "facing": "west",
+        "lights_on": "true",
+        "spin": "0"
+      }
+    },
+    {
+      "apply": {
+        "type": "ae2:spinnable_variant",
+        "model": "ae2:block/me_chest_lights_on",
+        "y": 270,
+        "z": 270
+      },
+      "when": {
+        "facing": "west",
+        "lights_on": "true",
+        "spin": "1"
+      }
+    },
+    {
+      "apply": {
+        "type": "ae2:spinnable_variant",
+        "model": "ae2:block/me_chest_lights_on",
+        "y": 270,
+        "z": 180
+      },
+      "when": {
+        "facing": "west",
+        "lights_on": "true",
+        "spin": "2"
+      }
+    },
+    {
+      "apply": {
+        "type": "ae2:spinnable_variant",
+        "model": "ae2:block/me_chest_lights_on",
+        "y": 270,
+        "z": 90
+      },
+      "when": {
+        "facing": "west",
+        "lights_on": "true",
+        "spin": "3"
+      }
+    },
+    {
+      "apply": {
+        "type": "ae2:spinnable_variant",
+        "model": "ae2:block/me_chest_lights_on",
+        "x": 270,
+        "z": 180
+      },
+      "when": {
+        "facing": "up",
+        "lights_on": "true",
+        "spin": "0"
+      }
+    },
+    {
+      "apply": {
+        "type": "ae2:spinnable_variant",
+        "model": "ae2:block/me_chest_lights_on",
+        "x": 270,
+        "z": 90
+      },
+      "when": {
+        "facing": "up",
+        "lights_on": "true",
+        "spin": "1"
+      }
+    },
+    {
+      "apply": {
+        "type": "ae2:spinnable_variant",
+        "model": "ae2:block/me_chest_lights_on",
+        "x": 270
+      },
+      "when": {
+        "facing": "up",
+        "lights_on": "true",
+        "spin": "2"
+      }
+    },
+    {
+      "apply": {
+        "type": "ae2:spinnable_variant",
+        "model": "ae2:block/me_chest_lights_on",
+        "x": 270,
+        "z": 270
+      },
+      "when": {
+        "facing": "up",
+        "lights_on": "true",
+        "spin": "3"
+      }
+    },
+    {
+      "apply": {
+        "type": "ae2:spinnable_variant",
+        "model": "ae2:block/me_chest_lights_on",
+        "x": 90
+      },
+      "when": {
+        "facing": "down",
+        "lights_on": "true",
+        "spin": "0"
+      }
+    },
+    {
+      "apply": {
+        "type": "ae2:spinnable_variant",
+        "model": "ae2:block/me_chest_lights_on",
+        "x": 90,
+        "z": 270
+      },
+      "when": {
+        "facing": "down",
+        "lights_on": "true",
+        "spin": "1"
+      }
+    },
+    {
+      "apply": {
+        "type": "ae2:spinnable_variant",
+        "model": "ae2:block/me_chest_lights_on",
+        "x": 90,
+        "z": 180
+      },
+      "when": {
+        "facing": "down",
+        "lights_on": "true",
+        "spin": "2"
+      }
+    },
+    {
+      "apply": {
+        "type": "ae2:spinnable_variant",
+        "model": "ae2:block/me_chest_lights_on",
+        "x": 90,
+        "z": 90
+      },
+      "when": {
+        "facing": "down",
+        "lights_on": "true",
+        "spin": "3"
+      }
+    }
+  ]
+}

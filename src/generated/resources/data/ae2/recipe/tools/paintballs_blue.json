@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "a": {
-      "item": "ae2:matter_ball"
-    },
-    "b": {
-      "tag": "c:dyes/blue"
-    }
+    "a": "ae2:matter_ball",
+    "b": "#c:dyes/blue"
   },
   "pattern": [
     "aaa",

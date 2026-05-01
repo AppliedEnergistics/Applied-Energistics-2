@@ -18,7 +18,6 @@
 
 package appeng.parts.reporting;
 
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
@@ -26,44 +25,18 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 
 import appeng.api.parts.IPartItem;
-import appeng.api.parts.IPartModel;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.storage.ISubMenuHost;
 import appeng.api.storage.StorageHelper;
-import appeng.core.AppEng;
-import appeng.items.parts.PartModels;
 import appeng.me.helpers.PlayerSource;
 import appeng.menu.ISubMenu;
 import appeng.menu.locator.MenuLocators;
 import appeng.menu.me.crafting.CraftAmountMenu;
-import appeng.parts.PartModel;
 import appeng.util.InteractionUtil;
 import appeng.util.Platform;
 import appeng.util.inv.PlayerInternalInventory;
 
 public class ConversionMonitorPart extends AbstractMonitorPart implements ISubMenuHost {
-
-    @PartModels
-    public static final ResourceLocation MODEL_OFF = AppEng.makeId(
-            "part/conversion_monitor_off");
-    @PartModels
-    public static final ResourceLocation MODEL_ON = AppEng.makeId(
-            "part/conversion_monitor_on");
-    @PartModels
-    public static final ResourceLocation MODEL_LOCKED_OFF = AppEng.makeId(
-            "part/conversion_monitor_locked_off");
-    @PartModels
-    public static final ResourceLocation MODEL_LOCKED_ON = AppEng.makeId(
-            "part/conversion_monitor_locked_on");
-
-    public static final IPartModel MODELS_OFF = new PartModel(MODEL_BASE, MODEL_OFF, MODEL_STATUS_OFF);
-    public static final IPartModel MODELS_ON = new PartModel(MODEL_BASE, MODEL_ON, MODEL_STATUS_ON);
-    public static final IPartModel MODELS_HAS_CHANNEL = new PartModel(MODEL_BASE, MODEL_ON, MODEL_STATUS_HAS_CHANNEL);
-    public static final IPartModel MODELS_LOCKED_OFF = new PartModel(MODEL_BASE, MODEL_LOCKED_OFF, MODEL_STATUS_OFF);
-    public static final IPartModel MODELS_LOCKED_ON = new PartModel(MODEL_BASE, MODEL_LOCKED_ON, MODEL_STATUS_ON);
-    public static final IPartModel MODELS_LOCKED_HAS_CHANNEL = new PartModel(MODEL_BASE, MODEL_LOCKED_ON,
-            MODEL_STATUS_HAS_CHANNEL);
-
     public ConversionMonitorPart(IPartItem<?> partItem) {
         super(partItem, true);
     }
@@ -219,12 +192,6 @@ public class ConversionMonitorPart extends AbstractMonitorPart implements ISubMe
                 }
             }
         });
-    }
-
-    @Override
-    public IPartModel getStaticModels() {
-        return this.selectModel(MODELS_OFF, MODELS_ON, MODELS_HAS_CHANNEL, MODELS_LOCKED_OFF, MODELS_LOCKED_ON,
-                MODELS_LOCKED_HAS_CHANNEL);
     }
 
     @Override

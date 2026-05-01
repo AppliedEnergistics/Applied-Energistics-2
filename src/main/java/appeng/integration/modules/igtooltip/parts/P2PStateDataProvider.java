@@ -2,7 +2,6 @@ package appeng.integration.modules.igtooltip.parts;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 
@@ -33,9 +32,9 @@ public final class P2PStateDataProvider implements BodyProvider<P2PTunnelPart>, 
     public void buildTooltip(P2PTunnelPart object, TooltipContext context, TooltipBuilder tooltip) {
         var serverData = context.serverData();
 
-        if (serverData.contains(TAG_P2P_STATE, Tag.TAG_BYTE)) {
-            var state = serverData.getByte(TAG_P2P_STATE);
-            var outputs = serverData.getInt(TAG_P2P_OUTPUTS);
+        if (serverData.contains(TAG_P2P_STATE)) {
+            var state = serverData.getByteOr(TAG_P2P_STATE, (byte) 0);
+            var outputs = serverData.getIntOr(TAG_P2P_OUTPUTS, 0);
 
             switch (state) {
                 case STATE_UNLINKED -> tooltip.addLine(InGameTooltip.P2PUnlinked.text());
@@ -43,19 +42,19 @@ public final class P2PStateDataProvider implements BodyProvider<P2PTunnelPart>, 
                 case STATE_INPUT -> tooltip.addLine(getOutputText(outputs));
             }
 
-            var freq = serverData.getShort(TAG_P2P_FREQUENCY);
+            var freq = serverData.getShortOr(TAG_P2P_FREQUENCY, (short) 0);
 
             // Show the frequency and name of the frequency if it exists
             var freqTooltip = Platform.p2p().toColoredHexString(freq).withStyle(ChatFormatting.BOLD);
-            if (serverData.contains(TAG_P2P_FREQUENCY_NAME, Tag.TAG_STRING)) {
-                var freqName = serverData.getString(TAG_P2P_FREQUENCY_NAME);
+            if (serverData.contains(TAG_P2P_FREQUENCY_NAME)) {
+                var freqName = serverData.getStringOr(TAG_P2P_FREQUENCY_NAME, "");
                 freqTooltip = Component.literal(freqName).append(" (").append(freqTooltip).append(")");
             }
 
             tooltip.addLine(InGameTooltip.P2PFrequency.text(freqTooltip));
 
-            if (serverData.contains(TAG_P2P_ME_CARRIED_CHANNELS, Tag.TAG_INT)) {
-                var carriedChannels = serverData.getInt(TAG_P2P_ME_CARRIED_CHANNELS);
+            if (serverData.contains(TAG_P2P_ME_CARRIED_CHANNELS)) {
+                var carriedChannels = serverData.getIntOr(TAG_P2P_ME_CARRIED_CHANNELS, 0);
                 tooltip.addLine(InGameTooltip.P2PMECarriedChannels.text(carriedChannels));
             }
         }

@@ -25,7 +25,6 @@ import net.minecraft.world.item.ItemStack;
 
 import appeng.api.features.GridLinkables;
 import appeng.blockentity.networking.WirelessAccessPointBlockEntity;
-import appeng.client.gui.implementations.WirelessAccessPointScreen;
 import appeng.core.AEConfig;
 import appeng.core.localization.ButtonToolTips;
 import appeng.core.localization.Tooltips;
@@ -38,7 +37,7 @@ import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.InternalInventoryHost;
 
 /**
- * @see WirelessAccessPointScreen
+ * @see appeng.client.gui.implementations.WirelessAccessPointScreen
  */
 public class WirelessAccessPointMenu extends AEBaseMenu implements InternalInventoryHost {
 

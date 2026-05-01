@@ -97,7 +97,7 @@ public enum BlockOrientation {
                 -angleZ * Mth.DEG_TO_RAD);
 
         if (angleX == 0 && angleY == 0 && angleZ == 0) {
-            this.transformation = Transformation.identity();
+            this.transformation = Transformation.IDENTITY;
         } else {
             var rotationMatrix = new Matrix4f()
                     .identity()
@@ -112,7 +112,7 @@ public enum BlockOrientation {
         for (var direction : Direction.values()) {
             var normal = direction.step();
             normal.rotate(quaternion);
-            var rotatedTo = Direction.getNearest(normal.x(), normal.y(), normal.z());
+            var rotatedTo = Direction.getApproximateNearest(normal.x(), normal.y(), normal.z());
             rotatedSideTo[direction.ordinal()] = rotatedTo;
             rotatedSideFrom[rotatedTo.ordinal()] = direction;
         }

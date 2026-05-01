@@ -162,6 +162,7 @@ jobs:
           curseforge-id: 223794
           curseforge-token: ${{ secrets.CURSEFORGE }}
           loaders: neoforge
+          game-version-filter: none
 
   deploy-modrinth:
     name: Deploy to Modrinth
@@ -193,3 +194,4 @@ jobs:
           modrinth-id: XxWD5pD3
           modrinth-token: ${{ secrets.MODRINTH }}
           loaders: neoforge
+          game-version-filter: none

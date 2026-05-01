@@ -23,50 +23,27 @@ import java.util.List;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentMap;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 
 import appeng.api.networking.IGridNodeListener;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartItem;
-import appeng.api.parts.IPartModel;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.util.AECableType;
-import appeng.core.AppEng;
 import appeng.core.definitions.AEParts;
 import appeng.helpers.patternprovider.PatternProviderLogic;
 import appeng.helpers.patternprovider.PatternProviderLogicHost;
-import appeng.items.parts.PartModels;
 import appeng.menu.locator.MenuLocators;
 import appeng.parts.AEBasePart;
-import appeng.parts.PartModel;
 import appeng.util.SettingsFrom;
 
 public class PatternProviderPart extends AEBasePart implements PatternProviderLogicHost {
-
-    public static final ResourceLocation MODEL_BASE = AppEng.makeId(
-            "part/pattern_provider_base");
-
-    // TODO: unify the following between the 3 interface parts?
-    @PartModels
-    public static final PartModel MODELS_OFF = new PartModel(MODEL_BASE,
-            AppEng.makeId("part/interface_off"));
-
-    @PartModels
-    public static final PartModel MODELS_ON = new PartModel(MODEL_BASE,
-            AppEng.makeId("part/interface_on"));
-
-    @PartModels
-    public static final PartModel MODELS_HAS_CHANNEL = new PartModel(MODEL_BASE,
-            AppEng.makeId("part/interface_has_channel"));
 
     protected final PatternProviderLogic logic = createLogic();
 
@@ -101,15 +78,15 @@ public class PatternProviderPart extends AEBasePart implements PatternProviderLo
     }
 
     @Override
-    public void readFromNBT(CompoundTag data, HolderLookup.Provider registries) {
-        super.readFromNBT(data, registries);
-        this.logic.readFromNBT(data, registries);
+    public void readFromNBT(ValueInput input) {
+        super.readFromNBT(input);
+        this.logic.readFromNBT(input);
     }
 
     @Override
-    public void writeToNBT(CompoundTag data, HolderLookup.Provider registries) {
-        super.writeToNBT(data, registries);
-        this.logic.writeToNBT(data, registries);
+    public void writeToNBT(ValueOutput data) {
+        super.writeToNBT(data);
+        this.logic.writeToNBT(data);
     }
 
     @Override
@@ -154,13 +131,13 @@ public class PatternProviderPart extends AEBasePart implements PatternProviderLo
     }
 
     @Override
-    public void onNeighborChanged(BlockGetter level, BlockPos pos, BlockPos neighbor) {
+    public void onRedstoneLevelMayHaveChanged() {
         logic.updateRedstoneState();
     }
 
     @Override
     public boolean onUseWithoutItem(Player p, Vec3 pos) {
-        if (!p.getCommandSenderWorld().isClientSide()) {
+        if (!p.level().isClientSide()) {
             openMenu(p, MenuLocators.forPart(this));
         }
         return true;
@@ -174,17 +151,6 @@ public class PatternProviderPart extends AEBasePart implements PatternProviderLo
     @Override
     public EnumSet<Direction> getTargets() {
         return EnumSet.of(this.getSide());
-    }
-
-    @Override
-    public IPartModel getStaticModels() {
-        if (this.isActive() && this.isPowered()) {
-            return MODELS_HAS_CHANNEL;
-        } else if (this.isPowered()) {
-            return MODELS_ON;
-        } else {
-            return MODELS_OFF;
-        }
     }
 
     @Override

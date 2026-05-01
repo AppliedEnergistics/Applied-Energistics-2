@@ -9,8 +9,6 @@
     }
   ],
   "type": "ae2:matter_cannon",
-  "ammo": {
-    "tag": "c:nuggets/invar"
-  },
+  "ammo": "#c:nuggets/invar",
   "weight": 56.794468
 }

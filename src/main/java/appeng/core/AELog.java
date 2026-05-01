@@ -58,17 +58,6 @@ public final class AELog {
     }
 
     /**
-     * Indicates of the global log is enabled or disabled.
-     * <p>
-     * By default it is enabled.
-     *
-     * @return true when the log is enabled.
-     */
-    public static boolean isLogEnabled() {
-        return true;
-    }
-
-    /**
      * Logs a formatted message with a specific log level.
      * <p>
      * This uses {@link String#format(String, Object...)} as opposed to the {@link ParameterizedMessage} to allow a more
@@ -80,33 +69,11 @@ public final class AELog {
      * @param message the message to be formatted.
      * @param params  the parameters used for {@link String#format(String, Object...)}.
      */
-    public static void log(Level level, String message, Object... params) {
-        if (AELog.isLogEnabled()) {
-            final String formattedMessage = String.format(message, params);
-            final Logger logger = getLogger();
+    private static void log(Level level, String message, Object... params) {
+        final String formattedMessage = String.format(message, params);
+        final Logger logger = getLogger();
 
-            logger.log(level, formattedMessage);
-        }
-    }
-
-    /**
-     * Log an exception with a custom message formated via {@link String#format(String, Object...)}
-     * <p>
-     * Similar to {@link AELog#log(Level, String, Object...)}.
-     *
-     * @param level   the intended level.
-     * @param message the message to be formatted.
-     * @param params  the parameters used for {@link String#format(String, Object...)}.
-     * @see AELog#log(Level, String, Object...)
-     */
-    private static void log(Level level, Throwable exception, String message,
-            Object... params) {
-        if (AELog.isLogEnabled()) {
-            final String formattedMessage = String.format(message, params);
-            final Logger logger = getLogger();
-
-            logger.log(level, formattedMessage, exception);
-        }
+        logger.log(level, formattedMessage);
     }
 
     /**
@@ -117,71 +84,10 @@ public final class AELog {
     }
 
     /**
-     * Log exception as {@link Level#INFO}
-     *
-     * @see AELog#log(Level, Throwable, String, Object...)
-     */
-    public static void info(Throwable exception) {
-        log(Level.INFO, exception, DEFAULT_EXCEPTION_MESSAGE);
-    }
-
-    /**
-     * Log exception as {@link Level#INFO}
-     *
-     * @see AELog#log(Level, Throwable, String, Object...)
-     */
-    public static void info(Throwable exception, String message) {
-        log(Level.INFO, exception, message);
-    }
-
-    /**
      * @see AELog#log(Level, String, Object...)
      */
     public static void warn(String format, Object... params) {
         log(Level.WARN, format, params);
-    }
-
-    /**
-     * Log exception as {@link Level#WARN}
-     *
-     * @see AELog#log(Level, Throwable, String, Object...)
-     */
-    public static void warn(Throwable exception) {
-        log(Level.WARN, exception, DEFAULT_EXCEPTION_MESSAGE);
-    }
-
-    /**
-     * Log exception as {@link Level#WARN}
-     *
-     * @see AELog#log(Level, Throwable, String, Object...)
-     */
-    public static void warn(Throwable exception, String message) {
-        log(Level.WARN, exception, message);
-    }
-
-    /**
-     * @see AELog#log(Level, String, Object...)
-     */
-    public static void error(String format, Object... params) {
-        log(Level.ERROR, format, params);
-    }
-
-    /**
-     * Log exception as {@link Level#ERROR}
-     *
-     * @see AELog#log(Level, Throwable, String, Object...)
-     */
-    public static void error(Throwable exception) {
-        log(Level.ERROR, exception, DEFAULT_EXCEPTION_MESSAGE);
-    }
-
-    /**
-     * Log exception as {@link Level#ERROR}
-     *
-     * @see AELog#log(Level, Throwable, String, Object...)
-     */
-    public static void error(Throwable exception, String message) {
-        log(Level.ERROR, exception, message);
     }
 
     /**

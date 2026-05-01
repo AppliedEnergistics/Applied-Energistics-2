@@ -19,6 +19,7 @@
 package appeng.helpers.externalstorage;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -27,11 +28,10 @@ import com.google.common.base.Preconditions;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.transfer.transaction.SnapshotJournal;
 
 import it.unimi.dsi.fastutil.objects.Reference2LongArrayMap;
 import it.unimi.dsi.fastutil.objects.Reference2LongMap;
@@ -51,7 +51,7 @@ import appeng.api.storage.MEStorage;
 import appeng.core.AELog;
 import appeng.util.ConfigMenuInventory;
 
-public class GenericStackInv implements MEStorage, GenericInternalInventory {
+public class GenericStackInv extends SnapshotJournal<GenericStack[]> implements MEStorage, GenericInternalInventory {
     protected final GenericStack[] stacks;
     private final Runnable listener;
     private boolean suppressOnChange;
@@ -203,8 +203,8 @@ public class GenericStackInv implements MEStorage, GenericInternalInventory {
                 var reallyExtracted = Math.max(0, currentAmount - getAmount(slot));
                 if (reallyExtracted != canExtract) {
                     AELog.warn(
-                            "GenericStackInv simulation/modulation extraction mismatch: canExtract=%d, reallyExtracted=%d",
-                            canExtract, reallyExtracted);
+                            "%s simulation/modulation extraction mismatch: canExtract=%d, reallyExtracted=%d",
+                            getClass().getName(), canExtract, reallyExtracted);
                     canExtract = reallyExtracted;
                 }
             }
@@ -260,26 +260,19 @@ public class GenericStackInv implements MEStorage, GenericInternalInventory {
         }
     }
 
-    public ListTag writeToTag(HolderLookup.Provider registries) {
-        ListTag tag = new ListTag();
-
-        for (var stack : stacks) {
-            tag.add(GenericStack.writeTag(registries, stack));
+    public void writeToTag(ValueOutput.ValueOutputList output) {
+        // Count how many trailing nulls we have and don't write them in the first place
+        var lastIndex = stacks.length;
+        for (; lastIndex > 0 && stacks[lastIndex - 1] == null; lastIndex--) {
         }
 
-        // Strip out trailing nulls
-        for (int i = tag.size() - 1; i >= 0; i--) {
-            if (tag.getCompound(i).isEmpty()) {
-                tag.remove(i);
-            } else {
-                break;
-            }
+        for (int i = 0; i < lastIndex; i++) {
+            var stack = stacks[i];
+            GenericStack.writeTag(output.addChild(), stack);
         }
-
-        return tag;
     }
 
-    public void writeToChildTag(CompoundTag tag, String name, HolderLookup.Provider registries) {
+    public void writeToChildTag(ValueOutput output, String name) {
         boolean isEmpty = true;
         for (var stack : stacks) {
             if (stack != null) {
@@ -289,27 +282,32 @@ public class GenericStackInv implements MEStorage, GenericInternalInventory {
         }
 
         if (!isEmpty) {
-            tag.put(name, writeToTag(registries));
-        } else {
-            tag.remove(name);
+            writeToTag(output.childrenList(name));
         }
     }
 
-    public void readFromTag(ListTag tag, HolderLookup.Provider registries) {
+    public void readFromTag(ValueInput.ValueInputList input) {
         boolean changed = false;
-        for (int i = 0; i < Math.min(size(), tag.size()); ++i) {
-            var stack = GenericStack.readTag(registries, tag.getCompound(i));
-            if (!Objects.equals(stack, stacks[i])) {
-                stacks[i] = stack;
+        var index = 0;
+        for (var inputElement : input) {
+            if (index >= size()) {
+                break;
+            }
+
+            var stack = GenericStack.readTag(inputElement);
+            if (!Objects.equals(stack, stacks[index])) {
+                stacks[index] = stack;
                 changed = true;
             }
+            index++;
         }
         // Ensure any of the remaining slots are cleared
-        for (int i = tag.size(); i < size(); i++) {
-            if (stacks[i] != null) {
-                stacks[i] = null;
+        while (index < size()) {
+            if (stacks[index] != null) {
+                stacks[index] = null;
                 changed = true;
             }
+            index++;
         }
 
         if (changed) {
@@ -332,9 +330,10 @@ public class GenericStackInv implements MEStorage, GenericInternalInventory {
         }
     }
 
-    public void readFromChildTag(CompoundTag tag, String name, HolderLookup.Provider registries) {
-        if (tag.contains(name, Tag.TAG_LIST)) {
-            readFromTag(tag.getList(name, Tag.TAG_COMPOUND), registries);
+    public void readFromChildTag(ValueInput input, String name) {
+        var content = input.childrenListOrEmpty(name);
+        if (!content.isEmpty()) {
+            readFromTag(content);
         } else {
             clear();
         }
@@ -467,5 +466,22 @@ public class GenericStackInv implements MEStorage, GenericInternalInventory {
      */
     public void setDescription(Component description) {
         this.description = description;
+    }
+
+    @Override
+    protected GenericStack[] createSnapshot() {
+        return stacks.clone();
+    }
+
+    @Override
+    protected void revertToSnapshot(GenericStack[] snapshot) {
+        System.arraycopy(snapshot, 0, this.stacks, 0, this.stacks.length);
+    }
+
+    @Override
+    protected void onRootCommit(GenericStack[] originalState) {
+        if (!Arrays.equals(this.stacks, originalState)) {
+            onChange();
+        }
     }
 }

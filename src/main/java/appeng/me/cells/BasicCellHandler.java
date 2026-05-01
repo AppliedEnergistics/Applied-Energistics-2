@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
@@ -53,14 +54,14 @@ public class BasicCellHandler implements ICellHandler {
         return BasicCellInventory.createInventory(is, container);
     }
 
-    public void addCellInformationToTooltip(ItemStack is, List<Component> lines) {
+    public void addCellInformationToTooltip(ItemStack is, Consumer<Component> lines) {
         var handler = getCellInventory(is, null);
         if (handler == null) {
             return;
         }
 
-        lines.add(Tooltips.bytesUsed(handler.getUsedBytes(), handler.getTotalBytes()));
-        lines.add(Tooltips.typesUsed(handler.getStoredItemTypes(), handler.getTotalItemTypes()));
+        lines.accept(Tooltips.bytesUsed(handler.getUsedBytes(), handler.getTotalBytes()));
+        lines.accept(Tooltips.typesUsed(handler.getStoredItemTypes(), handler.getTotalItemTypes()));
 
         if (handler.isPreformatted()) {
             var list = (handler.getPartitionListMode() == IncludeExclude.WHITELIST ? GuiText.Included
@@ -68,9 +69,10 @@ public class BasicCellHandler implements ICellHandler {
                     .text();
 
             if (handler.isFuzzy()) {
-                lines.add(GuiText.Partitioned.withSuffix(" - ").append(list).append(" ").append(GuiText.Fuzzy.text()));
+                lines.accept(
+                        GuiText.Partitioned.withSuffix(" - ").append(list).append(" ").append(GuiText.Fuzzy.text()));
             } else {
-                lines.add(
+                lines.accept(
                         GuiText.Partitioned.withSuffix(" - ").append(list).append(" ").append(GuiText.Precise.text()));
             }
         }

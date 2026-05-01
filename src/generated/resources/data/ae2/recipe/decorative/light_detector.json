@@ -2,18 +2,13 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "a": {
-      "tag": "ae2:all_nether_quartz"
-    },
-    "b": {
-      "item": "ae2:cable_anchor"
-    }
+    "a": "#ae2:all_nether_quartz",
+    "b": "ae2:cable_anchor"
   },
   "pattern": [
     "ab"
   ],
   "result": {
-    "count": 1,
     "id": "ae2:light_detector"
   }
 }

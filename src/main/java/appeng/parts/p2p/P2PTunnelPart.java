@@ -23,15 +23,17 @@ import java.util.stream.Stream;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentMap;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.client.model.data.ModelData;
+import net.neoforged.neoforge.model.data.ModelData;
+import net.neoforged.neoforge.transfer.transaction.SnapshotJournal;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
@@ -47,11 +49,11 @@ import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartItem;
 import appeng.api.stacks.AEKeyType;
 import appeng.api.util.AECableType;
-import appeng.client.render.cablebus.P2PTunnelFrequencyModelData;
 import appeng.core.AEConfig;
 import appeng.items.tools.MemoryCardItem;
 import appeng.me.service.P2PService;
 import appeng.parts.AEBasePart;
+import appeng.parts.automation.PartModelData;
 import appeng.util.InteractionUtil;
 import appeng.util.Platform;
 import appeng.util.SettingsFrom;
@@ -59,6 +61,7 @@ import appeng.util.SettingsFrom;
 public abstract class P2PTunnelPart<T extends P2PTunnelPart<T>> extends AEBasePart {
     private boolean output;
     private short freq;
+    private final EnergyCostJournal energyCostJournal = new EnergyCostJournal();
 
     public P2PTunnelPart(IPartItem<?> partItem) {
         super(partItem);
@@ -108,15 +111,15 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart<T>> extends AEBasePa
     }
 
     @Override
-    public void readFromNBT(CompoundTag data, HolderLookup.Provider registries) {
-        super.readFromNBT(data, registries);
-        this.setOutput(data.getBoolean("output"));
-        this.freq = data.getShort("freq");
+    public void readFromNBT(ValueInput input) {
+        super.readFromNBT(input);
+        this.setOutput(input.getBooleanOr("output", false));
+        this.freq = (short) input.getShortOr("freq", (short) 0);
     }
 
     @Override
-    public void writeToNBT(CompoundTag data, HolderLookup.Provider registries) {
-        super.writeToNBT(data, registries);
+    public void writeToNBT(ValueOutput data) {
+        super.writeToNBT(data);
         data.putBoolean("output", this.isOutput());
         data.putShort("freq", this.getFrequency());
     }
@@ -199,7 +202,8 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart<T>> extends AEBasePa
                 this.onTunnelConfigChange();
 
                 MemoryCardItem.clearCard(heldItem);
-                heldItem.set(AEComponents.EXPORTED_SETTINGS_SOURCE, getPartItem().asItem().getDescription());
+                heldItem.set(AEComponents.EXPORTED_SETTINGS_SOURCE,
+                        getPartItem().asItem().getDefaultInstance().getItemName());
                 heldItem.applyComponents(exportSettings(SettingsFrom.MEMORY_CARD));
 
                 if (needsNewFrequency) {
@@ -306,6 +310,26 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart<T>> extends AEBasePa
         });
     }
 
+    protected void deductEnergyCost(double energyTransported, PowerUnit typeTransported, TransactionContext tx) {
+        var costFactor = AEConfig.instance().getP2PTunnelEnergyTax();
+        var tax = typeTransported.convertTo(PowerUnit.AE, energyTransported * costFactor);
+        if (tax > 0) {
+            energyCostJournal.updateSnapshots(tx);
+            energyCostJournal.pendingEnergyCost += tax;
+        }
+    }
+
+    protected void deductTransportCost(long amountTransported, AEKeyType typeTransported, TransactionContext tx) {
+        var costFactor = AEConfig.instance().getP2PTunnelTransportTax();
+        double operations = amountTransported / (double) typeTransported.getAmountPerOperation();
+        double tax = operations * costFactor;
+
+        if (tax > 0) {
+            energyCostJournal.updateSnapshots(tx);
+            energyCostJournal.pendingEnergyCost += tax;
+        }
+    }
+
     /**
      * Use {@link #deductEnergyCost} or {@link #deductTransportCost}.
      */
@@ -341,15 +365,39 @@ public abstract class P2PTunnelPart<T extends P2PTunnelPart<T>> extends AEBasePa
     }
 
     @Override
-    public ModelData getModelData() {
+    public void collectModelData(ModelData.Builder builder) {
+        super.collectModelData(builder);
+
         long ret = Short.toUnsignedLong(this.getFrequency());
 
         if (this.isActive() && this.isPowered()) {
             ret |= 0x10000L;
         }
 
-        return ModelData.builder()
-                .with(P2PTunnelFrequencyModelData.FREQUENCY, ret)
-                .build();
+        builder.with(PartModelData.P2P_FREQUENCY, ret);
+    }
+
+    private class EnergyCostJournal extends SnapshotJournal<Double> {
+        private double pendingEnergyCost;
+
+        @Override
+        protected Double createSnapshot() {
+            return pendingEnergyCost;
+        }
+
+        @Override
+        protected void revertToSnapshot(Double snapshot) {
+            pendingEnergyCost = snapshot;
+        }
+
+        @Override
+        protected void onRootCommit(Double originalState) {
+            if (pendingEnergyCost > 0) {
+                getMainNode().ifPresent(grid -> {
+                    grid.getEnergyService().extractAEPower(pendingEnergyCost, Actionable.MODULATE, PowerMultiplier.ONE);
+                });
+                pendingEnergyCost = 0;
+            }
+        }
     }
 }

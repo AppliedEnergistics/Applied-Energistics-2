@@ -1,0 +1,11 @@
+{
+  "gives": {
+    "id": "ae2:fluix_crystal"
+  },
+  "reputation_discount": 0.05,
+  "wants": {
+    "count": 5.0,
+    "id": "minecraft:emerald"
+  },
+  "xp": 14.0
+}

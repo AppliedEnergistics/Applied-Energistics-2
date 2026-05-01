@@ -9,8 +9,6 @@
     }
   ],
   "type": "ae2:matter_cannon",
-  "ammo": {
-    "tag": "c:nuggets/bismuth"
-  },
+  "ammo": "#c:nuggets/bismuth",
   "weight": 208.9804
 }

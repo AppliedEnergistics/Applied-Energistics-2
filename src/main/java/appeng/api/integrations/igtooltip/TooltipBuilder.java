@@ -26,7 +26,7 @@ package appeng.api.integrations.igtooltip;
 import org.jetbrains.annotations.ApiStatus;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 /**
  * Abstraction for building an in-game tooltip for mods like WAILA, Jade, WTHIT, and others.
@@ -35,5 +35,5 @@ import net.minecraft.resources.ResourceLocation;
 public interface TooltipBuilder {
     void addLine(Component line);
 
-    void addLine(Component line, ResourceLocation id);
+    void addLine(Component line, Identifier id);
 }

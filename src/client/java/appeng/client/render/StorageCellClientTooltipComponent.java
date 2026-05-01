@@ -1,0 +1,114 @@
+package appeng.client.render;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
+
+import appeng.api.stacks.AmountFormat;
+import appeng.client.api.AEKeyRendering;
+import appeng.client.gui.me.common.StackSizeRenderer;
+import appeng.core.localization.GuiText;
+import appeng.items.storage.StorageCellTooltipComponent;
+
+public class StorageCellClientTooltipComponent implements ClientTooltipComponent {
+    private final StorageCellTooltipComponent tooltipComponent;
+    private final Component upgradesLabel;
+
+    public StorageCellClientTooltipComponent(StorageCellTooltipComponent tooltipComponent) {
+        this.tooltipComponent = tooltipComponent;
+        this.upgradesLabel = GuiText.StorageCellTooltipUpgrades.text();
+    }
+
+    @Override
+    public int getHeight(Font font) {
+        var height = 0;
+        var upgrades = tooltipComponent.upgrades();
+        if (!upgrades.isEmpty()) {
+            height += 17;
+        }
+
+        var content = tooltipComponent.content();
+        if (!content.isEmpty()) {
+            height += 17;
+        }
+
+        return height;
+    }
+
+    @Override
+    public int getWidth(Font font) {
+        int width = 0;
+
+        var content = tooltipComponent.content();
+        if (!content.isEmpty()) {
+            var filterWidth = content.size() * 17;
+            if (tooltipComponent.hasMoreContent()) {
+                filterWidth += 10; // ellipsis
+            }
+
+            width = Math.max(width, filterWidth);
+        }
+
+        var upgrades = tooltipComponent.upgrades();
+        if (!upgrades.isEmpty()) {
+            var upgradesWidth = font.width(upgradesLabel) + 2 + 17 * upgrades.size();
+            width = Math.max(width, upgradesWidth);
+        }
+
+        return width;
+    }
+
+    @Override
+    public void extractText(GuiGraphicsExtractor guiGraphics, Font font, int x, int y) {
+        var yoff = (16 - font.lineHeight) / 2;
+
+        var content = tooltipComponent.content();
+        if (!content.isEmpty()) {
+            var xoff = content.size() * 17;
+            if (tooltipComponent.hasMoreContent()) {
+                guiGraphics.text(font, "\u2026", x + xoff + 2, y + 2, -1, false);
+            }
+            y += 17;
+        }
+
+        var upgrades = tooltipComponent.upgrades();
+        if (!upgrades.isEmpty()) {
+            guiGraphics.text(font, upgradesLabel, x, y + yoff, 0x7E7E7E, false);
+        }
+    }
+
+    @Override
+    public void extractImage(Font font, int x, int y, int width, int height, GuiGraphicsExtractor guiGraphics) {
+        var content = tooltipComponent.content();
+        if (!content.isEmpty()) {
+            var xoff = 0;
+            for (var stack : content) {
+                AEKeyRendering.drawInGui(Minecraft.getInstance(), guiGraphics, x + xoff, y, stack.what());
+                xoff += 17;
+            }
+
+            // Now render the amounts on top of the items
+            if (tooltipComponent.showAmounts()) {
+                xoff = 0;
+                for (var stack : content) {
+                    var amtText = stack.what().formatAmount(stack.amount(), AmountFormat.SLOT);
+                    StackSizeRenderer.renderSizeLabel(guiGraphics, font, x + xoff, y, amtText, false);
+                    xoff += 17;
+                }
+            }
+            y += 17;
+        }
+
+        var upgrades = tooltipComponent.upgrades();
+        if (!upgrades.isEmpty()) {
+            var xoff = font.width(upgradesLabel) + 2;
+            for (ItemStack upgrade : upgrades) {
+                guiGraphics.item(upgrade, x + xoff, y);
+                xoff += 17;
+            }
+        }
+    }
+}

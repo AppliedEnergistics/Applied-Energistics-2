@@ -9,8 +9,6 @@
     }
   ],
   "type": "ae2:matter_cannon",
-  "ammo": {
-    "tag": "c:nuggets/krypton"
-  },
+  "ammo": "#c:nuggets/krypton",
   "weight": 83.8
 }

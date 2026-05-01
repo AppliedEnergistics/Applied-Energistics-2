@@ -1,6 +1,6 @@
 package appeng.integration.modules.jade;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 import snownee.jade.api.BlockAccessor;
@@ -19,7 +19,7 @@ class BodyProviderAdapter<T extends BlockEntity> extends BaseProvider implements
 
     private final Class<T> objectClass;
 
-    public BodyProviderAdapter(ResourceLocation id, int priority, BodyProvider<? super T> provider,
+    public BodyProviderAdapter(Identifier id, int priority, BodyProvider<? super T> provider,
             Class<T> objectClass) {
         super(id, priority);
         this.provider = provider;

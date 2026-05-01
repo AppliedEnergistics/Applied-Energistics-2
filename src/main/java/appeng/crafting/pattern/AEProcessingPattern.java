@@ -21,12 +21,8 @@ package appeng.crafting.pattern;
 import java.util.List;
 import java.util.Objects;
 
-import com.google.common.base.Preconditions;
-
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.ListTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
@@ -189,18 +185,5 @@ public class AEProcessingPattern implements IPatternDetails {
         public AEKey getRemainingKey(AEKey template) {
             return null;
         }
-    }
-
-    private static ListTag encodeStackList(GenericStack[] stacks, HolderLookup.Provider registries) {
-        ListTag tag = new ListTag();
-        boolean foundStack = false;
-        for (var stack : stacks) {
-            tag.add(GenericStack.writeTag(registries, stack));
-            if (stack != null && stack.amount() > 0) {
-                foundStack = true;
-            }
-        }
-        Preconditions.checkArgument(foundStack, "List passed to pattern must contain at least one stack.");
-        return tag;
     }
 }

@@ -9,8 +9,6 @@
     }
   ],
   "type": "ae2:matter_cannon",
-  "ammo": {
-    "tag": "c:nuggets/sheep"
-  },
+  "ammo": "#c:nuggets/sheep",
   "weight": 32.0
 }

@@ -17,7 +17,6 @@
       "translate": "achievement.ae2.SpatialIO.desc"
     },
     "icon": {
-      "count": 1,
       "id": "ae2:spatial_io_port"
     },
     "title": {

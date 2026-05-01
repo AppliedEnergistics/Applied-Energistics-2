@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "ae2:block/paint"
+      "type": "ae2:paint"
     }
   }
 }

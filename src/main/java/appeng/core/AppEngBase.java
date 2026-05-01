@@ -22,10 +22,13 @@ import java.util.Collection;
 import java.util.Collections;
 
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -33,12 +36,15 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.crafting.RecipeMap;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.OnDatapackSyncEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.RegisterGameTestsEvent;
 import net.neoforged.neoforge.event.server.ServerAboutToStartEvent;
@@ -62,6 +68,7 @@ import appeng.core.definitions.AEItems;
 import appeng.core.definitions.AEParts;
 import appeng.core.network.ClientboundPacket;
 import appeng.core.network.InitNetwork;
+import appeng.core.particles.InitParticleTypes;
 import appeng.hooks.SkyStoneBreakSpeed;
 import appeng.hooks.WrenchHook;
 import appeng.hooks.ticking.TickHandler;
@@ -73,7 +80,6 @@ import appeng.init.InitDispenserBehavior;
 import appeng.init.InitMenuTypes;
 import appeng.init.InitStats;
 import appeng.init.InitVillager;
-import appeng.init.client.InitParticleTypes;
 import appeng.init.internal.InitBlockEntityMoveStrategies;
 import appeng.init.internal.InitGridLinkables;
 import appeng.init.internal.InitGridServices;
@@ -97,6 +103,8 @@ import appeng.spatial.SpatialStorageDimensionIds;
  * Note that a client will still have zero or more embedded servers (although only one at a time).
  */
 public abstract class AppEngBase implements AppEng {
+
+    private static final Logger LOG = LoggerFactory.getLogger(AppEngBase.class);
 
     /**
      * While we process a player-specific part placement/cable interaction packet, we need to use that player's
@@ -161,10 +169,11 @@ public abstract class AppEngBase implements AppEng {
                 InitVillager.initPointOfInterestType(event.getRegistry(Registries.POINT_OF_INTEREST_TYPE));
             } else if (event.getRegistryKey() == AEKeyType.REGISTRY_KEY) {
                 registerKeyTypes(event.getRegistry(AEKeyType.REGISTRY_KEY));
+            } else if (event.getRegistryKey() == Registries.TEST_INSTANCE_TYPE) {
+                event.register(Registries.TEST_INSTANCE_TYPE, AppEng.makeId("plot_adapter"),
+                        () -> GameTestPlotAdapter.CODEC);
             }
         });
-
-        NeoForge.EVENT_BUS.addListener(InitVillager::initTrades);
 
         modEventBus.addListener(Integrations::enqueueIMC);
         modEventBus.addListener(this::commonSetup);
@@ -180,14 +189,30 @@ public abstract class AppEngBase implements AppEng {
 
         NeoForge.EVENT_BUS.addListener(WrenchHook::onPlayerUseBlockEvent);
         NeoForge.EVENT_BUS.addListener(SkyStoneBreakSpeed::handleBreakFaster);
+        NeoForge.EVENT_BUS.addListener(this::registerSynchronizedRecipes);
 
         HotkeyActions.init();
+    }
+
+    private void registerSynchronizedRecipes(OnDatapackSyncEvent event) {
+        event.sendRecipes(
+                RecipeType.CRAFTING,
+                RecipeType.STONECUTTING,
+                RecipeType.SMITHING,
+                RecipeType.SMELTING,
+                // For GuideME
+                AERecipeTypes.INSCRIBER,
+                AERecipeTypes.TRANSFORM,
+                AERecipeTypes.CHARGER,
+                AERecipeTypes.ENTROPY,
+                AERecipeTypes.MATTER_CANNON_AMMO,
+                AERecipeTypes.QUARTZ_CUTTING);
     }
 
     private void commonSetup(FMLCommonSetupEvent event) {
         event.enqueueWork(this::postRegistrationInitialization).whenComplete((res, err) -> {
             if (err != null) {
-                AELog.warn(err);
+                LOG.error("Common setup failed", err);
             }
         });
     }
@@ -284,6 +309,13 @@ public abstract class AppEngBase implements AppEng {
         return ServerLifecycleHooks.getCurrentServer();
     }
 
+    @Override
+    public void sendSystemMessage(Player player, Component text) {
+        if (player instanceof ServerPlayer serverPlayer) {
+            serverPlayer.sendSystemMessage(text);
+        }
+    }
+
     protected final CableRenderMode getCableRenderModeForPlayer(@Nullable Player player) {
         if (player != null) {
             if (AEItems.NETWORK_TOOL.is(player.getItemInHand(InteractionHand.MAIN_HAND))
@@ -296,8 +328,18 @@ public abstract class AppEngBase implements AppEng {
     }
 
     private void registerTests(RegisterGameTestsEvent e) {
-        if ("true".equals(System.getProperty("appeng.tests"))) {
-            e.register(GameTestPlotAdapter.class);
+        if (Boolean.getBoolean("appeng.tests")) {
+            GameTestPlotAdapter.registerAll(e::registerTest);
+        }
+    }
+
+    @Override
+    public RecipeMap getRecipeMapForType(Level level, RecipeType<?> recipeType) {
+        if (level instanceof ServerLevel serverLevel) {
+            return serverLevel.recipeAccess().recipeMap();
+        } else {
+            LOG.warn("Don't know how to retrieve recipe information for level type {}", level);
+            return RecipeMap.EMPTY;
         }
     }
 }

@@ -10,7 +10,8 @@ import net.minecraft.world.level.block.entity.HopperBlockEntity;
 import net.minecraft.world.level.block.state.properties.ChestType;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 
 import appeng.api.config.Actionable;
 import appeng.api.stacks.AEItemKey;
@@ -41,36 +42,33 @@ public class InterfaceTestPlots {
         builder.test(helper -> {
             helper.startSequence()
                     .thenExecute(() -> {
-                        var itemCap = helper.getCapability(o, Capabilities.ItemHandler.BLOCK, Direction.UP);
-                        helper.check(itemCap.isItemValid(0, ItemStack.EMPTY), "empty stack should be valid in slot 0");
-                        helper.check(itemCap.isItemValid(0, Items.STICK.getDefaultInstance()),
+                        var itemCap = helper.getCapability(o, Capabilities.Item.BLOCK, Direction.UP);
+                        helper.check(itemCap.isValid(0, ItemResource.of(Items.STICK)),
                                 "stick should be valid in slot 0");
-                        helper.check(itemCap.isItemValid(1, Items.STICK.getDefaultInstance()),
+                        helper.check(itemCap.isValid(1, ItemResource.of(Items.STICK)),
                                 "stick should be valid in slot 1");
-                        helper.check(!itemCap.isItemValid(0, Blocks.BRICKS.asItem().getDefaultInstance()),
+                        helper.check(!itemCap.isValid(0, ItemResource.of(Blocks.BRICKS)),
                                 "bricks should not be valid in slot 0");
-                        helper.check(itemCap.isItemValid(1, Blocks.BRICKS.asItem().getDefaultInstance()),
+                        helper.check(itemCap.isValid(1, ItemResource.of(Blocks.BRICKS)),
                                 "bricks should be valid in slot 1");
 
-                        var fluidCap = helper.getCapability(o, Capabilities.FluidHandler.BLOCK, Direction.UP);
-                        helper.check(fluidCap.isFluidValid(0, FluidStack.EMPTY),
-                                "empty fluid stack should be valid in slot 0");
-                        helper.check(!fluidCap.isFluidValid(0, new FluidStack(Fluids.WATER, 1)),
+                        var fluidCap = helper.getCapability(o, Capabilities.Fluid.BLOCK, Direction.UP);
+                        helper.check(!fluidCap.isValid(0, FluidResource.of(Fluids.WATER)),
                                 "fluid should not be valid in slot 0");
-                        helper.check(fluidCap.isFluidValid(1, new FluidStack(Fluids.WATER, 1)),
+                        helper.check(fluidCap.isValid(1, FluidResource.of(Fluids.WATER)),
                                 "fluid should be valid in slot 1");
                     })
                     .thenWaitUntil(() -> {
-                        var iface = (InterfaceBlockEntity) helper.getBlockEntity(o);
+                        var iface = helper.getBlockEntity(o, InterfaceBlockEntity.class);
                         helper.assertEquals(o, null, iface.getStorage().getKey(0));
                         helper.assertEquals(o, AEItemKey.of(Items.BRICK), iface.getStorage().getKey(1));
                     })
                     .thenExecute(() -> {
-                        var hopper = (HopperBlockEntity) helper.getBlockEntity(o.above());
+                        var hopper = helper.getBlockEntity(o.above(), HopperBlockEntity.class);
                         hopper.setItem(0, Items.STICK.getDefaultInstance());
                     })
                     .thenWaitUntil(() -> {
-                        var iface = (InterfaceBlockEntity) helper.getBlockEntity(o);
+                        var iface = helper.getBlockEntity(o, InterfaceBlockEntity.class);
                         helper.assertEquals(o, AEItemKey.of(Items.STICK), iface.getStorage().getKey(0));
                         helper.assertEquals(o, AEItemKey.of(Items.BRICK), iface.getStorage().getKey(1));
                     })
@@ -107,7 +105,7 @@ public class InterfaceTestPlots {
                 helper.assertContainerEmpty(o.north().west());
 
                 // The output interface should have 64 sticks
-                var iface = (InterfaceBlockEntity) helper.getBlockEntity(o.above());
+                var iface = helper.getBlockEntity(o.above(), InterfaceBlockEntity.class);
                 var counter = new KeyCounter();
                 iface.getInterfaceLogic().getStorage().getAvailableStacks(counter);
                 var stickCount = counter.get(AEItemKey.of(Items.STICK));
@@ -140,17 +138,17 @@ public class InterfaceTestPlots {
         plot.test(helper -> helper.startSequence()
                 // Test interface restock
                 .thenWaitUntil(() -> {
-                    var iface = (InterfaceBlockEntity) helper.getBlockEntity(o.south());
+                    var iface = helper.getBlockEntity(o.south(), InterfaceBlockEntity.class);
                     var apples = iface.getStorage().getStack(0);
                     helper.check(apples != null && apples.amount() == 1, "Expected 1 apple", o.south());
                 })
                 // Test interface pushing items away to subnet
                 .thenExecute(() -> {
-                    var iface = (InterfaceBlockEntity) helper.getBlockEntity(o.south());
+                    var iface = helper.getBlockEntity(o.south(), InterfaceBlockEntity.class);
                     iface.getStorage().setStack(1, GenericStack.fromItemStack(new ItemStack(Items.DIAMOND)));
                 })
                 .thenWaitUntil(() -> {
-                    var iface = (InterfaceBlockEntity) helper.getBlockEntity(o.north());
+                    var iface = helper.getBlockEntity(o.north(), InterfaceBlockEntity.class);
                     var diamonds = iface.getStorage().getStack(1);
                     helper.check(diamonds != null && diamonds.amount() == 1, "Expected 1 diamond", o.north());
                 })
@@ -176,7 +174,7 @@ public class InterfaceTestPlots {
     /**
      * Regression test for https://github.com/AppliedEnergistics/Applied-Energistics-2/issues/5919
      */
-    @TestPlot("canceling_jobs_from_interfacecrash")
+    @TestPlot(value = "canceling_jobs_from_interfacecrash", maxTicks = 300 /* interface takes a while to request */)
     public static void cancelingJobsFromInterfaceCrash(PlotBuilder plot) {
         var origin = BlockPos.ZERO;
 
@@ -200,7 +198,7 @@ public class InterfaceTestPlots {
                     })
                     .thenExecute(() -> {
                         // Cancel the job by removing the upgrade card
-                        var iface = (InterfaceBlockEntity) helper.getBlockEntity(origin.above());
+                        var iface = helper.getBlockEntity(origin.above(), InterfaceBlockEntity.class);
                         iface.getUpgrades().removeItems(1, ItemStack.EMPTY, null);
 
                         // and immediately insert a craft result into the network storage
@@ -215,7 +213,7 @@ public class InterfaceTestPlots {
                                 "Nothing should have been inserted into the interface");
                     })
                     .thenSucceed();
-        }).maxTicks(300 /* interface takes a while to request */);
+        });
     }
 
 }

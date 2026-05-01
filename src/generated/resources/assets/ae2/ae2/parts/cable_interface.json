@@ -1,0 +1,17 @@
+{
+  "model": {
+    "type": "ae2:composite",
+    "models": [
+      {
+        "type": "ae2:model",
+        "model": "ae2:part/interface_base"
+      },
+      {
+        "type": "ae2:status_indicator",
+        "active": "ae2:part/interface_has_channel",
+        "powered": "ae2:part/interface_on",
+        "unpowered": "ae2:part/interface_off"
+      }
+    ]
+  }
+}

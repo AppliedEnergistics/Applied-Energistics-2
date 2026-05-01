@@ -1,13 +1,10 @@
 {
   "type": "ae2:inscriber",
   "ingredients": {
-    "middle": {
-      "item": "minecraft:ender_pearl"
-    }
+    "middle": "minecraft:ender_pearl"
   },
   "mode": "inscribe",
   "result": {
-    "count": 1,
     "id": "ae2:ender_dust"
   }
 }

@@ -9,8 +9,6 @@
     }
   ],
   "type": "ae2:matter_cannon",
-  "ammo": {
-    "tag": "c:nuggets/charcoal"
-  },
+  "ammo": "#c:nuggets/charcoal",
   "weight": 12.0107
 }

@@ -27,19 +27,18 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.client.model.data.ModelData;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.model.data.ModelData;
 
 import appeng.api.implementations.blockentities.IChestOrDrive;
 import appeng.api.inventories.InternalInventory;
@@ -54,9 +53,9 @@ import appeng.api.storage.StorageCells;
 import appeng.api.storage.cells.CellState;
 import appeng.api.storage.cells.StorageCell;
 import appeng.api.util.AECableType;
+import appeng.block.storage.DriveModelData;
 import appeng.blockentity.grid.AENetworkedInvBlockEntity;
 import appeng.blockentity.inventory.AppEngCellInventory;
-import appeng.client.render.model.DriveModelData;
 import appeng.core.AELog;
 import appeng.core.definitions.AEBlocks;
 import appeng.helpers.IPriorityHost;
@@ -118,7 +117,7 @@ public class DriveBlockEntity extends AENetworkedInvBlockEntity
     }
 
     @Override
-    protected void saveVisualState(CompoundTag data) {
+    protected void saveVisualState(ValueOutput data) {
         super.saveVisualState(data);
 
         data.putBoolean("online", isPowered());
@@ -126,12 +125,11 @@ public class DriveBlockEntity extends AENetworkedInvBlockEntity
         for (int i = 0; i < getCellCount(); i++) {
             var cellItem = getCellItem(i);
             if (cellItem != null) {
-                var cellData = new CompoundTag();
+                var cellData = data.child("cell" + i);
                 cellData.putString("id", BuiltInRegistries.ITEM.getKey(cellItem).toString());
 
                 var cellState = getCellStatus(i);
                 cellData.putString("state", cellState.name().toLowerCase(Locale.ROOT));
-                data.put("cell" + i, cellData);
             }
         }
     }
@@ -172,20 +170,20 @@ public class DriveBlockEntity extends AENetworkedInvBlockEntity
     }
 
     @Override
-    protected void loadVisualState(CompoundTag data) {
+    protected void loadVisualState(ValueInput data) {
         super.loadVisualState(data);
 
-        clientSideOnline = data.getBoolean("online");
+        clientSideOnline = data.getBooleanOr("online", false);
 
         for (int i = 0; i < getCellCount(); i++) {
             this.clientSideCellItems[i] = null;
             this.clientSideCellState[i] = CellState.ABSENT;
 
             var tagName = "cell" + i;
-            if (data.contains(tagName, Tag.TAG_COMPOUND)) {
-                var cellData = data.getCompound(tagName);
-                var id = ResourceLocation.parse(cellData.getString("id"));
-                var cellStateName = cellData.getString("state");
+            var cellData = data.child(tagName).orElse(null);
+            if (cellData != null) {
+                var id = Identifier.parse(cellData.getStringOr("id", ""));
+                var cellStateName = cellData.getStringOr("state", "");
 
                 clientSideCellItems[i] = BuiltInRegistries.ITEM.getOptional(id).orElse(null);
                 try {
@@ -206,7 +204,7 @@ public class DriveBlockEntity extends AENetworkedInvBlockEntity
     @Override
     public Item getCellItem(int slot) {
         // Client-side we'll need to actually use the synced state
-        if (level == null || level.isClientSide) {
+        if (level == null || level.isClientSide()) {
             return clientSideCellItems[slot];
         }
 
@@ -261,15 +259,15 @@ public class DriveBlockEntity extends AENetworkedInvBlockEntity
     }
 
     @Override
-    public void loadTag(CompoundTag data, HolderLookup.Provider registries) {
-        super.loadTag(data, registries);
+    public void loadTag(ValueInput data) {
+        super.loadTag(data);
         this.isCached = false;
-        this.priority = data.getInt("priority");
+        this.priority = data.getIntOr("priority", 0);
     }
 
     @Override
-    public void saveAdditional(CompoundTag data, HolderLookup.Provider registries) {
-        super.saveAdditional(data, registries);
+    public void saveAdditional(ValueOutput data) {
+        super.saveAdditional(data);
         data.putInt("priority", this.priority);
     }
 

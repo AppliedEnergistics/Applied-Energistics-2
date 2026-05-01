@@ -1,6 +1,6 @@
 package appeng.items.tools.fluix;
 
-import java.util.List;
+import java.util.function.Consumer;
 
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
@@ -20,7 +20,7 @@ final class IntrinsicEnchantment {
         this.level = level;
     }
 
-    public void appendHoverText(Item.TooltipContext context, List<Component> tooltipComponents) {
+    public void appendHoverText(Item.TooltipContext context, Consumer<Component> tooltipComponents) {
         var registries = context.registries();
         if (registries == null) {
             return;
@@ -28,7 +28,7 @@ final class IntrinsicEnchantment {
 
         var registrylookup = registries.lookupOrThrow(Registries.ENCHANTMENT);
         registrylookup.get(enchantment).ifPresent(holder -> {
-            tooltipComponents.add(GuiText.IntrinsicEnchant.text(Enchantment.getFullname(holder, level)));
+            tooltipComponents.accept(GuiText.IntrinsicEnchant.text(Enchantment.getFullname(holder, level)));
         });
     }
 

@@ -7,6 +7,7 @@
     "back": "ae2:part/interface_back",
     "front": "ae2:part/interface"
   },
+  "render_type": "minecraft:cutout",
   "elements": [
     {
       "from": [2, 2, 0],

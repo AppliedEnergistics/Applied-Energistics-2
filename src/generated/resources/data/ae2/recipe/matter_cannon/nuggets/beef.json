@@ -9,8 +9,6 @@
     }
   ],
   "type": "ae2:matter_cannon",
-  "ammo": {
-    "tag": "c:nuggets/beef"
-  },
+  "ammo": "#c:nuggets/beef",
   "weight": 32.0
 }

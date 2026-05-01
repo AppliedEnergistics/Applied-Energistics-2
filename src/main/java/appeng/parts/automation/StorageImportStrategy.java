@@ -91,7 +91,7 @@ public class StorageImportStrategy<T, S> implements StackImportStrategy {
 
     public static StackImportStrategy createItem(ServerLevel level, BlockPos fromPos, Direction fromSide) {
         return new StorageImportStrategy<>(
-                Capabilities.ItemHandler.BLOCK,
+                Capabilities.Item.BLOCK,
                 HandlerStrategy.ITEMS,
                 level,
                 fromPos,
@@ -100,7 +100,7 @@ public class StorageImportStrategy<T, S> implements StackImportStrategy {
 
     public static StackImportStrategy createFluid(ServerLevel level, BlockPos fromPos, Direction fromSide) {
         return new StorageImportStrategy<>(
-                Capabilities.FluidHandler.BLOCK,
+                Capabilities.Fluid.BLOCK,
                 HandlerStrategy.FLUIDS,
                 level,
                 fromPos,

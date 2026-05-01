@@ -1,0 +1,17 @@
+{
+  "model": {
+    "type": "ae2:composite",
+    "models": [
+      {
+        "type": "ae2:model",
+        "model": "ae2:part/storage_bus_base"
+      },
+      {
+        "type": "ae2:status_indicator",
+        "active": "ae2:part/storage_bus_has_channel",
+        "powered": "ae2:part/storage_bus_on",
+        "unpowered": "ae2:part/storage_bus_off"
+      }
+    ]
+  }
+}

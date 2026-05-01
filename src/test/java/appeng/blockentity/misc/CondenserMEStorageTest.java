@@ -8,8 +8,8 @@ import org.junit.jupiter.api.Test;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.material.Fluids;
-import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.CondenserOutput;
@@ -65,9 +65,16 @@ class CondenserMEStorageTest {
         inv.insert(AEItemKey.of(AEItems.MATTER_BALL.stack()), 1, Actionable.MODULATE, new BaseActionSource());
         assertThat(be.getStoredPower()).isEqualTo(8 + 1);
 
-        // test Fluid insert via transfer API
-        be.getFluidHandler().fill(new FluidStack(Fluids.WATER.getSource(), AEFluidKey.AMOUNT_BUCKET),
-                IFluidHandler.FluidAction.EXECUTE);
+        // test Fluid insert via transfer API & rollback
+        var water = FluidResource.of(Fluids.WATER);
+        try (var tx = Transaction.open(null)) {
+            be.getFluidHandler().insert(water, AEFluidKey.AMOUNT_BUCKET, tx);
+        }
+        assertThat(be.getStoredPower()).isEqualTo(8 + 1);
+        try (var tx = Transaction.open(null)) {
+            be.getFluidHandler().insert(water, AEFluidKey.AMOUNT_BUCKET, tx);
+            tx.commit();
+        }
         assertThat(be.getStoredPower()).isEqualTo(8 + 1 + 8);
 
         // test item insert via transfer API

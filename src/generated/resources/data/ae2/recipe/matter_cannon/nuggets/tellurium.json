@@ -9,8 +9,6 @@
     }
   ],
   "type": "ae2:matter_cannon",
-  "ammo": {
-    "tag": "c:nuggets/tellurium"
-  },
+  "ammo": "#c:nuggets/tellurium",
   "weight": 127.6
 }

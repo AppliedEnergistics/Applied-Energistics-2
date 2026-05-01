@@ -84,7 +84,7 @@ public class CubeGeneratorBlockEntity extends AEBaseBlockEntity implements Serve
 
     void click(Player player) {
         if (!isClientSide()) {
-            final ItemStack hand = player.getInventory().getSelected();
+            final ItemStack hand = player.getInventory().getSelectedItem();
             this.who = player;
 
             if (hand.isEmpty()) {
@@ -103,7 +103,7 @@ public class CubeGeneratorBlockEntity extends AEBaseBlockEntity implements Serve
                     this.size = 64;
                 }
 
-                player.sendSystemMessage(Component.literal("Size: " + this.size));
+                AppEng.instance().sendSystemMessage(player, Component.literal("Size: " + this.size));
             } else {
                 this.countdown = 20 * 10;
                 this.is = hand;

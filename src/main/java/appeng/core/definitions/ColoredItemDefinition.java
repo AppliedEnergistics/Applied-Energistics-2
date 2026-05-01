@@ -21,7 +21,7 @@ package appeng.core.definitions;
 import java.util.EnumMap;
 import java.util.Map;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
@@ -30,14 +30,14 @@ import appeng.api.util.AEColor;
 public final class ColoredItemDefinition<T extends Item> {
 
     private final Map<AEColor, ItemDefinition<T>> items = new EnumMap<>(AEColor.class);
-    private final Map<AEColor, ResourceLocation> ids = new EnumMap<>(AEColor.class);
+    private final Map<AEColor, Identifier> ids = new EnumMap<>(AEColor.class);
 
-    void add(AEColor v, ResourceLocation id, ItemDefinition<T> is) {
+    void add(AEColor v, Identifier id, ItemDefinition<T> is) {
         this.ids.put(v, id);
         this.items.put(v, is);
     }
 
-    public ResourceLocation id(AEColor color) {
+    public Identifier id(AEColor color) {
         return ids.get(color);
     }
 

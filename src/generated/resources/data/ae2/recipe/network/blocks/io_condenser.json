@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "a": {
-      "tag": "c:ingots/iron"
-    },
-    "b": {
-      "tag": "c:glass_blocks/cheap"
-    },
-    "c": {
-      "tag": "c:dusts/fluix"
-    }
+    "a": "#c:ingots/iron",
+    "b": "#c:glass_blocks/cheap",
+    "c": "#c:dusts/fluix"
   },
   "pattern": [
     "aba",
@@ -18,7 +12,6 @@
     "aba"
   ],
   "result": {
-    "count": 1,
     "id": "ae2:condenser"
   }
 }

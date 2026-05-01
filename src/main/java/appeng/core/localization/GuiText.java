@@ -166,6 +166,7 @@ public enum GuiText implements LocalizationEnum {
     PatternAccessTerminalShort("Pattern A. Terminal"),
     PatternEncoding("Pattern Encoding"),
     Patterns("Patterns"),
+    PatternTooltipRecipeId("Recipe"),
     PatternTooltipSubstitutions("Substitutes alternate items"),
     PatternTooltipFluidSubstitutions("Uses fluids directly"),
     Pink("Pink"),

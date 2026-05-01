@@ -26,21 +26,21 @@ import org.slf4j.LoggerFactory;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.FluidType;
-import net.neoforged.neoforge.fluids.IFluidTank;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.TransferPreconditions;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
@@ -60,6 +60,7 @@ import appeng.api.networking.security.IActionSource;
 import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
+import appeng.api.stacks.GenericStack;
 import appeng.api.storage.ILinkStatus;
 import appeng.api.storage.IStorageMounts;
 import appeng.api.storage.IStorageProvider;
@@ -87,6 +88,7 @@ import appeng.menu.MenuOpener;
 import appeng.menu.implementations.MEChestMenu;
 import appeng.menu.locator.MenuLocators;
 import appeng.menu.me.items.BasicCellChestMenu;
+import appeng.util.InsertionOnlyResourceHandlerWithJournal;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.CombinedInternalInventory;
 import appeng.util.inv.filter.IAEItemFilter;
@@ -121,7 +123,7 @@ public class MEChestBlockEntity extends AENetworkedPoweredBlockEntity
     private AEColor paintedColor = AEColor.TRANSPARENT;
     private boolean isCached = false;
     private ChestMonitorHandler cellHandler;
-    private IFluidHandler fluidHandler;
+    private ResourceHandler<FluidResource> fluidHandler;
     private double idlePowerUsage;
 
     public MEChestBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
@@ -250,7 +252,10 @@ public class MEChestBlockEntity extends AENetworkedPoweredBlockEntity
             return null;
         }
         // Client-side we'll need to actually use the synced state
-        if (level == null || level.isClientSide) {
+        if (level == null || level.isClientSide()) {
+            if (cellItem == Items.AIR) {
+                return null;
+            }
             return cellItem;
         }
         ItemStack cell = getCell();
@@ -361,7 +366,7 @@ public class MEChestBlockEntity extends AENetworkedPoweredBlockEntity
     }
 
     @Override
-    protected void saveVisualState(CompoundTag data) {
+    protected void saveVisualState(ValueOutput data) {
         super.saveVisualState(data);
 
         data.putBoolean("powered", isPowered());
@@ -372,27 +377,27 @@ public class MEChestBlockEntity extends AENetworkedPoweredBlockEntity
     }
 
     @Override
-    protected void loadVisualState(CompoundTag data) {
+    protected void loadVisualState(ValueInput data) {
         super.loadVisualState(data);
 
-        this.clientPowered = data.getBoolean("powered");
+        this.clientPowered = data.getBooleanOr("powered", false);
 
         try {
-            this.clientCellState = CellState.valueOf(data.getString("cellStatus"));
+            this.clientCellState = CellState.valueOf(data.getStringOr("cellStatus", ""));
         } catch (Exception e) {
             this.clientCellState = CellState.ABSENT;
             LOG.warn("Couldn't read cell status for {} from {}", this, data);
         }
 
         try {
-            this.cellItem = BuiltInRegistries.ITEM.get(ResourceLocation.parse(data.getString("cellId")));
+            this.cellItem = BuiltInRegistries.ITEM.getValue(Identifier.parse(data.getStringOr("cellId", "")));
         } catch (Exception e) {
             LOG.warn("Couldn't read cell item for {} from {}", this, data);
             this.cellItem = Items.AIR;
         }
 
         try {
-            this.paintedColor = AEColor.valueOf(data.getString("color"));
+            this.paintedColor = AEColor.valueOf(data.getStringOr("color", ""));
         } catch (IllegalArgumentException ignore) {
             LOG.warn("Invalid painted color in visual data for {}: {}", this, data);
             this.paintedColor = AEColor.TRANSPARENT;
@@ -400,20 +405,19 @@ public class MEChestBlockEntity extends AENetworkedPoweredBlockEntity
     }
 
     @Override
-    public void loadTag(CompoundTag data, HolderLookup.Provider registries) {
-        super.loadTag(data, registries);
-        this.config.readFromNBT(data, registries);
-        this.keyTypeSelection.readFromNBT(data, registries);
-        this.priority = data.getInt("priority");
-        if (data.contains("paintedColor")) {
-            this.paintedColor = AEColor.values()[data.getByte("paintedColor")];
-        }
+    public void loadTag(ValueInput data) {
+        super.loadTag(data);
+        this.config.readFromNBT(data);
+        this.keyTypeSelection.readFromNBT(data);
+        this.priority = data.getIntOr("priority", 0);
+        var paintedColorIdx = data.getByteOr("paintedColor", (byte) AEColor.TRANSPARENT.ordinal());
+        this.paintedColor = AEColor.fromOrdinal(paintedColorIdx);
     }
 
     @Override
-    public void saveAdditional(CompoundTag data, HolderLookup.Provider registries) {
-        super.saveAdditional(data, registries);
-        this.config.writeToNBT(data, registries);
+    public void saveAdditional(ValueOutput data) {
+        super.saveAdditional(data);
+        this.config.writeToNBT(data);
         this.keyTypeSelection.writeToNBT(data);
         data.putInt("priority", this.priority);
         data.putByte("paintedColor", (byte) this.paintedColor.ordinal());
@@ -603,7 +607,7 @@ public class MEChestBlockEntity extends AENetworkedPoweredBlockEntity
     }
 
     @Nullable
-    public IFluidHandler getFluidHandler(Direction side) {
+    public ResourceHandler<FluidResource> getFluidHandler(Direction side) {
         if (side != getFront()) {
             return fluidHandler;
         } else {
@@ -620,77 +624,62 @@ public class MEChestBlockEntity extends AENetworkedPoweredBlockEntity
         }
     }
 
-    private class FluidHandler implements IFluidHandler, IFluidTank {
+    private class FluidHandler extends InsertionOnlyResourceHandlerWithJournal<FluidResource, GenericStack> {
+        public FluidHandler() {
+            super(FluidResource.EMPTY);
+        }
 
         private boolean canAcceptLiquids() {
             return MEChestBlockEntity.this.cellHandler != null;
         }
 
         @Override
-        public FluidStack getFluid() {
-            return FluidStack.EMPTY;
-        }
+        public int insert(FluidResource resource, int maxAmount, TransactionContext transaction) {
+            TransferPreconditions.checkNonEmptyNonNegative(resource, maxAmount);
 
-        @Override
-        public int getFluidAmount() {
-            return 0;
-        }
+            if (pendingSideEffect != null) {
+                return 0; // Can only insert once per action
+            }
 
-        @Override
-        public int getCapacity() {
-            return canAcceptLiquids() ? FluidType.BUCKET_VOLUME : 0;
-        }
-
-        @Override
-        public boolean isFluidValid(FluidStack stack) {
-            return canAcceptLiquids();
-        }
-
-        @Override
-        public int getTanks() {
-            return 1;
-        }
-
-        @Override
-        public FluidStack getFluidInTank(int tank) {
-            return FluidStack.EMPTY;
-        }
-
-        @Override
-        public int getTankCapacity(int tank) {
-            return tank == 0 ? FluidType.BUCKET_VOLUME : 0;
-        }
-
-        @Override
-        public boolean isFluidValid(int tank, FluidStack stack) {
-            return tank == 0;
-        }
-
-        @Override
-        public int fill(FluidStack resource, FluidAction action) {
             MEChestBlockEntity.this.updateHandler();
             if (canAcceptLiquids()) {
                 var what = AEFluidKey.of(resource);
-                if (what != null) {
-                    return (int) StorageHelper.poweredInsert(MEChestBlockEntity.this,
-                            MEChestBlockEntity.this.cellHandler,
-                            what,
-                            resource.getAmount(),
-                            MEChestBlockEntity.this.mySrc,
-                            Actionable.of(action));
+                var inserted = pushToNetwork(what, maxAmount, Actionable.SIMULATE);
+                if (inserted > 0) {
+                    updateSnapshots(transaction);
+                    pendingSideEffect = new GenericStack(what, inserted);
                 }
+                return inserted;
             }
             return 0;
         }
 
         @Override
-        public FluidStack drain(FluidStack resource, FluidAction action) {
-            return FluidStack.EMPTY;
+        public int size() {
+            if (!canAcceptLiquids()) {
+                return 0;
+            }
+            return super.size();
         }
 
         @Override
-        public FluidStack drain(int maxDrain, FluidAction action) {
-            return FluidStack.EMPTY;
+        protected void onRootCommit(GenericStack originalState) {
+            pushToNetwork(pendingSideEffect.what(), (int) pendingSideEffect.amount(), Actionable.MODULATE);
+            pendingSideEffect = null;
+        }
+
+        private int pushToNetwork(AEKey what, int amount, Actionable mode) {
+            MEChestBlockEntity.this.updateHandler();
+            if (canAcceptLiquids()) {
+                return (int) StorageHelper.poweredInsert(
+                        MEChestBlockEntity.this,
+                        MEChestBlockEntity.this.cellHandler,
+                        what,
+                        amount,
+                        MEChestBlockEntity.this.mySrc,
+                        mode);
+            }
+            return 0;
         }
     }
 

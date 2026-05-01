@@ -21,6 +21,7 @@ package appeng.items.tools.powered;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Consumer;
 
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -29,17 +30,18 @@ import org.slf4j.LoggerFactory;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.animal.Sheep;
+import net.minecraft.world.entity.animal.sheep.Sheep;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.ClipContext.Block;
 import net.minecraft.world.level.ClipContext.Fluid;
@@ -52,8 +54,6 @@ import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.HitResult.Type;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.util.BlockSnapshot;
 import net.neoforged.neoforge.event.EventHooks;
@@ -108,11 +108,11 @@ public class MatterCannonItem extends AEBasePoweredItem implements IBasicCellIte
         return 800d + 800d * Upgrades.getEnergyCardMultiplier(getUpgrades(stack));
     }
 
-    @OnlyIn(Dist.CLIENT)
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> lines,
-            TooltipFlag advancedTooltips) {
-        super.appendHoverText(stack, context, lines, advancedTooltips);
+    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay tooltipDisplay,
+            Consumer<Component> lines,
+            TooltipFlag tooltipFlags) {
+        super.appendHoverText(stack, context, tooltipDisplay, lines, tooltipFlags);
         addCellInformationToTooltip(stack, lines);
     }
 
@@ -122,16 +122,15 @@ public class MatterCannonItem extends AEBasePoweredItem implements IBasicCellIte
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player p, InteractionHand hand) {
+    public InteractionResult use(Level level, Player p, InteractionHand hand) {
         var stack = p.getItemInHand(hand);
 
         var direction = InteractionUtil.getPlayerRay(p, 255);
 
         if (fireCannon(level, stack, p, direction)) {
-            return new InteractionResultHolder<>(InteractionResult.sidedSuccess(level.isClientSide()),
-                    stack);
+            return InteractionResult.SUCCESS.heldItemTransformedTo(stack);
         } else {
-            return new InteractionResultHolder<>(InteractionResult.FAIL, stack);
+            return InteractionResult.FAIL;
         }
     }
 
@@ -146,7 +145,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IBasicCellIte
         var req = itemList.getFirstEntry(AEItemKey.class);
         if (req == null || !(req.getKey() instanceof AEItemKey itemKey)) {
             if (!level.isClientSide()) {
-                player.displayClientMessage(PlayerMessages.AmmoDepleted.text(), true);
+                player.sendOverlayMessage(PlayerMessages.AmmoDepleted.text());
             }
             return true;
         }
@@ -166,7 +165,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IBasicCellIte
 
         extractAEPower(stack, ENERGY_PER_SHOT * shotPower, Actionable.MODULATE);
 
-        if (level.isClientSide()) {
+        if (!(level instanceof ServerLevel serverLevel)) {
             // Up until this point, we can simulate on the client, after this,
             // we need to run the server-side version
             return true;
@@ -194,7 +193,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IBasicCellIte
                 return true;
             }
         } else {
-            standardAmmo(penetration, level, player, rayFrom, rayTo, direction, x, y, z);
+            standardAmmo(penetration, serverLevel, player, rayFrom, rayTo, direction, x, y, z);
         }
 
         return true;
@@ -286,7 +285,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IBasicCellIte
         }
     }
 
-    private void standardAmmo(float penetration, Level level, Player p, Vec3 Vector3d,
+    private void standardAmmo(float penetration, ServerLevel level, Player p, Vec3 Vector3d,
             Vec3 Vector3d1, Vec3 direction, double d0, double d1, double d2) {
         boolean hasDestroyed = true;
         while (penetration > 0 && hasDestroyed) {
@@ -349,7 +348,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IBasicCellIte
                     final int dmg = getDamageFromPenetration(penetration);
                     if (entityHit instanceof LivingEntity el) {
                         penetration -= dmg;
-                        if (el.hurt(dmgSrc, dmg)) {
+                        if (el.hurtServer(level, dmgSrc, dmg)) {
                             el.knockback(0, -direction.x, -direction.z);
                             if (!el.isAlive()) {
                                 hasDestroyed = true;
@@ -358,7 +357,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IBasicCellIte
                     } else if (entityHit instanceof ItemEntity) {
                         hasDestroyed = true;
                         entityHit.discard();
-                    } else if (entityHit.hurt(dmgSrc, dmg)) {
+                    } else if (entityHit.hurtServer(level, dmgSrc, dmg)) {
                         hasDestroyed = !entityHit.isAlive();
                     }
                 } else if (pos instanceof BlockHitResult blockResult) {
@@ -459,7 +458,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IBasicCellIte
             return 0;
         }
 
-        var recipes = server.getRecipeManager().byType(AERecipeTypes.MATTER_CANNON_AMMO);
+        var recipes = server.getRecipeManager().recipeMap().byType(AERecipeTypes.MATTER_CANNON_AMMO);
         for (var holder : recipes) {
             var ammoRecipe = holder.value();
             if (what.matches(ammoRecipe.getAmmo())) {

@@ -41,7 +41,7 @@ public class ForgeExternalStorageStrategy<T, S> implements ExternalStorageStrate
 
     public static ExternalStorageStrategy createItem(ServerLevel level, BlockPos fromPos, Direction fromSide) {
         return new ForgeExternalStorageStrategy<>(
-                Capabilities.ItemHandler.BLOCK,
+                Capabilities.Item.BLOCK,
                 HandlerStrategy.ITEMS,
                 level,
                 fromPos,
@@ -50,7 +50,7 @@ public class ForgeExternalStorageStrategy<T, S> implements ExternalStorageStrate
 
     public static ExternalStorageStrategy createFluid(ServerLevel level, BlockPos fromPos, Direction fromSide) {
         return new ForgeExternalStorageStrategy<>(
-                Capabilities.FluidHandler.BLOCK,
+                Capabilities.Fluid.BLOCK,
                 HandlerStrategy.FLUIDS,
                 level,
                 fromPos,

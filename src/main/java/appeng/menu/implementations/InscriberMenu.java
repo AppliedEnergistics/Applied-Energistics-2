@@ -18,6 +18,7 @@
 
 package appeng.menu.implementations;
 
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
@@ -29,7 +30,6 @@ import appeng.api.config.YesNo;
 import appeng.api.util.IConfigManager;
 import appeng.blockentity.misc.InscriberBlockEntity;
 import appeng.blockentity.misc.InscriberRecipes;
-import appeng.client.gui.Icon;
 import appeng.core.definitions.AEItems;
 import appeng.core.definitions.ItemDefinition;
 import appeng.core.localization.Side;
@@ -39,6 +39,7 @@ import appeng.menu.guisync.GuiSync;
 import appeng.menu.interfaces.IProgressProvider;
 import appeng.menu.slot.AppEngSlot;
 import appeng.menu.slot.OutputSlot;
+import appeng.util.Icon;
 
 /**
  * @see appeng.client.gui.implementations.InscriberScreen
@@ -115,6 +116,10 @@ public class InscriberMenu extends UpgradeableMenu<InscriberBlockEntity> impleme
 
     @Override
     public boolean isValidForSlot(Slot s, ItemStack is) {
+        if (!(getHost().getLevel() instanceof ServerLevel serverLevel)) {
+            return false;
+        }
+
         final ItemStack top = getHost().getInternalInventory().getStackInSlot(0);
         final ItemStack bot = getHost().getInternalInventory().getStackInSlot(1);
 
@@ -124,7 +129,7 @@ public class InscriberMenu extends UpgradeableMenu<InscriberBlockEntity> impleme
                 return !press.is(is);
             }
 
-            return InscriberRecipes.findRecipe(getHost().getLevel(), is, top, bot, false) != null;
+            return InscriberRecipes.findRecipe(serverLevel, is, top, bot, false) != null;
         } else if (s == this.top && !bot.isEmpty() || s == this.bottom && !top.isEmpty()) {
             ItemStack otherSlot;
             if (s == this.top) {
@@ -141,7 +146,7 @@ public class InscriberMenu extends UpgradeableMenu<InscriberBlockEntity> impleme
 
             // everything else
             // test for a partial recipe match (ignoring the middle slot)
-            return InscriberRecipes.isValidOptionalIngredientCombination(getHost().getLevel(), is, otherSlot);
+            return InscriberRecipes.isValidOptionalIngredientCombination(serverLevel, is, otherSlot);
         }
         return true;
     }

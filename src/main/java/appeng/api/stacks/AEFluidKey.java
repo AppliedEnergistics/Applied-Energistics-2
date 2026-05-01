@@ -11,21 +11,21 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 
 import appeng.api.storage.AEKeyFilter;
 import appeng.core.AELog;
@@ -37,7 +37,7 @@ public final class AEFluidKey extends AEKey {
                             holder -> holder.is(Fluids.EMPTY.builtInRegistryHolder())
                                     ? DataResult.error(() -> "Fluid must not be minecraft:empty")
                                     : DataResult.success(holder))
-                            .fieldOf("id").forGetter(key -> key.stack.getFluidHolder()),
+                            .fieldOf("id").forGetter(key -> key.stack.typeHolder()),
                     DataComponentPatch.CODEC.optionalFieldOf("components", DataComponentPatch.EMPTY)
                             .forGetter(key -> key.stack.getComponentsPatch()))
                     .apply(instance, (fluidHolder,
@@ -66,6 +66,14 @@ public final class AEFluidKey extends AEKey {
             return null;
         }
         return new AEFluidKey(fluidVariant.copyWithAmount(1));
+    }
+
+    @Nullable
+    public static AEFluidKey of(FluidResource resource) {
+        if (resource.isEmpty()) {
+            return null;
+        }
+        return new AEFluidKey(resource.toStack(1));
     }
 
     public static boolean matches(AEKey what, FluidStack fluid) {
@@ -110,20 +118,18 @@ public final class AEFluidKey extends AEKey {
         return hashCode;
     }
 
-    public static AEFluidKey fromTag(HolderLookup.Provider registries, CompoundTag tag) {
-        var ops = registries.createSerializationContext(NbtOps.INSTANCE);
+    public static AEFluidKey fromTag(ValueInput input) {
         try {
-            return CODEC.decode(ops, tag).getOrThrow().getFirst();
+            return input.read(MAP_CODEC).orElseThrow();
         } catch (Exception e) {
-            AELog.debug("Tried to load an invalid fluid key from NBT: %s", tag, e);
+            AELog.debug("Tried to load an invalid fluid key from NBT: %s", input, e);
             return null;
         }
     }
 
     @Override
-    public CompoundTag toTag(HolderLookup.Provider registries) {
-        var ops = registries.createSerializationContext(NbtOps.INSTANCE);
-        return (CompoundTag) CODEC.encodeStart(ops, this).getOrThrow();
+    public void toTag(ValueOutput output) {
+        output.store(MAP_CODEC, this);
     }
 
     @Override
@@ -132,7 +138,7 @@ public final class AEFluidKey extends AEKey {
     }
 
     @Override
-    public ResourceLocation getId() {
+    public Identifier getId() {
         return BuiltInRegistries.FLUID.getKey(getFluid());
     }
 
@@ -161,6 +167,10 @@ public final class AEFluidKey extends AEKey {
     @Override
     public boolean hasComponents() {
         return stack.getComponents().isEmpty();
+    }
+
+    public FluidResource toResource() {
+        return FluidResource.of(stack);
     }
 
     public FluidStack toStack(int amount) {

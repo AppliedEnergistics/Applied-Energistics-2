@@ -22,8 +22,8 @@ import java.util.EnumSet;
 import java.util.Objects;
 
 import net.minecraft.core.Direction;
-import net.neoforged.neoforge.client.model.data.ModelData;
-import net.neoforged.neoforge.client.model.data.ModelProperty;
+import net.neoforged.neoforge.model.data.ModelData;
+import net.neoforged.neoforge.model.data.ModelProperty;
 
 import appeng.api.util.AEColor;
 

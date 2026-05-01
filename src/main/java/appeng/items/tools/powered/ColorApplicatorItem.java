@@ -20,10 +20,10 @@ package appeng.items.tools.powered;
 
 import java.util.Comparator;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -42,9 +42,8 @@ import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.animal.Sheep;
+import net.minecraft.world.entity.animal.sheep.Sheep;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.CreativeModeTab;
@@ -54,14 +53,13 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.SnowballItem;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
@@ -82,9 +80,9 @@ import appeng.block.networking.CableBusBlock;
 import appeng.block.paint.PaintSplotchesBlock;
 import appeng.blockentity.misc.PaintSplotchesBlockEntity;
 import appeng.core.AEConfig;
+import appeng.core.ConventionTags;
 import appeng.core.definitions.AEItems;
 import appeng.core.localization.GuiText;
-import appeng.datagen.providers.tags.ConventionTags;
 import appeng.helpers.IMouseWheelItem;
 import appeng.hooks.IBlockTool;
 import appeng.items.contents.CellConfig;
@@ -138,14 +136,15 @@ public class ColorApplicatorItem extends AEBasePoweredItem
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand usedHand) {
+    public InteractionResult use(Level level, Player player, InteractionHand usedHand) {
         var stack = player.getItemInHand(usedHand);
 
-        cycleColors(stack, getColor(stack), 1);
-        if (level.isClientSide) {
-            player.displayClientMessage(stack.getHoverName(), true);
+        var newStack = stack.copy();
+        cycleColors(newStack, getColor(stack), 1);
+        if (level.isClientSide()) {
+            player.sendOverlayMessage(stack.getHoverName());
         }
-        return InteractionResultHolder.fail(stack);
+        return InteractionResult.CONSUME.heldItemTransformedTo(stack);
     }
 
     @Override
@@ -182,7 +181,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
                             && colorableBlockEntity.getColor() != AEColor.TRANSPARENT) {
                         if (colorableBlockEntity.recolourBlock(side, AEColor.TRANSPARENT, p)) {
                             consumeColor(is, color, false);
-                            return InteractionResult.sidedSuccess(level.isClientSide());
+                            return InteractionResult.SUCCESS;
                         }
                     }
 
@@ -193,22 +192,22 @@ public class ColorApplicatorItem extends AEBasePoweredItem
                             && painted instanceof PaintSplotchesBlockEntity) {
                         consumeColor(is, color, false);
                         ((PaintSplotchesBlockEntity) painted).cleanSide(side.getOpposite());
-                        return InteractionResult.sidedSuccess(level.isClientSide());
+                        return InteractionResult.SUCCESS;
                     }
                 }
 
                 if (this.getAECurrentPower(is) > POWER_PER_USE
                         && this.recolourBlock(blk, side, level, pos, color, p)) {
                     consumeColor(is, color, false);
-                    return InteractionResult.sidedSuccess(level.isClientSide());
+                    return InteractionResult.SUCCESS;
                 }
             }
         }
 
         if (p != null && InteractionUtil.isInAlternateUseMode(p)) {
             this.cycleColors(is, color, 1);
-            if (level.isClientSide) {
-                p.displayClientMessage(is.getHoverName(), true);
+            if (level.isClientSide()) {
+                p.sendOverlayMessage(is.getHoverName());
             }
             return InteractionResult.CONSUME;
         }
@@ -223,13 +222,13 @@ public class ColorApplicatorItem extends AEBasePoweredItem
 
         if (paintBallColor != null && interactionTarget instanceof Sheep sheep) {
             if (sheep.isAlive() && !sheep.isSheared() && sheep.getColor() != paintBallColor.dye) {
-                if (!player.level().isClientSide && this.getAECurrentPower(is) > POWER_PER_USE) {
+                if (!player.level().isClientSide() && this.getAECurrentPower(is) > POWER_PER_USE) {
                     sheep.setColor(paintBallColor.dye);
                     sheep.level().playSound(player, sheep, SoundEvents.DYE_USE, SoundSource.PLAYERS, 1.0F, 1.0F);
                     this.consumeColor(is, paintBallColor, false);
                 }
 
-                return InteractionResult.sidedSuccess(player.level().isClientSide);
+                return InteractionResult.SUCCESS;
             }
         }
 
@@ -442,10 +441,10 @@ public class ColorApplicatorItem extends AEBasePoweredItem
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> lines,
-            TooltipFlag advancedTooltips) {
-        super.appendHoverText(stack, context, lines, advancedTooltips);
+    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay tooltipDisplay,
+            Consumer<Component> lines,
+            TooltipFlag tooltipFlags) {
+        super.appendHoverText(stack, context, tooltipDisplay, lines, tooltipFlags);
         addCellInformationToTooltip(stack, lines);
     }
 
