@@ -57,7 +57,7 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.util.BlockSnapshot;
 import net.neoforged.neoforge.event.EventHooks;
-import net.neoforged.neoforge.event.level.BlockEvent;
+import net.neoforged.neoforge.event.level.block.BreakBlockEvent;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
@@ -387,7 +387,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IBasicCellIte
         }
 
         var state = level.getBlockState(pos);
-        var event = new BlockEvent.BreakEvent(level, pos, state, player);
+        var event = new BreakBlockEvent(level, pos, state, player);
         return !NeoForge.EVENT_BUS.post(event).isCanceled();
     }
 
