@@ -106,7 +106,7 @@ public final class EncodingHelper {
             Predicate<ItemStack> visiblePredicate) {
         if (recipe != null && recipe.value().getType().equals(RecipeType.STONECUTTING)) {
             menu.setMode(EncodingMode.STONECUTTING);
-            // TODO 1.21.4 menu.setStonecuttingRecipeId(recipe.id());
+            menu.setStonecuttingRecipeId(recipe.id());
         } else if (recipe != null && recipe.value().getType().equals(RecipeType.SMITHING)) {
             menu.setMode(EncodingMode.SMITHING_TABLE);
         } else {
@@ -140,15 +140,15 @@ public final class EncodingHelper {
 
                 // To avoid encoding hidden entries, we'll cycle through the ingredient and try to find a visible
                 // stack, otherwise we'll use the first entry.
-                var bestIngredient = bestNetworkIngredient.orElseGet(() -> {
-                    // TODO 1.21.4 SHIT
-                    var ingredientStacks = ingredient.items()
-                            .map(Holder::value)
-                            .map(Item::getDefaultInstance);
-
-                    return ingredientStacks.filter(visiblePredicate).findFirst()
-                            .orElse(ingredientStacks.findFirst().orElse(ItemStack.EMPTY));
-                });
+                var bestIngredient = bestNetworkIngredient.orElse(
+                        ingredient.items()
+                                .map(Holder::value)
+                                .map(Item::getDefaultInstance)
+                                .filter(visiblePredicate).findFirst()
+                                .orElse(ingredient.items()
+                                        .map(Holder::value)
+                                        .map(Item::getDefaultInstance).findFirst()
+                                        .orElse(ItemStack.EMPTY)));
 
                 encodedInputs.set(slot, bestIngredient);
             }
