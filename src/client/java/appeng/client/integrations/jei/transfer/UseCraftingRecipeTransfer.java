@@ -78,7 +78,7 @@ public class UseCraftingRecipeTransfer<T extends CraftingTermMenu>
             return helper.createUserErrorWithTooltip(ItemModText.INCOMPATIBLE_RECIPE.text());
         }
 
-        if (recipe.placementInfo().slotsToIngredientIndex().size() >= 9) {
+        if (recipe.placementInfo().slotsToIngredientIndex().size() > 9) {
             return helper.createUserErrorWithTooltip(ItemModText.RECIPE_TOO_LARGE.text());
         }
 
