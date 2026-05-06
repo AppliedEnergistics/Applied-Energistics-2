@@ -2,6 +2,7 @@
   "type": "ae2:quartz_cutting",
   "category": "misc",
   "ingredients": [
+    "#ae2:knife",
     "#ae2:metal_ingots"
   ],
   "result": {

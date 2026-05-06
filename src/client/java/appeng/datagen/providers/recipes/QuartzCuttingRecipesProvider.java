@@ -13,6 +13,8 @@ import appeng.core.ConventionTags;
 import appeng.core.definitions.AEParts;
 import appeng.recipes.quartzcutting.QuartzCuttingRecipe;
 
+import java.util.List;
+
 public class QuartzCuttingRecipesProvider extends AE2RecipeProvider {
 
     public QuartzCuttingRecipesProvider(HolderLookup.Provider registries, RecipeOutput output) {
@@ -27,7 +29,7 @@ public class QuartzCuttingRecipesProvider extends AE2RecipeProvider {
                         new Recipe.CommonInfo(false),
                         new CraftingRecipe.CraftingBookInfo(CraftingBookCategory.MISC, ""),
                         AEParts.CABLE_ANCHOR.template(4),
-                        NonNullList.of(Ingredient.of(items.getOrThrow(ConventionTags.QUARTZ_KNIFE)),
+                        List.of(Ingredient.of(items.getOrThrow(ConventionTags.QUARTZ_KNIFE)),
                                 Ingredient.of(items.getOrThrow(AETags.METAL_INGOTS)))),
                 null);
     }
