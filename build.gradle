@@ -260,7 +260,8 @@ static void publicApiIncludePatterns(PatternFilterable spec) {
 
 tasks.named('javadoc', Javadoc) {
     source = sourceSets.main.allJava
-    classpath = sourceSets.main.compileClasspath + sourceSets.main.output
+    source sourceSets.client.allJava
+    classpath = sourceSets.client.compileClasspath + sourceSets.client.output
 
     options.addStringOption('Xdoclint:none', '-quiet')
     options.encoding = 'UTF-8'
@@ -268,11 +269,17 @@ tasks.named('javadoc', Javadoc) {
     publicApiIncludePatterns(it)
 }
 
+tasks.named('sourcesJar', Jar) {
+    from sourceSets.client.allSource
+}
+
 tasks.register('apiJar', Jar) {
     archiveClassifier = "api"
     // api jar ist just a development aid and serves as both a binary and source jar simultaneously
     from sourceSets.main.output
     from sourceSets.main.allJava
+    from sourceSets.client.output
+    from sourceSets.client.allJava
     publicApiIncludePatterns(it)
 }
 
