@@ -110,7 +110,6 @@ dependencies {
             break
     }
 
-    compileOnly "top.theillusivec4.curios:curios-neoforge:${project.curios_version}:api"
     if (project.runtime_curio == "true") {
         localRuntimeOnly("top.theillusivec4.curios:curios-neoforge:${project.curios_version}")
     }
