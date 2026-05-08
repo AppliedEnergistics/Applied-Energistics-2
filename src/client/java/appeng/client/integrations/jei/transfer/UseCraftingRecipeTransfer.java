@@ -141,7 +141,11 @@ public class UseCraftingRecipeTransfer<T extends CraftingTermMenu>
         var result = new LinkedHashMap<Integer, Ingredient>(placedSlots.size());
         for (int i = 0; i < placedSlots.size(); i++) {
             var guiSlot = getCraftingIndex(i, width, height);
-            var ingredient = placement.ingredients().get(placedSlots.getInt(i));
+            int index = placedSlots.getInt(i);
+            if (index < 0) {
+                continue;
+            }
+            var ingredient = placement.ingredients().get(index);
             if (!ingredient.isEmpty()) {
                 result.put(guiSlot, ingredient);
             }
