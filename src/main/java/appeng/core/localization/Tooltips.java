@@ -209,7 +209,8 @@ public final class Tooltips {
             1000_000_000_000_000L,
             1000_000_000_000_000_000L };
     public static final long[] BYTE_NUMS = new long[] { 1024L, 1024 * 1024L, 1024 * 1024 * 1024L,
-            1024 * 1024 * 1024 * 1024L };
+            1024 * 1024 * 1024 * 1024L, 1024L * 1024L * 1024L * 1024L * 1024L,
+            1024L * 1024L * 1024L * 1024L * 1024L * 1024L };
 
     public static Component ofAmount(GenericStack stack) {
         return Component.literal(stack.what().formatAmount(stack.amount(), AmountFormat.FULL))
