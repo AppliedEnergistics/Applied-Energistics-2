@@ -259,7 +259,7 @@ public abstract class CraftingCubeModel implements DynamicBlockStateModel {
         return materialFlags;
     }
 
-    // TODO 26.1: Should implement the location ware materialFlags method to return the flags for the actually used
+    // TODO 26.1: Should implement the location aware materialFlags method to return the flags for the actually used
     // materials
 
     public record Unbaked(CraftingUnitType type) implements CustomUnbakedBlockStateModel {
