@@ -200,6 +200,9 @@ public abstract class ExternalStorageFacade implements MEStorage {
                         int extracted = wrapHandlerExtract(handler, slot, maxExtract - totalExtracted, false);
                         if (extracted > 0) {
                             totalExtracted += extracted;
+                            if (!itemKey.matches(handler.getStackInSlot(slot))) {
+                                break;
+                            }
                         } else {
                             break;
                         }
