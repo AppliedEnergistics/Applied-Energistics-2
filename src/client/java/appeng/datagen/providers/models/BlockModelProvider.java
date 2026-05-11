@@ -409,21 +409,19 @@ public class BlockModelProvider extends ModelSubProvider {
 
     private void crystalResonanceGenerator() {
         var modelFile = makeId("block/crystal_resonance_generator");
-        var builder = MultiVariantGenerator.dispatch(AEBlocks.CRYSTAL_RESONANCE_GENERATOR.block(),
-                plainVariant(modelFile));
 
-        var facingVariants = PropertyDispatch.modify(BlockStateProperties.FACING);
-        for (var facing : Direction.values()) {
-            var orientation = BlockOrientation.get(facing, 0);
-            // The original is facing "up" while we generally assume models are facing north
-            // but this looks better as an item model
-            facingVariants.select(facing, applyRotation(
-                    orientation.getAngleX() + 90,
-                    orientation.getAngleY()));
-        }
-        builder.with(facingVariants);
-
-        blockStateOutput.accept(builder);
+        blockStateOutput.accept(
+                MultiVariantGenerator.dispatch(AEBlocks.CRYSTAL_RESONANCE_GENERATOR.block())
+                        .with(
+                                PropertyDispatch.initial(BlockStateProperties.FACING)
+                                        .generate((facing) -> {
+                                            var orientation = BlockOrientation.get(facing, 0);
+                                            return plainVariant(modelFile).with(applyRotation(
+                                                    // + 90 because the default model is oriented UP, while block
+                                                    // orientation assumes NORTH
+                                                    orientation.getAngleX() + 90,
+                                                    orientation.getAngleY()));
+                                        })));
 
         blockModels.registerSimpleItemModel(AEBlocks.CRYSTAL_RESONANCE_GENERATOR.block(), modelFile);
     }
