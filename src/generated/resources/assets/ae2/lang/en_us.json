@@ -1015,6 +1015,7 @@
   "waila.ae2.P2PUnlinked": "Unlinked",
   "waila.ae2.Showing": "Showing",
   "waila.ae2.Stored": "Stored: %s / %s",
+  "waila.ae2.NetworkStored": "Network Stored: %s / %s",
   "waila.ae2.Suppressed": "Suppressed",
   "waila.ae2.Unlocked": "Unlocked"
 }
