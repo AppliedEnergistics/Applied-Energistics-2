@@ -174,7 +174,7 @@ public final class InscriberRenderer implements BlockEntityRenderer<InscriberBlo
 
         float press = 0.2f - state.progress / 5.0f;
 
-        nodes.submitCustomGeometry(poseStack, Sheets.translucentItemSheet(), (pose, buffer) -> {
+        nodes.submitCustomGeometry(poseStack, Sheets.translucentBlockItemSheet(), (pose, buffer) -> {
             // render sides of stamps
 
             float middle = 0.5f;
@@ -269,7 +269,7 @@ public final class InscriberRenderer implements BlockEntityRenderer<InscriberBlo
             item(poseStack, state.topItem, press, combinedLight, nodes);
         }
         if (!state.bottomItem.isEmpty()) {
-            item(poseStack, state.bottomItem, press, combinedLight, nodes);
+            item(poseStack, state.bottomItem, -press, combinedLight, nodes);
         }
 
         poseStack.popPose();
