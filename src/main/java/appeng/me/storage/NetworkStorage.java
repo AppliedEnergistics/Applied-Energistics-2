@@ -21,14 +21,15 @@ package appeng.me.storage;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.NavigableMap;
-import java.util.TreeMap;
 
 import com.google.common.base.Preconditions;
 
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.network.chat.Component;
+
+import it.unimi.dsi.fastutil.ints.Int2ObjectAVLTreeMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectSortedMaps;
 
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
@@ -47,7 +48,7 @@ public class NetworkStorage implements MEStorage {
     // they're being iterated, and recursive extract/insert/list operations.
     private boolean mountsInUse;
 
-    private final NavigableMap<Integer, List<MEStorage>> priorityInventory;
+    private final Int2ObjectAVLTreeMap<List<MEStorage>> priorityInventory;
     private final List<MEStorage> secondPassInventories = new ArrayList<>();
 
     // Queued mount/unmount operations that occurred while an insert/extract was ongoing
@@ -56,7 +57,7 @@ public class NetworkStorage implements MEStorage {
     private List<QueuedOperation> queuedOperations;
 
     public NetworkStorage() {
-        this.priorityInventory = new TreeMap<>(PRIORITY_SORTER);
+        this.priorityInventory = new Int2ObjectAVLTreeMap<>(PRIORITY_SORTER);
     }
 
     public void mount(int priority, MEStorage inventory) {
@@ -78,7 +79,7 @@ public class NetworkStorage implements MEStorage {
             }
             queuedOperations.add(new UnmountOperation(inventory));
         } else {
-            var prioIt = this.priorityInventory.entrySet().iterator();
+            var prioIt = Int2ObjectSortedMaps.fastIterator(this.priorityInventory);
             while (prioIt.hasNext()) {
                 var prioEntry = prioIt.next();
 
@@ -179,7 +180,12 @@ public class NetworkStorage implements MEStorage {
 
         mountsInUse = true;
         try {
-            for (var invList : this.priorityInventory.descendingMap().values()) {
+            var priorityInventory = this.priorityInventory;
+            var entrySet = priorityInventory.int2ObjectEntrySet();
+            var last = entrySet.last();
+            var iterator = entrySet.iterator(last);
+            while (iterator.hasPrevious()) {
+                var invList = iterator.previous().getValue();
                 var ii = invList.iterator();
                 while (ii.hasNext() && extracted < amount) {
                     var inv = ii.next();
