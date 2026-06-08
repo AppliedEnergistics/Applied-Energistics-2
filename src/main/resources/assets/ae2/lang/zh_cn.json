@@ -366,7 +366,7 @@
   "gui.ae2.ImportBusFluids": "ME流体输入总线",
   "gui.ae2.InWorldCrafting": "AE2实体合成",
   "gui.ae2.Included": "白名单匹配",
-  "gui.ae2.IncompatibleWithCell": "与单元不兼容",
+  "gui.ae2.IncompatibleWithCell": "与元件不兼容",
   "gui.ae2.IncreasedEnergyUseFromEnchants": "附魔会增加能耗。",
   "gui.ae2.Inscriber": "压印器",
   "gui.ae2.Installed": "已安装：%s",
