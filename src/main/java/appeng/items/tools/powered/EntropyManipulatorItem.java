@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import net.minecraft.world.item.ItemInstance;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
@@ -77,7 +78,7 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
     }
 
     @Override
-    public double getChargeRate(ItemStack stack) {
+    public double getChargeRate(ItemInstance stack) {
         return 800d;
     }
 

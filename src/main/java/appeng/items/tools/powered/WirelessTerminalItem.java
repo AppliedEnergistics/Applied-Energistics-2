@@ -22,6 +22,7 @@ import java.util.function.Consumer;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
+import net.minecraft.world.item.ItemInstance;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -75,7 +76,7 @@ public class WirelessTerminalItem extends PoweredContainerItem implements IMenuI
     }
 
     @Override
-    public double getChargeRate(ItemStack stack) {
+    public double getChargeRate(ItemInstance stack) {
         return 800d + 800d * Upgrades.getEnergyCardMultiplier(getUpgrades(stack));
     }
 
@@ -139,12 +140,12 @@ public class WirelessTerminalItem extends PoweredContainerItem implements IMenuI
      * access point, register a {@link IGridLinkableHandler}.
      */
     @Nullable
-    public GlobalPos getLinkedPosition(ItemStack item) {
+    public GlobalPos getLinkedPosition(ItemInstance item) {
         return item.get(AEComponents.WIRELESS_LINK_TARGET);
     }
 
     @Nullable
-    public IGrid getLinkedGrid(ItemStack item, Level level, @Nullable Consumer<Component> errorConsumer) {
+    public IGrid getLinkedGrid(ItemInstance item, Level level, @Nullable Consumer<Component> errorConsumer) {
         if (!(level instanceof ServerLevel serverLevel)) {
             return null;
         }
@@ -202,8 +203,8 @@ public class WirelessTerminalItem extends PoweredContainerItem implements IMenuI
      *
      * @return True if the wireless terminal can be opened (it's linked, network in range, power, etc.)
      */
-    protected boolean checkPreconditions(ItemStack item) {
-        return !item.isEmpty() && item.getItem() == this;
+    protected boolean checkPreconditions(@Nullable ItemInstance item) {
+        return item != null && item.is(this);
     }
 
     /**

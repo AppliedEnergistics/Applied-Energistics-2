@@ -1,8 +1,10 @@
 package appeng.api.upgrades;
 
+import net.minecraft.core.Holder;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemInstance;
 import org.jetbrains.annotations.ApiStatus;
 
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 
 /**
@@ -11,12 +13,7 @@ import net.minecraft.world.level.ItemLike;
 @ApiStatus.NonExtendable
 public interface IUpgradeableItem extends ItemLike {
     /**
-     * Used to edit the upgrades on your item, should have a capacity of 0-8 slots. You are also responsible for
-     * implementing the valid checks, and any storage/usage of them.
-     * <p>
-     * onInventoryChange will be called when saving is needed.
+     * {@return how many of the given upgrade type can at most be installed in this item}
      */
-    default IUpgradeInventory getUpgrades(ItemStack stack) {
-        return EmptyUpgradeInventory.INSTANCE;
-    }
+    int getMaxUpgrades(ItemInstance item, Holder<Item> upgrade);
 }

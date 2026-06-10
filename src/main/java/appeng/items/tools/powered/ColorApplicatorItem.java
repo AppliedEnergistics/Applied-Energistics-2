@@ -30,6 +30,7 @@ import java.util.stream.Collectors;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.EnumHashBiMap;
 
+import net.minecraft.world.item.ItemInstance;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
@@ -131,7 +132,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
     }
 
     @Override
-    public double getChargeRate(ItemStack stack) {
+    public double getChargeRate(ItemInstance stack) {
         return 80d + 80d * Upgrades.getEnergyCardMultiplier(getUpgrades(stack));
     }
 

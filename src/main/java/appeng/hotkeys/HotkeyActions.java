@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import appeng.api.integrations.curios.CuriosHotkeyAction;
 import net.minecraft.world.level.ItemLike;
 
 import appeng.api.features.HotkeyAction;
@@ -56,7 +57,6 @@ public class HotkeyActions {
      */
     public static void register(ItemLike item, InventoryHotkeyAction.Opener opener, String id) {
         register(new InventoryHotkeyAction(item, opener), id);
-        register(new CuriosHotkeyAction(item, opener), id);
     }
 
     /**

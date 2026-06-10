@@ -23,7 +23,6 @@
 
 package appeng.api.upgrades;
 
-import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 
@@ -33,29 +32,7 @@ import appeng.api.inventories.InternalInventory;
  * This specialized inventory can be used to insert and extract upgrade cards into AE2 machines. Only upgrades supported
  * by the machine can be inserted.
  */
-public interface IUpgradeInventory extends InternalInventory {
-    /**
-     * Item representation of the upgradable object this inventory is managing upgrades for.
-     */
-    ItemLike getUpgradableItem();
-
-    /**
-     * @return Checks if the given upgrade card is installed in this inventory.
-     */
-    default boolean isInstalled(ItemLike upgradeCard) {
-        return getInstalledUpgrades(upgradeCard) > 0;
-    }
-
-    /**
-     * determine how many of an upgrade are installed.
-     */
-    int getInstalledUpgrades(ItemLike u);
-
-    /**
-     * determine how many of an upgrade can be installed.
-     */
-    int getMaxInstalled(ItemLike u);
-
+public interface IUpgradeInventory extends ReadOnlyUpgradeInventory, InternalInventory {
     /**
      * Reads the contents of this upgrade inventory from a subtag of the given compound tag.
      */
