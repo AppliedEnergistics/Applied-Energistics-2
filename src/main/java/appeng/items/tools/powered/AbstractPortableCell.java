@@ -1,5 +1,6 @@
 package appeng.items.tools.powered;
 
+import net.minecraft.world.item.ItemInstance;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.resources.Identifier;
@@ -49,7 +50,7 @@ public abstract class AbstractPortableCell extends PoweredContainerItem
     public abstract Identifier getRecipeId();
 
     @Override
-    public abstract double getChargeRate(ItemStack stack);
+    public abstract double getChargeRate(ItemInstance stack);
 
     /**
      * Open a Portable Cell from a slot in the player inventory, i.e. activated via hotkey.

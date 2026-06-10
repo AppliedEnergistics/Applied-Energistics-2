@@ -1,14 +1,19 @@
 package appeng.util;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import appeng.menu.locator.ItemMenuHostLocator;
+import appeng.menu.locator.MenuLocators;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemInstance;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
+import org.jetbrains.annotations.Nullable;
 
-import appeng.integration.modules.curios.CuriosIntegration;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 /**
  * Event fired when AE2 is looking for ItemStacks in a player inventory. By default, AE2 only looks at the 36 usual
@@ -16,34 +21,52 @@ import appeng.integration.modules.curios.CuriosIntegration;
  * they contain the item it is searching.
  */
 public class SearchInventoryEvent extends PlayerEvent {
-    private final List<ItemStack> stacks;
+    private final List<Stream<InventoryItemAccessor>> streams;
 
-    public SearchInventoryEvent(Player player, List<ItemStack> stacks) {
+    public SearchInventoryEvent(Player player, List<Stream<InventoryItemAccessor>> streams) {
         super(player);
-        this.stacks = stacks;
-    }
-
-    public List<ItemStack> getStacks() {
-        return stacks;
+        this.streams = streams;
     }
 
     static {
         NeoForge.EVENT_BUS.addListener((SearchInventoryEvent event) -> {
-            event.getStacks().addAll(event.getEntity().getInventory().getNonEquipmentItems());
-        });
-        NeoForge.EVENT_BUS.addListener((SearchInventoryEvent event) -> {
-            var cap = event.getEntity().getCapability(CuriosIntegration.ITEM_HANDLER);
-            if (cap == null)
-                return;
-            for (int i = 0; i < cap.size(); i++) {
-                event.getStacks().add(cap.getResource(i).toStack());
-            }
+            var inventory = event.getEntity().getInventory();
+            Stream<InventoryItemAccessor> stream = IntStream.of(0, Inventory.INVENTORY_SIZE)
+                    .mapToObj(index -> new InventoryItemAccessor() {
+                        @Override
+                        public ItemInstance getItem() {
+                            return inventory.getItem(index);
+                        }
+
+                        @Override
+                        public ItemMenuHostLocator createLocator() {
+                            return MenuLocators.forInventorySlot(index);
+                        }
+                    });
+            event.add(stream);
         });
     }
 
-    public static List<ItemStack> getItems(Player player) {
-        List<ItemStack> items = new ArrayList<>();
+    public void add(Stream<InventoryItemAccessor> slots) {
+        streams.add(slots);
+    }
+
+    public static Stream<ItemInstance> getItems(Player player) {
+        return getInventoryAccessors(player)
+                .map(InventoryItemAccessor::getItem)
+                .filter(Objects::nonNull);
+    }
+
+    public static Stream<InventoryItemAccessor> getInventoryAccessors(Player player) {
+        List<Stream<InventoryItemAccessor>> items = new ArrayList<>();
         NeoForge.EVENT_BUS.post(new SearchInventoryEvent(player, items));
-        return items;
+        return items.stream().flatMap(x -> x);
+    }
+
+    public interface InventoryItemAccessor {
+        @Nullable
+        ItemInstance getItem();
+
+        ItemMenuHostLocator createLocator();
     }
 }

@@ -23,6 +23,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
 
+import net.minecraft.world.item.ItemInstance;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -104,7 +105,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IBasicCellIte
     }
 
     @Override
-    public double getChargeRate(ItemStack stack) {
+    public double getChargeRate(ItemInstance stack) {
         return 800d + 800d * Upgrades.getEnergyCardMultiplier(getUpgrades(stack));
     }
 

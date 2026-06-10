@@ -18,6 +18,7 @@
 
 package appeng.api.upgrades;
 
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.world.item.ItemStack;
@@ -31,17 +32,17 @@ import appeng.util.inv.AppEngInternalInventory;
  * are compatible from the item of that stack.
  */
 final class ItemUpgradeInventory extends UpgradeInventory {
-    private final ItemStack stack;
+    private final ItemAccess access;
 
     @Nullable
     private final ItemUpgradesChanged changeCallback;
 
-    public ItemUpgradeInventory(ItemStack stack, int upgrades, @Nullable ItemUpgradesChanged changeCallback) {
-        super(stack.getItem(), upgrades);
-        this.stack = stack;
+    public ItemUpgradeInventory(IUpgradeableItem item,ItemAccess stack, int upgrades, @Nullable ItemUpgradesChanged changeCallback) {
+        super(item.asItem(), upgrades);
+        this.access = stack;
         this.changeCallback = changeCallback;
 
-        fromItemContainerContents(stack.getOrDefault(AEComponents.UPGRADES, ItemContainerContents.EMPTY));
+        fromItemContainerContents(access.getResource().getComponents().getOrDefault(AEComponents.UPGRADES, ItemContainerContents.EMPTY));
     }
 
     @Override

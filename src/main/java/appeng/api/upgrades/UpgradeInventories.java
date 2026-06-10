@@ -1,7 +1,11 @@
 package appeng.api.upgrades;
 
+import appeng.api.ids.AEComponents;
+import net.minecraft.world.item.ItemInstance;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.ItemContainerContents;
 import net.minecraft.world.level.ItemLike;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 
 /**
  * Utilities for creating {@link IUpgradeInventory upgrade inventories}.
@@ -31,8 +35,12 @@ public final class UpgradeInventories {
      * Creates an upgrade inventory that manages the upgrades inserted into an upgradable item stack such as portable
      * cells or wireless terminals. Changes to the upgrades are immediately written into the given stack's NBT.
      */
-    public static IUpgradeInventory forItem(ItemStack stack, int maxUpgrades) {
-        return new ItemUpgradeInventory(stack, maxUpgrades, null);
+    public static IUpgradeInventory forItem(ItemAccess access) {
+        var currentItem = access.getResource().getItem();
+        if (currentItem instanceof IUpgradeableItem upgradeableItem) {
+            return new ItemUpgradeInventory(upgradeableItem, access);
+        }
+        return EmptyUpgradeInventory.INSTANCE;
     }
 
     /**
@@ -40,5 +48,29 @@ public final class UpgradeInventories {
      */
     public static IUpgradeInventory forItem(ItemStack stack, int maxUpgrades, ItemUpgradesChanged changeCallback) {
         return new ItemUpgradeInventory(stack, maxUpgrades, changeCallback);
+    }
+
+    /**
+     * Same as {@link #forItem(ItemStack, int)}, but with change notifications.
+     */
+    public static ReadOnlyUpgradeInventory forReadOnlyItem(ItemInstance item, int maxUpgrades) {
+        var upgrades = item.getOrDefault(AEComponents.UPGRADES, ItemContainerContents.EMPTY);
+
+        return new ReadOnlyUpgradeInventory() {
+            @Override
+            public ItemLike getUpgradableItem() {
+                return item.typeHolder().value();
+            }
+
+            @Override
+            public int getInstalledUpgrades(ItemLike u) {
+                return 0;
+            }
+
+            @Override
+            public int getMaxInstalled(ItemLike u) {
+                return 0;
+            }
+        }
     }
 }

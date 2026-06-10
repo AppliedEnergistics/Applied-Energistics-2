@@ -21,6 +21,7 @@ package appeng.block.networking;
 import java.util.function.Consumer;
 
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemInstance;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.block.Block;
@@ -31,6 +32,7 @@ import appeng.api.ids.AEComponents;
 import appeng.api.implementations.items.IAEItemPowerStorage;
 import appeng.block.AEBaseBlockItem;
 import appeng.core.localization.Tooltips;
+import org.jetbrains.annotations.UnknownNullability;
 
 public class EnergyCellBlockItem extends AEBaseBlockItem implements IAEItemPowerStorage {
 
@@ -78,22 +80,22 @@ public class EnergyCellBlockItem extends AEBaseBlockItem implements IAEItemPower
     }
 
     @Override
-    public double getAEMaxPower(ItemStack is) {
+    public double getAEMaxPower(ItemInstance is) {
         return this.getMaxEnergyCapacity();
     }
 
     @Override
-    public double getAECurrentPower(ItemStack is) {
+    public double getAECurrentPower(@UnknownNullability ItemInstance is) {
         return is.getOrDefault(AEComponents.STORED_ENERGY, 0.0);
     }
 
     @Override
-    public AccessRestriction getPowerFlow(ItemStack is) {
+    public AccessRestriction getPowerFlow(ItemInstance is) {
         return AccessRestriction.WRITE;
     }
 
     @Override
-    public double getChargeRate(ItemStack stack) {
+    public double getChargeRate(ItemInstance stack) {
         return ((EnergyCellBlock) getBlock()).getChargeRate();
     }
 

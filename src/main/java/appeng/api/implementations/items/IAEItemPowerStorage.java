@@ -23,6 +23,7 @@
 
 package appeng.api.implementations.items;
 
+import net.minecraft.world.item.ItemInstance;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.config.AccessRestriction;
@@ -51,22 +52,22 @@ public interface IAEItemPowerStorage {
     /**
      * @return the current maximum power ( this can change :P )
      */
-    double getAEMaxPower(ItemStack stack);
+    double getAEMaxPower(ItemInstance stack);
 
     /**
      * @return the current AE Power Level, this may exceed getMEMaxPower()
      */
-    double getAECurrentPower(ItemStack stack);
+    double getAECurrentPower(ItemInstance stack);
 
     /**
      * Control the power flow by telling what the network can do, either add? or subtract? or both!
      *
      * @return access restriction of network
      */
-    AccessRestriction getPowerFlow(ItemStack stack);
+    AccessRestriction getPowerFlow(ItemInstance stack);
 
     /**
      * @return The amount of AE per tick that the AE charger will charge this item at.
      */
-    double getChargeRate(ItemStack stack);
+    double getChargeRate(ItemInstance stack);
 }
