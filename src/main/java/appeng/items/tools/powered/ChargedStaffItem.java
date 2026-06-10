@@ -19,6 +19,7 @@
 package appeng.items.tools.powered;
 
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemInstance;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.AABB;
 
@@ -57,7 +58,7 @@ public class ChargedStaffItem extends AEBasePoweredItem {
     }
 
     @Override
-    public double getChargeRate(ItemStack stack) {
+    public double getChargeRate(ItemInstance stack) {
         return 32d;
     }
 }

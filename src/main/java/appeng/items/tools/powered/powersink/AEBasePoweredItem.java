@@ -24,6 +24,7 @@ import java.util.function.DoubleSupplier;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.ItemInstance;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
@@ -34,6 +35,7 @@ import appeng.api.ids.AEComponents;
 import appeng.api.implementations.items.IAEItemPowerStorage;
 import appeng.core.localization.Tooltips;
 import appeng.items.AEBaseItem;
+import org.jetbrains.annotations.UnknownNullability;
 
 public abstract class AEBasePoweredItem extends AEBaseItem implements IAEItemPowerStorage {
     // Any energy capacity below this threshold will be clamped to zero
@@ -113,7 +115,7 @@ public abstract class AEBasePoweredItem extends AEBaseItem implements IAEItemPow
     }
 
     @Override
-    public double getAEMaxPower(ItemStack stack) {
+    public double getAEMaxPower(@UnknownNullability ItemInstance stack) {
         // Allow per-item-stack overrides of the maximum power storage
         return stack.getOrDefault(AEComponents.ENERGY_CAPACITY, powerCapacity.getAsDouble());
     }
@@ -154,7 +156,7 @@ public abstract class AEBasePoweredItem extends AEBaseItem implements IAEItemPow
     }
 
     @Override
-    public double getAECurrentPower(ItemStack is) {
+    public double getAECurrentPower(@UnknownNullability ItemInstance is) {
         return is.getOrDefault(AEComponents.STORED_ENERGY, 0.0);
     }
 
@@ -167,7 +169,7 @@ public abstract class AEBasePoweredItem extends AEBaseItem implements IAEItemPow
     }
 
     @Override
-    public AccessRestriction getPowerFlow(ItemStack is) {
+    public AccessRestriction getPowerFlow(ItemInstance is) {
         return AccessRestriction.WRITE;
     }
 

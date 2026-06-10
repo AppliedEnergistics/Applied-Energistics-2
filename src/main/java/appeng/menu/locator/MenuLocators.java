@@ -29,7 +29,6 @@ public final class MenuLocators {
         register(BlockEntityLocator.class, BlockEntityLocator::writeToPacket, BlockEntityLocator::readFromPacket);
         register(PartLocator.class, PartLocator::writeToPacket, PartLocator::readFromPacket);
         register(InventoryItemLocator.class, InventoryItemLocator::writeToPacket, InventoryItemLocator::readFromPacket);
-        register(CuriosItemLocator.class, CuriosItemLocator::writeToPacket, CuriosItemLocator::readFromPacket);
     }
 
     /**
@@ -106,14 +105,6 @@ public final class MenuLocators {
 
     public static ItemMenuHostLocator forInventorySlot(int inventorySlot) {
         return new InventoryItemLocator(inventorySlot, null);
-    }
-
-    public static ItemMenuHostLocator forCurioSlot(int curioSlot) {
-        return new CuriosItemLocator(curioSlot, null);
-    }
-
-    public static ItemMenuHostLocator forCurioSlot(int curioSlot, UseOnContext context) {
-        return new CuriosItemLocator(curioSlot, getHitResult(context));
     }
 
     private static int getPlayerInventorySlotFromHand(Player player, InteractionHand hand) {
