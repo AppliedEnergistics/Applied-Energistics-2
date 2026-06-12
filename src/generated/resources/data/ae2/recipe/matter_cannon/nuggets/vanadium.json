@@ -9,8 +9,6 @@
     }
   ],
   "type": "ae2:matter_cannon",
-  "ammo": {
-    "tag": "c:nuggets/vanadium"
-  },
+  "ammo": "#c:nuggets/vanadium",
   "weight": 50.9415
 }

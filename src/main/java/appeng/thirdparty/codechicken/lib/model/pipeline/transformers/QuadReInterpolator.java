@@ -18,10 +18,9 @@
 
 package appeng.thirdparty.codechicken.lib.model.pipeline.transformers;
 
+import net.neoforged.neoforge.client.model.quad.MutableQuad;
+
 import appeng.thirdparty.codechicken.lib.math.InterpHelper;
-import appeng.thirdparty.fabric.MutableQuadView;
-import appeng.thirdparty.fabric.QuadView;
-import appeng.thirdparty.fabric.RenderContext;
 
 /**
  * This transformer Re-Interpolates the Color, UV's and LightMaps. Use this after all transformations that translate
@@ -31,7 +30,7 @@ import appeng.thirdparty.fabric.RenderContext;
  *
  * @author covers1624
  */
-public class QuadReInterpolator implements RenderContext.QuadTransform {
+public class QuadReInterpolator implements QuadTransform {
 
     private final InterpHelper interpHelper = new InterpHelper();
 
@@ -45,15 +44,15 @@ public class QuadReInterpolator implements RenderContext.QuadTransform {
         super();
     }
 
-    public void setInputQuad(QuadView quad) {
-        int s = quad.nominalFace().ordinal() >> 1;
+    public void setInputQuad(MutableQuad quad) {
+        int s = quad.direction().ordinal() >> 1;
         int xIdx = dx(s);
         int yIdx = dy(s);
         interpHelper.reset( //
-                quad.posByIndex(0, xIdx), quad.posByIndex(0, yIdx), //
-                quad.posByIndex(1, xIdx), quad.posByIndex(1, yIdx), //
-                quad.posByIndex(2, xIdx), quad.posByIndex(2, yIdx), //
-                quad.posByIndex(3, xIdx), quad.posByIndex(3, yIdx));
+                quad.positionComponent(0, xIdx), quad.positionComponent(0, yIdx), //
+                quad.positionComponent(1, xIdx), quad.positionComponent(1, yIdx), //
+                quad.positionComponent(2, xIdx), quad.positionComponent(2, yIdx), //
+                quad.positionComponent(3, xIdx), quad.positionComponent(3, yIdx));
 
         // Save the original properties of the quad's vertices
         for (int i = 0; i < 4; i++) {
@@ -64,19 +63,18 @@ public class QuadReInterpolator implements RenderContext.QuadTransform {
     }
 
     @Override
-    public boolean transform(MutableQuadView quad) {
-        int s = quad.nominalFace().ordinal() >> 1;
+    public boolean transform(MutableQuad quad) {
+        int s = quad.direction().ordinal() >> 1;
         int xIdx = dx(s);
         int yIdx = dy(s);
 
         this.interpHelper.setup();
         for (int i = 0; i < 4; i++) {
-            float x = quad.posByIndex(i, xIdx);
-            float y = quad.posByIndex(i, yIdx);
+            float x = quad.positionComponent(i, xIdx);
+            float y = quad.positionComponent(i, yIdx);
             this.interpHelper.locate(x, y);
             interpColorFrom(quad, i);
             interpUVFrom(quad, i);
-            interpLightMapFrom(quad, i);
         }
         return true;
     }
@@ -84,7 +82,7 @@ public class QuadReInterpolator implements RenderContext.QuadTransform {
     /**
      * Interpolates the new color values for this Vertex using the others as a reference.
      */
-    public void interpColorFrom(MutableQuadView quad, int vertexIndex) {
+    public void interpColorFrom(MutableQuad quad, int vertexIndex) {
         int p1 = this.originalSpriteColor[0];
         int p2 = this.originalSpriteColor[1];
         int p3 = this.originalSpriteColor[2];
@@ -106,13 +104,13 @@ public class QuadReInterpolator implements RenderContext.QuadTransform {
             mask <<= 8;
         }
 
-        quad.color(vertexIndex, color);
+        quad.setColor(vertexIndex, color);
     }
 
     /**
      * Interpolates the new UV values for this Vertex using the others as a reference.
      */
-    public void interpUVFrom(MutableQuadView quad, int vertexIndex) {
+    public void interpUVFrom(MutableQuad quad, int vertexIndex) {
         float p1 = originalSpriteU[0];
         float p2 = originalSpriteU[1];
         float p3 = originalSpriteU[2];
@@ -124,24 +122,7 @@ public class QuadReInterpolator implements RenderContext.QuadTransform {
         p3 = originalSpriteV[2];
         p4 = originalSpriteV[3];
         float v = interpHelper.interpolate(p1, p2, p3, p4);
-        quad.uv(vertexIndex, u, v);
-    }
-
-    /**
-     * Interpolates the new LightMap values for this Vertex using the others as a reference.
-     *
-     * @return The same Vertex.
-     */
-    public void interpLightMapFrom(MutableQuadView quad, int vertexIndex) {
-        for (int e = 0; e < 2; e++) {
-// FIXME           float p1 = others[0].lightmap[e];
-// FIXME           float p2 = others[1].lightmap[e];
-// FIXME           float p3 = others[2].lightmap[e];
-// FIXME           float p4 = others[3].lightmap[e];
-// FIXME           if (p1 != p2 || p2 != p3 || p3 != p4) {
-// FIXME               this.lightmap[e] = interpHelper.interpolate(p1, p2, p3, p4);
-// FIXME           }
-        }
+        quad.setUv(vertexIndex, u, v);
     }
 
     /**

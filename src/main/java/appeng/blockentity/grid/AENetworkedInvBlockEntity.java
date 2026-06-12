@@ -19,10 +19,10 @@
 package appeng.blockentity.grid;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 import appeng.api.networking.GridHelper;
 import appeng.api.networking.IManagedGridNode;
@@ -49,15 +49,15 @@ public abstract class AENetworkedInvBlockEntity extends AEBaseInvBlockEntity
     }
 
     @Override
-    public void loadTag(CompoundTag data, HolderLookup.Provider registries) {
-        super.loadTag(data, registries);
-        this.getMainNode().loadFromNBT(data);
+    public void loadTag(ValueInput data) {
+        super.loadTag(data);
+        this.getMainNode().deserialize(data);
     }
 
     @Override
-    public void saveAdditional(CompoundTag data, HolderLookup.Provider registries) {
-        super.saveAdditional(data, registries);
-        this.getMainNode().saveToNBT(data);
+    public void saveAdditional(ValueOutput data) {
+        super.saveAdditional(data);
+        this.getMainNode().serialize(data);
     }
 
     public final IManagedGridNode getMainNode() {

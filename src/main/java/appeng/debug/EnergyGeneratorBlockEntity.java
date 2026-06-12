@@ -22,20 +22,21 @@ import com.google.common.math.IntMath;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.energy.IEnergyStorage;
+import net.neoforged.neoforge.transfer.energy.EnergyHandler;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
 import appeng.blockentity.AEBaseBlockEntity;
 import appeng.blockentity.ServerTickingBlockEntity;
 
-public class EnergyGeneratorBlockEntity extends AEBaseBlockEntity implements ServerTickingBlockEntity, IEnergyStorage {
+public class EnergyGeneratorBlockEntity extends AEBaseBlockEntity implements ServerTickingBlockEntity, EnergyHandler {
     /**
      * The base energy injected each tick. Adjacent energy generators will increase it to pow(base, #generators).
      */
@@ -61,10 +62,13 @@ public class EnergyGeneratorBlockEntity extends AEBaseBlockEntity implements Ser
         final int energyToInsert = IntMath.pow(generationRate, tier);
 
         for (Direction facing : Direction.values()) {
-            var consumer = getLevel().getCapability(Capabilities.EnergyStorage.BLOCK, getBlockPos().relative(facing),
+            var consumer = getLevel().getCapability(Capabilities.Energy.BLOCK, getBlockPos().relative(facing),
                     facing.getOpposite());
-            if (consumer != null && consumer.canReceive()) {
-                consumer.receiveEnergy(energyToInsert, false);
+            if (consumer != null) {
+                try (var tx = Transaction.open(null)) {
+                    consumer.insert(energyToInsert, tx);
+                    tx.commit();
+                }
             }
         }
     }
@@ -78,46 +82,34 @@ public class EnergyGeneratorBlockEntity extends AEBaseBlockEntity implements Ser
     }
 
     @Override
-    public void loadTag(CompoundTag data, HolderLookup.Provider registries) {
-        super.loadTag(data, registries);
-        if (data.contains("generationRate", Tag.TAG_INT)) {
-            generationRate = data.getInt("generationRate");
-        }
+    public void loadTag(ValueInput data) {
+        super.loadTag(data);
+        generationRate = data.getIntOr("generationRate", generationRate);
     }
 
     @Override
-    public void saveAdditional(CompoundTag data, HolderLookup.Provider registries) {
-        super.saveAdditional(data, registries);
+    public void saveAdditional(ValueOutput data) {
+        super.saveAdditional(data);
         data.putInt("generationRate", generationRate);
     }
 
     @Override
-    public int receiveEnergy(int maxReceive, boolean simulate) {
+    public long getAmountAsLong() {
+        return Long.MAX_VALUE;
+    }
+
+    @Override
+    public long getCapacityAsLong() {
+        return Long.MAX_VALUE;
+    }
+
+    @Override
+    public int insert(int amount, TransactionContext transaction) {
         return 0;
     }
 
     @Override
-    public int extractEnergy(int maxExtract, boolean simulate) {
-        return maxExtract;
-    }
-
-    @Override
-    public int getEnergyStored() {
-        return Integer.MAX_VALUE;
-    }
-
-    @Override
-    public int getMaxEnergyStored() {
-        return Integer.MAX_VALUE;
-    }
-
-    @Override
-    public boolean canExtract() {
-        return true;
-    }
-
-    @Override
-    public boolean canReceive() {
-        return false;
+    public int extract(int amount, TransactionContext transaction) {
+        return amount;
     }
 }

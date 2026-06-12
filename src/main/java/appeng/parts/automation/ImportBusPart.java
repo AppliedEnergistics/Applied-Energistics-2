@@ -20,16 +20,15 @@ package appeng.parts.automation;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 import appeng.api.behaviors.StackImportStrategy;
 import appeng.api.networking.IGrid;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartItem;
-import appeng.api.parts.IPartModel;
 import appeng.api.util.KeyTypeSelection;
 import appeng.api.util.KeyTypeSelectionHost;
 import appeng.core.definitions.AEItems;
@@ -89,25 +88,14 @@ public class ImportBusPart extends IOBusPart implements KeyTypeSelectionHost {
     }
 
     @Override
-    public IPartModel getStaticModels() {
-        if (this.isActive() && this.isPowered()) {
-            return MODELS_HAS_CHANNEL;
-        } else if (this.isPowered()) {
-            return MODELS_ON;
-        } else {
-            return MODELS_OFF;
-        }
+    public void readFromNBT(ValueInput extra) {
+        super.readFromNBT(extra);
+        keyTypeSelection.readFromNBT(extra);
     }
 
     @Override
-    public void readFromNBT(CompoundTag extra, HolderLookup.Provider registries) {
-        super.readFromNBT(extra, registries);
-        keyTypeSelection.readFromNBT(extra, registries);
-    }
-
-    @Override
-    public void writeToNBT(CompoundTag extra, HolderLookup.Provider registries) {
-        super.writeToNBT(extra, registries);
+    public void writeToNBT(ValueOutput extra) {
+        super.writeToNBT(extra);
         keyTypeSelection.writeToNBT(extra);
     }
 

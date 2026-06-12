@@ -7,11 +7,15 @@ import com.mojang.serialization.Dynamic;
 import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.Lifecycle;
 
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.netty.buffer.ByteBuf;
+
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.CustomData;
 
@@ -22,6 +26,24 @@ public final class AECodecs {
     private static final Logger LOG = LoggerFactory.getLogger(AECodecs.class);
 
     private AECodecs() {
+    }
+
+    public static <B extends ByteBuf, V> StreamCodec<B, V> nullable(StreamCodec<B, V> codec) {
+        return new StreamCodec<>() {
+            @Nullable
+            public V decode(B buffer) {
+                return buffer.readBoolean() ? codec.decode(buffer) : null;
+            }
+
+            public void encode(B buffer, @Nullable V value) {
+                if (value != null) {
+                    buffer.writeBoolean(true);
+                    codec.encode(buffer, value);
+                } else {
+                    buffer.writeBoolean(false);
+                }
+            }
+        };
     }
 
     private static final Codec.ResultFunction<ItemStack> MISSING_CONTENT_ITEMSTACK_RESULT = new Codec.ResultFunction<>() {
@@ -54,7 +76,7 @@ public final class AECodecs {
                 LOG.error("Failed to serialize ItemStack {}: {}", input, error.message());
                 missingContent.set(AEComponents.MISSING_CONTENT_ERROR, error.message());
 
-                return ItemStack.SINGLE_ITEM_CODEC.encodeStart(ops, missingContent).setLifecycle(t.lifecycle());
+                return ItemStack.CODEC.encodeStart(ops, missingContent).setLifecycle(t.lifecycle());
             }
 
             // When the input is a MISSING_CONTENT item and has the original data attached,
@@ -62,7 +84,7 @@ public final class AECodecs {
             if (AEItems.MISSING_CONTENT.is(input)) {
                 var originalData = input.get(AEComponents.MISSING_CONTENT_ITEMSTACK_DATA);
                 if (originalData != null) {
-                    return DataResult.success(Dynamic.convert(NbtOps.INSTANCE, ops, originalData.getUnsafe()),
+                    return DataResult.success(Dynamic.convert(NbtOps.INSTANCE, ops, originalData.copyTag()),
                             t.lifecycle());
                 }
             }
@@ -70,9 +92,6 @@ public final class AECodecs {
             return t;
         }
     };
-
-    public static final Codec<ItemStack> FAULT_TOLERANT_SIMPLE_ITEM_CODEC = ItemStack.SINGLE_ITEM_CODEC
-            .mapResult(MISSING_CONTENT_ITEMSTACK_RESULT);
 
     public static final Codec<ItemStack> FAULT_TOLERANT_ITEMSTACK_CODEC = ItemStack.CODEC
             .mapResult(MISSING_CONTENT_ITEMSTACK_RESULT);

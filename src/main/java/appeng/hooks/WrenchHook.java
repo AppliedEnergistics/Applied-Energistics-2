@@ -97,7 +97,7 @@ public final class WrenchHook {
                     }
 
                     level.setBlockAndUpdate(pos, newState);
-                    return InteractionResult.sidedSuccess(level.isClientSide);
+                    return InteractionResult.SUCCESS;
                 }
             }
         }

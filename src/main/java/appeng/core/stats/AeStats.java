@@ -18,7 +18,7 @@
 
 package appeng.core.stats;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 
 import appeng.core.AppEng;
@@ -29,7 +29,7 @@ public enum AeStats {
 
     ItemsExtracted("items_extracted");
 
-    private final ResourceLocation registryName;
+    private final Identifier registryName;
 
     AeStats(String id) {
         this.registryName = AppEng.makeId(id);
@@ -39,7 +39,7 @@ public enum AeStats {
         player.awardStat(this.registryName, howMany);
     }
 
-    public ResourceLocation getRegistryName() {
+    public Identifier getRegistryName() {
         return registryName;
     }
 

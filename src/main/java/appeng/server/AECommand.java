@@ -46,7 +46,7 @@ public final class AECommand {
                     if (subCommand.test && !AEConfig.instance().isDebugToolsEnabled()) {
                         return false;
                     }
-                    return src.hasPermission(subCommand.level);
+                    return subCommand.requiredPermission.check(src.permissions());
                 });
         subCommand.command.addArguments(subCommandBuilder);
         subCommandBuilder.executes(ctx -> {

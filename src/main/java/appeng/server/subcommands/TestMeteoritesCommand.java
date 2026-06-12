@@ -35,7 +35,6 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.ClickEvent;
-import net.minecraft.network.chat.ClickEvent.Action;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.MutableComponent;
@@ -84,27 +83,27 @@ public class TestMeteoritesCommand implements ISubCommand {
         ServerLevel level;
         BlockPos centerBlock;
         if (player != null) {
-            level = player.serverLevel();
+            level = player.level();
             centerBlock = BlockPos.containing(player.getX(), 0, player.getZ());
         } else {
             level = srv.getLevel(Level.OVERWORLD);
-            centerBlock = level.getSharedSpawnPos();
+            centerBlock = level.getRespawnData().pos();
         }
 
-        ChunkPos center = new ChunkPos(centerBlock);
+        ChunkPos center = ChunkPos.containing(centerBlock);
 
-        var structures = level.registryAccess().registryOrThrow(Registries.STRUCTURE);
-        var structure = structures.get(MeteoriteStructure.KEY);
-        var structureSets = level.registryAccess().registryOrThrow(Registries.STRUCTURE_SET);
-        var structureSet = structureSets.getHolderOrThrow(MeteoriteStructure.STRUCTURE_SET_KEY);
+        var structures = level.registryAccess().lookupOrThrow(Registries.STRUCTURE);
+        var structure = structures.getValueOrThrow(MeteoriteStructure.KEY);
+        var structureSets = level.registryAccess().lookupOrThrow(Registries.STRUCTURE_SET);
+        var structureSet = structureSets.getOrThrow(MeteoriteStructure.STRUCTURE_SET_KEY);
 
         var generatorState = level.getChunkSource().getGeneratorState();
 
         // Find all meteorites in the given rectangle
         List<PlacedMeteoriteSettings> found = new ArrayList<>();
         int chunksChecked = 0;
-        for (int cx = center.x - radius; cx <= center.x + radius; cx++) {
-            for (int cz = center.z - radius; cz <= center.z + radius; cz++) {
+        for (int cx = center.x() - radius; cx <= center.x() + radius; cx++) {
+            for (int cz = center.z() - radius; cz <= center.z() + radius; cz++) {
                 chunksChecked++;
                 if (!generatorState.hasStructureChunkInRange(structureSet, cx, cz, 0)) {
                     continue;
@@ -178,10 +177,10 @@ public class TestMeteoritesCommand implements ISubCommand {
             msg.append(getClickablePosition(level, settings, pos)).append(restOfLine);
 
             // Add a tooltip
-            String biomeId = level.getBiome(pos).unwrapKey().map(bk -> bk.location().toString()).orElse("unknown");
+            String biomeId = level.getBiome(pos).unwrapKey().map(bk -> bk.identifier().toString()).orElse("unknown");
             Component tooltip = Component.literal(settings + "\nBiome: ").copy()
                     .append(biomeId);
-            msg.withStyle(style -> style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, tooltip)));
+            msg.withStyle(style -> style.withHoverEvent(new HoverEvent.ShowText(tooltip)));
 
             sender.sendSuccess(() -> msg, true);
         }
@@ -200,7 +199,7 @@ public class TestMeteoritesCommand implements ISubCommand {
         String tpCommand = String.format(Locale.ROOT, "/tp @s %d %d %d", tpPos.getX(), tpPos.getY(), tpPos.getZ());
 
         return Component.literal(displayText).withStyle(ChatFormatting.UNDERLINE)
-                .withStyle(style -> style.withClickEvent(new ClickEvent(Action.RUN_COMMAND, tpCommand)));
+                .withStyle(style -> style.withClickEvent(new ClickEvent.RunCommand(tpCommand)));
     }
 
     private static MeteoriteStructurePiece getMeteoritePieceFromChunk(ChunkAccess chunk,

@@ -18,6 +18,8 @@
 
 package appeng.block.spatial;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -26,6 +28,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.redstone.Orientation;
 import net.minecraft.world.phys.BlockHitResult;
 
 import appeng.api.orientation.IOrientationStrategy;
@@ -40,16 +43,15 @@ public class SpatialIOPortBlock extends AEBaseEntityBlock<SpatialIOPortBlockEnti
 
     public final static BooleanProperty POWERED = BooleanProperty.create("powered");
 
-    public SpatialIOPortBlock() {
-        super(metalProps());
+    public SpatialIOPortBlock(Properties p) {
+        super(metalProps(p));
         this.registerDefaultState(this.defaultBlockState().setValue(POWERED, false));
     }
 
-    @SuppressWarnings("deprecation")
     @Override
-    public void neighborChanged(BlockState state, Level level, BlockPos pos, Block blockIn, BlockPos fromPos,
-            boolean isMoving) {
-        final SpatialIOPortBlockEntity te = this.getBlockEntity(level, pos);
+    protected void neighborChanged(BlockState state, Level level, BlockPos pos, Block neighborBlock,
+            @Nullable Orientation orientation, boolean movedByPiston) {
+        var te = this.getBlockEntity(level, pos);
         if (te != null) {
             te.updateRedstoneState();
         }
@@ -75,10 +77,10 @@ public class SpatialIOPortBlock extends AEBaseEntityBlock<SpatialIOPortBlockEnti
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player,
             BlockHitResult hitResult) {
         if (level.getBlockEntity(pos) instanceof SpatialIOPortBlockEntity be) {
-            if (!level.isClientSide) {
+            if (!level.isClientSide()) {
                 MenuOpener.open(SpatialIOPortMenu.TYPE, player, MenuLocators.forBlockEntity(be));
             }
-            return InteractionResult.sidedSuccess(level.isClientSide());
+            return InteractionResult.SUCCESS;
         }
 
         return super.useWithoutItem(state, level, pos, player, hitResult);

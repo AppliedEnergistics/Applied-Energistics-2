@@ -36,11 +36,10 @@ import appeng.api.storage.cells.ICellWorkbenchItem;
 import appeng.api.upgrades.Upgrades;
 import appeng.blockentity.crafting.IMolecularAssemblerSupportedPattern;
 import appeng.blockentity.misc.InscriberRecipes;
-import appeng.blockentity.misc.VibrationChamberBlockEntity;
 import appeng.blockentity.qnb.QuantumBridgeBlockEntity;
-import appeng.client.gui.Icon;
 import appeng.core.definitions.AEItems;
 import appeng.crafting.pattern.EncodedPatternItem;
+import appeng.util.Icon;
 import appeng.util.Platform;
 
 /**
@@ -75,7 +74,7 @@ public class RestrictedInputSlot extends AppEngSlot {
     }
 
     private Level getLevel() {
-        return getMenu().getPlayerInventory().player.getCommandSenderWorld();
+        return getMenu().getPlayerInventory().player.level();
     }
 
     @Override
@@ -135,7 +134,7 @@ public class RestrictedInputSlot extends AppEngSlot {
             case VIEW_CELL:
                 return AEItems.VIEW_CELL.is(stack);
             case FUEL:
-                return VibrationChamberBlockEntity.hasBurnTime(stack);
+                return stack.getBurnTime(null, getLevel().fuelValues()) > 0;
             case POWERED_TOOL:
                 return Platform.isChargeable(stack);
             case QE_SINGULARITY:

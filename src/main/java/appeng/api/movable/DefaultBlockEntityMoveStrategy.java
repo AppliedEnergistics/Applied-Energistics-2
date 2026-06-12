@@ -23,31 +23,33 @@
 
 package appeng.api.movable;
 
-import org.jetbrains.annotations.Nullable;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.TagValueOutput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 /**
  * The default strategy for moving block entities in/out of spatial storage. Can be extended to create custom logic that
  * runs after {@link #completeMove} or prevents moving specific entities in {@link IBlockEntityMoveStrategy#beginMove}
  * by returning null.
  * <p/>
- * The default strategy uses {@link BlockEntity#saveWithId(HolderLookup.Provider)} in
- * {@link IBlockEntityMoveStrategy#beginMove} to persist the block entity data before it is removed, and then creates a
- * new block entity at the target position using
- * {@link BlockEntity#loadStatic(BlockPos, BlockState, CompoundTag, HolderLookup.Provider)} in {@link #completeMove}.
+ * The default strategy uses {@link BlockEntity#saveWithId(ValueOutput)} in {@link IBlockEntityMoveStrategy#beginMove}
+ * to persist the block entity data before it is removed, and then creates a new block entity at the target position
+ * using {@link BlockEntity#loadStatic(BlockPos, BlockState, CompoundTag, HolderLookup.Provider)} in
+ * {@link #completeMove}.
  */
 public abstract class DefaultBlockEntityMoveStrategy implements IBlockEntityMoveStrategy {
 
-    @Nullable
     @Override
     public CompoundTag beginMove(BlockEntity blockEntity, HolderLookup.Provider registries) {
-        return blockEntity.saveWithId(registries);
+        var output = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, registries);
+        blockEntity.saveWithId(output);
+        return output.buildResult();
     }
 
     @Override

@@ -1,14 +1,9 @@
 
 package appeng.core.network.clientbound;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.world.entity.player.Player;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
-import appeng.client.render.effects.ParticleTypes;
 import appeng.core.network.ClientboundPacket;
 import appeng.core.network.CustomAppEngPayload;
 
@@ -63,17 +58,5 @@ public record MatterCannonPacket(double x,
         data.writeFloat((float) this.dy);
         data.writeFloat((float) this.dz);
         data.writeByte(len);
-    }
-
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    public void handleOnClient(Player player) {
-        try {
-            for (int a = 1; a < this.len; a++) {
-                Minecraft.getInstance().particleEngine.createParticle(ParticleTypes.MATTER_CANNON, this.x + this.dx * a,
-                        this.y + this.dy * a, this.z + this.dz * a, 0, 0, 0);
-            }
-        } catch (Exception ignored) {
-        }
     }
 }

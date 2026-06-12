@@ -24,10 +24,10 @@ import java.util.List;
 import java.util.Objects;
 
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.GridHelper;
@@ -36,14 +36,10 @@ import appeng.api.networking.IManagedGridNode;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartHost;
 import appeng.api.parts.IPartItem;
-import appeng.api.parts.IPartModel;
 import appeng.api.util.AECableType;
-import appeng.core.AppEng;
-import appeng.items.parts.PartModels;
 import appeng.me.energy.IEnergyOverlayGridConnection;
 import appeng.me.service.EnergyService;
 import appeng.parts.AEBasePart;
-import appeng.parts.PartModel;
 
 /**
  * A quartz fiber consists of two grid nodes which are not connected directly.
@@ -54,10 +50,6 @@ import appeng.parts.PartModel;
  * when it is added or removed from a grid.
  */
 public class QuartzFiberPart extends AEBasePart {
-
-    @PartModels
-    private static final IPartModel MODELS = new PartModel(AppEng.makeId("part/quartz_fiber"));
-
     private final IManagedGridNode outerNode;
 
     public QuartzFiberPart(IPartItem<?> partItem) {
@@ -93,15 +85,15 @@ public class QuartzFiberPart extends AEBasePart {
     }
 
     @Override
-    public void readFromNBT(CompoundTag extra, HolderLookup.Provider registries) {
-        super.readFromNBT(extra, registries);
-        this.outerNode.loadFromNBT(extra);
+    public void readFromNBT(ValueInput extra) {
+        super.readFromNBT(extra);
+        this.outerNode.deserialize(extra);
     }
 
     @Override
-    public void writeToNBT(CompoundTag extra, HolderLookup.Provider registries) {
-        super.writeToNBT(extra, registries);
-        this.outerNode.saveToNBT(extra);
+    public void writeToNBT(ValueOutput extra) {
+        super.writeToNBT(extra);
+        this.outerNode.serialize(extra);
     }
 
     @Override
@@ -137,10 +129,4 @@ public class QuartzFiberPart extends AEBasePart {
         super.onPlacement(player);
         this.outerNode.setOwningPlayer(player);
     }
-
-    @Override
-    public IPartModel getStaticModels() {
-        return MODELS;
-    }
-
 }

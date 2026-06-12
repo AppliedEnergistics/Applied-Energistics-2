@@ -26,6 +26,8 @@ import com.google.common.base.Stopwatch;
 
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.minecraft.world.level.Level;
 
@@ -43,6 +45,8 @@ import appeng.crafting.inv.NetworkCraftingSimulationState;
 import appeng.hooks.ticking.TickHandler;
 
 public class CraftingCalculation {
+    private static final Logger LOG = LoggerFactory.getLogger(CraftingCalculation.class);
+
     private final NetworkCraftingSimulationState networkInv;
     private final Level level;
     private final KeyCounter missing = new KeyCounter();
@@ -89,7 +93,7 @@ public class CraftingCalculation {
             this.logCraftingJob(plan);
             return plan;
         } catch (Exception ex) {
-            AELog.info(ex, "Exception during crafting calculation.");
+            LOG.info("Exception during crafting calculation.", ex);
             throw new RuntimeException(ex);
         } finally {
             this.finish();

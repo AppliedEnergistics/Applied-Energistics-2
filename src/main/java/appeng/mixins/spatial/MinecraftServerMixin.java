@@ -17,10 +17,10 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.RegistryLayer;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.progress.ChunkProgressListener;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.BiomeManager;
 import net.minecraft.world.level.dimension.LevelStem;
+import net.minecraft.world.level.levelgen.WorldGenSettings;
 import net.minecraft.world.level.storage.DerivedLevelData;
 import net.minecraft.world.level.storage.LevelStorageSource;
 import net.minecraft.world.level.storage.WorldData;
@@ -47,6 +47,9 @@ public abstract class MinecraftServerMixin {
     protected WorldData worldData;
 
     @Shadow
+    protected WorldGenSettings worldGenSettings;
+
+    @Shadow
     protected Executor executor;
 
     @Shadow
@@ -57,16 +60,16 @@ public abstract class MinecraftServerMixin {
 
     @SuppressWarnings("ConstantConditions")
     @Inject(method = "createLevels", at = @At(value = "TAIL"))
-    public void injectSpatialLevel(ChunkProgressListener chunkProgressListener, CallbackInfo ci) {
+    public void injectSpatialLevel(CallbackInfo ci) {
         var registryHolder = registries.compositeAccess();
 
         var levelStem = new LevelStem(
-                registryHolder.registryOrThrow(Registries.DIMENSION_TYPE)
-                        .getHolderOrThrow(SpatialStorageDimensionIds.DIMENSION_TYPE_ID),
+                registryHolder.lookupOrThrow(Registries.DIMENSION_TYPE)
+                        .getOrThrow(SpatialStorageDimensionIds.DIMENSION_TYPE_ID),
                 new SpatialStorageChunkGenerator(
                         registryHolder.lookupOrThrow(Registries.BIOME)));
 
-        long seed = BiomeManager.obfuscateSeed(this.worldData.worldGenOptions().seed());
+        long seed = BiomeManager.obfuscateSeed(this.worldGenSettings.options().seed());
 
         var serverLevelData = this.worldData.overworldData();
         var derivedLevelData = new DerivedLevelData(this.worldData, serverLevelData);
@@ -77,12 +80,10 @@ public abstract class MinecraftServerMixin {
                 derivedLevelData,
                 SpatialStorageDimensionIds.WORLD_ID,
                 levelStem,
-                chunkProgressListener,
                 false /* debug */,
                 seed,
                 ImmutableList.of(),
-                false,
-                null);
+                false /* tick time */);
         // NOTE: We don't register the spatial dimension for the world-border. Players can't move freely in that
         // dimension anyway.
         this.levels.put(SpatialStorageDimensionIds.WORLD_ID, level);

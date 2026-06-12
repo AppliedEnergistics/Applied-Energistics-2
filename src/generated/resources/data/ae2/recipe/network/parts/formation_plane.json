@@ -2,22 +2,15 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "a": {
-      "tag": "ae2:all_fluix"
-    },
-    "b": {
-      "tag": "c:ingots/iron"
-    },
-    "c": {
-      "item": "ae2:formation_core"
-    }
+    "a": "#ae2:all_fluix",
+    "b": "#c:ingots/iron",
+    "c": "ae2:formation_core"
   },
   "pattern": [
     "aaa",
     "bcb"
   ],
   "result": {
-    "count": 1,
     "id": "ae2:formation_plane"
   }
 }

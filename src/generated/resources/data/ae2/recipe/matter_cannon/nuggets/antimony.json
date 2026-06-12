@@ -9,8 +9,6 @@
     }
   ],
   "type": "ae2:matter_cannon",
-  "ammo": {
-    "tag": "c:nuggets/antimony"
-  },
+  "ammo": "#c:nuggets/antimony",
   "weight": 121.76
 }

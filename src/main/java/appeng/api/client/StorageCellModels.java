@@ -23,7 +23,6 @@
 
 package appeng.api.client;
 
-import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -32,10 +31,14 @@ import com.google.common.base.Preconditions;
 
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
 import net.minecraft.client.resources.model.ModelBakery;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
+import net.neoforged.neoforge.client.model.standalone.StandaloneModelKey;
+
+import appeng.core.AppEng;
 
 /**
  * A registry for 3D models used to render storage cells in the world, when they are inserted into a drive or similar
@@ -43,49 +46,47 @@ import net.minecraft.world.level.ItemLike;
  */
 public final class StorageCellModels {
 
-    private static final ResourceLocation MODEL_CELL_DEFAULT = ResourceLocation.parse(
-            "ae2:block/drive/drive_cell");
+    private static final Identifier MODEL_CELL_DEFAULT = AppEng.makeId("block/drive_cell");
+    private static final StandaloneModelKey<BlockStateModel> MODEL_CELL_DEFAULT_STANDALONE = new StandaloneModelKey<>(
+            MODEL_CELL_DEFAULT::toString);
 
-    private static final Map<Item, ResourceLocation> registry = new IdentityHashMap<>();
+    private static final Map<Item, Identifier> registry = new IdentityHashMap<>();
+    private static final Map<Item, StandaloneModelKey<BlockStateModel>> standaloneRegistry = new IdentityHashMap<>();
 
     private StorageCellModels() {
     }
 
     /**
      * Register a new model for a storage cell item.
-     * 
      * <p>
-     * You are responsible for ensuring that the given model is actually loaded by the game. See
-     * {@link net.neoforged.neoforge.client.event.ModelEvent.RegisterAdditional}.
-     * 
-     * This method only maps an {@link Item} to a {@link ResourceLocation} which can be looked up from the
+     * This method only maps an {@link Item} to a {@link Identifier} which can be looked up from the
      * {@link ModelBakery}. No validation about missing models will be done.
-     * 
+     * <p>
      * Will throw an exception in case a model is already registered for an item.
-     * 
+     * <p>
      * For examples look at our cell part models within the drive model directory.
-     * 
+     *
      * @param itemLike The cell item
-     * @param model    The {@link ResourceLocation} representing the model.
+     * @param model    The {@link Identifier} representing the model.
      */
-    public synchronized static void registerModel(ItemLike itemLike, ResourceLocation model) {
+    public synchronized static void registerModel(ItemLike itemLike, Identifier model) {
         Objects.requireNonNull(itemLike, "itemLike");
         var item = Objects.requireNonNull(itemLike.asItem(), "item.asItem()");
         Objects.requireNonNull(model, "model");
         Preconditions.checkArgument(!registry.containsKey(item), "Cannot register an item twice.");
 
         registry.put(item, model);
+        standaloneRegistry.put(item, new StandaloneModelKey<>(model::toString));
     }
 
     /**
-     * The {@link ResourceLocation} of the model used to render the given storage cell {@link Item} when inserted into a
-     * drive or similar.
-     * 
-     * @param itemLike
+     * The {@link Identifier} of the model used to render the given storage cell {@link Item} when inserted into a drive
+     * or similar.
+     *
      * @return null, if no model is registered.
      */
     @Nullable
-    public synchronized static ResourceLocation model(ItemLike itemLike) {
+    public synchronized static Identifier model(ItemLike itemLike) {
         Objects.requireNonNull(itemLike, "itemLike");
         var item = Objects.requireNonNull(itemLike.asItem(), "itemLike.asItem()");
 
@@ -93,19 +94,47 @@ public final class StorageCellModels {
     }
 
     /**
+     * The key for use with
+     * {@link net.minecraft.client.resources.model.ModelManager#getStandaloneModel(StandaloneModelKey)} for a given cell
+     * item. Since standalone keys are never allowed to change, the registry pre-creates them for your registered
+     * models.
+     *
+     * @return null, if no model is registered.
+     */
+    @Nullable
+    public synchronized static StandaloneModelKey<BlockStateModel> standaloneModel(ItemLike itemLike) {
+        Objects.requireNonNull(itemLike, "itemLike");
+        var item = Objects.requireNonNull(itemLike.asItem(), "itemLike.asItem()");
+
+        return standaloneRegistry.get(item);
+    }
+
+    /**
      * A copy of all registered mappings.
      */
+    public synchronized static Map<Item, Identifier> models() {
+        return new IdentityHashMap<>(registry);
+    }
 
-    public synchronized static Map<Item, ResourceLocation> models() {
-        return new HashMap<>(registry);
+    /**
+     * A copy of all registered standalone model keys.
+     */
+    public synchronized static Map<Item, StandaloneModelKey<BlockStateModel>> standaloneModels() {
+        return new IdentityHashMap<>(standaloneRegistry);
     }
 
     /**
      * Returns the default model, which can be used when no explicit model is registered.
      */
-
-    public static ResourceLocation getDefaultModel() {
+    public static Identifier getDefaultModel() {
         return MODEL_CELL_DEFAULT;
+    }
+
+    /**
+     * Returns the default model, which can be used when no explicit model is registered.
+     */
+    public static StandaloneModelKey<BlockStateModel> getDefaultStandaloneModel() {
+        return MODEL_CELL_DEFAULT_STANDALONE;
     }
 
 }

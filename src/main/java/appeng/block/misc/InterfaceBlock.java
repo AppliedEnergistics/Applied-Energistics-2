@@ -30,8 +30,8 @@ import appeng.blockentity.misc.InterfaceBlockEntity;
 import appeng.menu.locator.MenuLocators;
 
 public class InterfaceBlock extends AEBaseEntityBlock<InterfaceBlockEntity> {
-    public InterfaceBlock() {
-        super(metalProps());
+    public InterfaceBlock(Properties p) {
+        super(metalProps(p));
     }
 
     @Override
@@ -41,7 +41,7 @@ public class InterfaceBlock extends AEBaseEntityBlock<InterfaceBlockEntity> {
             if (!level.isClientSide()) {
                 be.openMenu(player, MenuLocators.forBlockEntity(be));
             }
-            return InteractionResult.sidedSuccess(level.isClientSide());
+            return InteractionResult.SUCCESS;
         }
         return super.useWithoutItem(state, level, pos, player, hitResult);
     }

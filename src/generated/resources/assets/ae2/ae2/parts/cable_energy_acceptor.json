@@ -1,0 +1,6 @@
+{
+  "model": {
+    "type": "ae2:model",
+    "model": "ae2:part/energy_acceptor"
+  }
+}

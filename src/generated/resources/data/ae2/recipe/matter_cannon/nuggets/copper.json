@@ -9,8 +9,6 @@
     }
   ],
   "type": "ae2:matter_cannon",
-  "ammo": {
-    "tag": "c:nuggets/copper"
-  },
+  "ammo": "#c:nuggets/copper",
   "weight": 63.546
 }

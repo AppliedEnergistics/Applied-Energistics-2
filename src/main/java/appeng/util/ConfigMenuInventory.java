@@ -8,6 +8,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 
 import appeng.api.inventories.InternalInventory;
 import appeng.api.stacks.AEItemKey;
@@ -29,6 +31,11 @@ public class ConfigMenuInventory implements InternalInventory {
 
     public GenericStackInv getDelegate() {
         return inv;
+    }
+
+    @Override
+    public ResourceHandler<ItemResource> toResourceHandler() {
+        throw new UnsupportedOperationException();
     }
 
     @Override

@@ -82,12 +82,12 @@ public final class PlacedMeteoriteSettings {
     }
 
     public static PlacedMeteoriteSettings read(CompoundTag tag) {
-        BlockPos pos = BlockPos.of(tag.getLong(Constants.TAG_POS));
-        float meteoriteRadius = tag.getFloat(Constants.TAG_RADIUS);
-        CraterType craterType = CraterType.values()[tag.getByte(Constants.TAG_CRATER)];
-        FalloutMode fallout = FalloutMode.values()[tag.getByte(Constants.TAG_FALLOUT)];
-        boolean pureCrater = tag.getBoolean(Constants.TAG_PURE);
-        boolean craterLake = tag.getBoolean(Constants.TAG_LAKE);
+        BlockPos pos = BlockPos.of(tag.getLongOr(Constants.TAG_POS, 0));
+        float meteoriteRadius = tag.getFloatOr(Constants.TAG_RADIUS, 0.f);
+        CraterType craterType = CraterType.values()[tag.getByteOr(Constants.TAG_CRATER, (byte) 0)];
+        FalloutMode fallout = FalloutMode.values()[tag.getByteOr(Constants.TAG_FALLOUT, (byte) 0)];
+        boolean pureCrater = tag.getBooleanOr(Constants.TAG_PURE, false);
+        boolean craterLake = tag.getBooleanOr(Constants.TAG_LAKE, false);
 
         return new PlacedMeteoriteSettings(pos, meteoriteRadius, craterType, fallout, pureCrater, craterLake);
     }

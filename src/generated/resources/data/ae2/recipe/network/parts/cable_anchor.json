@@ -1,15 +1,13 @@
 {
   "type": "ae2:quartz_cutting",
+  "category": "misc",
   "ingredients": [
-    {
-      "tag": "ae2:knife"
-    },
-    {
-      "tag": "ae2:metal_ingots"
-    }
+    "#ae2:knife",
+    "#ae2:metal_ingots"
   ],
   "result": {
     "count": 4,
     "id": "ae2:cable_anchor"
-  }
+  },
+  "show_notification": false
 }

@@ -26,14 +26,13 @@ import org.apache.commons.lang3.StringUtils;
 import io.netty.buffer.ByteBuf;
 
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 import appeng.api.parts.IFacadeContainer;
 import appeng.api.parts.IFacadePart;
@@ -91,26 +90,23 @@ public class FacadeContainer implements IFacadeContainer {
     }
 
     @Override
-    public void readFromNBT(CompoundTag c, HolderLookup.Provider registries) {
+    public void readFromNBT(ValueInput input) {
         for (var side : Direction.values()) {
             this.storage.removeFacade(side);
 
-            var tag = c.get(NBT_KEY_NAMES[side.ordinal()]);
-            var result = BlockState.CODEC.decode(NbtOps.INSTANCE, tag).result();
-            if (result.isPresent()) {
-                var blockState = result.get().getFirst();
+            var blockState = input.read(NBT_KEY_NAMES[side.ordinal()], BlockState.CODEC).orElse(null);
+            if (blockState != null) {
                 this.storage.setFacade(side, new FacadePart(blockState, side));
             }
         }
     }
 
     @Override
-    public void writeToNBT(CompoundTag c, HolderLookup.Provider registries) {
+    public void writeToNBT(ValueOutput output) {
         for (var side : Direction.values()) {
-            if (this.storage.getFacade(side) != null) {
-                var data = BlockState.CODEC.encodeStart(NbtOps.INSTANCE, this.storage.getFacade(side).getBlockState())
-                        .getOrThrow();
-                c.put(NBT_KEY_NAMES[side.ordinal()], data);
+            var facade = this.storage.getFacade(side);
+            if (facade != null) {
+                output.store(NBT_KEY_NAMES[side.ordinal()], BlockState.CODEC, facade.getBlockState());
             }
         }
     }

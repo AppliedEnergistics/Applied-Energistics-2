@@ -73,7 +73,7 @@ public final class DimensionalBlockPos {
 
     @Override
     public String toString() {
-        return pos.getX() + "," + pos.getY() + "," + pos.getZ() + " in " + getLevel().dimension().location();
+        return pos.getX() + "," + pos.getY() + "," + pos.getZ() + " in " + getLevel().dimension().identifier();
     }
 
     public boolean isInWorld(LevelAccessor level) {

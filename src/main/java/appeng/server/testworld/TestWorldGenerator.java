@@ -11,7 +11,7 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
@@ -43,7 +43,7 @@ public class TestWorldGenerator {
     private final BlockPos suitableStartPos;
 
     public TestWorldGenerator(ServerLevel level, ServerPlayer player, BlockPos origin,
-            @Nullable ResourceLocation plotId) {
+            @Nullable Identifier plotId) {
         this.level = level;
         this.origin = origin;
         this.player = player;
@@ -158,22 +158,22 @@ public class TestWorldGenerator {
     }
 
     private void buildPlatform() {
-        var from = new ChunkPos(
+        var from = ChunkPos.containing(
                 new BlockPos(overallBounds.minX() - OUTER_PADDING, 0, overallBounds.minZ() - OUTER_PADDING));
-        var to = new ChunkPos(
+        var to = ChunkPos.containing(
                 new BlockPos(overallBounds.maxX() + OUTER_PADDING, 0, overallBounds.maxZ() + OUTER_PADDING));
 
         var state = AEBlocks.SKY_STONE_BRICK.block().defaultBlockState();
         var pos = new BlockPos.MutableBlockPos();
         ChunkPos.rangeClosed(from, to).forEach(chunkPos -> {
-            var chunk = level.getChunk(chunkPos.x, chunkPos.z);
+            var chunk = level.getChunk(chunkPos.x(), chunkPos.z());
             for (var x = 0; x < 16; x++) {
                 pos.setX(chunkPos.getMinBlockX() + x);
                 for (var z = 0; z < 16; z++) {
                     pos.setZ(chunkPos.getMinBlockZ() + z);
                     for (var y = -3; y <= -1; y++) {
                         pos.setY(origin.getY() + y);
-                        chunk.setBlockState(pos, state, false);
+                        chunk.setBlockState(pos, state);
                     }
                 }
             }
@@ -181,13 +181,13 @@ public class TestWorldGenerator {
     }
 
     private void clearLevel() {
-        var from = new ChunkPos(
+        var from = ChunkPos.containing(
                 new BlockPos(overallBounds.minX() - OUTER_PADDING, 0, overallBounds.minZ() - OUTER_PADDING));
-        var to = new ChunkPos(
+        var to = ChunkPos.containing(
                 new BlockPos(overallBounds.maxX() + OUTER_PADDING, 0, overallBounds.maxZ() + OUTER_PADDING));
 
         ChunkPos.rangeClosed(from, to).forEach(chunkPos -> {
-            var chunk = level.getChunk(chunkPos.x, chunkPos.z);
+            var chunk = level.getChunk(chunkPos.x(), chunkPos.z());
             if (!chunk.isEmpty()) {
                 clearChunk(chunk);
             }
@@ -204,7 +204,7 @@ public class TestWorldGenerator {
             if (!sec.hasOnlyAir()) {
                 var p = new BlockPos.MutableBlockPos();
                 var air = Blocks.AIR.defaultBlockState();
-                int bottomBlock = chunk.getMinBuildHeight() + SectionPos.SECTION_SIZE * sectionId;
+                int bottomBlock = chunk.getMinY() + SectionPos.SECTION_SIZE * sectionId;
                 for (var y = 0; y < SectionPos.SECTION_SIZE; y++) {
                     p.setY(bottomBlock + y);
                     for (var x = 0; x < 16; x++) {

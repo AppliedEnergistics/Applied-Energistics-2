@@ -19,9 +19,10 @@
 package appeng.items.tools.quartz;
 
 import net.minecraft.world.item.HoeItem;
+import net.minecraft.world.item.ToolMaterial;
 
 public class QuartzHoeItem extends HoeItem {
-    public QuartzHoeItem(Properties props, QuartzToolType type) {
-        super(type.getToolTier(), props.attributes(createAttributes(type.getToolTier(), -2, -1.0F)));
+    public QuartzHoeItem(Properties props) {
+        super(ToolMaterial.IRON, -2, -1.0F, props);
     }
 }

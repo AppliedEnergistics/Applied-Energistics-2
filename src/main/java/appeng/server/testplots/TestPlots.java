@@ -20,15 +20,16 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
+import net.minecraft.util.Util;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -88,21 +89,38 @@ import appeng.util.Platform;
 public final class TestPlots {
     private static final Logger LOG = LoggerFactory.getLogger(TestPlots.class);
 
+    public record PlotInfo(
+            Identifier id,
+            Consumer<PlotBuilder> runner,
+            @Nullable PlotTestInfo testInfo) {
+    }
+
+    public record PlotTestInfo(
+            int maxTicks,
+            int setupTicks,
+            boolean skyAccess,
+            int padding) {
+        public PlotTestInfo() {
+            this(TestPlot.DEFAULT_MAX_TICKS, TestPlot.DEFAULT_SETUP_TICKS, TestPlot.DEFAULT_SKY_ACCESS,
+                    TestPlot.DEFAULT_PADDING);
+        }
+    }
+
     @Nullable
-    private static Map<ResourceLocation, Consumer<PlotBuilder>> plots;
+    private static Map<Identifier, PlotInfo> plots;
 
     private TestPlots() {
     }
 
-    private static synchronized Map<ResourceLocation, Consumer<PlotBuilder>> getPlots() {
+    private static synchronized Map<Identifier, PlotInfo> getPlotMap() {
         if (plots == null) {
             plots = scanForPlots();
         }
         return plots;
     }
 
-    private static Map<ResourceLocation, Consumer<PlotBuilder>> scanForPlots() {
-        var plots = new HashMap<ResourceLocation, Consumer<PlotBuilder>>();
+    private static Map<Identifier, PlotInfo> scanForPlots() {
+        var plots = new HashMap<Identifier, PlotInfo>();
 
         try {
             for (var clazz : findAllTestPlotClasses()) {
@@ -135,8 +153,17 @@ public final class TestPlots {
                                     "Method " + method + " must take a single PlotBuilder argument");
                         }
 
+                        PlotTestInfo testInfo = null;
+                        if (annotation.gameTest()) {
+                            testInfo = new PlotTestInfo(
+                                    annotation.maxTicks(),
+                                    annotation.setupTicks(),
+                                    annotation.skyAccess(),
+                                    annotation.padding());
+                        }
+
                         var id = AppEng.makeId(annotation.value());
-                        plots.put(id, builder -> {
+                        plots.put(id, new PlotInfo(id, builder -> {
                             try {
                                 method.invoke(null, builder);
                             } catch (InvocationTargetException e) {
@@ -144,7 +171,7 @@ public final class TestPlots {
                             } catch (IllegalAccessException e) {
                                 throw new RuntimeException("Failed to access " + method, e);
                             }
-                        });
+                        }, testInfo));
                     } else if (generatorAnnotation != null) {
                         if (!Arrays.asList(method.getParameterTypes()).equals(List.of(TestPlotCollection.class))) {
                             throw new IllegalStateException(
@@ -164,7 +191,7 @@ public final class TestPlots {
                 }
             }
         } catch (Exception e) {
-            AELog.error("Failed to scan for plots: %s", e);
+            LOG.error("Failed to scan for plots.", e);
         }
 
         return plots;
@@ -189,45 +216,45 @@ public final class TestPlots {
         return result;
     }
 
-    public static List<ResourceLocation> getPlotIds() {
-        var list = new ArrayList<>(getPlots().keySet());
-        list.sort(Comparator.comparing(ResourceLocation::toString));
+    public static List<PlotInfo> getPlots() {
+        var list = new ArrayList<>(getPlotMap().values());
+        list.sort(Comparator.comparing(PlotInfo::id));
         return list;
     }
 
     public static List<Plot> createPlots() {
         var plots = new ArrayList<Plot>();
-        for (var entry : getPlots().entrySet()) {
-            var plot = new Plot(entry.getKey());
-            entry.getValue().accept(plot);
+        for (var plotInfo : getPlots()) {
+            var plot = new Plot(plotInfo.id());
+            plotInfo.runner.accept(plot);
             plots.add(plot);
         }
         return plots;
     }
 
     @Nullable
-    public static Plot getById(ResourceLocation name) {
-        var factory = getPlots().get(name);
-        if (factory == null) {
+    public static Plot getById(Identifier name) {
+        var info = getPlotMap().get(name);
+        if (info == null) {
             return null;
         }
         var plot = new Plot(name);
-        factory.accept(plot);
+        info.runner.accept(plot);
         return plot;
     }
 
     private static AEItemKey createEnchantedPickaxe(Level level) {
-        var enchantmentRegistry = level.registryAccess().registryOrThrow(Registries.ENCHANTMENT);
+        var enchantmentRegistry = level.registryAccess().lookupOrThrow(Registries.ENCHANTMENT);
 
         var enchantedPickaxe = new ItemStack(Items.DIAMOND_PICKAXE);
-        enchantedPickaxe.enchant(enchantmentRegistry.getHolderOrThrow(Enchantments.FORTUNE), 3);
+        enchantedPickaxe.enchant(enchantmentRegistry.getOrThrow(Enchantments.FORTUNE), 3);
         return AEItemKey.of(enchantedPickaxe);
     }
 
     /**
      * A wall of all terminals/monitors in all color combinations.
      */
-    @TestPlot("all_terminals")
+    @TestPlot(value = "all_terminals", gameTest = false)
     public static void allTerminals(PlotBuilder plot) {
         plot.creativeEnergyCell("0 -1 0");
 
@@ -288,7 +315,7 @@ public final class TestPlots {
         return colors;
     }
 
-    @TestPlot("item_chest")
+    @TestPlot(value = "item_chest", gameTest = false)
     public static void itemChest(PlotBuilder plot) {
         plot.blockEntity("0 0 0", AEBlocks.ME_CHEST, chest -> {
             var cellItem = AEItems.ITEM_CELL_1K.stack();
@@ -305,7 +332,7 @@ public final class TestPlots {
         plot.creativeEnergyCell("0 -1 0");
     }
 
-    @TestPlot("fluid_chest")
+    @TestPlot(value = "fluid_chest", gameTest = false)
     public static void fluidChest(PlotBuilder plot) {
         plot.blockEntity("0 0 0", AEBlocks.ME_CHEST, chest -> {
             var cellItem = AEItems.FLUID_CELL_1K.stack();
@@ -326,7 +353,7 @@ public final class TestPlots {
         plot.creativeEnergyCell("0 -1 0");
     }
 
-    @TestPlot("import_exportbus")
+    @TestPlot(value = "import_exportbus", gameTest = false)
     public static void importExportBus(PlotBuilder plot) {
         plot.chest("1 0 1", new ItemStack(Items.ACACIA_LOG, 16), new ItemStack(Items.ENDER_PEARL, 6));
         plot.block("1 1 1", Blocks.HOPPER);
@@ -378,7 +405,7 @@ public final class TestPlots {
         });
     }
 
-    @TestPlot("inscriber")
+    @TestPlot(value = "inscriber", gameTest = false)
     public static void inscriber(PlotBuilder plot) {
         processorInscriber(plot.offset(0, 1, 2), AEItems.LOGIC_PROCESSOR_PRESS, Items.GOLD_INGOT);
         processorInscriber(plot.offset(5, 1, 2), AEItems.ENGINEERING_PROCESSOR_PRESS, Items.DIAMOND);
@@ -510,7 +537,7 @@ public final class TestPlots {
 
         plot.test(helper -> {
             // Import bus should import nothing on its own
-            var inputChest = (ChestBlockEntity) helper.getBlockEntity(inputPos);
+            var inputChest = helper.getBlockEntity(inputPos, ChestBlockEntity.class);
             var grid = helper.getGrid(origin);
             Runnable assertNothingMoved = () -> {
                 helper.assertContainerContains(inputPos, Items.OAK_PLANKS);
@@ -548,7 +575,7 @@ public final class TestPlots {
      * from. This is a regression test for Fabric, where the Storage Bus has to open a Transaction for
      * getAvailableStacks, and the simulated extraction causes a neighbor update, triggering the import bus.
      */
-    @TestPlot("import_on_pulse_transactioncrash")
+    @TestPlot(value = "import_on_pulse_transactioncrash", setupTicks = 20, maxTicks = 150)
     public static void importOnPulseTransactionCrash(PlotBuilder plot) {
         plot.creativeEnergyCell("1 0 0");
         plot.chest("0 0 -1", new ItemStack(Items.OAK_PLANKS)); // Import Chest
@@ -579,10 +606,10 @@ public final class TestPlots {
                         helper.assertContainerEmpty(new BlockPos(0, 0, 1));
                     })
                     .thenSucceed();
-        }).setupTicks(20).maxTicks(150);
+        });
     }
 
-    @TestPlot("mattercannon_range")
+    @TestPlot(value = "mattercannon_range", gameTest = false)
     public static void matterCannonRange(PlotBuilder plot) {
         var origin = BlockPos.ZERO;
 
@@ -647,7 +674,7 @@ public final class TestPlots {
         plot.creativeEnergyCell(origin.east().north().below());
 
         plot.test(helper -> helper.succeedWhen(() -> {
-            var meChest = (MEChestBlockEntity) helper.getBlockEntity(origin);
+            var meChest = helper.getBlockEntity(origin, MEChestBlockEntity.class);
             helper.assertContains(meChest.getInventory(), AEFluidKey.of(Fluids.WATER));
         }));
     }
@@ -668,14 +695,14 @@ public final class TestPlots {
         plot.hopper(origin.above(), Direction.DOWN, Items.STICK, Items.REDSTONE);
 
         plot.test(helper -> helper.succeedWhen(() -> {
-            var meChest = (MEChestBlockEntity) helper.getBlockEntity(origin);
+            var meChest = helper.getBlockEntity(origin, MEChestBlockEntity.class);
             helper.assertContains(meChest.getInventory(), AEItemKey.of(Items.REDSTONE));
             // The stick should still be in the hopper
             helper.assertContainerContains(origin.above(), Items.STICK);
         }));
     }
 
-    @TestPlot("maxchannels_adhoctest")
+    @TestPlot(value = "maxchannels_adhoctest", gameTest = false)
     public static void maxChannelsAdHocTest(PlotBuilder plot) {
         plot.creativeEnergyCell("0 -1 0");
         plot.block("[-3,3] -2 [-3,3]", AEBlocks.DRIVE);
@@ -697,7 +724,7 @@ public final class TestPlots {
 
             var patternProviders = grid.getMachines(PatternProviderPart.class).iterator();
             PatternProviderPart current = patternProviders.next();
-            var craftingRecipes = node.getLevel().getRecipeManager().getAllRecipesFor(RecipeType.CRAFTING);
+            var craftingRecipes = node.getLevel().recipeAccess().recipeMap().byType(RecipeType.CRAFTING);
 
             Set<AEItemKey> neededIngredients = new HashSet<>();
             Set<AEItemKey> providedResults = new HashSet<>();
@@ -710,33 +737,35 @@ public final class TestPlots {
 
                 ItemStack craftingPattern;
                 try {
+                    var resultItem = CraftingRecipeUtil.getResult(recipe);
                     var ingredients = CraftingRecipeUtil.ensure3by3CraftingMatrix(recipe).stream()
                             .map(i -> {
                                 if (i.isEmpty()) {
                                     return ItemStack.EMPTY;
                                 } else {
-                                    return i.getItems()[0];
+                                    return i.get().items().map(Holder::value).map(Item::getDefaultInstance).findFirst()
+                                            .orElse(ItemStack.EMPTY);
                                 }
                             }).toArray(ItemStack[]::new);
+
                     craftingPattern = PatternDetailsHelper.encodeCraftingPattern(
                             holder,
                             ingredients,
-                            recipe.getResultItem(node.getLevel().registryAccess()),
+                            resultItem,
                             false,
                             false);
 
-                    for (ItemStack ingredient : ingredients) {
+                    for (var ingredient : ingredients) {
                         var key = AEItemKey.of(ingredient);
                         if (key != null) {
                             neededIngredients.add(key);
                         }
                     }
-                    if (!recipe.getResultItem(node.getLevel().registryAccess()).isEmpty()) {
-                        providedResults.add(AEItemKey.of(recipe.getResultItem(node.getLevel().registryAccess())));
+                    if (!resultItem.isEmpty()) {
+                        providedResults.add(AEItemKey.of(resultItem));
                     }
                 } catch (Exception e) {
-                    AELog.warn(e);
-                    continue;
+                    throw new RuntimeException(e);
                 }
 
                 if (!current.getLogic().getPatternInv().addItems(craftingPattern).isEmpty()) {
@@ -811,7 +840,7 @@ public final class TestPlots {
                         var requesting = grid.getCraftingService().getRequestedAmount(output.what());
                         helper.check(requesting > 0, "not yet requesting items");
                         if (requesting != 1) {
-                            helper.fail("blocking mode failed, requesting: " + requesting);
+                            throw helper.assertionException("blocking mode failed, requesting: " + requesting);
                         }
                     })
                     .thenSucceed();
@@ -821,7 +850,7 @@ public final class TestPlots {
     /**
      * Simple terminal full of enchanted items to test rendering performance.
      */
-    @TestPlot("terminal_fullof_enchanteditems")
+    @TestPlot(value = "terminal_fullof_enchanteditems", gameTest = false)
     public static void terminalFullOfEnchantedItems(PlotBuilder plot) {
         var origin = BlockPos.ZERO;
         plot.creativeEnergyCell(origin.below());
@@ -856,10 +885,10 @@ public final class TestPlots {
         plot.test(helper -> {
             helper.succeedWhen(() -> {
                 helper.assertBlockPresent(Blocks.CAULDRON, origin.east());
-                var tank = (SkyStoneTankBlockEntity) helper.getBlockEntity(origin.west());
-                helper.check(tank.getTank().getFluidAmount() == AEFluidKey.AMOUNT_BUCKET,
+                var tank = helper.getBlockEntity(origin.west(), SkyStoneTankBlockEntity.class);
+                helper.check(tank.getFluidHandler().getAmountAsLong(0) == AEFluidKey.AMOUNT_BUCKET,
                         "Less than a bucket stored");
-                helper.check(tank.getTank().getFluid().getFluid() == Fluids.LAVA,
+                helper.check(tank.getFluidHandler().getResource(0).is(Fluids.LAVA),
                         "Something other than lava stored");
             });
         });
@@ -894,8 +923,8 @@ public final class TestPlots {
             items.set(1, undamaged.toStack());
             var input = CraftingInput.of(3, 3, items);
 
-            var level = molecularAssembler.getLevel();
-            var recipe = level.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, input, level).get();
+            var level = (ServerLevel) molecularAssembler.getLevel();
+            var recipe = level.recipeAccess().getRecipeFor(RecipeType.CRAFTING, input, level).get();
 
             // Encode pattern
             var sparseInputs = new ItemStack[9];
@@ -915,12 +944,13 @@ public final class TestPlots {
 
         plot.test(helper -> {
             helper.runAfterDelay(40, () -> {
-                var molecularAssembler = (MolecularAssemblerBlockEntity) helper.getBlockEntity(molecularAssemblerPos);
+                var molecularAssembler = helper.getBlockEntity(molecularAssemblerPos,
+                        MolecularAssemblerBlockEntity.class);
                 var outputItem = molecularAssembler.getInternalInventory().getStackInSlot(9);
                 if (correctResult.matches(outputItem)) {
                     helper.succeed();
                 } else if (undamaged.matches(outputItem)) {
-                    helper.fail("created undamaged item");
+                    throw helper.assertionException("created undamaged item");
                 }
             });
         });

@@ -5,12 +5,13 @@ import java.util.Comparator;
 import java.util.List;
 
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
 
 import appeng.api.networking.energy.IPassiveEnergyGenerator;
-import appeng.core.AELog;
 
 /**
  * This class caches all energy services that are part of the overlay energy grid. This overlay grid can span multiple
@@ -18,6 +19,8 @@ import appeng.core.AELog;
  * quartz fibers}.
  */
 class EnergyOverlayGrid {
+    private static final Logger LOG = LoggerFactory.getLogger(EnergyOverlayGrid.class);
+
     /**
      * Prefer grids with high energy storage for operations by sorting them to the front of the list.
      */
@@ -85,7 +88,7 @@ class EnergyOverlayGrid {
         for (var service : sortedServices) {
             // A previous overlay grid should have been invalidated before building a new one
             if (service.overlayGrid != null) {
-                AELog.error("Grid %s energy service already has a power graph assigned to it!", service.grid);
+                LOG.error("Grid {} energy service already has a power graph assigned to it!", service.grid);
             }
 
             service.overlayGrid = overlayGrid;

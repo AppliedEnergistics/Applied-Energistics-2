@@ -13,12 +13,14 @@ import com.google.common.math.LongMath;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.core.Holder;
 import net.minecraft.core.NonNullList;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
@@ -83,7 +85,7 @@ public final class EncodingHelper {
                     : ItemStack.EMPTY;
             ServerboundPacket message = new InventoryActionPacket(
                     InventoryAction.SET_FILTER, slot.index, stack);
-            PacketDistributor.sendToServer(message);
+            ClientPacketDistributor.sendToServer(message);
         }
     }
 
@@ -123,8 +125,8 @@ public final class EncodingHelper {
 
             // Find a good match for every ingredient
             for (int slot = 0; slot < ingredients3x3.size(); slot++) {
-                var ingredient = ingredients3x3.get(slot);
-                if (ingredient.isEmpty()) {
+                var ingredient = ingredients3x3.get(slot).orElse(null);
+                if (ingredient == null) {
                     continue; // Skip empty slots
                 }
 
@@ -138,14 +140,15 @@ public final class EncodingHelper {
 
                 // To avoid encoding hidden entries, we'll cycle through the ingredient and try to find a visible
                 // stack, otherwise we'll use the first entry.
-                var bestIngredient = bestNetworkIngredient.orElseGet(() -> {
-                    for (var stack : ingredient.getItems()) {
-                        if (visiblePredicate.test(stack)) {
-                            return stack;
-                        }
-                    }
-                    return ingredient.getItems()[0];
-                });
+                var bestIngredient = bestNetworkIngredient.orElse(
+                        ingredient.items()
+                                .map(Holder::value)
+                                .map(Item::getDefaultInstance)
+                                .filter(visiblePredicate).findFirst()
+                                .orElse(ingredient.items()
+                                        .map(Holder::value)
+                                        .map(Item::getDefaultInstance).findFirst()
+                                        .orElse(ItemStack.EMPTY)));
 
                 encodedInputs.set(slot, bestIngredient);
             }
@@ -171,14 +174,14 @@ public final class EncodingHelper {
             ItemStack encodedInput = encodedInputs.get(i);
             ServerboundPacket message = new InventoryActionPacket(
                     InventoryAction.SET_FILTER, menu.getCraftingGridSlots()[i].index, encodedInput);
-            PacketDistributor.sendToServer(message);
+            ClientPacketDistributor.sendToServer(message);
         }
 
         // Clear out the processing outputs
         for (var outputSlot : menu.getProcessingOutputSlots()) {
             ServerboundPacket message = new InventoryActionPacket(
                     InventoryAction.SET_FILTER, outputSlot.index, ItemStack.EMPTY);
-            PacketDistributor.sendToServer(message);
+            ClientPacketDistributor.sendToServer(message);
         }
 
     }
@@ -236,7 +239,7 @@ public final class EncodingHelper {
         }
 
         // Also consider the player inventory, but only as the last resort
-        for (var item : menu.getPlayerInventory().items) {
+        for (var item : menu.getPlayerInventory().getNonEquipmentItems()) {
             var key = AEItemKey.of(item);
             if (key != null) {
                 // Use -1 as lower priority than the lowest network entry (which start at 0)

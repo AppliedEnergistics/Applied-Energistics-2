@@ -24,63 +24,91 @@
 package appeng.api.inventories;
 
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.items.IItemHandlerModifiable;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 
 /**
- * Wraps an inventory implementing the platforms standard inventory interface (i.e. IItemHandler on Forge) such that it
- * can be used as an {@link InternalInventory}.
+ * Wraps an inventory implementing ResourceHandler such that it can be used as an {@link InternalInventory}.
+ * 
+ * @deprecated We need to find a better abstraction of this since we use InternalInventory for UIs too, which still need
+ *             direct mutable ItemStack access
  */
 public class PlatformInventoryWrapper implements InternalInventory {
-    private final IItemHandler handler;
+    private final ResourceHandler<ItemResource> handler;
 
-    public PlatformInventoryWrapper(IItemHandler handler) {
+    public PlatformInventoryWrapper(ResourceHandler<ItemResource> handler) {
         this.handler = handler;
     }
 
     @Override
-    public IItemHandler toItemHandler() {
+    public ResourceHandler<ItemResource> toResourceHandler() {
         return handler;
     }
 
     @Override
     public int size() {
-        return handler.getSlots();
+        return handler.size();
     }
 
     @Override
     public int getSlotLimit(int slot) {
-        return handler.getSlotLimit(slot);
+        return handler.getCapacityAsInt(slot, ItemResource.EMPTY);
     }
 
     @Override
     public ItemStack getStackInSlot(int slotIndex) {
-        return handler.getStackInSlot(slotIndex);
+        // TODO 1.21.9: this is obviously not mutable
+        var resource = handler.getResource(slotIndex);
+        var amount = handler.getAmountAsInt(slotIndex);
+        if (!resource.isEmpty()) {
+            return resource.toStack(amount);
+        } else {
+            return ItemStack.EMPTY;
+        }
     }
 
     @Override
     public void setItemDirect(int slotIndex, ItemStack stack) {
-        if (handler instanceof IItemHandlerModifiable modifiableHandler) {
-            modifiableHandler.setStackInSlot(slotIndex, stack);
-        } else {
-            handler.extractItem(slotIndex, Integer.MAX_VALUE, false);
-            handler.insertItem(slotIndex, stack, false);
+        try (var tx = Transaction.open(null)) {
+            var current = handler.getResource(slotIndex);
+            if (!current.isEmpty()) {
+                handler.extract(slotIndex, current, handler.getAmountAsInt(slotIndex), tx);
+            }
+            handler.insert(slotIndex, ItemResource.of(stack), stack.getCount(), tx);
+            tx.commit();
         }
     }
 
     @Override
     public boolean isItemValid(int slot, ItemStack stack) {
-        return handler.isItemValid(slot, stack);
+        return handler.isValid(slot, ItemResource.of(stack));
     }
 
     @Override
     public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
-        return handler.insertItem(slot, stack, simulate);
+        try (var tx = Transaction.open(null)) {
+            var inserted = handler.insert(slot, ItemResource.of(stack), stack.getCount(), tx);
+            if (!simulate) {
+                tx.commit();
+            }
+            return stack.copyWithCount(stack.getCount() - inserted);
+        }
     }
 
     @Override
     public ItemStack extractItem(int slot, int amount, boolean simulate) {
-        return handler.extractItem(slot, amount, simulate);
+        try (var tx = Transaction.open(null)) {
+            var resource = handler.getResource(slot);
+            if (resource.isEmpty()) {
+                return ItemStack.EMPTY;
+            }
+            var extracted = handler.extract(slot, resource, amount, tx);
+            if (!simulate) {
+                tx.commit();
+            }
+            return resource.toStack(extracted);
+        }
     }
 
 }

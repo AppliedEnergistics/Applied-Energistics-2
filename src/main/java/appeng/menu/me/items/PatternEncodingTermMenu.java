@@ -26,13 +26,16 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.NonNullList;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CraftingRecipe;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
@@ -46,13 +49,13 @@ import it.unimi.dsi.fastutil.shorts.ShortSet;
 import appeng.api.crafting.PatternDetailsHelper;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.GenericStack;
-import appeng.client.gui.Icon;
-import appeng.client.gui.me.items.PatternEncodingTermScreen;
 import appeng.core.definitions.AEItems;
+import appeng.crafting.RecipeAccess;
 import appeng.crafting.pattern.AECraftingPattern;
 import appeng.crafting.pattern.AEProcessingPattern;
 import appeng.helpers.IPatternTerminalMenuHost;
 import appeng.menu.SlotSemantics;
+import appeng.menu.guisync.ClientActionKey;
 import appeng.menu.guisync.GuiSync;
 import appeng.menu.implementations.MenuTypeBuilder;
 import appeng.menu.me.common.MEStorageMenu;
@@ -62,11 +65,10 @@ import appeng.menu.slot.RestrictedInputSlot;
 import appeng.parts.encoding.EncodingMode;
 import appeng.parts.encoding.PatternEncodingLogic;
 import appeng.util.ConfigInventory;
+import appeng.util.Icon;
 
 /**
  * Can only be used with a host that implements {@link PatternEncodingLogic}.
- *
- * @see PatternEncodingTermScreen
  */
 public class PatternEncodingTermMenu extends MEStorageMenu {
 
@@ -74,13 +76,16 @@ public class PatternEncodingTermMenu extends MEStorageMenu {
     private static final int CRAFTING_GRID_HEIGHT = 3;
     private static final int CRAFTING_GRID_SLOTS = CRAFTING_GRID_WIDTH * CRAFTING_GRID_HEIGHT;
 
-    private static final String ACTION_SET_MODE = "setMode";
-    private static final String ACTION_ENCODE = "encode";
-    private static final String ACTION_CLEAR = "clear";
-    private static final String ACTION_SET_SUBSTITUTION = "setSubstitution";
-    private static final String ACTION_SET_FLUID_SUBSTITUTION = "setFluidSubstitution";
-    private static final String ACTION_SET_STONECUTTING_RECIPE_ID = "setStonecuttingRecipeId";
-    private static final String ACTION_CYCLE_PROCESSING_OUTPUT = "cycleProcessingOutput";
+    private static final ClientActionKey<EncodingMode> ACTION_SET_MODE = new ClientActionKey<>("setMode");
+    private static final ClientActionKey<Void> ACTION_ENCODE = new ClientActionKey<>("encode");
+    private static final ClientActionKey<Void> ACTION_CLEAR = new ClientActionKey<>("clear");
+    private static final ClientActionKey<Boolean> ACTION_SET_SUBSTITUTION = new ClientActionKey<>("setSubstitution");
+    private static final ClientActionKey<Boolean> ACTION_SET_FLUID_SUBSTITUTION = new ClientActionKey<>(
+            "setFluidSubstitution");
+    private static final ClientActionKey<ResourceKey<Recipe<?>>> ACTION_SET_STONECUTTING_RECIPE_ID = new ClientActionKey<>(
+            "setStonecuttingRecipeId");
+    private static final ClientActionKey<Void> ACTION_CYCLE_PROCESSING_OUTPUT = new ClientActionKey<>(
+            "cycleProcessingOutput");
 
     public static final MenuType<PatternEncodingTermMenu> TYPE = MenuTypeBuilder
             .create(PatternEncodingTermMenu::new, IPatternTerminalMenuHost.class)
@@ -106,15 +111,15 @@ public class PatternEncodingTermMenu extends MEStorageMenu {
     // The current mode is essentially the last-known client-side version of mode
     private EncodingMode currentMode;
 
-    @GuiSync(97)
+    @GuiSync(200)
     public EncodingMode mode = EncodingMode.CRAFTING;
-    @GuiSync(96)
+    @GuiSync(201)
     public boolean substitute = false;
-    @GuiSync(95)
+    @GuiSync(202)
     public boolean substituteFluids = true;
-    @GuiSync(94)
+    @GuiSync(203)
     @Nullable
-    public ResourceLocation stonecuttingRecipeId;
+    public ResourceKey<Recipe<?>> stonecuttingRecipeId;
 
     private final List<RecipeHolder<StonecutterRecipe>> stonecuttingRecipes = new ArrayList<>();
 
@@ -185,12 +190,12 @@ public class PatternEncodingTermMenu extends MEStorageMenu {
         this.encodedPatternSlot.setStackLimit(1);
 
         registerClientAction(ACTION_ENCODE, this::encode);
-        registerClientAction(ACTION_SET_STONECUTTING_RECIPE_ID, ResourceLocation.class,
+        registerClientAction(ACTION_SET_STONECUTTING_RECIPE_ID, ResourceKey.streamCodec(Registries.RECIPE),
                 encodingLogic::setStonecuttingRecipeId);
         registerClientAction(ACTION_CLEAR, this::clear);
-        registerClientAction(ACTION_SET_MODE, EncodingMode.class, encodingLogic::setMode);
-        registerClientAction(ACTION_SET_SUBSTITUTION, Boolean.class, encodingLogic::setSubstitution);
-        registerClientAction(ACTION_SET_FLUID_SUBSTITUTION, Boolean.class, encodingLogic::setFluidSubstitution);
+        registerClientAction(ACTION_SET_MODE, EncodingMode.STREAM_CODEC, encodingLogic::setMode);
+        registerClientAction(ACTION_SET_SUBSTITUTION, ByteBufCodecs.BOOL, encodingLogic::setSubstitution);
+        registerClientAction(ACTION_SET_FLUID_SUBSTITUTION, ByteBufCodecs.BOOL, encodingLogic::setFluidSubstitution);
         registerClientAction(ACTION_CYCLE_PROCESSING_OUTPUT, this::cycleProcessingOutput);
 
         updateStonecuttingRecipes();
@@ -228,8 +233,7 @@ public class PatternEncodingTermMenu extends MEStorageMenu {
             if (invalidIngredients) {
                 this.currentRecipe = null;
             } else {
-                this.currentRecipe = level.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, input, level)
-                        .orElse(null);
+                this.currentRecipe = RecipeAccess.getRecipeFor(level, RecipeType.CRAFTING, input);
             }
             this.currentMode = this.mode;
             checkFluidSubstitutionSupport();
@@ -240,7 +244,7 @@ public class PatternEncodingTermMenu extends MEStorageMenu {
         if (this.currentRecipe == null) {
             is = ItemStack.EMPTY;
         } else {
-            is = this.currentRecipe.value().assemble(input, level.registryAccess());
+            is = this.currentRecipe.value().assemble(input);
         }
 
         this.craftOutputSlot.setResultItem(is);
@@ -391,14 +395,12 @@ public class PatternEncodingTermMenu extends MEStorageMenu {
                 addition.toStack());
 
         var level = getPlayer().level();
-        var recipe = level.getRecipeManager()
-                .getRecipeFor(RecipeType.SMITHING, input, level)
-                .orElse(null);
+        var recipe = RecipeAccess.getRecipeFor(level, RecipeType.SMITHING, input);
         if (recipe == null) {
             return null;
         }
 
-        var output = AEItemKey.of(recipe.value().assemble(input, level.registryAccess()));
+        var output = AEItemKey.of(recipe.value().assemble(input));
 
         return PatternDetailsHelper.encodeSmithingTablePattern(recipe, template, base, addition, output,
                 encodingLogic.isSubstitution());
@@ -418,14 +420,12 @@ public class PatternEncodingTermMenu extends MEStorageMenu {
         var recipeInput = new SingleRecipeInput(input.toStack());
 
         var level = getPlayer().level();
-        var recipe = level.getRecipeManager()
-                .getRecipeFor(RecipeType.STONECUTTING, recipeInput, level, stonecuttingRecipeId)
-                .orElse(null);
-        if (recipe == null) {
+        var recipe = RecipeAccess.byKey(level, RecipeType.STONECUTTING, stonecuttingRecipeId);
+        if (recipe == null || !recipe.value().matches(recipeInput, level)) {
             return null;
         }
 
-        var output = AEItemKey.of(recipe.value().getResultItem(level.registryAccess()));
+        var output = AEItemKey.of(recipe.value().result());
 
         return PatternDetailsHelper.encodeStonecuttingPattern(recipe, input, output, encodingLogic.isSubstitution());
     }
@@ -507,10 +507,9 @@ public class PatternEncodingTermMenu extends MEStorageMenu {
         stonecuttingRecipes.clear();
         if (encodedInputsInv.getKey(0) instanceof AEItemKey itemKey) {
             var level = getPlayer().level();
-            var recipeManager = level.getRecipeManager();
             var recipeInput = new SingleRecipeInput(itemKey.toStack());
             stonecuttingRecipes.addAll(
-                    recipeManager.getRecipesFor(RecipeType.STONECUTTING, recipeInput, level));
+                    RecipeAccess.getRecipesFor(level, RecipeType.STONECUTTING, recipeInput).toList());
         }
 
         // Deselect a recipe that is now unavailable
@@ -573,11 +572,11 @@ public class PatternEncodingTermMenu extends MEStorageMenu {
         }
     }
 
-    public @Nullable ResourceLocation getStonecuttingRecipeId() {
+    public @Nullable ResourceKey<Recipe<?>> getStonecuttingRecipeId() {
         return stonecuttingRecipeId;
     }
 
-    public void setStonecuttingRecipeId(ResourceLocation id) {
+    public void setStonecuttingRecipeId(ResourceKey<Recipe<?>> id) {
         if (isClientSide()) {
             sendClientAction(ACTION_SET_STONECUTTING_RECIPE_ID, id);
         } else {

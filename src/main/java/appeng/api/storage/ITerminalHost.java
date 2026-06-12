@@ -27,7 +27,6 @@ import org.jetbrains.annotations.Nullable;
 
 import appeng.api.upgrades.IUpgradeableObject;
 import appeng.api.util.IConfigurableObject;
-import appeng.client.Hotkeys;
 
 public interface ITerminalHost extends IUpgradeableObject, IConfigurableObject, ISubMenuHost {
     /**
@@ -45,7 +44,7 @@ public interface ITerminalHost extends IUpgradeableObject, IConfigurableObject, 
     /**
      * An optional hotkey used to close the terminal while its open.
      *
-     * @return Hotkey id as it would be registered by {@link Hotkeys}, or null if there isn't one
+     * @return Hotkey id as it would be registered by {@link appeng.client.Hotkeys}, or null if there isn't one
      */
     @Nullable
     default String getCloseHotkey() {

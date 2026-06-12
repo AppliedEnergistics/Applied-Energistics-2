@@ -23,7 +23,7 @@ import appeng.blockentity.networking.EnergyAcceptorBlockEntity;
 
 public class EnergyAcceptorBlock extends AEBaseEntityBlock<EnergyAcceptorBlockEntity> {
 
-    public EnergyAcceptorBlock() {
-        super(metalProps());
+    public EnergyAcceptorBlock(Properties p) {
+        super(metalProps(p));
     }
 }

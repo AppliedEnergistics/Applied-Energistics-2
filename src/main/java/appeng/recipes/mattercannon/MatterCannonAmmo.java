@@ -18,6 +18,7 @@
 
 package appeng.recipes.mattercannon;
 
+import java.util.List;
 import java.util.Objects;
 
 import com.google.common.base.Preconditions;
@@ -25,42 +26,44 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
-import net.minecraft.core.HolderLookup;
-import net.minecraft.core.NonNullList;
+import net.minecraft.core.HolderGetter;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.display.RecipeDisplay;
+import net.minecraft.world.item.crafting.display.SlotDisplay;
 import net.minecraft.world.level.ItemLike;
-import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.common.conditions.NotCondition;
 import net.neoforged.neoforge.common.conditions.TagEmptyCondition;
 
 import appeng.core.AppEng;
+import appeng.core.definitions.AEItems;
 import appeng.recipes.AERecipeTypes;
+import appeng.recipes.MechanicsRecipe;
 
 /**
  * Defines a type of ammo that can be used for the {@link appeng.items.tools.powered.MatterCannonItem}.
  */
-public class MatterCannonAmmo implements Recipe<RecipeInput> {
+public class MatterCannonAmmo extends MechanicsRecipe<RecipeInput> {
     @Deprecated(forRemoval = true, since = "1.21.1")
-    public static final ResourceLocation TYPE_ID = AppEng.makeId("matter_cannon");
+    public static final Identifier TYPE_ID = AppEng.makeId("matter_cannon");
 
     @Deprecated(forRemoval = true, since = "1.21.1")
     public static final RecipeType<MatterCannonAmmo> TYPE = AERecipeTypes.MATTER_CANNON_AMMO;
 
     public static final MapCodec<MatterCannonAmmo> CODEC = RecordCodecBuilder.mapCodec((builder) -> {
         return builder.group(
-                Ingredient.CODEC_NONEMPTY.fieldOf("ammo").forGetter(MatterCannonAmmo::getAmmo),
+                Ingredient.CODEC.fieldOf("ammo").forGetter(MatterCannonAmmo::getAmmo),
                 Codec.FLOAT.fieldOf("weight").forGetter(MatterCannonAmmo::getWeight))
                 .apply(builder, MatterCannonAmmo::new);
     });
@@ -72,6 +75,8 @@ public class MatterCannonAmmo implements Recipe<RecipeInput> {
             MatterCannonAmmo::getWeight,
             MatterCannonAmmo::new);
 
+    public static final RecipeSerializer<MatterCannonAmmo> SERIALIZER = new RecipeSerializer<>(CODEC, STREAM_CODEC);
+
     private final Ingredient ammo;
 
     private final float weight;
@@ -82,52 +87,37 @@ public class MatterCannonAmmo implements Recipe<RecipeInput> {
         this.weight = weight;
     }
 
-    public static void ammo(RecipeOutput consumer, ResourceLocation id, ItemLike item, float weight) {
-        consumer.accept(id, new MatterCannonAmmo(Ingredient.of(item), weight), null);
+    public static void ammo(RecipeOutput consumer, Identifier id, ItemLike item, float weight) {
+        consumer.accept(ResourceKey.create(Registries.RECIPE, id), new MatterCannonAmmo(Ingredient.of(item), weight),
+                null);
     }
 
-    public static void ammo(RecipeOutput consumer, ResourceLocation id, Ingredient ammo, float weight) {
-        consumer.accept(id, new MatterCannonAmmo(ammo, weight), null);
+    public static void ammo(RecipeOutput consumer, Identifier id, Ingredient ammo, float weight) {
+        consumer.accept(ResourceKey.create(Registries.RECIPE, id), new MatterCannonAmmo(ammo, weight), null);
     }
 
-    public static void ammo(RecipeOutput consumer, ResourceLocation id, TagKey<Item> tag, float weight) {
-        consumer.accept(id, new MatterCannonAmmo(Ingredient.of(tag), weight), null, new NotCondition(
-                new TagEmptyCondition(tag.location())));
-    }
-
-    @Override
-    public boolean matches(RecipeInput inv, Level level) {
-        return false;
-    }
-
-    @Override
-    public ItemStack assemble(RecipeInput inv, HolderLookup.Provider registryAccess) {
-        return ItemStack.EMPTY;
+    public static void ammo(HolderGetter<Item> items, RecipeOutput consumer, Identifier id, TagKey<Item> tag,
+            float weight) {
+        var recipe = new MatterCannonAmmo(Ingredient.of(items.getOrThrow(tag)), weight);
+        var condition = new NotCondition(new TagEmptyCondition<>(tag));
+        consumer.accept(ResourceKey.create(Registries.RECIPE, id), recipe, null, condition);
     }
 
     @Override
-    public boolean canCraftInDimensions(int width, int height) {
-        return false;
+    public RecipeSerializer<MatterCannonAmmo> getSerializer() {
+        return SERIALIZER;
     }
 
     @Override
-    public ItemStack getResultItem(HolderLookup.Provider registryAccess) {
-        return ItemStack.EMPTY;
-    }
-
-    @Override
-    public RecipeSerializer<?> getSerializer() {
-        return MatterCannonAmmoSerializer.INSTANCE;
-    }
-
-    @Override
-    public RecipeType<?> getType() {
+    public RecipeType<MatterCannonAmmo> getType() {
         return TYPE;
     }
 
     @Override
-    public NonNullList<Ingredient> getIngredients() {
-        return NonNullList.create();
+    public List<RecipeDisplay> display() {
+        return List.of(
+                new MatterCannonAmmoDisplay(ammo.display(), weight,
+                        new SlotDisplay.ItemSlotDisplay(AEItems.MATTER_CANNON.asItem())));
     }
 
     public Ingredient getAmmo() {

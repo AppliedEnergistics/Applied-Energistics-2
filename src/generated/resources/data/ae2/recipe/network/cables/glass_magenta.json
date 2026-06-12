@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "a": {
-      "item": "ae2:fluix_glass_cable"
-    },
-    "b": {
-      "tag": "c:dyes/magenta"
-    }
+    "a": "ae2:fluix_glass_cable",
+    "b": "#c:dyes/magenta"
   },
   "pattern": [
     "aaa",

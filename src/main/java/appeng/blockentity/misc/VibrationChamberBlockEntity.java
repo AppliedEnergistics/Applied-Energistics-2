@@ -24,16 +24,16 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 import appeng.api.config.Actionable;
 import appeng.api.inventories.ISegmentedInventory;
@@ -124,9 +124,9 @@ public class VibrationChamberBlockEntity extends AENetworkedInvBlockEntity
     }
 
     @Override
-    public void saveAdditional(CompoundTag data, HolderLookup.Provider registries) {
-        super.saveAdditional(data, registries);
-        this.upgrades.writeToNBT(data, "upgrades", registries);
+    public void saveAdditional(ValueOutput data) {
+        super.saveAdditional(data);
+        this.upgrades.writeToNBT(data, "upgrades");
         data.putDouble("burnTime", this.getRemainingFuelTicks());
         data.putDouble("maxBurnTime", this.getFuelItemFuelTicks());
         // Save as percentage of max-speed
@@ -135,12 +135,12 @@ public class VibrationChamberBlockEntity extends AENetworkedInvBlockEntity
     }
 
     @Override
-    public void loadTag(CompoundTag data, HolderLookup.Provider registries) {
-        super.loadTag(data, registries);
-        this.upgrades.readFromNBT(data, "upgrades", registries);
-        this.setRemainingFuelTicks(data.getDouble("burnTime"));
-        this.setFuelItemFuelTicks(data.getDouble("maxBurnTime"));
-        this.setCurrentFuelTicksPerTick(data.getInt("burnSpeed") * maxFuelTicksPerTick / 100.0);
+    public void loadTag(ValueInput data) {
+        super.loadTag(data);
+        this.upgrades.readFromNBT(data, "upgrades");
+        this.setRemainingFuelTicks(data.getDoubleOr("burnTime", 0.0));
+        this.setFuelItemFuelTicks(data.getDoubleOr("maxBurnTime", 0.0));
+        this.setCurrentFuelTicksPerTick(data.getIntOr("burnSpeed", 0) * maxFuelTicksPerTick / 100.0);
     }
 
     @Override
@@ -165,7 +165,7 @@ public class VibrationChamberBlockEntity extends AENetworkedInvBlockEntity
 
     @Nullable
     @Override
-    public InternalInventory getSubInventory(ResourceLocation id) {
+    public InternalInventory getSubInventory(Identifier id) {
         if (id.equals(ISegmentedInventory.STORAGE)) {
             return this.getInternalInventory();
         } else if (id.equals(ISegmentedInventory.UPGRADES)) {
@@ -282,7 +282,12 @@ public class VibrationChamberBlockEntity extends AENetworkedInvBlockEntity
 
                 if (is.getCount() <= 1) {
                     // fuel was fully consumed. for items like lava-bucket, put the remainder in the slot
-                    this.inv.setItemDirect(0, fuelItem.getCraftingRemainingItem(is));
+                    var remainder = fuelItem.getCraftingRemainder(is);
+                    if (remainder != null) {
+                        this.inv.setItemDirect(0, remainder.create());
+                    } else {
+                        this.inv.setItemDirect(0, ItemStack.EMPTY);
+                    }
                 } else {
                     is.shrink(1);
                     this.inv.setItemDirect(0, is);
@@ -308,11 +313,11 @@ public class VibrationChamberBlockEntity extends AENetworkedInvBlockEntity
         }
     }
 
-    public static int getBurnTime(ItemStack is) {
-        return is.getBurnTime(null);
+    public int getBurnTime(ItemStack is) {
+        return is.getBurnTime(null, level.fuelValues());
     }
 
-    public static boolean hasBurnTime(ItemStack is) {
+    public boolean hasBurnTime(ItemStack is) {
         return getBurnTime(is) > 0;
     }
 
@@ -367,7 +372,7 @@ public class VibrationChamberBlockEntity extends AENetworkedInvBlockEntity
         return baseMaxEnergyRate + baseMaxEnergyRate * this.upgrades.getInstalledUpgrades(AEItems.SPEED_CARD) / 2.0f;
     }
 
-    private static class FuelSlotFilter implements IAEItemFilter {
+    private class FuelSlotFilter implements IAEItemFilter {
         @Override
         public boolean allowExtract(InternalInventory inv, int slot, int amount) {
             return !hasBurnTime(inv.getStackInSlot(slot));

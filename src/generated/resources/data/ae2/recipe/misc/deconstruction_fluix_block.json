@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "ae2:fluix_block"
-    }
+    "ae2:fluix_block"
   ],
   "result": {
     "count": 4,

@@ -30,13 +30,10 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 import appeng.blockentity.qnb.QuantumBridgeBlockEntity;
-import appeng.client.EffectType;
-import appeng.core.AppEng;
-import appeng.core.AppEngClient;
+import appeng.core.AEConfig;
+import appeng.core.particles.EnergyParticleData;
 import appeng.menu.MenuOpener;
 import appeng.menu.implementations.QNBMenu;
 import appeng.menu.locator.MenuLocators;
@@ -51,18 +48,15 @@ public class QuantumLinkChamberBlock extends QuantumBaseBlock {
                 new AABB(onePixel, onePixel, onePixel, 1.0 - onePixel, 1.0 - onePixel, 1.0 - onePixel));
     }
 
-    public QuantumLinkChamberBlock() {
-        super(glassProps());
+    public QuantumLinkChamberBlock(Properties p) {
+        super(glassProps(p));
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
-    public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource rand) {
+    public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource random) {
         final QuantumBridgeBlockEntity bridge = this.getBlockEntity(level, pos);
-        if (bridge != null && bridge.hasQES() && AppEngClient.instance().shouldAddParticles(rand)) {
-            AppEng.instance().spawnEffect(EffectType.Energy, level, pos.getX() + 0.5, pos.getY() + 0.5,
-                    pos.getZ() + 0.5,
-                    null);
+        if (bridge != null && bridge.hasQES() && AEConfig.instance().isEnableEffects()) {
+            EnergyParticleData.add(level, pos.getCenter(), random);
         }
     }
 
@@ -73,7 +67,7 @@ public class QuantumLinkChamberBlock extends QuantumBaseBlock {
             if (!level.isClientSide()) {
                 MenuOpener.open(QNBMenu.TYPE, player, MenuLocators.forBlockEntity(be));
             }
-            return InteractionResult.sidedSuccess(level.isClientSide());
+            return InteractionResult.SUCCESS;
         }
 
         return super.useWithoutItem(state, level, pos, player, hitResult);

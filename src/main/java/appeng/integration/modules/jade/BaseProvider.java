@@ -1,21 +1,21 @@
 package appeng.integration.modules.jade;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import snownee.jade.api.IJadeProvider;
 
 public class BaseProvider implements IJadeProvider {
-    private final ResourceLocation id;
+    private final Identifier id;
 
     private final int priority;
 
-    public BaseProvider(ResourceLocation id, int priority) {
+    public BaseProvider(Identifier id, int priority) {
         this.id = id;
         this.priority = priority;
     }
 
     @Override
-    public final ResourceLocation getUid() {
+    public final Identifier getUid() {
         return id;
     }
 

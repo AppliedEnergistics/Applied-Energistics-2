@@ -33,7 +33,7 @@ public final class PatternProviderPlots {
             helper.startSequence()
                     .thenIdle(5)
                     .thenExecute(() -> {
-                        var pp = (PatternProviderBlockEntity) helper.getBlockEntity(new BlockPos(1, 0, 0));
+                        var pp = helper.getBlockEntity(new BlockPos(1, 0, 0), PatternProviderBlockEntity.class);
                         pp.getLogic().getReturnInv().insert(0, AEItemKey.of(Items.ANDESITE), 1, Actionable.MODULATE);
                     })
                     .thenIdle(5)

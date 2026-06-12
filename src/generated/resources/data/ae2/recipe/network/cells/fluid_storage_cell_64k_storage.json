@@ -2,15 +2,10 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "ae2:fluid_cell_housing"
-    },
-    {
-      "item": "ae2:cell_component_64k"
-    }
+    "ae2:fluid_cell_housing",
+    "ae2:cell_component_64k"
   ],
   "result": {
-    "count": 1,
     "id": "ae2:fluid_storage_cell_64k"
   }
 }

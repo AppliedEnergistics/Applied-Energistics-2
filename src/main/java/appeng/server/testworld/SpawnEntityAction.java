@@ -6,8 +6,8 @@ import java.util.function.Consumer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 
@@ -22,7 +22,7 @@ public record SpawnEntityAction(BoundingBox bb, EntityType<?> type,
     public void spawnEntities(ServerLevel level, BlockPos origin, List<Entity> entities) {
         var actualBox = getBoundingBox().moved(origin.getX(), origin.getY(), origin.getZ());
         BlockPos.betweenClosedStream(actualBox).forEach(pos -> {
-            var entity = type.spawn(level, (ItemStack) null, null, pos, MobSpawnType.COMMAND, true, true);
+            var entity = type.spawn(level, (ItemStack) null, null, pos, EntitySpawnReason.COMMAND, true, true);
             if (entity != null) {
                 postProcessor.accept(entity);
                 entities.add(entity);

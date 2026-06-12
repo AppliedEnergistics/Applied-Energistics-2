@@ -24,6 +24,7 @@ import java.util.List;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -159,7 +160,7 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
 
     // TODO: This is really hacky and NEEDS to be solved with a full menu/gui
     // refactoring.
-    protected RecipeHolder<CraftingRecipe> findRecipe(CraftingInput ic, Level level) {
+    protected RecipeHolder<CraftingRecipe> findRecipe(CraftingInput ic, ServerLevel level) {
         if (this.menu instanceof CraftingTermMenu terminalMenu) {
             var recipe = terminalMenu.getCurrentRecipe();
 
@@ -168,13 +169,13 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
             }
         }
 
-        return level.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, ic, level).orElse(null);
+        return level.recipeAccess().getRecipeFor(RecipeType.CRAFTING, ic, level).orElse(null);
     }
 
     // TODO: This is really hacky and NEEDS to be solved with a full menu/gui
     // refactoring.
     @Override
-    protected NonNullList<ItemStack> getRemainingItems(CraftingInput ic, Level level) {
+    protected NonNullList<ItemStack> getRemainingItems(CraftingInput ic, ServerLevel level) {
         if (this.menu instanceof CraftingTermMenu terminalMenu) {
             var recipe = terminalMenu.getCurrentRecipe();
 
@@ -200,21 +201,21 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
 
         // add one of each item to the items on the board...
         var level = p.level();
-        if (!level.isClientSide()) {
+        if (level instanceof ServerLevel serverLevel) {
             final var ic = NonNullList.withSize(9, ItemStack.EMPTY);
             for (var x = 0; x < 9; x++) {
                 ic.set(x, this.getPattern().getStackInSlot(x));
             }
             var recipeInput = CraftingInput.of(3, 3, ic);
 
-            final var r = this.findRecipe(recipeInput, level);
+            final var r = this.findRecipe(recipeInput, serverLevel);
             setRecipeUsed(r);
 
             if (r == null) {
                 return ItemStack.EMPTY;
             }
 
-            is = r.value().assemble(recipeInput, level.registryAccess());
+            is = r.value().assemble(recipeInput);
 
             if (inv != null) {
                 var filter = ViewCellItem.createItemFilter(this.menu.getViewCells());
@@ -281,7 +282,7 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
                             craftingInputItems.set(slot, itemKey.toStack());
                             var adjustedCraftingInput = CraftingInput.of(gridWidth, gridHeight, craftingInputItems);
                             if (r.matches(adjustedCraftingInput, level)
-                                    && ItemStack.matches(r.assemble(adjustedCraftingInput, level.registryAccess()),
+                                    && ItemStack.matches(r.assemble(adjustedCraftingInput),
                                             output)) {
                                 if (filter == null || filter.isListed(itemKey)) {
                                     var ex = src.extract(itemKey, 1, Actionable.MODULATE, mySrc);
@@ -314,7 +315,7 @@ public class CraftingTermSlot extends AppEngCraftingSlot {
         final List<ItemStack> drops = new ArrayList<>();
 
         // add one of each item to the items on the board...
-        if (!p.getCommandSenderWorld().isClientSide()) {
+        if (!p.level().isClientSide()) {
             // set new items onto the crafting table...
             for (var x = 0; x < this.craftInv.size(); x++) {
                 if (this.craftInv.getStackInSlot(x).isEmpty()) {

@@ -23,39 +23,16 @@
 
 package appeng.api.config;
 
-import net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction;
-
 public enum Actionable {
     /**
      * Perform the intended action.
      */
-    MODULATE(FluidAction.EXECUTE),
+    MODULATE,
 
     /**
      * Pretend to perform the action.
      */
-    SIMULATE(FluidAction.SIMULATE);
-
-    private final FluidAction fluidAction;
-
-    Actionable(FluidAction fluidAction) {
-        this.fluidAction = fluidAction;
-    }
-
-    public static Actionable of(FluidAction action) {
-        return switch (action) {
-            case EXECUTE -> MODULATE;
-            case SIMULATE -> SIMULATE;
-        };
-    }
-
-    public static Actionable ofSimulate(boolean simulate) {
-        return simulate ? SIMULATE : MODULATE;
-    }
-
-    public FluidAction getFluidAction() {
-        return fluidAction;
-    }
+    SIMULATE;
 
     public boolean isSimulate() {
         return this == SIMULATE;

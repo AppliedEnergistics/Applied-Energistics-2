@@ -9,8 +9,6 @@
     }
   ],
   "type": "ae2:matter_cannon",
-  "ammo": {
-    "tag": "c:nuggets/titanium"
-  },
+  "ammo": "#c:nuggets/titanium",
   "weight": 47.867
 }

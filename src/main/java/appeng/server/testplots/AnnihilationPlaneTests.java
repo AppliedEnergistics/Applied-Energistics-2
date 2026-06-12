@@ -46,7 +46,7 @@ public class AnnihilationPlaneTests {
                     .thenExecute(() -> helper.assertBlockNotPresent(Blocks.AIR, grassPos.above()))
                     .thenWaitUntil(() -> {
                         // Assume the grass is gone
-                        helper.assertBlock(grassPos.above(), Blocks.AIR::equals, "expected air");
+                        helper.assertBlockPresent(Blocks.AIR, grassPos.above());
                     })
                     .thenSucceed();
         });

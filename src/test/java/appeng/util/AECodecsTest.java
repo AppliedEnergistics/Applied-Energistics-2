@@ -24,6 +24,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.BundleContents;
 import net.minecraft.world.item.component.CustomData;
@@ -43,8 +44,8 @@ class AECodecsTest {
 
         // Encodes a stick
         var stick = Items.STICK.getDefaultInstance();
-        var encodedStick = AECodecs.FAULT_TOLERANT_SIMPLE_ITEM_CODEC.encodeStart(NbtOps.INSTANCE, stick).getOrThrow();
-        var decodedStick = AECodecs.FAULT_TOLERANT_SIMPLE_ITEM_CODEC.decode(NbtOps.INSTANCE, encodedStick).getOrThrow()
+        var encodedStick = AECodecs.FAULT_TOLERANT_ITEMSTACK_CODEC.encodeStart(NbtOps.INSTANCE, stick).getOrThrow();
+        var decodedStick = AECodecs.FAULT_TOLERANT_ITEMSTACK_CODEC.decode(NbtOps.INSTANCE, encodedStick).getOrThrow()
                 .getFirst();
         assertTrue(ItemStack.isSameItemSameComponents(stick, decodedStick));
 
@@ -52,14 +53,14 @@ class AECodecsTest {
         assertEquals(1, RecursiveTagReplace.replace(encodedStick, "minecraft:stick", "unknown_mod:stick"));
 
         // Try decoding it again. This must not error, since otherwise in lists, the rest would be dropped.
-        var decodedMissingContent = AECodecs.FAULT_TOLERANT_SIMPLE_ITEM_CODEC.decode(NbtOps.INSTANCE, encodedStick)
+        var decodedMissingContent = AECodecs.FAULT_TOLERANT_ITEMSTACK_CODEC.decode(NbtOps.INSTANCE, encodedStick)
                 .getOrThrow().getFirst();
         assertEquals(AEItems.MISSING_CONTENT.asItem(), decodedMissingContent.getItem());
         assertTrue(decodedMissingContent.has(AEComponents.MISSING_CONTENT_ERROR));
         assertTrue(decodedMissingContent.has(AEComponents.MISSING_CONTENT_ITEMSTACK_DATA));
 
         // When we re-serialize the missing content, it should result in the same broken NBT as it was before
-        var reEncodedMissingContent = AECodecs.FAULT_TOLERANT_SIMPLE_ITEM_CODEC
+        var reEncodedMissingContent = AECodecs.FAULT_TOLERANT_ITEMSTACK_CODEC
                 .encodeStart(NbtOps.INSTANCE, decodedMissingContent).getOrThrow();
         assertEquals(encodedStick, reEncodedMissingContent);
     }
@@ -148,10 +149,10 @@ class AECodecsTest {
             // Construct a stack that will fail Serialization due to exceeding the maximum stack size
             var stack = new ItemStack(Items.STICK);
             stack.set(DataComponents.BUNDLE_CONTENTS, new BundleContents(List.of(
-                    new ItemStack(Items.STICK, 999))));
+                    new ItemStackTemplate(Items.STICK, 999))));
 
             // Validate our assumption that this throws
-            assertThrows(Exception.class, () -> stack.save(RegistryAccess.EMPTY));
+            assertThrows(Exception.class, () -> StackUtil.toTag(RegistryAccess.EMPTY, stack));
 
             // Build a generic stack out of this item
             var listInput = List.of(

@@ -11,39 +11,36 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 
 import appeng.api.storage.AEKeyFilter;
 import appeng.core.AELog;
 
 public final class AEItemKey extends AEKey {
 
-    /**
-     * We currently cannot directly use {@link ItemStack#SINGLE_ITEM_CODEC} since it is wrapped up in a lazy codec,
-     * which prevents the dispatch codec from recognizing it as a MapCodec, making it unable to inline the fields.
-     */
     public static final MapCodec<AEItemKey> MAP_CODEC = RecordCodecBuilder.mapCodec(
             builder -> builder.group(
                     BuiltInRegistries.ITEM.holderByNameCodec().validate(
                             item -> item.is(Items.AIR.builtInRegistryHolder())
                                     ? DataResult.error(() -> "Item must not be minecraft:air")
                                     : DataResult.success(item))
-                            .fieldOf("id").forGetter(key -> key.stack.getItemHolder()),
+                            .fieldOf("id").forGetter(key -> key.stack.typeHolder()),
                     DataComponentPatch.CODEC.optionalFieldOf("components", DataComponentPatch.EMPTY)
                             .forGetter(key -> key.stack.getComponentsPatch()))
                     .apply(builder, (item, componentPatch) -> new AEItemKey(new ItemStack(item, 1, componentPatch))));
@@ -63,12 +60,30 @@ public final class AEItemKey extends AEKey {
     }
 
     @Nullable
+    public static AEItemKey of(@Nullable ItemStackTemplate stack) {
+        if (stack == null) {
+            return null;
+        }
+
+        return new AEItemKey(stack.create());
+    }
+
+    @Nullable
     public static AEItemKey of(ItemStack stack) {
         if (stack.isEmpty()) {
             return null;
         }
 
         return new AEItemKey(stack.copy());
+    }
+
+    @Nullable
+    public static AEItemKey of(ItemResource resource) {
+        if (resource.isEmpty()) {
+            return null;
+        }
+
+        return new AEItemKey(resource.toStack());
     }
 
     public static boolean matches(AEKey what, ItemStack itemStack) {
@@ -132,6 +147,10 @@ public final class AEItemKey extends AEKey {
         return stack;
     }
 
+    public ItemResource toResource() {
+        return ItemResource.of(stack);
+    }
+
     public ItemStack toStack() {
         return toStack(1);
     }
@@ -149,21 +168,13 @@ public final class AEItemKey extends AEKey {
     }
 
     @Nullable
-    public static AEItemKey fromTag(HolderLookup.Provider registries, CompoundTag tag) {
-        var ops = registries.createSerializationContext(NbtOps.INSTANCE);
-        try {
-            return CODEC.decode(ops, tag).getOrThrow().getFirst();
-        } catch (Exception e) {
-            AELog.debug("Tried to load an invalid item key from NBT: %s", tag, e);
-            return null;
-        }
+    public static AEItemKey fromTag(ValueInput input) {
+        return input.read(MAP_CODEC).orElse(null);
     }
 
     @Override
-    public CompoundTag toTag(HolderLookup.Provider registries) {
-        var ops = registries.createSerializationContext(NbtOps.INSTANCE);
-        return (CompoundTag) CODEC.encodeStart(ops, this)
-                .getOrThrow();
+    public void toTag(ValueOutput output) {
+        output.store(MAP_CODEC, this);
     }
 
     @Override
@@ -188,7 +199,7 @@ public final class AEItemKey extends AEKey {
     }
 
     @Override
-    public ResourceLocation getId() {
+    public Identifier getId() {
         return BuiltInRegistries.ITEM.getKey(stack.getItem());
     }
 

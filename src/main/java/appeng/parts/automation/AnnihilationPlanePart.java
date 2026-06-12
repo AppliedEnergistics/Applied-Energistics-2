@@ -24,19 +24,16 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtOps;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
-import net.minecraft.world.level.BlockGetter;
-import net.neoforged.neoforge.client.model.data.ModelData;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.model.data.ModelData;
 
 import appeng.api.behaviors.PickupStrategy;
 import appeng.api.config.Actionable;
@@ -49,7 +46,6 @@ import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartItem;
-import appeng.api.parts.IPartModel;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.storage.StorageHelper;
@@ -57,7 +53,6 @@ import appeng.api.util.AECableType;
 import appeng.core.AEConfig;
 import appeng.core.definitions.AEItems;
 import appeng.core.settings.TickRates;
-import appeng.items.parts.PartModels;
 import appeng.me.helpers.MachineSource;
 import appeng.parts.AEBasePart;
 import appeng.util.SettingsFrom;
@@ -65,14 +60,6 @@ import appeng.util.SettingsFrom;
 public class AnnihilationPlanePart extends AEBasePart implements IGridTickable {
 
     private static final Logger LOG = LoggerFactory.getLogger(AnnihilationPlanePart.class);
-
-    private static final PlaneModels MODELS = new PlaneModels("part/annihilation_plane",
-            "part/annihilation_plane_on");
-
-    @PartModels
-    public static List<IPartModel> getModels() {
-        return MODELS.getModels();
-    }
 
     private final IActionSource actionSource = new MachineSource(this);
 
@@ -102,7 +89,7 @@ public class AnnihilationPlanePart extends AEBasePart implements IGridTickable {
         super.addToWorld();
 
         var host = getBlockEntity();
-        var buildHeight = host.getLevel().getMaxBuildHeight();
+        var buildHeight = host.getLevel().getMaxY();
 
         continuousGenerationTicks = 0;
         continuousGeneration = null;
@@ -117,26 +104,15 @@ public class AnnihilationPlanePart extends AEBasePart implements IGridTickable {
     }
 
     @Override
-    public void readFromNBT(CompoundTag data, HolderLookup.Provider registries) {
-        super.readFromNBT(data, registries);
-
-        var enchantmentsTag = data.getCompound("enchantments");
-        var ops = registries.createSerializationContext(NbtOps.INSTANCE);
-        this.enchantments = ItemEnchantments.CODEC.decode(ops, enchantmentsTag)
-                .ifError(err -> LOG.warn("Failed to load enchantments for part {}: {}", this, err.message()))
-                .getOrThrow()
-                .getFirst();
+    public void readFromNBT(ValueInput input) {
+        super.readFromNBT(input);
+        this.enchantments = input.read("enchantments", ItemEnchantments.CODEC).orElse(ItemEnchantments.EMPTY);
     }
 
     @Override
-    public void writeToNBT(CompoundTag data, HolderLookup.Provider registries) {
-        super.writeToNBT(data, registries);
-
-        var ops = registries.createSerializationContext(NbtOps.INSTANCE);
-        var enchantmentsTag = ItemEnchantments.CODEC.encodeStart(ops, enchantments).getOrThrow();
-        if (enchantmentsTag instanceof CompoundTag compoundTag && !compoundTag.isEmpty()) {
-            data.put("enchantments", enchantmentsTag);
-        }
+    public void writeToNBT(ValueOutput output) {
+        super.writeToNBT(output);
+        output.store("enchantments", ItemEnchantments.CODEC, this.enchantments);
     }
 
     @Override
@@ -198,15 +174,6 @@ public class AnnihilationPlanePart extends AEBasePart implements IGridTickable {
      */
     public PlaneConnections getConnections() {
         return connectionHelper.getConnections();
-    }
-
-    @Override
-    public void onNeighborChanged(BlockGetter level, BlockPos pos, BlockPos neighbor) {
-        if (pos.relative(this.getSide()).equals(neighbor)) {
-            if (!isClientSide()) {
-                this.refresh();
-            }
-        }
     }
 
     @Override
@@ -353,15 +320,9 @@ public class AnnihilationPlanePart extends AEBasePart implements IGridTickable {
     }
 
     @Override
-    public IPartModel getStaticModels() {
-        return MODELS.getModel(this.isPowered(), this.isActive());
-    }
-
-    @Override
-    public ModelData getModelData() {
-        return ModelData.builder()
-                .with(PlaneModelData.CONNECTIONS, getConnections())
-                .build();
+    public void collectModelData(ModelData.Builder builder) {
+        super.collectModelData(builder);
+        builder.with(PartModelData.CONNECTIONS, getConnections());
     }
 
     private record ContinuousGeneration(

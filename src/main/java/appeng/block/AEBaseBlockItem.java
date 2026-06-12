@@ -18,19 +18,17 @@
 
 package appeng.block;
 
-import java.util.List;
+import java.util.function.Consumer;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.block.Block;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 public class AEBaseBlockItem extends BlockItem {
-
     private final AEBaseBlock blockType;
 
     public AEBaseBlockItem(Block id, Properties props) {
@@ -39,26 +37,19 @@ public class AEBaseBlockItem extends BlockItem {
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
-    public final void appendHoverText(ItemStack itemStack, Item.TooltipContext context, List<Component> toolTip,
-            TooltipFlag advancedTooltips) {
-        this.addCheckedInformation(itemStack, context, toolTip, advancedTooltips);
+    public final void appendHoverText(ItemStack itemStack, Item.TooltipContext context, TooltipDisplay tooltipDisplay,
+            Consumer<Component> toolTip,
+            TooltipFlag tooltipFlags) {
+        this.addCheckedInformation(itemStack, context, toolTip, tooltipFlags);
     }
 
-    @OnlyIn(Dist.CLIENT)
-    public void addCheckedInformation(ItemStack itemStack, TooltipContext context, List<Component> toolTip,
-            TooltipFlag advancedTooltips) {
-        this.blockType.appendHoverText(itemStack, context, toolTip, advancedTooltips);
-    }
-
-    @Override
-    public boolean isBookEnchantable(final ItemStack itemstack1, final ItemStack itemstack2) {
-        return false;
+    public void addCheckedInformation(ItemStack itemStack, TooltipContext context, Consumer<Component> toolTip,
+            TooltipFlag tooltipFlags) {
+        this.blockType.appendHoverText(itemStack, context, toolTip, tooltipFlags);
     }
 
     @Override
-    public String getDescriptionId(ItemStack is) {
-        return this.blockType.getDescriptionId();
+    public Component getName(ItemStack stack) {
+        return super.getName(stack);
     }
-
 }

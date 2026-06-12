@@ -21,10 +21,12 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
 
 import appeng.api.crafting.PatternDetailsHelper;
@@ -34,6 +36,7 @@ import appeng.core.AppEng;
 import appeng.util.BootstrapMinecraft;
 import appeng.util.LoadTranslations;
 import appeng.util.RecursiveTagReplace;
+import appeng.util.StackUtil;
 
 @BootstrapMinecraft
 @LoadTranslations
@@ -69,7 +72,7 @@ class AEProcessingPatternTest {
                         GenericStack.fromItemStack(new ItemStack(Items.DIAMOND))),
                 List.of(
                         GenericStack.fromItemStack(new ItemStack(Items.STICK))));
-        var encodedTag = (CompoundTag) encoded.save(registryAccess);
+        var encodedTag = StackUtil.toTag(registryAccess, encoded);
 
         assertEquals(1, RecursiveTagReplace.replace(encodedTag, "minecraft:torch", "minecraft:unknown_item_id"));
 
@@ -89,7 +92,7 @@ class AEProcessingPatternTest {
                         GenericStack.fromItemStack(new ItemStack(Items.DIAMOND))),
                 List.of(
                         GenericStack.fromItemStack(new ItemStack(Items.STICK))));
-        var encodedTag = (CompoundTag) encoded.save(registryAccess);
+        var encodedTag = StackUtil.toTag(registryAccess, encoded);
 
         // Replace the diamond ID string with an unknown ID string
         assertEquals(1, RecursiveTagReplace.replace(encodedTag, "minecraft:stick", "minecraft:does_not_exist"));
@@ -113,7 +116,7 @@ class AEProcessingPatternTest {
                         GenericStack.fromItemStack(new ItemStack(Items.DIAMOND))),
                 List.of(
                         GenericStack.fromItemStack(new ItemStack(Items.STICK))));
-        var encodedTag = (CompoundTag) encoded.save(registryAccess);
+        var encodedTag = StackUtil.toTag(registryAccess, encoded);
 
         // Replace the channel of all items
         assertEquals(3, RecursiveTagReplace.replace(encodedTag, "ae2:i", "some_mod:missing_chan"));
@@ -127,17 +130,18 @@ class AEProcessingPatternTest {
     }
 
     private List<String> getExtraTooltip(CompoundTag tag) {
-        var stack = ItemStack.parseOptional(registryAccess, tag);
+        var stack = StackUtil.fromTag(registryAccess, tag);
 
         var lines = new ArrayList<Component>();
-        stack.getItem().appendHoverText(stack, Item.TooltipContext.EMPTY, lines, TooltipFlag.ADVANCED);
+        stack.getItem().appendHoverText(stack, Item.TooltipContext.EMPTY, TooltipDisplay.DEFAULT, lines::add,
+                TooltipFlag.ADVANCED);
         return lines.stream().map(Component::getString).toList();
     }
 
     private AEProcessingPattern decode(CompoundTag tag) {
-        var stack = ItemStack.parseOptional(registryAccess, tag);
+        var stack = StackUtil.fromTag(registryAccess, tag);
 
-        var details = PatternDetailsHelper.decodePattern(AEItemKey.of(stack), mock(Level.class));
+        var details = PatternDetailsHelper.decodePattern(AEItemKey.of(stack), mock(ServerLevel.class));
         if (details == null) {
             return null;
         }

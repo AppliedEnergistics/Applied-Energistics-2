@@ -19,7 +19,7 @@
 package appeng.blockentity.misc;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Base64;
 import java.util.Collections;
 import java.util.List;
 
@@ -27,16 +27,17 @@ import io.netty.buffer.Unpooled;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.client.model.data.ModelData;
-import net.neoforged.neoforge.client.model.data.ModelProperty;
+import net.neoforged.neoforge.model.data.ModelData;
+import net.neoforged.neoforge.model.data.ModelProperty;
 
 import appeng.api.util.AEColor;
 import appeng.block.paint.PaintSplotches;
@@ -56,12 +57,12 @@ public class PaintSplotchesBlockEntity extends AEBaseBlockEntity {
     }
 
     @Override
-    public void saveAdditional(CompoundTag data, HolderLookup.Provider registries) {
-        super.saveAdditional(data, registries);
+    public void saveAdditional(ValueOutput data) {
+        super.saveAdditional(data);
         final FriendlyByteBuf myDat = new FriendlyByteBuf(Unpooled.buffer());
         this.writeBuffer(myDat);
         if (myDat.hasArray()) {
-            data.putByteArray("dots", myDat.array());
+            data.putString("dots", Base64.getEncoder().encodeToString(myDat.array()));
         }
     }
 
@@ -79,14 +80,18 @@ public class PaintSplotchesBlockEntity extends AEBaseBlockEntity {
     }
 
     @Override
-    public void loadTag(CompoundTag data, HolderLookup.Provider registries) {
-        super.loadTag(data, registries);
-        if (data.contains("dots")) {
-            this.readBuffer(new FriendlyByteBuf(Unpooled.copiedBuffer(data.getByteArray("dots"))));
-        }
+    public void loadTag(ValueInput data) {
+        super.loadTag(data);
+        byte[] dotsBuffer = data.getString("dots").map(Base64.getDecoder()::decode).orElse(new byte[0]);
+        this.readBuffer(new FriendlyByteBuf(Unpooled.copiedBuffer(dotsBuffer)));
     }
 
     private void readBuffer(FriendlyByteBuf in) {
+        if (in.readableBytes() == 0) {
+            this.dots = null;
+            return;
+        }
+
         final byte howMany = in.readByte();
 
         if (howMany == 0) {
@@ -113,9 +118,9 @@ public class PaintSplotchesBlockEntity extends AEBaseBlockEntity {
         return true;
     }
 
-    public void neighborChanged() {
+    public BlockState updateShape() {
         if (this.dots == null) {
-            return;
+            return Blocks.AIR.defaultBlockState();
         }
 
         for (Direction side : Direction.values()) {
@@ -124,7 +129,7 @@ public class PaintSplotchesBlockEntity extends AEBaseBlockEntity {
             }
         }
 
-        this.updateData();
+        return calculateBlockState();
     }
 
     public boolean isSideValid(Direction side) {
@@ -140,13 +145,13 @@ public class PaintSplotchesBlockEntity extends AEBaseBlockEntity {
         this.saveChanges();
     }
 
-    private void updateData() {
+    private BlockState calculateBlockState() {
         if (this.dots.isEmpty()) {
             this.dots = null;
         }
 
         if (this.dots == null) {
-            this.level.removeBlock(this.worldPosition, false);
+            return Blocks.AIR.defaultBlockState();
         } else {
             var lumenCount = 0;
             for (Splotch dot : dots) {
@@ -157,8 +162,7 @@ public class PaintSplotchesBlockEntity extends AEBaseBlockEntity {
                     }
                 }
             }
-            this.level.setBlockAndUpdate(getBlockPos(),
-                    getBlockState().setValue(PaintSplotchesBlock.LIGHT_LEVEL, lumenCount));
+            return getBlockState().setValue(PaintSplotchesBlock.LIGHT_LEVEL, lumenCount);
         }
     }
 
@@ -168,7 +172,7 @@ public class PaintSplotchesBlockEntity extends AEBaseBlockEntity {
         }
 
         this.removeSide(side);
-        this.updateData();
+        level.setBlockAndUpdate(getBlockPos(), calculateBlockState());
     }
 
     public void addBlot(ItemStack type, Direction side, Vec3 hitVec) {
@@ -190,13 +194,13 @@ public class PaintSplotchesBlockEntity extends AEBaseBlockEntity {
 
             this.dots.add(new Splotch(color, lit, side, hitVec));
 
-            updateData();
+            level.setBlockAndUpdate(getBlockPos(), calculateBlockState());
             this.markForUpdate();
             this.saveChanges();
         }
     }
 
-    public Collection<Splotch> getDots() {
+    public List<Splotch> getDots() {
         if (this.dots == null) {
             return Collections.emptyList();
         }
@@ -206,7 +210,6 @@ public class PaintSplotchesBlockEntity extends AEBaseBlockEntity {
 
     @Override
     public ModelData getModelData() {
-        // FIXME update trigger
         return ModelData.builder().with(SPLOTCHES, new PaintSplotches(getDots())).build();
     }
 }

@@ -2,15 +2,10 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "minecraft:redstone_torch"
-    },
-    {
-      "item": "ae2:advanced_card"
-    }
+    "minecraft:redstone_torch",
+    "ae2:advanced_card"
   ],
   "result": {
-    "count": 1,
     "id": "ae2:inverter_card"
   }
 }

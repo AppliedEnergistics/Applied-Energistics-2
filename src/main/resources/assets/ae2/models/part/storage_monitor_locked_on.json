@@ -2,8 +2,10 @@
   "textures": {
     "lightsBright": "ae2:part/storage_monitor_bright",
     "lightsMedium": "ae2:part/storage_monitor_medium",
-    "lightsDark": "ae2:part/storage_monitor_dark_locked"
+    "lightsDark": "ae2:part/storage_monitor_dark_locked",
+    "particle": "#lightsMedium"
   },
+  "render_type": "minecraft:cutout",
   "elements": [
     {
       "from": [2, 2, 0],

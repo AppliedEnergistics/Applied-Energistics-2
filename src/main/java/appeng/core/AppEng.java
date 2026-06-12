@@ -22,31 +22,29 @@ import java.util.Collection;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.crafting.RecipeMap;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.HitResult;
 
-import guideme.PageAnchor;
-
 import appeng.api.ids.AEConstants;
 import appeng.api.parts.CableRenderMode;
-import appeng.client.EffectType;
 import appeng.core.network.ClientboundPacket;
 
 public interface AppEng {
-
-    String MOD_NAME = "Applied Energistics 2";
     String MOD_ID = AEConstants.MOD_ID;
 
     static AppEng instance() {
         return AppEngBase.INSTANCE;
     }
 
-    static ResourceLocation makeId(String id) {
-        return ResourceLocation.fromNamespaceAndPath(MOD_ID, id);
+    static Identifier makeId(String id) {
+        return Identifier.fromNamespaceAndPath(MOD_ID, id);
     }
 
     /**
@@ -63,9 +61,6 @@ public interface AppEng {
 
     void sendToAllNearExcept(Player p, double x, double y, double z, double dist, Level level,
             ClientboundPacket packet);
-
-    void spawnEffect(EffectType effect, Level level, double posX, double posY,
-            double posZ, Object o);
 
     /**
      * Sets the player that is currently interacting with a cable or part attached to a cable. This will return that
@@ -100,9 +95,9 @@ public interface AppEng {
     void registerHotkey(String id);
 
     /**
-     * Opens the guidebook (if this is a client) on the last opened page, or the given initial page, if no page has ever
-     * been opened yet.
+     * Shows a system chat message to the player
      */
-    default void openGuideAtAnchor(PageAnchor anchor) {
-    }
+    void sendSystemMessage(Player player, Component text);
+
+    RecipeMap getRecipeMapForType(Level level, RecipeType<?> recipeType);
 }

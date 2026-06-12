@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "ae2:block/cable_bus"
+      "type": "ae2:cable_bus"
     }
   }
 }

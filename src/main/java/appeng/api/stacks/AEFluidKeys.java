@@ -23,18 +23,17 @@ import java.util.stream.Stream;
 
 import com.mojang.serialization.MapCodec;
 
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.level.storage.ValueInput;
 
 import appeng.core.AppEng;
 import appeng.core.localization.GuiText;
 
 final class AEFluidKeys extends AEKeyType {
-    private static final ResourceLocation ID = AppEng.makeId("f");
+    private static final Identifier ID = AppEng.makeId("f");
 
     static final AEFluidKeys INSTANCE = new AEFluidKeys();
 
@@ -66,8 +65,8 @@ final class AEFluidKeys extends AEKeyType {
     }
 
     @Override
-    public AEFluidKey loadKeyFromTag(HolderLookup.Provider registries, CompoundTag tag) {
-        return AEFluidKey.fromTag(registries, tag);
+    public AEFluidKey loadKeyFromTag(ValueInput input) {
+        return AEFluidKey.fromTag(input);
     }
 
     @Override
@@ -77,7 +76,7 @@ final class AEFluidKeys extends AEKeyType {
 
     @Override
     public Stream<TagKey<?>> getTagNames() {
-        return BuiltInRegistries.FLUID.getTagNames().map(t -> t);
+        return BuiltInRegistries.FLUID.listTagIds().map(t -> t);
     }
 
     @Override

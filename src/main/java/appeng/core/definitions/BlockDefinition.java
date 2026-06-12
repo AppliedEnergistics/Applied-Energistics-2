@@ -20,7 +20,7 @@ package appeng.core.definitions;
 
 import java.util.Objects;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -46,7 +46,7 @@ public class BlockDefinition<T extends Block> implements ItemLike {
         return englishName;
     }
 
-    public ResourceLocation id() {
+    public Identifier id() {
         return block.getId();
     }
 

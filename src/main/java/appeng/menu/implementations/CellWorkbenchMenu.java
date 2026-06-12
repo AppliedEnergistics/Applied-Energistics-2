@@ -45,7 +45,8 @@ import appeng.api.util.IConfigManager;
 import appeng.blockentity.misc.CellWorkbenchBlockEntity;
 import appeng.helpers.externalstorage.GenericStackInv;
 import appeng.menu.SlotSemantics;
-import appeng.menu.guisync.GuiSync;
+import appeng.menu.guisync.ClientActionKey;
+import appeng.menu.guisync.SynchronizedValue;
 import appeng.menu.slot.CellPartitionSlot;
 import appeng.menu.slot.IPartitionSlotHost;
 import appeng.menu.slot.OptionalRestrictedInputSlot;
@@ -58,17 +59,17 @@ import appeng.util.inv.SupplierInternalInventory;
  */
 public class CellWorkbenchMenu extends UpgradeableMenu<CellWorkbenchBlockEntity> implements IPartitionSlotHost {
 
-    public static final String ACTION_NEXT_COPYMODE = "nextCopyMode";
-    public static final String ACTION_PARTITION = "partition";
-    public static final String ACTION_CLEAR = "clear";
-    public static final String ACTION_SET_FUZZY_MODE = "setFuzzyMode";
+    private static final ClientActionKey<Void> ACTION_NEXT_COPYMODE = new ClientActionKey<>("nextCopyMode");
+    private static final ClientActionKey<Void> ACTION_PARTITION = new ClientActionKey<>("partition");
+    private static final ClientActionKey<Void> ACTION_CLEAR = new ClientActionKey<>("clear");
+    private static final ClientActionKey<FuzzyMode> ACTION_SET_FUZZY_MODE = new ClientActionKey<>("setFuzzyMode");
 
     public static final MenuType<CellWorkbenchMenu> TYPE = MenuTypeBuilder
             .create(CellWorkbenchMenu::new, CellWorkbenchBlockEntity.class)
             .build("cellworkbench");
 
-    @GuiSync(2)
-    public CopyMode copyMode = CopyMode.CLEAR_ON_REMOVE;
+    private final SynchronizedValue<CopyMode> copyMode = SynchronizedValue.create(CopyMode.STREAM_CODEC,
+            CopyMode.CLEAR_ON_REMOVE);
 
     public CellWorkbenchMenu(int id, Inventory ip, CellWorkbenchBlockEntity te) {
         super(TYPE, id, ip, te);
@@ -76,7 +77,7 @@ public class CellWorkbenchMenu extends UpgradeableMenu<CellWorkbenchBlockEntity>
         registerClientAction(ACTION_NEXT_COPYMODE, this::nextWorkBenchCopyMode);
         registerClientAction(ACTION_PARTITION, this::partition);
         registerClientAction(ACTION_CLEAR, this::clear);
-        registerClientAction(ACTION_SET_FUZZY_MODE, FuzzyMode.class, this::setCellFuzzyMode);
+        registerClientAction(ACTION_SET_FUZZY_MODE, FuzzyMode.STREAM_CODEC, this::setCellFuzzyMode);
     }
 
     public void setCellFuzzyMode(FuzzyMode fuzzyMode) {
@@ -220,10 +221,10 @@ public class CellWorkbenchMenu extends UpgradeableMenu<CellWorkbenchBlockEntity>
     }
 
     public CopyMode getCopyMode() {
-        return this.copyMode;
+        return this.copyMode.get();
     }
 
     private void setCopyMode(CopyMode copyMode) {
-        this.copyMode = copyMode;
+        this.copyMode.set(copyMode);
     }
 }

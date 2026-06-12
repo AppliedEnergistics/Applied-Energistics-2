@@ -1,0 +1,23 @@
+{
+  "model": {
+    "type": "ae2:composite",
+    "models": [
+      {
+        "type": "ae2:model",
+        "model": "ae2:part/display_base"
+      },
+      {
+        "type": "ae2:status_indicator",
+        "active": "ae2:part/pattern_encoding_terminal_on",
+        "powered": "ae2:part/pattern_encoding_terminal_on",
+        "unpowered": "ae2:part/pattern_encoding_terminal_off"
+      },
+      {
+        "type": "ae2:status_indicator",
+        "active": "ae2:part/display_status_has_channel",
+        "powered": "ae2:part/display_status_on",
+        "unpowered": "ae2:part/display_status_off"
+      }
+    ]
+  }
+}

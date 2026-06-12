@@ -1,7 +1,9 @@
 {
   "textures": {
-    "facade": "ae2:part/translucent_facade"
+    "facade": "ae2:part/translucent_facade",
+    "particle": "#facade"
   },
+  "render_type": "minecraft:cutout",
   "elements": [
     {
       "from": [0, 0, 0],

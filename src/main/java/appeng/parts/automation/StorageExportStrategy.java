@@ -94,7 +94,7 @@ public class StorageExportStrategy<T, S> implements StackExportStrategy {
 
     public static StackExportStrategy createItem(ServerLevel level, BlockPos fromPos, Direction fromSide) {
         return new StorageExportStrategy<>(
-                Capabilities.ItemHandler.BLOCK,
+                Capabilities.Item.BLOCK,
                 HandlerStrategy.ITEMS,
                 level,
                 fromPos,
@@ -103,7 +103,7 @@ public class StorageExportStrategy<T, S> implements StackExportStrategy {
 
     public static StackExportStrategy createFluid(ServerLevel level, BlockPos fromPos, Direction fromSide) {
         return new StorageExportStrategy<>(
-                Capabilities.FluidHandler.BLOCK,
+                Capabilities.Fluid.BLOCK,
                 HandlerStrategy.FLUIDS,
                 level,
                 fromPos,

@@ -6,6 +6,7 @@
     "back": "ae2:part/monitor_back_no_status",
     "front": "ae2:part/monitor_front"
   },
+  "render_type": "minecraft:cutout",
   "elements": [
     {
       "from": [2, 2, 0],

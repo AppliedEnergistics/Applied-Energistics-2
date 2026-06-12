@@ -20,32 +20,30 @@ package appeng.items.tools;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
+import java.util.function.Consumer;
 
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.Util;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackLinkedSet;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.DyedItemColor;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenCustomHashMap;
@@ -58,11 +56,11 @@ import appeng.api.implementations.items.MemoryCardMessages;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.upgrades.IUpgradeableObject;
 import appeng.api.util.IConfigurableObject;
+import appeng.core.ConventionTags;
 import appeng.core.localization.GuiText;
 import appeng.core.localization.InGameTooltip;
 import appeng.core.localization.PlayerMessages;
 import appeng.core.localization.Tooltips;
-import appeng.datagen.providers.tags.ConventionTags;
 import appeng.helpers.IConfigInvHost;
 import appeng.helpers.IPriorityHost;
 import appeng.items.AEBaseItem;
@@ -143,14 +141,14 @@ public class MemoryCardItem extends AEBaseItem implements IMemoryCard {
             @Nullable Player player) {
         var imported = importGenericSettings(importTo, input, player);
 
-        if (player != null && !player.getCommandSenderWorld().isClientSide()) {
+        if (player != null && !player.level().isClientSide()) {
             if (imported.isEmpty()) {
-                player.displayClientMessage(PlayerMessages.InvalidMachine.text(), true);
+                player.sendOverlayMessage(PlayerMessages.InvalidMachine.text());
             } else {
                 var restored = Tooltips
                         .conjunction(imported.stream().map(MemoryCardItem::getSettingComponent)
                                 .distinct().toList());
-                player.displayClientMessage(PlayerMessages.InvalidMachinePartiallyRestored.text(restored), true);
+                player.sendOverlayMessage(PlayerMessages.InvalidMachinePartiallyRestored.text(restored));
             }
         }
     }
@@ -269,44 +267,46 @@ public class MemoryCardItem extends AEBaseItem implements IMemoryCard {
                 }
 
                 if (missingAmount > 0 && !player.level().isClientSide()) {
-                    player.displayClientMessage(
-                            PlayerMessages.MissingUpgrades.text(entry.getKey().getDescription(), missingAmount), true);
+                    player.sendOverlayMessage(
+                            PlayerMessages.MissingUpgrades.text(entry.getKey().getDefaultInstance().getItemName(),
+                                    missingAmount));
                 }
             }
         }
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> lines,
-            TooltipFlag advancedTooltips) {
+    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay tooltipDisplay,
+            Consumer<Component> lines,
+            TooltipFlag tooltipFlags) {
 
         var settingsSource = stack.get(AEComponents.EXPORTED_SETTINGS_SOURCE);
         if (settingsSource != null) {
-            lines.add(Tooltips.of(settingsSource));
+            lines.accept(Tooltips.of(settingsSource));
         } else {
-            lines.add(Tooltips.of(GuiText.Blank.text()));
+            lines.accept(Tooltips.of(GuiText.Blank.text()));
         }
 
         var p2pFreq = stack.get(AEComponents.EXPORTED_P2P_FREQUENCY);
         if (p2pFreq != null) {
             var freqTooltip = Platform.p2p().toColoredHexString(p2pFreq).withStyle(ChatFormatting.BOLD);
-            lines.add(Tooltips.of(Component.translatable(InGameTooltip.P2PFrequency.getTranslationKey(), freqTooltip)));
+            lines.accept(
+                    Tooltips.of(Component.translatable(InGameTooltip.P2PFrequency.getTranslationKey(), freqTooltip)));
         }
     }
 
     @Override
     public void notifyUser(Player player, MemoryCardMessages msg) {
-        if (player.getCommandSenderWorld().isClientSide()) {
+        if (player.level().isClientSide()) {
             return;
         }
 
         switch (msg) {
-            case SETTINGS_CLEARED -> player.displayClientMessage(PlayerMessages.SettingCleared.text(), true);
-            case INVALID_MACHINE -> player.displayClientMessage(PlayerMessages.InvalidMachine.text(), true);
-            case SETTINGS_LOADED -> player.displayClientMessage(PlayerMessages.LoadedSettings.text(), true);
-            case SETTINGS_SAVED -> player.displayClientMessage(PlayerMessages.SavedSettings.text(), true);
-            case SETTINGS_RESET -> player.displayClientMessage(PlayerMessages.ResetSettings.text(), true);
+            case SETTINGS_CLEARED -> player.sendOverlayMessage(PlayerMessages.SettingCleared.text());
+            case INVALID_MACHINE -> player.sendOverlayMessage(PlayerMessages.InvalidMachine.text());
+            case SETTINGS_LOADED -> player.sendOverlayMessage(PlayerMessages.LoadedSettings.text());
+            case SETTINGS_SAVED -> player.sendOverlayMessage(PlayerMessages.SavedSettings.text());
+            case SETTINGS_RESET -> player.sendOverlayMessage(PlayerMessages.ResetSettings.text());
             default -> {
             }
         }
@@ -319,7 +319,7 @@ public class MemoryCardItem extends AEBaseItem implements IMemoryCard {
             if (!level.isClientSide()) {
                 this.clearCard(context.getPlayer(), context.getLevel(), context.getHand());
             }
-            return InteractionResult.sidedSuccess(level.isClientSide());
+            return InteractionResult.SUCCESS;
         } else {
             return super.useOn(context);
         }
@@ -331,8 +331,8 @@ public class MemoryCardItem extends AEBaseItem implements IMemoryCard {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
-        if (InteractionUtil.isInAlternateUseMode(player) && !level.isClientSide) {
+    public InteractionResult use(Level level, Player player, InteractionHand hand) {
+        if (InteractionUtil.isInAlternateUseMode(player) && !level.isClientSide()) {
             this.clearCard(player, level, hand);
         }
 
@@ -355,14 +355,5 @@ public class MemoryCardItem extends AEBaseItem implements IMemoryCard {
     // Override to change the default color
     public int getColor(ItemStack stack) {
         return DyedItemColor.getOrDefault(stack, DEFAULT_BASE_COLOR);
-    }
-
-    public static int getTintColor(ItemStack stack, int tintIndex) {
-        if (tintIndex == 1 && stack.getItem() instanceof MemoryCardItem memoryCard) {
-            return memoryCard.getColor(stack);
-        } else {
-            // White
-            return 0xFFFFFF;
-        }
     }
 }

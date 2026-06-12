@@ -9,8 +9,6 @@
     }
   ],
   "type": "ae2:matter_cannon",
-  "ammo": {
-    "tag": "c:nuggets/uranium"
-  },
+  "ammo": "#c:nuggets/uranium",
   "weight": 238.0289
 }

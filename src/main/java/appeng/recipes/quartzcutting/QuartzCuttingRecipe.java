@@ -1,90 +1,76 @@
 package appeng.recipes.quartzcutting;
 
 import java.util.ArrayList;
+import java.util.List;
 
-import com.mojang.serialization.DataResult;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import org.apache.commons.lang3.mutable.MutableBoolean;
 
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CraftingBookCategory;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.NormalCraftingRecipe;
+import net.minecraft.world.item.crafting.PlacementInfo;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.display.RecipeDisplay;
+import net.minecraft.world.item.crafting.display.ShapelessCraftingRecipeDisplay;
+import net.minecraft.world.item.crafting.display.SlotDisplay;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.common.CommonHooks;
 import net.neoforged.neoforge.common.util.RecipeMatcher;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
 
-import appeng.datagen.providers.tags.ConventionTags;
+import appeng.core.ConventionTags;
+import appeng.core.definitions.AEItems;
 
-public class QuartzCuttingRecipe implements CraftingRecipe {
-    static final int MAX_HEIGHT = 3;
-    static final int MAX_WIDTH = 3;
+public class QuartzCuttingRecipe extends NormalCraftingRecipe {
     public static final MapCodec<QuartzCuttingRecipe> CODEC = RecordCodecBuilder.mapCodec((builder) -> builder.group(
-            ItemStack.STRICT_CODEC.fieldOf("result").forGetter(QuartzCuttingRecipe::getResult),
-            Ingredient.CODEC_NONEMPTY.listOf().fieldOf("ingredients").flatXmap((r) -> {
-                var ingredients = r.toArray(Ingredient[]::new);
-                if (ingredients.length == 0) {
-                    return DataResult.error(() -> "No ingredients for quartz cutting recipe");
-                } else {
-                    return ingredients.length > MAX_HEIGHT * MAX_WIDTH ? DataResult.error(() -> {
-                        return "Too many ingredients for quartz cutting recipe. The maximum is: %s"
-                                .formatted(MAX_HEIGHT * MAX_WIDTH);
-                    }) : DataResult.success(NonNullList.of(Ingredient.EMPTY, ingredients));
-                }
-            }, DataResult::success).forGetter(QuartzCuttingRecipe::getIngredients))
+            Recipe.CommonInfo.MAP_CODEC.forGetter(o -> o.commonInfo),
+            CraftingRecipe.CraftingBookInfo.MAP_CODEC.forGetter(o -> o.bookInfo),
+            ItemStackTemplate.CODEC.fieldOf("result").forGetter(QuartzCuttingRecipe::result),
+            Ingredient.CODEC.listOf().fieldOf("ingredients").forGetter(QuartzCuttingRecipe::ingredients))
             .apply(builder, QuartzCuttingRecipe::new));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, QuartzCuttingRecipe> STREAM_CODEC = StreamCodec.composite(
-            ItemStack.STREAM_CODEC, QuartzCuttingRecipe::getResult,
-            StreamCodec.of(
-                    (buffer, value) -> {
-                        buffer.writeVarInt(value.size());
-                        for (var ingredient : value) {
-                            Ingredient.CONTENTS_STREAM_CODEC.encode(buffer, ingredient);
-                        }
-                    },
-                    buffer -> {
-                        int count = buffer.readVarInt();
-                        NonNullList<Ingredient> ingredients = NonNullList.withSize(count, Ingredient.EMPTY);
-                        ingredients.replaceAll(ignored -> Ingredient.CONTENTS_STREAM_CODEC.decode(buffer));
-                        return ingredients;
-                    }),
-            QuartzCuttingRecipe::getIngredients,
+            Recipe.CommonInfo.STREAM_CODEC, o -> o.commonInfo,
+            CraftingRecipe.CraftingBookInfo.STREAM_CODEC, o -> o.bookInfo,
+            ItemStackTemplate.STREAM_CODEC, QuartzCuttingRecipe::result,
+            Ingredient.CONTENTS_STREAM_CODEC.apply(ByteBufCodecs.list()), QuartzCuttingRecipe::ingredients,
             QuartzCuttingRecipe::new);
 
-    final ItemStack result;
-    final NonNullList<Ingredient> ingredients;
+    public static final RecipeSerializer<QuartzCuttingRecipe> SERIALIZER = new RecipeSerializer<>(CODEC, STREAM_CODEC);
+
+    final ItemStackTemplate result;
+    final List<Ingredient> ingredients;
     private final boolean isSimple;
 
-    public QuartzCuttingRecipe(ItemStack result, NonNullList<Ingredient> ingredients) {
+    public QuartzCuttingRecipe(Recipe.CommonInfo commonInfo, CraftingRecipe.CraftingBookInfo bookInfo,
+            ItemStackTemplate result, List<Ingredient> ingredients) {
+        super(commonInfo, bookInfo);
         this.result = result;
         this.ingredients = ingredients;
         this.isSimple = ingredients.stream().allMatch(Ingredient::isSimple);
     }
 
-    public RecipeSerializer<?> getSerializer() {
-        return QuartzCuttingRecipeSerializer.INSTANCE;
+    public RecipeSerializer<QuartzCuttingRecipe> getSerializer() {
+        return SERIALIZER;
     }
 
-    public CraftingBookCategory category() {
-        return CraftingBookCategory.MISC;
-    }
-
-    public ItemStack getResultItem(HolderLookup.Provider registries) {
+    public ItemStackTemplate result() {
         return this.result;
     }
 
-    public NonNullList<Ingredient> getIngredients() {
+    public List<Ingredient> ingredients() {
         return this.ingredients;
     }
 
@@ -108,16 +94,23 @@ public class QuartzCuttingRecipe implements CraftingRecipe {
         }
     }
 
-    public ItemStack assemble(CraftingInput input, HolderLookup.Provider registries) {
-        return this.result.copy();
+    @Override
+    public ItemStack assemble(CraftingInput input) {
+        return this.result.create();
     }
 
-    public boolean canCraftInDimensions(int width, int height) {
-        return width * height >= this.ingredients.size();
+    @Override
+    public List<RecipeDisplay> display() {
+        return List.of(
+                new ShapelessCraftingRecipeDisplay(
+                        this.ingredients.stream().map(Ingredient::display).toList(),
+                        new SlotDisplay.ItemStackSlotDisplay(this.result),
+                        new SlotDisplay.ItemSlotDisplay(AEItems.CERTUS_QUARTZ_KNIFE.asItem())));
     }
 
-    private ItemStack getResult() {
-        return result;
+    @Override
+    protected PlacementInfo createPlacementInfo() {
+        return PlacementInfo.create(ingredients);
     }
 
     @Override
@@ -135,7 +128,7 @@ public class QuartzCuttingRecipe implements CraftingRecipe {
 
                 var broken = new MutableBoolean(false);
                 if (CommonHooks.getCraftingPlayer() instanceof ServerPlayer serverPlayer) {
-                    result.hurtAndBreak(1, serverPlayer.serverLevel(), serverPlayer, ignored -> broken.setTrue());
+                    result.hurtAndBreak(1, serverPlayer.level(), serverPlayer, ignored -> broken.setTrue());
                 } else {
                     var currentServer = ServerLifecycleHooks.getCurrentServer();
                     if (currentServer != null) {
@@ -143,8 +136,8 @@ public class QuartzCuttingRecipe implements CraftingRecipe {
                     }
                 }
                 remainingItems.set(i, broken.getValue() ? ItemStack.EMPTY : result);
-            } else if (item.hasCraftingRemainingItem()) {
-                remainingItems.set(i, item.getCraftingRemainingItem());
+            } else if (item.getCraftingRemainder() != null) {
+                remainingItems.set(i, item.getCraftingRemainder().create());
             }
         }
 

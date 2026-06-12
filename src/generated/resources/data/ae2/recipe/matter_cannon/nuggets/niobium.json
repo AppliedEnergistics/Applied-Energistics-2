@@ -9,8 +9,6 @@
     }
   ],
   "type": "ae2:matter_cannon",
-  "ammo": {
-    "tag": "c:nuggets/niobium"
-  },
+  "ammo": "#c:nuggets/niobium",
   "weight": 92.9064
 }

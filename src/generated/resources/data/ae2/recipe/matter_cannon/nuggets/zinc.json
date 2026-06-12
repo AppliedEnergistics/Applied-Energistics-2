@@ -9,8 +9,6 @@
     }
   ],
   "type": "ae2:matter_cannon",
-  "ammo": {
-    "tag": "c:nuggets/zinc"
-  },
+  "ammo": "#c:nuggets/zinc",
   "weight": 65.39
 }

@@ -20,14 +20,13 @@ package appeng.parts.p2p;
 
 import java.util.EnumSet;
 import java.util.IdentityHashMap;
-import java.util.List;
 import java.util.Map;
 
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.GridHelper;
@@ -39,22 +38,11 @@ import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.parts.IPartHost;
 import appeng.api.parts.IPartItem;
-import appeng.api.parts.IPartModel;
 import appeng.api.util.AECableType;
-import appeng.core.AppEng;
 import appeng.core.settings.TickRates;
 import appeng.hooks.ticking.TickHandler;
-import appeng.items.parts.PartModels;
 
 public class MEP2PTunnelPart extends P2PTunnelPart<MEP2PTunnelPart> implements IGridTickable {
-
-    private static final P2PModels MODELS = new P2PModels(AppEng.makeId("part/p2p/p2p_tunnel_me"));
-
-    @PartModels
-    public static List<IPartModel> getModels() {
-        return MODELS.getModels();
-    }
-
     /**
      * Updates to ME tunnel connections are always delayed until the end of the tick. This field stores which operation
      * should be performed. Even if multiple updates are queued, only the most recently queued will be performed.
@@ -85,15 +73,15 @@ public class MEP2PTunnelPart extends P2PTunnelPart<MEP2PTunnelPart> implements I
     }
 
     @Override
-    public void readFromNBT(CompoundTag extra, HolderLookup.Provider registries) {
-        super.readFromNBT(extra, registries);
-        this.outerNode.loadFromNBT(extra);
+    public void readFromNBT(ValueInput extra) {
+        super.readFromNBT(extra);
+        this.outerNode.deserialize(extra);
     }
 
     @Override
-    public void writeToNBT(CompoundTag extra, HolderLookup.Provider registries) {
-        super.writeToNBT(extra, registries);
-        this.outerNode.saveToNBT(extra);
+    public void writeToNBT(ValueOutput extra) {
+        super.writeToNBT(extra);
+        this.outerNode.serialize(extra);
     }
 
     @Override
@@ -212,11 +200,6 @@ public class MEP2PTunnelPart extends P2PTunnelPart<MEP2PTunnelPart> implements I
                 connections.put(output, connection);
             }
         }
-    }
-
-    @Override
-    public IPartModel getStaticModels() {
-        return MODELS.getModel(this.isPowered(), this.isActive());
     }
 
     private enum ConnectionUpdate {

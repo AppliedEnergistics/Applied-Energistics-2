@@ -28,9 +28,11 @@ import java.util.Optional;
 
 import com.google.common.base.Preconditions;
 
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluid;
 
@@ -48,7 +50,7 @@ public class EntropyRecipeBuilder {
     private Fluid outputFluid;
     private final Map<String, String> outputFluidStateAppliers = new HashMap<>();
     private boolean outputFluidKeep;
-    private List<ItemStack> drops = Collections.emptyList();
+    private List<ItemStackTemplate> drops = Collections.emptyList();
 
     public static EntropyRecipeBuilder cool() {
         return new EntropyRecipeBuilder().setMode(EntropyMode.COOL);
@@ -93,14 +95,14 @@ public class EntropyRecipeBuilder {
         return this;
     }
 
-    public EntropyRecipeBuilder setDrops(List<ItemStack> drops) {
+    public EntropyRecipeBuilder setDrops(List<ItemStackTemplate> drops) {
         Preconditions.checkArgument(!drops.isEmpty(), "drops needs to be a non empty list when set");
 
         this.drops = drops;
         return this;
     }
 
-    public EntropyRecipeBuilder setDrops(ItemStack... drops) {
+    public EntropyRecipeBuilder setDrops(ItemStackTemplate... drops) {
         return setDrops(Arrays.asList(drops));
     }
 
@@ -210,8 +212,8 @@ public class EntropyRecipeBuilder {
         return new EntropyRecipe(mode, input, output);
     }
 
-    public void save(RecipeOutput consumer, ResourceLocation id) {
-        consumer.accept(id, build(), null);
+    public void save(RecipeOutput consumer, Identifier id) {
+        consumer.accept(ResourceKey.create(Registries.RECIPE, id), build(), null);
     }
 
 }

@@ -18,16 +18,18 @@
 
 package appeng.menu.implementations;
 
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 
 import appeng.api.config.Settings;
 import appeng.api.util.IConfigManager;
+import appeng.menu.guisync.ClientActionKey;
 import appeng.parts.automation.EnergyLevelEmitterPart;
 
 public class EnergyLevelEmitterMenu extends UpgradeableMenu<EnergyLevelEmitterPart> {
 
-    private static final String ACTION_SET_REPORTING_VALUE = "setReportingValue";
+    private static final ClientActionKey<Long> ACTION_SET_REPORTING_VALUE = new ClientActionKey<>("setReportingValue");
 
     public static final MenuType<EnergyLevelEmitterMenu> TYPE = MenuTypeBuilder
             .create(EnergyLevelEmitterMenu::new, EnergyLevelEmitterPart.class)
@@ -44,7 +46,7 @@ public class EnergyLevelEmitterMenu extends UpgradeableMenu<EnergyLevelEmitterPa
     public EnergyLevelEmitterMenu(int id, Inventory ip, EnergyLevelEmitterPart host) {
         super(TYPE, id, ip, host);
 
-        registerClientAction(ACTION_SET_REPORTING_VALUE, Long.class, this::setReportingValue);
+        registerClientAction(ACTION_SET_REPORTING_VALUE, ByteBufCodecs.LONG, this::setReportingValue);
     }
 
     public long getReportingValue() {

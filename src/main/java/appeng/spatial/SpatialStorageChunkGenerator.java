@@ -40,7 +40,6 @@ import net.minecraft.world.level.biome.FixedBiomeSource;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.ChunkGenerator;
-import net.minecraft.world.level.levelgen.GenerationStep.Carving;
 import net.minecraft.world.level.levelgen.Heightmap.Types;
 import net.minecraft.world.level.levelgen.RandomState;
 import net.minecraft.world.level.levelgen.blending.Blender;
@@ -106,7 +105,7 @@ public class SpatialStorageChunkGenerator extends ChunkGenerator {
     public void buildSurface(WorldGenRegion worldGenRegion, StructureManager structureManager, RandomState randomState,
             ChunkAccess chunk) {
         this.fillChunk(chunk);
-        chunk.setUnsaved(false);
+        chunk.tryMarkSaved();
     }
 
     private void fillChunk(ChunkAccess chunk) {
@@ -119,7 +118,7 @@ public class SpatialStorageChunkGenerator extends ChunkGenerator {
                 mutPos.setZ(cz);
                 for (int cy = 0; cy < HEIGHT; cy++) {
                     mutPos.setY(cy);
-                    chunk.setBlockState(mutPos, defaultBlockState, false);
+                    chunk.setBlockState(mutPos, defaultBlockState);
                 }
             }
         }
@@ -152,8 +151,8 @@ public class SpatialStorageChunkGenerator extends ChunkGenerator {
     }
 
     @Override
-    public void applyCarvers(WorldGenRegion worldGenRegion, long l, RandomState randomState, BiomeManager biomeManager,
-            StructureManager structureManager, ChunkAccess chunkAccess, Carving carving) {
+    public void applyCarvers(WorldGenRegion level, long seed, RandomState random, BiomeManager biomeManager,
+            StructureManager structureManager, ChunkAccess chunk) {
     }
 
     @Override

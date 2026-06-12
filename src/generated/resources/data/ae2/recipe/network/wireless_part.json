@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "a": {
-      "item": "ae2:fluix_pearl"
-    },
-    "b": {
-      "tag": "c:ingots/iron"
-    },
-    "c": {
-      "item": "ae2:quartz_fiber"
-    }
+    "a": "ae2:fluix_pearl",
+    "b": "#c:ingots/iron",
+    "c": "ae2:quartz_fiber"
   },
   "pattern": [
     " a ",
@@ -18,7 +12,6 @@
     " b "
   ],
   "result": {
-    "count": 1,
     "id": "ae2:wireless_receiver"
   }
 }

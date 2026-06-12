@@ -1,0 +1,7 @@
+{
+  "model": {
+    "type": "ae2:memory_card_identity",
+    "base_model": "ae2:item/memory_card_base",
+    "color_overlay_sprite": "ae2:item/memory_card_hash"
+  }
+}

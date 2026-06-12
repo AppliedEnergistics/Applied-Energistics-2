@@ -2,7 +2,6 @@ package appeng.integration.modules.igtooltip.parts;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.world.entity.player.Player;
 
 import appeng.api.integrations.igtooltip.TooltipBuilder;
@@ -26,15 +25,15 @@ public final class ChannelDataProvider
     @Override
     public void buildTooltip(IUsedChannelProvider object, TooltipContext context, TooltipBuilder tooltip) {
         var serverData = context.serverData();
-        if (serverData.contains(TAG_ERROR, Tag.TAG_STRING)) {
-            var error = ChannelError.valueOf(serverData.getString(TAG_ERROR));
+        if (serverData.contains(TAG_ERROR)) {
+            var error = ChannelError.valueOf(serverData.getStringOr(TAG_ERROR, ""));
             tooltip.addLine(error.text.text().withStyle(ChatFormatting.RED));
             return;
         }
 
-        if (serverData.contains(TAG_MAX_CHANNELS, Tag.TAG_INT)) {
-            var usedChannels = serverData.getInt(TAG_USED_CHANNELS);
-            var maxChannels = serverData.getInt(TAG_MAX_CHANNELS);
+        if (serverData.contains(TAG_MAX_CHANNELS)) {
+            var usedChannels = serverData.getIntOr(TAG_USED_CHANNELS, 0);
+            var maxChannels = serverData.getIntOr(TAG_MAX_CHANNELS, 0);
             // Even in the maxChannels=0 case, we'll show as infinite
             if (maxChannels <= 0) {
                 tooltip.addLine(InGameTooltip.Channels.text(usedChannels));
