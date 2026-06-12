@@ -10,17 +10,17 @@ import net.minecraft.core.Direction;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.Nameable;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.capabilities.Capabilities;
 
 import appeng.api.parts.IPartHost;
 import appeng.api.stacks.AEItemKey;
 import appeng.core.localization.GuiText;
+import appeng.util.Platform;
 
 /**
  * Provides both a key for grouping pattern providers, and displaying the group in the pattern access terminal.
@@ -115,8 +115,9 @@ public record PatternContainerGroup(
         } else {
             // Try to wrestle an item from the adjacent block entity
             var targetBlock = target.getBlockState().getBlock();
-            var targetItem = targetBlock.getCloneItemStack(target.getBlockState(),
-                    new BlockHitResult(Vec3.atCenterOf(pos), side, pos, false), level, pos, null);
+            var targetItem = level instanceof ServerLevel serverLevel ? targetBlock.getCloneItemStack(level, pos,
+                    target.getBlockState(), true, Platform.getFakePlayer(serverLevel, null))
+                    : new ItemStack(targetBlock);
             icon = AEItemKey.of(targetItem);
 
             if (target instanceof Nameable nameable && nameable.hasCustomName()) {
