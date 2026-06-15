@@ -57,7 +57,7 @@ public interface ISegmentedInventory {
 
     /**
      * Access an internal inventory, note, not all inventories contain real items, some may be ghost items, and treating
-     * them a real inventories will result in duplication.
+     * them as real inventories will result in duplication.
      *
      * @param id Identifier for the inventory segment.
      * @return Null if the machine has no sub-inventory with the given id.

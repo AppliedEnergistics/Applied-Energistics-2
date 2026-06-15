@@ -331,5 +331,7 @@ public class CraftingTermMenu extends MEStorageMenu implements ICraftingGridMenu
                 }
             }
         }
+
+        slotsChanged(craftingGridInv.toContainer());
     }
 }
