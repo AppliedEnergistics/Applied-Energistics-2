@@ -219,6 +219,26 @@ public class NetworkStorage implements MEStorage {
     }
 
     @Override
+    public int getEstimatedStackCount() {
+        if (mountsInUse) {
+            return 0; // Prevent recursive use
+        }
+
+        mountsInUse = true;
+        int total = 0;
+        try {
+            for (var i : this.priorityInventory.values()) {
+                for (var j : i) {
+                    total += j.getEstimatedStackCount();
+                }
+            }
+        } finally {
+            mountsInUse = false;
+        }
+        return total;
+    }
+
+    @Override
     public Component getDescription() {
         return GuiText.MENetworkStorage.text();
     }

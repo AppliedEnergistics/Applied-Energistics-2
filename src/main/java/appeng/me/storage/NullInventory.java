@@ -38,6 +38,11 @@ public class NullInventory implements MEStorage {
     }
 
     @Override
+    public int getEstimatedStackCount() {
+        return 0;
+    }
+
+    @Override
     public Component getDescription() {
         return Component.empty();
     }

@@ -279,6 +279,11 @@ public class BasicCellInventory implements StorageCell {
     }
 
     @Override
+    public int getEstimatedStackCount() {
+        return this.getCellItems().size();
+    }
+
+    @Override
     public double getIdleDrain() {
         return this.cellType.getIdleDrain();
     }

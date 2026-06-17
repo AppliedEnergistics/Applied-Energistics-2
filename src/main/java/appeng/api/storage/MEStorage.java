@@ -106,9 +106,19 @@ public interface MEStorage {
      * @return a new list of this inventories content
      */
     default KeyCounter getAvailableStacks() {
-        var result = new KeyCounter();
+        var result = new KeyCounter(getEstimatedStackCount());
         getAvailableStacks(result);
         return result;
+    }
+
+    /**
+     * Estimate the maximum number of stacks in this storage network This should be a small over-estimate of the number
+     * of stacks
+     * 
+     * @return A number greater or equal to the total number of stacks in this storage
+     */
+    default int getEstimatedStackCount() {
+        return 1;
     }
 
     static void checkPreconditions(AEKey what, long amount, Actionable mode, IActionSource source) {

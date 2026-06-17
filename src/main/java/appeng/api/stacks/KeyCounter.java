@@ -46,7 +46,15 @@ import appeng.api.config.FuzzyMode;
  */
 public final class KeyCounter implements Iterable<Object2LongMap.Entry<AEKey>> {
     // First map contains a mapping from AEKey#primaryKey
-    private final Reference2ObjectMap<Object, VariantCounter> lists = new Reference2ObjectOpenHashMap<>();
+    private final Reference2ObjectMap<Object, VariantCounter> lists;
+
+    public KeyCounter() {
+        lists = new Reference2ObjectOpenHashMap<>();
+    }
+
+    public KeyCounter(int expectedTypes) {
+        lists = new Reference2ObjectOpenHashMap<>(expectedTypes);
+    }
 
     public Collection<Object2LongMap.Entry<AEKey>> findFuzzy(AEKey key, FuzzyMode fuzzy) {
         Objects.requireNonNull(key, "key");

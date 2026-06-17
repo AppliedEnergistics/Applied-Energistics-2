@@ -102,6 +102,15 @@ public class CompositeStorage implements MEStorage, ITickingMonitor {
         this.cache.getAvailableKeys(out);
     }
 
+    @Override
+    public int getEstimatedStackCount() {
+        int total = 0;
+        for (MEStorage value : storages.values()) {
+            total += value.getEstimatedStackCount();
+        }
+        return total;
+    }
+
     private class InventoryCache {
         private KeyCounter frontBuffer = new KeyCounter();
         private KeyCounter backBuffer = new KeyCounter();
