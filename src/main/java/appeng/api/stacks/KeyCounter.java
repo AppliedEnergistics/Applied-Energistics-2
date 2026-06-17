@@ -29,6 +29,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Function;
 
 import com.google.common.collect.Iterators;
 
@@ -166,12 +167,7 @@ public final class KeyCounter implements Iterable<Object2LongMap.Entry<AEKey>> {
     }
 
     private VariantCounter getSubIndex(AEKey key) {
-        // We check before the call to computeIfAbsent, otherwise we'd need a capturing lambda.
-        if (key.getFuzzySearchMaxValue() > 0) {
-            return lists.computeIfAbsent(key.getPrimaryKey(), k -> new VariantCounter.FuzzyVariantMap());
-        } else {
-            return lists.computeIfAbsent(key.getPrimaryKey(), k -> new VariantCounter.UnorderedVariantMap());
-        }
+        return lists.computeIfAbsent(key.getPrimaryKey(), k -> new VariantCounter());
     }
 
     @Nullable
