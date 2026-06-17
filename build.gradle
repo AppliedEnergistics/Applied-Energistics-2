@@ -20,6 +20,7 @@ plugins {
     id "net.neoforged.moddev.legacyforge"
     id "maven-publish"
     id "com.diffplug.spotless"
+    id "me.champeau.jmh" version "0.7.3"
 }
 
 sourceSets {
@@ -536,3 +537,20 @@ check.dependsOn tasks.register('validateResources', JavaExec) {
     javaLauncher.set(javaToolchains.launcherFor(java.toolchain))
 }
 
+jmh {
+    zip64 = true
+    warmupForks = 0
+    warmupIterations = 1
+    fork = 1
+    iterations = project.property("jmh.iterations").toInteger()
+    threads = 1
+    humanOutputFile = project.layout.buildDirectory.file("results/jmh/human.txt")
+    resultFormat = 'JSON'
+    profilers = ['async:output=flamegraph;dir=build/results/jmh']
+
+    jmhJar {
+        manifest {
+            attributes 'Multi-Release': 'true'
+        }
+    }
+}
