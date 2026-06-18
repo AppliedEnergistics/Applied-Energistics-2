@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.function.Consumer;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -281,6 +282,28 @@ class VariantCounter implements Iterable<Object2LongMap.Entry<AEKey>> {
         return new NonDefaultIterator(it);
     }
 
+    @Override
+    public void forEach(Consumer<? super Object2LongMap.Entry<AEKey>> action) {
+        switch (state) {
+            case EMPTY -> {
+            }
+            case SINGLE -> forEachSingle(action);
+            case GENERIC -> mapForEach(genericRecords, action);
+            case FUZZY -> mapForEach(fuzzyRecords, action);
+        }
+    }
+
+    // valid IFF state == CounterState.SINGLE
+    private void forEachSingle(Consumer<? super Object2LongMap.Entry<AEKey>> action) {
+        if (!dropZeros || count != 0) {
+            action.accept(singleton());
+        }
+    }
+
+    private void mapForEach(AEKey2LongMap records, Consumer<? super Object2LongMap.Entry<AEKey>> action) {
+        records.object2LongEntrySet().forEach(dropZeros ? new NonDefaultConsumer(action) : action);
+    }
+
     /**
      * Sets all amounts to zero.
      */
@@ -419,6 +442,17 @@ class VariantCounter implements Iterable<Object2LongMap.Entry<AEKey>> {
             }
 
             return null;
+        }
+    }
+
+    private record NonDefaultConsumer(
+            Consumer<? super Object2LongMap.Entry<AEKey>> action) implements Consumer<Object2LongMap.Entry<AEKey>> {
+
+        @Override
+        public void accept(Object2LongMap.Entry<AEKey> entry) {
+            if (entry.getLongValue() != 0) {
+                action.accept(entry);
+            }
         }
     }
 }

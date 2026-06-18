@@ -29,7 +29,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import java.util.function.Function;
+import java.util.function.Consumer;
 
 import com.google.common.collect.Iterators;
 
@@ -37,6 +37,7 @@ import org.jetbrains.annotations.Nullable;
 
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectMap;
+import it.unimi.dsi.fastutil.objects.Reference2ObjectMaps;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 
 import appeng.api.config.FuzzyMode;
@@ -171,7 +172,13 @@ public final class KeyCounter implements Iterable<Object2LongMap.Entry<AEKey>> {
     @Override
     public Iterator<Object2LongMap.Entry<AEKey>> iterator() {
         return Iterators.concat(
-                Iterators.transform(lists.values().iterator(), VariantCounter::iterator));
+                Iterators.transform(Reference2ObjectMaps.fastIterator(lists),
+                        k -> k.getValue().iterator()));
+    }
+
+    @Override
+    public void forEach(Consumer<? super Object2LongMap.Entry<AEKey>> action) {
+        lists.forEach((o, counter) -> counter.forEach(action));
     }
 
     private VariantCounter getSubIndex(AEKey key) {
