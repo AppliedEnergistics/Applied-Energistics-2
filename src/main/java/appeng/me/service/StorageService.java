@@ -23,7 +23,9 @@ import java.util.HashSet;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
+import java.util.function.Consumer;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.HashMultimap;
@@ -71,7 +73,7 @@ public class StorageService implements IStorageService, IGridServiceProvider {
      * Private cached amounts, to ensure that we send correct change notifications even if
      * {@link #cachedAvailableStacks} is modified by mistake.
      */
-    private final Object2LongMap<AEKey> cachedAvailableAmounts = new Object2LongOpenHashMap<>();
+    private Object2LongMap<AEKey> cachedAvailableAmounts = new Object2LongOpenHashMap<>();
     private boolean cachedStacksNeedUpdate = true;
     /**
      * Tracks the stack watcher associated with a given grid node. Needed to clean up watchers when the node leaves the
@@ -97,32 +99,65 @@ public class StorageService implements IStorageService, IGridServiceProvider {
     private void updateCachedStacks() {
         cachedStacksNeedUpdate = false;
 
+        // Update cachedAvailableStacks to have the latest inventory contents
         cachedAvailableStacks.clear();
         storage.getAvailableStacks(cachedAvailableStacks);
         // clear() only clears the inner maps,
         // so ensure that the outer map gets cleaned up too
         cachedAvailableStacks.removeEmptySubmaps();
 
-        // Post watcher update for currently available stacks
-        for (var entry : cachedAvailableStacks) {
+        // Process the contents of cachedAvailableStacks, send notifications, and compute a new cachedAvailableAmounts
+        InventoryListener listener = new InventoryListener(cachedAvailableAmounts, cachedAvailableStacks.size());
+        cachedAvailableStacks.forEach(listener);
+        listener.sendRemovedStacksToWatchers();
+        cachedAvailableAmounts = listener.currentContents();
+    }
+
+    /**
+     * Listener which accepts and accumulates the current stacks in this storage, and sends notifications to watchers
+     * for changes since this listener was created.
+     */
+    private class InventoryListener implements Consumer<Object2LongMap.Entry<AEKey>> {
+
+        private final Object2LongMap<AEKey> previous;
+        private final Object2LongMap<AEKey> next;
+
+        /**
+         * @param previous The last known contents of this storage
+         * @param nextSize The total number of items to expect in the current state
+         */
+        private InventoryListener(Object2LongMap<AEKey> previous, int nextSize) {
+            this.previous = Objects.requireNonNull(previous);
+            this.next = new Object2LongOpenHashMap<>(nextSize);
+        }
+
+        @Override
+        public void accept(Object2LongMap.Entry<AEKey> entry) {
+            // Post watcher update for currently available stacks
             var what = entry.getKey();
             var newAmount = entry.getLongValue();
-            if (newAmount != cachedAvailableAmounts.getLong(what)) {
-                postWatcherUpdate(what, newAmount);
-            }
-        }
-        // Post watcher update for removed stacks
-        for (var what : cachedAvailableAmounts.keySet()) {
-            var newAmount = cachedAvailableStacks.get(what);
-            if (newAmount == 0) {
+            next.put(what, newAmount);
+            // Remove the key from the previous state, to indicate that we've checked it and sent notifications
+            if (newAmount != previous.removeLong(what)) {
                 postWatcherUpdate(what, newAmount);
             }
         }
 
-        // Update private amounts
-        cachedAvailableAmounts.clear();
-        for (var entry : cachedAvailableStacks) {
-            cachedAvailableAmounts.put(entry.getKey(), entry.getLongValue());
+        /**
+         * After contents of the storage has been accepted, send notifications for items which are no longer present
+         */
+        public void sendRemovedStacksToWatchers() {
+            // Post watcher update for removed stacks
+            for (var what : previous.keySet()) {
+                var newAmount = next.getOrDefault(what, 0);
+                if (newAmount == 0) {
+                    postWatcherUpdate(what, newAmount);
+                }
+            }
+        }
+
+        public Object2LongMap<AEKey> currentContents() {
+            return next;
         }
     }
 
