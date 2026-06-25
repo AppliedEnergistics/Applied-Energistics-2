@@ -14,6 +14,7 @@ import net.minecraft.client.renderer.state.level.BlockOutlineRenderState;
 import net.minecraft.client.renderer.state.level.LevelRenderState;
 import net.minecraft.core.Direction;
 import net.minecraft.util.ARGB;
+import net.minecraft.util.CommonColors;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -35,6 +36,9 @@ import appeng.parts.BusCollisionHelper;
 import appeng.parts.PartPlacement;
 
 public class RenderBlockOutlineHook {
+    private static final float PREVIEW_LINE_WIDTH = 7F;
+    private static final float HIGH_CONTRAST_SECONDARY_LINE_WIDTH = 7F;
+
     private RenderBlockOutlineHook() {
     }
 
@@ -98,13 +102,18 @@ public class RenderBlockOutlineHook {
             }
 
             var selectedPart = partHost.selectPartWorld(evt.getHitResult().getLocation());
+            boolean highContrast = evt.isHighContrast();
+            float lineWidth = Minecraft.getInstance().gameRenderer
+                    .getGameRenderState().windowRenderState.appropriateLineWidth;
             if (selectedPart.facade != null) {
                 evt.addCustomRenderer(
-                        new FacadeOutlineRenderer(selectedPart.facade, selectedPart.side, cameraRelativePos));
+                        new FacadeOutlineRenderer(selectedPart.facade, selectedPart.side, cameraRelativePos,
+                                highContrast, lineWidth));
                 return;
             }
             if (selectedPart.part != null) {
-                evt.addCustomRenderer(new PartOutlineRenderer(selectedPart.part, selectedPart.side, cameraRelativePos));
+                evt.addCustomRenderer(new PartOutlineRenderer(selectedPart.part, selectedPart.side, cameraRelativePos,
+                        highContrast, lineWidth));
                 return;
             }
         }
@@ -119,8 +128,10 @@ public class RenderBlockOutlineHook {
                 boolean translucentPass,
                 LevelRenderState levelRenderState) {
             // Render without depth test to also have a preview for parts inside blocks.
-            renderPart(poseStack, bufferSource, cameraRelativePos, part, placement.side(), true, true);
-            renderPart(poseStack, bufferSource, cameraRelativePos, part, placement.side(), true, false);
+            renderPart(poseStack, bufferSource, cameraRelativePos, part, placement.side(), PREVIEW_LINE_WIDTH, false,
+                    true, true);
+            renderPart(poseStack, bufferSource, cameraRelativePos, part, placement.side(), PREVIEW_LINE_WIDTH, false,
+                    true, false);
             return false;
         }
     }
@@ -146,20 +157,24 @@ public class RenderBlockOutlineHook {
                 boolean insideBlock) {
             if (renderAnchor) {
                 var cableAnchor = AEParts.CABLE_ANCHOR.get().createPart();
-                renderPart(poseStack, buffers, cameraRelativePos, cableAnchor, side, true, insideBlock);
+                renderPart(poseStack, buffers, cameraRelativePos, cableAnchor, side, PREVIEW_LINE_WIDTH, false, true,
+                        insideBlock);
             }
 
-            renderFacade(poseStack, buffers, cameraRelativePos, facade, side, true, insideBlock);
+            renderFacade(poseStack, buffers, cameraRelativePos, facade, side, PREVIEW_LINE_WIDTH, false, true,
+                    insideBlock);
         }
     }
 
     record FacadeOutlineRenderer(IFacadePart facade, Direction side,
-            Vec3 cameraRelativePos) implements CustomBlockOutlineRenderer {
+            Vec3 cameraRelativePos,
+            boolean highContrast,
+            float lineWidth) implements CustomBlockOutlineRenderer {
         @Override
         public boolean render(BlockOutlineRenderState blockOutlineRenderState,
                 MultiBufferSource.BufferSource bufferSource, PoseStack poseStack, boolean b,
                 LevelRenderState levelRenderState) {
-            renderFacade(poseStack, bufferSource, cameraRelativePos, facade, side, false,
+            renderFacade(poseStack, bufferSource, cameraRelativePos, facade, side, lineWidth, highContrast, false,
                     false);
 
             return true;
@@ -167,12 +182,14 @@ public class RenderBlockOutlineHook {
     }
 
     record PartOutlineRenderer(IPart part, Direction side,
-            Vec3 cameraRelativePos) implements CustomBlockOutlineRenderer {
+            Vec3 cameraRelativePos,
+            boolean highContrast,
+            float lineWidth) implements CustomBlockOutlineRenderer {
         @Override
         public boolean render(BlockOutlineRenderState blockOutlineRenderState,
                 MultiBufferSource.BufferSource bufferSource, PoseStack poseStack, boolean b,
                 LevelRenderState levelRenderState) {
-            renderPart(poseStack, bufferSource, cameraRelativePos, part, side, false, false);
+            renderPart(poseStack, bufferSource, cameraRelativePos, part, side, lineWidth, highContrast, false, false);
             return true;
         }
     }
@@ -182,12 +199,14 @@ public class RenderBlockOutlineHook {
             Vec3 cameraRelativePos,
             IPart part,
             Direction side,
+            float lineWidth,
+            boolean highContrast,
             boolean preview,
             boolean insideBlock) {
         var boxes = new ArrayList<AABB>();
         var helper = new BusCollisionHelper(boxes, side, true);
         part.getBoxes(helper);
-        renderBoxes(poseStack, buffers, cameraRelativePos, boxes, preview, insideBlock);
+        renderBoxes(poseStack, buffers, cameraRelativePos, boxes, lineWidth, highContrast, preview, insideBlock);
     }
 
     private static void renderFacade(PoseStack poseStack,
@@ -195,23 +214,46 @@ public class RenderBlockOutlineHook {
             Vec3 cameraRelativePos,
             IFacadePart facade,
             Direction side,
+            float lineWidth,
+            boolean highContrast,
             boolean preview,
             boolean insideBlock) {
         var boxes = new ArrayList<AABB>();
         var helper = new BusCollisionHelper(boxes, side, true);
         facade.getBoxes(helper, false);
-        renderBoxes(poseStack, buffers, cameraRelativePos, boxes, preview, insideBlock);
+        renderBoxes(poseStack, buffers, cameraRelativePos, boxes, lineWidth, highContrast, preview, insideBlock);
     }
 
     private static void renderBoxes(PoseStack poseStack,
             MultiBufferSource buffers,
             Vec3 cameraRelativePos,
             List<AABB> boxes,
+            float lineWidth,
+            boolean highContrast,
             boolean preview,
             boolean insideBlock) {
-        RenderType renderType = insideBlock ? AERenderTypes.LINES_BEHIND_BLOCK : RenderTypes.lines();
+        if (preview) {
+            RenderType renderType = insideBlock ? AERenderTypes.LINES_BEHIND_BLOCK : RenderTypes.lines();
+            int color = ARGB.white(insideBlock ? 0.2f : 0.6f);
+            renderBoxes(poseStack, buffers, cameraRelativePos, boxes, renderType, color, lineWidth);
+        } else {
+            if (highContrast) {
+                renderBoxes(poseStack, buffers, cameraRelativePos, boxes, RenderTypes.secondaryBlockOutline(),
+                        CommonColors.BLACK, HIGH_CONTRAST_SECONDARY_LINE_WIDTH);
+            }
+            int color = highContrast ? CommonColors.HIGH_CONTRAST_DIAMOND : ARGB.black(0.4f);
+            renderBoxes(poseStack, buffers, cameraRelativePos, boxes, RenderTypes.lines(), color, lineWidth);
+        }
+    }
+
+    private static void renderBoxes(PoseStack poseStack,
+            MultiBufferSource buffers,
+            Vec3 cameraRelativePos,
+            List<AABB> boxes,
+            RenderType renderType,
+            int color,
+            float lineWidth) {
         var buffer = buffers.getBuffer(renderType);
-        float alpha = insideBlock ? 0.2f : preview ? 0.6f : 0.4f;
 
         for (var box : boxes) {
             var shape = Shapes.create(box);
@@ -223,11 +265,8 @@ public class RenderBlockOutlineHook {
                     cameraRelativePos.x,
                     cameraRelativePos.y,
                     cameraRelativePos.z,
-                    ARGB.colorFromFloat(alpha,
-                            preview ? 1 : 0,
-                            preview ? 1 : 0,
-                            preview ? 1 : 0),
-                    7 /* line width */);
+                    color,
+                    lineWidth);
         }
     }
 }
