@@ -53,6 +53,7 @@ import appeng.client.api.integrations.jei.IngredientConverters;
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.implementations.InscriberScreen;
 import appeng.client.integrations.jei.transfer.EncodePatternTransferHandler;
+import appeng.client.integrations.jei.transfer.FilterTransferHandler;
 import appeng.client.integrations.jei.transfer.UseCraftingRecipeTransfer;
 import appeng.core.AEConfig;
 import appeng.core.AppEng;
@@ -65,6 +66,9 @@ import appeng.core.localization.GuiText;
 import appeng.core.localization.ItemModText;
 import appeng.integration.abstraction.ItemListMod;
 import appeng.integration.abstraction.ItemListModAdapter;
+import appeng.menu.implementations.IOBusMenu;
+import appeng.menu.implementations.InterfaceMenu;
+import appeng.menu.implementations.StorageBusMenu;
 import appeng.menu.me.items.CraftingTermMenu;
 import appeng.menu.me.items.PatternEncodingTermMenu;
 import appeng.menu.me.items.WirelessCraftingTermMenu;
@@ -178,6 +182,20 @@ public class JEIPlugin implements IModPlugin {
                 PatternEncodingTermMenu.TYPE,
                 PatternEncodingTermMenu.class,
                 registration.getTransferHelper()));
+        // Some additional universal handlers for filtered ME parts.
+        registration.addUniversalRecipeTransferHandler(new FilterTransferHandler<>(
+                InterfaceMenu.TYPE,
+                InterfaceMenu.class,
+                registration.getTransferHelper()));
+        registration.addUniversalRecipeTransferHandler(new FilterTransferHandler<>(
+                StorageBusMenu.TYPE,
+                StorageBusMenu.class,
+                registration.getTransferHelper()));
+        registration.addUniversalRecipeTransferHandler(new FilterTransferHandler<>(
+                IOBusMenu.EXPORT_TYPE,
+                IOBusMenu.class,
+                registration.getTransferHelper()));
+
     }
 
     @Override
