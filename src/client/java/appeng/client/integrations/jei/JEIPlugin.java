@@ -6,6 +6,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import appeng.client.integrations.jei.transfer.FilterTransferHandler;
+import appeng.menu.implementations.IOBusMenu;
+import appeng.menu.implementations.InterfaceMenu;
+import appeng.menu.implementations.StorageBusMenu;
 import org.jetbrains.annotations.NotNull;
 import org.jspecify.annotations.Nullable;
 
@@ -178,6 +182,21 @@ public class JEIPlugin implements IModPlugin {
                 PatternEncodingTermMenu.TYPE,
                 PatternEncodingTermMenu.class,
                 registration.getTransferHelper()));
+        // Some additional universal handlers for filtered ME parts.
+        registration.addUniversalRecipeTransferHandler(new FilterTransferHandler<>(
+                InterfaceMenu.TYPE,
+                InterfaceMenu.class,
+                registration.getTransferHelper()));
+        registration.addUniversalRecipeTransferHandler(new FilterTransferHandler<>(
+                StorageBusMenu.TYPE,
+                StorageBusMenu.class,
+                registration.getTransferHelper()));
+        registration.addUniversalRecipeTransferHandler(new FilterTransferHandler<>(
+                IOBusMenu.EXPORT_TYPE,
+                IOBusMenu.class,
+                registration.getTransferHelper()));
+
+
     }
 
     @Override
