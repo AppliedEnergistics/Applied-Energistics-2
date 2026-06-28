@@ -17,7 +17,8 @@ import java.util.Objects;
 
 public class FilterTransferHelper <T extends UpgradeableMenu<? extends IUpgradeableObject>> {
     private static final Logger LOGGER = LogUtils.getLogger();
-    private static void addOrMerge(List<GenericStack> stacks, GenericStack newStack) {
+
+    public static void addOrMerge(List<GenericStack> stacks, GenericStack newStack) {
         for (int i = 0; i < stacks.size(); i++) {
             var existingStack = stacks.get(i);
             if (Objects.equals(existingStack.what(), newStack.what())) {
