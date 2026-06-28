@@ -1,32 +1,37 @@
 package appeng.client.integrations.jei.transfer;
 
-import appeng.api.upgrades.IUpgradeableObject;
-import appeng.client.integrations.jei.GenericEntryStackHelper;
-import appeng.helpers.FilterTransferHelper;
-import appeng.menu.implementations.UpgradeableMenu;
+import java.util.Optional;
+
+import javax.annotation.Nullable;
+
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.MenuType;
+
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.recipe.transfer.IRecipeTransferError;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandlerHelper;
 import mezz.jei.api.recipe.transfer.IUniversalRecipeTransferHandler;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.MenuType;
 
-import javax.annotation.Nullable;
-import java.util.Optional;
+import appeng.api.upgrades.IUpgradeableObject;
+import appeng.client.integrations.jei.GenericEntryStackHelper;
+import appeng.helpers.FilterTransferHelper;
+import appeng.menu.implementations.UpgradeableMenu;
 
 public class FilterTransferHandler<T extends UpgradeableMenu<? extends IUpgradeableObject>>
         extends AbstractTransferHandler implements IUniversalRecipeTransferHandler<T> {
 
     private final Class<T> menuClass;
 
-    public FilterTransferHandler(MenuType<T> menuType, Class<T> menuClass, IRecipeTransferHandlerHelper helper){
+    public FilterTransferHandler(MenuType<T> menuType, Class<T> menuClass, IRecipeTransferHandlerHelper helper) {
 
         this.menuClass = menuClass;
 
     }
+
     @Nullable
     @Override
-    public IRecipeTransferError transferRecipe(T menu, Object recipeBase, IRecipeSlotsView slotsView, Player player, boolean maxTransfer, boolean doTransfer){
+    public IRecipeTransferError transferRecipe(T menu, Object recipeBase, IRecipeSlotsView slotsView, Player player,
+            boolean maxTransfer, boolean doTransfer) {
         if (doTransfer) {
             var recipeInputs = GenericEntryStackHelper.ofInputs(slotsView);
             FilterTransferHelper<T> helper = new FilterTransferHelper<>();

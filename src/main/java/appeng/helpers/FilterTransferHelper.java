@@ -1,21 +1,24 @@
 package appeng.helpers;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
+import com.google.common.math.LongMath;
+import com.mojang.logging.LogUtils;
+
+import org.slf4j.Logger;
+
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+
 import appeng.api.stacks.GenericStack;
 import appeng.api.upgrades.IUpgradeableObject;
 import appeng.menu.SlotSemantics;
 import appeng.menu.implementations.UpgradeableMenu;
 import appeng.menu.slot.FakeSlot;
-import com.google.common.math.LongMath;
-import com.mojang.logging.LogUtils;
-import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.ItemStack;
-import org.slf4j.Logger;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-
-public class FilterTransferHelper <T extends UpgradeableMenu<? extends IUpgradeableObject>> {
+public class FilterTransferHelper<T extends UpgradeableMenu<? extends IUpgradeableObject>> {
     private static final Logger LOGGER = LogUtils.getLogger();
 
     public static void addOrMerge(List<GenericStack> stacks, GenericStack newStack) {
@@ -39,11 +42,10 @@ public class FilterTransferHelper <T extends UpgradeableMenu<? extends IUpgradea
     }
 
     private List<FakeSlot> getFakeSlots(T menu) {
-        List<FakeSlot> slots =
-                new ArrayList<>(
-                        menu.getSlots(SlotSemantics.CONFIG).stream()
-                                .map(s -> (FakeSlot) s)
-                                .toList());
+        List<FakeSlot> slots = new ArrayList<>(
+                menu.getSlots(SlotSemantics.CONFIG).stream()
+                        .map(s -> (FakeSlot) s)
+                        .toList());
         if (!slots.isEmpty()) {
             return slots;
         }
@@ -75,14 +77,12 @@ public class FilterTransferHelper <T extends UpgradeableMenu<? extends IUpgradea
         List<FakeSlot> interfaceConfig = getFakeSlots(menu);
         int i = 0;
         for (FakeSlot slot : interfaceConfig) {
-            var filter =
-                    (i < inputsToSet.size())
-                            ? GenericStack.wrapInItemStack(inputsToSet.get(i))
-                            : ItemStack.EMPTY;
+            var filter = (i < inputsToSet.size())
+                    ? GenericStack.wrapInItemStack(inputsToSet.get(i))
+                    : ItemStack.EMPTY;
 
             slot.setFilterTo(filter);
             i++;
         }
     }
 }
-
