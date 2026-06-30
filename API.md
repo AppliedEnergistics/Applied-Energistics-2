@@ -68,7 +68,7 @@ Every node is owned by an in-game object. An owner doesn't need to implement any
 possible to integrate existing game objects with AE2 without having to introduce a hard dependency on it.
 
 The node uses a listener (`IGridNodeListener<T>`) to interact with its owner. Both owner and listener have to be passed
-together to `IGridHelper` to create a node to allow the listener to be reused while still having type-safe access to the
+together to `GridHelper` to create a node to allow the listener to be reused while still having type-safe access to the
 owner.
 
 **Example:**
@@ -89,7 +89,7 @@ class MyBlockEntityListener implements IGridNodeListener<MyBlockEntity> {
 ```java
 class MyBlockEntity {
     // Create node with owner and listener
-    private final IManagedNode mainNode = api.createManagedNode(
+    private final IManagedGridNode mainNode = GridHelper.createManagedNode(
             this,
             MyBlockEntityListener.INSTANCE
     );
@@ -98,7 +98,7 @@ class MyBlockEntity {
 
 ### Managed Grid Nodes
 
-The `IGridHelper` API offers a `createManagedNode` method to create an `IManagedGridNode`. Managed grid nodes simplify
+The `GridHelper` API offers a `createManagedNode` method to create an `IManagedGridNode`. Managed grid nodes simplify
 the lifecycle of creating and destroying grid nodes, and can be used to simplify the distinction between server and
 client, since they are available on the client-side as well. They will just not create the underlying node if they're
 being used on the client.
@@ -130,7 +130,7 @@ A special case are virtual nodes, which will not automatically form connection w
 build ME networks outside the normal world for various reasons.
 
 As these do not automatically establish connections, these have to be manually created with by using
-`IGridHelper.createGridConnection(IGridNode, IGridNode)`. Removing a connection requires destroying the `IGridNode`,
+`GridHelper.createConnection(IGridNode, IGridNode)`. Removing a connection requires destroying the `IGridNode`,
 which also handles chunk unloading and ensures it leaving no old connections behind.
 
 ### Node Services
