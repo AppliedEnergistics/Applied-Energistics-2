@@ -21,6 +21,7 @@ package appeng.blockentity.misc;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -103,19 +104,27 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
     }
 
     public void addPower(double rawPower) {
-        this.setStoredPower(this.getStoredPower() + rawPower);
-        this.setStoredPower(Math.max(0.0, Math.min(this.getStorage(), this.getStoredPower())));
+        this.setStoredPower(Mth.clamp(this.getStoredPower() + rawPower, 0.0, this.getStorage()));
         fillOutput();
     }
 
     private void fillOutput() {
         var requiredPower = this.getRequiredPower();
-        while (requiredPower <= this.getStoredPower() && !getOutput().isEmpty() && requiredPower > 0) {
-            if (this.canAddOutput()) {
-                this.setStoredPower(this.getStoredPower() - requiredPower);
-                this.addOutput();
-            } else {
-                break;
+        if (requiredPower > 0 && !getOutput().isEmpty()) {
+            var power = this.getStoredPower();
+            int amount = (int) (power / requiredPower);
+            if (amount > 0) {
+                var output = this.getOutput();
+                output.setCount(amount);
+                var remaining = this.outputSlot.insertItem(0, output, true).getCount();
+                amount -= remaining;
+
+                if (amount > 0) {
+                    this.setStoredPower(power - requiredPower * amount);
+                    output.setCount(amount - remaining);
+                    this.outputSlot.insertItem(0, output, false);
+                    this.setChanged();
+                }
             }
         }
     }
@@ -169,8 +178,12 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
     }
 
     private void setStoredPower(double storedPower) {
-        this.storedPower = storedPower;
-        this.setChanged();
+        if (this.storedPower != storedPower) {
+            this.storedPower = storedPower;
+            if (this.level != null) {
+                level.blockEntityChanged(this.getBlockPos());
+            }
+        }
     }
 
     public InternalInventory getExternalInv() {
