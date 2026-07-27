@@ -3,8 +3,8 @@ package appeng.api.integrations.curios;
 import appeng.menu.locator.ItemMenuHostLocator;
 import appeng.menu.locator.MenuLocators;
 import appeng.util.SearchInventoryEvent;
-import net.minecraft.world.item.ItemInstance;
 import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 import top.theillusivec4.curios.api.CuriosCapability;
 
 import java.util.stream.IntStream;
@@ -17,17 +17,16 @@ public class CuriosIntegration {
             var cap = event.getEntity().getCapability(CuriosCapability.INVENTORY);
             if (cap == null)
                 return;
+            var handler = event.getEntity().getCapability(CuriosCapability.ITEM_HANDLER);
+            if (handler == null) {
+                return;
+            }
             var equipped = cap.getEquippedCurios();
             event.add(IntStream.range(0, equipped.getSlots()).mapToObj(index -> {
                 return new SearchInventoryEvent.InventoryItemAccessor() {
                     @Override
-                    public ItemInstance getItem() {
-                        var stack = equipped.getStackInSlot(index);
-                        if (stack.isEmpty()) {
-                            return null;
-                        } else {
-                            return stack;
-                        }
+                    public ItemAccess getAccess() {
+                        return ItemAccess.forHandlerIndexStrict(handler, index);
                     }
 
                     @Override

@@ -4,14 +4,12 @@ import appeng.menu.locator.ItemMenuHostLocator;
 import appeng.menu.locator.MenuLocators;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemInstance;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
-import org.jetbrains.annotations.Nullable;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -30,12 +28,12 @@ public class SearchInventoryEvent extends PlayerEvent {
 
     static {
         NeoForge.EVENT_BUS.addListener((SearchInventoryEvent event) -> {
-            var inventory = event.getEntity().getInventory();
+            var player = event.getEntity();
             Stream<InventoryItemAccessor> stream = IntStream.of(0, Inventory.INVENTORY_SIZE)
                     .mapToObj(index -> new InventoryItemAccessor() {
                         @Override
-                        public ItemInstance getItem() {
-                            return inventory.getItem(index);
+                        public ItemAccess getAccess() {
+                            return ItemAccess.forPlayerSlot(player, index);
                         }
 
                         @Override
@@ -51,12 +49,6 @@ public class SearchInventoryEvent extends PlayerEvent {
         streams.add(slots);
     }
 
-    public static Stream<ItemInstance> getItems(Player player) {
-        return getInventoryAccessors(player)
-                .map(InventoryItemAccessor::getItem)
-                .filter(Objects::nonNull);
-    }
-
     public static Stream<InventoryItemAccessor> getInventoryAccessors(Player player) {
         List<Stream<InventoryItemAccessor>> items = new ArrayList<>();
         NeoForge.EVENT_BUS.post(new SearchInventoryEvent(player, items));
@@ -64,8 +56,7 @@ public class SearchInventoryEvent extends PlayerEvent {
     }
 
     public interface InventoryItemAccessor {
-        @Nullable
-        ItemInstance getItem();
+        ItemAccess getAccess();
 
         ItemMenuHostLocator createLocator();
     }
