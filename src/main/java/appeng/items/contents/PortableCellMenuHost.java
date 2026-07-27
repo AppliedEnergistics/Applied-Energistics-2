@@ -50,6 +50,7 @@ import appeng.items.tools.powered.AbstractPortableCell;
 import appeng.me.helpers.PlayerSource;
 import appeng.menu.ISubMenu;
 import appeng.menu.locator.ItemMenuHostLocator;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 
 /**
  * Hosts the terminal interface for a {@link AbstractPortableCell}.
@@ -120,10 +121,16 @@ public class PortableCellMenuHost<T extends AbstractPortableCell> extends ItemMe
         amt = usePowerMultiplier.multiply(amt);
 
         if (mode == Actionable.SIMULATE) {
-            return usePowerMultiplier.divide(Math.min(amt, this.item.getAECurrentPower(getItemStack())));
+            return usePowerMultiplier.divide(Math.min(amt, this.item.getAECurrentPower(itemAccess())));
         }
 
-        return usePowerMultiplier.divide(this.item.extractAEPower(getItemStack(), amt, Actionable.MODULATE));
+        double used;
+        try (var tr = Transaction.openRoot()) {
+            used = this.item.extractAEPower(itemAccess(), amt, tr);
+            tr.commit();
+        }
+
+        return usePowerMultiplier.divide(used);
     }
 
     @Override

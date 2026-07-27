@@ -6,10 +6,11 @@ import net.minecraft.core.GlobalPos;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 
-import appeng.api.config.Actionable;
 import appeng.api.features.GridLinkables;
 import appeng.blockentity.networking.WirelessAccessPointBlockEntity;
 import appeng.core.definitions.AEItems;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 
 @EventBusSubscriber
 public final class SpawnTestTools {
@@ -28,7 +29,10 @@ public final class SpawnTestTools {
         for (var item : List.of(AEItems.WIRELESS_CRAFTING_TERMINAL, AEItems.WIRELESS_TERMINAL)) {
             var terminal = item.stack();
             // Fully charge it
-            item.get().injectAEPower(terminal, Double.MAX_VALUE, Actionable.MODULATE);
+            try (var tr = Transaction.openRoot()) {
+                item.get().injectAEPower(ItemAccess.forStack(terminal), Double.MAX_VALUE, tr);
+                tr.commit();
+            }
             // Link it to the WAP we just placed
             GridLinkables.get(item).link(terminal, GlobalPos.of(wap.getLevel().dimension(), wap.getBlockPos()));
             inventory.addItems(terminal);

@@ -2,6 +2,7 @@ package appeng.client.item;
 
 import com.mojang.serialization.MapCodec;
 
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.color.item.ItemTintSource;
@@ -34,7 +35,7 @@ public record StorageCellStateTintSource() implements ItemTintSource {
     private CellState getCellState(ItemStack stack) {
         if (stack.getItem() instanceof IAEItemPowerStorage powerStorage) {
             // If the cell is out of power, always display empty
-            if (powerStorage.getAECurrentPower(stack) <= 0) {
+            if (powerStorage.getAECurrentPower(ItemAccess.forStack(stack)) <= 0) {
                 return CellState.ABSENT;
             }
         }

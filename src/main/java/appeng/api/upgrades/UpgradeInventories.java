@@ -2,7 +2,6 @@ package appeng.api.upgrades;
 
 import appeng.api.ids.AEComponents;
 import net.minecraft.world.item.ItemInstance;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.ItemContainerContents;
 import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
@@ -36,24 +35,25 @@ public final class UpgradeInventories {
      * cells or wireless terminals. Changes to the upgrades are immediately written into the given stack's NBT.
      */
     public static IUpgradeInventory forItem(ItemAccess access) {
+        return forItem(access, null);
+    }
+
+    /**
+     * Same as {@link #forItem(ItemAccess)}, but with change notifications.
+     */
+    public static IUpgradeInventory forItem(ItemAccess access, ItemUpgradesChanged changeCallback) {
         var currentItem = access.getResource().getItem();
         if (currentItem instanceof IUpgradeableItem upgradeableItem) {
-            return new ItemUpgradeInventory(upgradeableItem, access);
+            return new ItemUpgradeInventory(upgradeableItem, access, upgradeableItem.getMaxUpgrades(access), changeCallback);
         }
         return EmptyUpgradeInventory.INSTANCE;
     }
 
     /**
-     * Same as {@link #forItem(ItemStack, int)}, but with change notifications.
+     * Same as {@link #forItem(ItemAccess)}, but read only.
      */
-    public static IUpgradeInventory forItem(ItemStack stack, int maxUpgrades, ItemUpgradesChanged changeCallback) {
-        return new ItemUpgradeInventory(stack, maxUpgrades, changeCallback);
-    }
-
-    /**
-     * Same as {@link #forItem(ItemStack, int)}, but with change notifications.
-     */
-    public static ReadOnlyUpgradeInventory forReadOnlyItem(ItemInstance item, int maxUpgrades) {
+    public static ReadOnlyUpgradeInventory forReadOnlyItem(ItemInstance item) {
+        // FIXME finish or remove this
         var upgrades = item.getOrDefault(AEComponents.UPGRADES, ItemContainerContents.EMPTY);
 
         return new ReadOnlyUpgradeInventory() {
@@ -71,6 +71,6 @@ public final class UpgradeInventories {
             public int getMaxInstalled(ItemLike u) {
                 return 0;
             }
-        }
+        };
     }
 }

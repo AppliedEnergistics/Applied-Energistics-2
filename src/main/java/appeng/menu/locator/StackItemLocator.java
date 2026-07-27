@@ -1,5 +1,6 @@
 package appeng.menu.locator;
 
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.world.entity.player.Player;
@@ -13,6 +14,11 @@ record StackItemLocator(ItemStack stack) implements ItemMenuHostLocator {
     @Override
     public ItemStack locateItem(Player player) {
         return stack;
+    }
+
+    @Override
+    public ItemAccess itemAccess(Player player) {
+        return ItemAccess.forStack(stack);
     }
 
     @Override

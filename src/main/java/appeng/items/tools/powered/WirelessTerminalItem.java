@@ -23,6 +23,9 @@ import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
 import net.minecraft.world.item.ItemInstance;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,7 +43,6 @@ import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 
-import appeng.api.config.Actionable;
 import appeng.api.config.Settings;
 import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
@@ -76,8 +78,8 @@ public class WirelessTerminalItem extends PoweredContainerItem implements IMenuI
     }
 
     @Override
-    public double getChargeRate(ItemInstance stack) {
-        return 800d + 800d * Upgrades.getEnergyCardMultiplier(getUpgrades(stack));
+    public double getChargeRate(ItemAccess access) {
+        return 800d + 800d * Upgrades.getEnergyCardMultiplier(getUpgrades(access));
     }
 
     /**
@@ -214,8 +216,8 @@ public class WirelessTerminalItem extends PoweredContainerItem implements IMenuI
      *               hasPower
      * @return true if wireless terminal uses power
      */
-    public boolean usePower(Player player, double amount, ItemStack is) {
-        return extractAEPower(is, amount, Actionable.MODULATE) >= amount - 0.5;
+    public boolean usePower(ItemAccess access, double amount, TransactionContext tr) {
+        return extractAEPower(access, amount, tr) >= amount - 0.5;
     }
 
     /**
@@ -223,8 +225,8 @@ public class WirelessTerminalItem extends PoweredContainerItem implements IMenuI
      *
      * @return returns true if there is any power left.
      */
-    public boolean hasPower(Player player, double amt, ItemStack is) {
-        return getAECurrentPower(is) >= amt;
+    public boolean hasPower(ItemAccess access, double amt) {
+        return getAECurrentPower(access) >= amt;
     }
 
     /**
@@ -241,12 +243,20 @@ public class WirelessTerminalItem extends PoweredContainerItem implements IMenuI
     }
 
     @Override
-    public IUpgradeInventory getUpgrades(ItemStack stack) {
-        return UpgradeInventories.forItem(stack, 2, this::onUpgradesChanged);
+    public int getMaxUpgrades(ItemAccess access) {
+        return 2;
     }
 
-    private void onUpgradesChanged(ItemStack stack, IUpgradeInventory upgrades) {
-        setAEMaxPowerMultiplier(stack, 1 + Upgrades.getEnergyCardMultiplier(upgrades));
+    @Override
+    public IUpgradeInventory getUpgrades(ItemAccess access) {
+        return UpgradeInventories.forItem(access, this::onUpgradesChanged);
+    }
+
+    private void onUpgradesChanged(ItemAccess access, IUpgradeInventory upgrades) {
+        try (var tr = Transaction.openRoot()) {//FIXME this is potentially problematic. there might already exists an open transaction
+            setAEMaxPowerMultiplier(access, 1 + Upgrades.getEnergyCardMultiplier(upgrades), tr);
+            tr.commit();
+        }
     }
 
     private static class LinkableHandler implements IGridLinkableHandler {

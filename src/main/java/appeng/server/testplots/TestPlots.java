@@ -16,6 +16,8 @@ import java.util.function.Consumer;
 
 import com.google.common.collect.Sets;
 
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -644,7 +646,10 @@ public final class TestPlots {
 
     private static ItemStack createMatterCannon(Item... ammo) {
         var cannon = AEItems.MATTER_CANNON.stack();
-        ((MatterCannonItem) cannon.getItem()).injectAEPower(cannon, Double.MAX_VALUE, Actionable.MODULATE);
+        try (var tr = Transaction.openRoot()) {
+            ((MatterCannonItem) cannon.getItem()).injectAEPower(ItemAccess.forStack(cannon), Double.MAX_VALUE, tr);
+            tr.commit();
+        }
         var cannonInv = BasicCellInventory.createInventory(cannon, null);
         for (var item : ammo) {
             var key = AEItemKey.of(item);

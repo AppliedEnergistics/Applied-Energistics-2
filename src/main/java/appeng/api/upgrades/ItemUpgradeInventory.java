@@ -19,6 +19,7 @@
 package appeng.api.upgrades;
 
 import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.world.item.ItemStack;
@@ -37,9 +38,9 @@ final class ItemUpgradeInventory extends UpgradeInventory {
     @Nullable
     private final ItemUpgradesChanged changeCallback;
 
-    public ItemUpgradeInventory(IUpgradeableItem item,ItemAccess stack, int upgrades, @Nullable ItemUpgradesChanged changeCallback) {
+    public ItemUpgradeInventory(IUpgradeableItem item, ItemAccess access, int upgrades, @Nullable ItemUpgradesChanged changeCallback) {
         super(item.asItem(), upgrades);
-        this.access = stack;
+        this.access = access;
         this.changeCallback = changeCallback;
 
         fromItemContainerContents(access.getResource().getComponents().getOrDefault(AEComponents.UPGRADES, ItemContainerContents.EMPTY));
@@ -47,7 +48,10 @@ final class ItemUpgradeInventory extends UpgradeInventory {
 
     @Override
     public void saveChangedInventory(AppEngInternalInventory inv) {
-        stack.set(AEComponents.UPGRADES, toItemContainerContents());
+        try (var tr = Transaction.openRoot()) {
+            access.exchange(access.getResource().with(AEComponents.UPGRADES, toItemContainerContents()), access.getAmount(), tr);
+            tr.commit();
+        }
 
         super.saveChangedInventory(inv);
     }
@@ -57,7 +61,7 @@ final class ItemUpgradeInventory extends UpgradeInventory {
         super.onChangeInventory(inv, slot);
 
         if (changeCallback != null) {
-            changeCallback.onUpgradesChanged(stack, this);
+            changeCallback.onUpgradesChanged(access, this);
         }
     }
 }

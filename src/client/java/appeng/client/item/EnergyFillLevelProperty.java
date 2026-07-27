@@ -2,6 +2,7 @@ package appeng.client.item;
 
 import com.mojang.serialization.MapCodec;
 
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -21,8 +22,9 @@ public class EnergyFillLevelProperty implements RangeSelectItemModelProperty {
     @Override
     public float get(ItemStack stack, @Nullable ClientLevel level, @Nullable ItemOwner owner, int seed) {
         if (stack.getItem() instanceof EnergyCellBlockItem energyCell) {
-            double curPower = energyCell.getAECurrentPower(stack);
-            double maxPower = energyCell.getAEMaxPower(stack);
+            var access = ItemAccess.forStack(stack);
+            double curPower = energyCell.getAECurrentPower(access);
+            double maxPower = energyCell.getAEMaxPower(access);
 
             return (float) (curPower / maxPower);
         }

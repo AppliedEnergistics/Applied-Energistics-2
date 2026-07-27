@@ -2,6 +2,7 @@ package appeng.recipes.game;
 
 import com.mojang.serialization.MapCodec;
 
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.NonNullList;
@@ -44,7 +45,7 @@ public class RemoveItemUpgradeRecipe extends CustomRecipe {
         }
 
         var upgradable = item.copy();
-        var upgrades = upgradableItem.getUpgrades(upgradable);
+        var upgrades = upgradableItem.getUpgrades(ItemAccess.forStack(upgradable));
         for (int i = 0; i < upgrades.size(); i++) {
             var upgrade = upgrades.extractItem(i, 1, false);
             if (!upgrade.isEmpty()) {

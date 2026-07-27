@@ -30,7 +30,8 @@ import java.util.stream.Collectors;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.EnumHashBiMap;
 
-import net.minecraft.world.item.ItemInstance;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
@@ -132,8 +133,8 @@ public class ColorApplicatorItem extends AEBasePoweredItem
     }
 
     @Override
-    public double getChargeRate(ItemInstance stack) {
-        return 80d + 80d * Upgrades.getEnergyCardMultiplier(getUpgrades(stack));
+    public double getChargeRate(ItemAccess access) {
+        return 80d + 80d * Upgrades.getEnergyCardMultiplier(getUpgrades(access));
     }
 
     @Override
@@ -174,11 +175,12 @@ public class ColorApplicatorItem extends AEBasePoweredItem
             }
 
             if (color != null) {
+                var access = ItemAccess.forStack(is);
                 if (color == AEColor.TRANSPARENT) {
                     // clean cables.
                     if (p != null
                             && level.getBlockEntity(pos) instanceof IColorableBlockEntity colorableBlockEntity
-                            && this.getAECurrentPower(is) > POWER_PER_USE
+                            && this.getAECurrentPower(access) > POWER_PER_USE
                             && colorableBlockEntity.getColor() != AEColor.TRANSPARENT) {
                         if (colorableBlockEntity.recolourBlock(side, AEColor.TRANSPARENT, p)) {
                             consumeColor(is, color, false);
@@ -189,7 +191,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
                     // clean paint balls..
                     final Block testBlk = level.getBlockState(pos.relative(side)).getBlock();
                     final BlockEntity painted = level.getBlockEntity(pos.relative(side));
-                    if (this.getAECurrentPower(is) > POWER_PER_USE && testBlk instanceof PaintSplotchesBlock
+                    if (this.getAECurrentPower(access) > POWER_PER_USE && testBlk instanceof PaintSplotchesBlock
                             && painted instanceof PaintSplotchesBlockEntity) {
                         consumeColor(is, color, false);
                         ((PaintSplotchesBlockEntity) painted).cleanSide(side.getOpposite());
@@ -197,7 +199,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
                     }
                 }
 
-                if (this.getAECurrentPower(is) > POWER_PER_USE
+                if (this.getAECurrentPower(access) > POWER_PER_USE
                         && this.recolourBlock(blk, side, level, pos, color, p)) {
                     consumeColor(is, color, false);
                     return InteractionResult.SUCCESS;
@@ -223,7 +225,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
 
         if (paintBallColor != null && interactionTarget instanceof Sheep sheep) {
             if (sheep.isAlive() && !sheep.isSheared() && sheep.getColor() != paintBallColor.dye) {
-                if (!player.level().isClientSide() && this.getAECurrentPower(is) > POWER_PER_USE) {
+                if (!player.level().isClientSide() && this.getAECurrentPower(ItemAccess.forStack(is)) > POWER_PER_USE) {
                     sheep.setColor(paintBallColor.dye);
                     sheep.level().playSound(player, sheep, SoundEvents.DYE_USE, SoundSource.PLAYERS, 1.0F, 1.0F);
                     this.consumeColor(is, paintBallColor, false);
@@ -282,8 +284,14 @@ public class ColorApplicatorItem extends AEBasePoweredItem
         }
 
         var mode = simulate ? Actionable.SIMULATE : Actionable.MODULATE;
-        var success = inv.extract(key, 1, mode, new BaseActionSource()) >= 1
-                && this.extractAEPower(applicator, POWER_PER_USE, mode) >= POWER_PER_USE;
+        boolean success;
+        try (var tr = Transaction.openRoot()) {
+            success = inv.extract(key, 1, mode, new BaseActionSource()) >= 1
+                    && this.extractAEPower(ItemAccess.forStack(applicator), POWER_PER_USE, tr) >= POWER_PER_USE;
+            if (!simulate) {
+                tr.commit();
+            }
+        }
         // Clear the color once we run out
         if (success
                 && !simulate
@@ -490,13 +498,21 @@ public class ColorApplicatorItem extends AEBasePoweredItem
     }
 
     @Override
-    public IUpgradeInventory getUpgrades(ItemStack is) {
-        return UpgradeInventories.forItem(is, 2, this::onUpgradesChanged);
+    public int getMaxUpgrades(ItemAccess access) {
+        return 2;
     }
 
-    private void onUpgradesChanged(ItemStack stack, IUpgradeInventory upgrades) {
+    @Override
+    public IUpgradeInventory getUpgrades(ItemAccess access) {
+        return UpgradeInventories.forItem(access, this::onUpgradesChanged);
+    }
+
+    private void onUpgradesChanged(ItemAccess access, IUpgradeInventory upgrades) {
         // Item is crafted with a normal cell, base energy card contains a dense cell (x8)
-        setAEMaxPowerMultiplier(stack, 1 + Upgrades.getEnergyCardMultiplier(upgrades) * 8);
+        try (var tr = Transaction.openRoot()) {//FIXME this is potentially problematic. there might already exists an open transaction
+            setAEMaxPowerMultiplier(access, 1 + Upgrades.getEnergyCardMultiplier(upgrades) * 8, tr);
+            tr.commit();
+        }
     }
 
     @Override
@@ -543,12 +559,16 @@ public class ColorApplicatorItem extends AEBasePoweredItem
         dyeStorage.insert(AEItemKey.of(Items.SNOWBALL), 128, Actionable.MODULATE, new BaseActionSource());
 
         // Upgrade energy storage
-        var upgrades = item.getUpgrades(applicator);
+        var access = ItemAccess.forStack(applicator);
+        var upgrades = item.getUpgrades(access);
         upgrades.addItems(AEItems.ENERGY_CARD.stack());
         upgrades.addItems(AEItems.ENERGY_CARD.stack());
 
         // Fill it up with power
-        item.injectAEPower(applicator, item.getAEMaxPower(applicator), Actionable.MODULATE);
+        try (var tr = Transaction.openRoot()) {
+            item.injectAEPower(access, item.getAEMaxPower(access), tr);
+            tr.commit();
+        }
         return applicator;
     }
 

@@ -46,6 +46,7 @@ import appeng.util.ConfigInventory;
 import appeng.util.ConfigManager;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.InternalInventoryHost;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 
 public class CellWorkbenchBlockEntity extends AEBaseBlockEntity
         implements IConfigurableObject, IUpgradeableObject, InternalInventoryHost, IConfigInvHost {
@@ -225,17 +226,8 @@ public class CellWorkbenchBlockEntity extends AEBaseBlockEntity
                 return UpgradeInventories.empty();
             }
 
-            final ItemStack is = this.cell.getStackInSlot(0);
-            if (is.isEmpty()) {
-                return UpgradeInventories.empty();
-            }
-
-            var inv = cell.getUpgrades(is);
-            if (inv == null) {
-                return UpgradeInventories.empty();
-            }
-
-            return this.cacheUpgrades = inv;
+            var access = ItemAccess.forHandlerIndex(this.cell.toResourceHandler(), 0);
+            return this.cacheUpgrades = cell.getUpgrades(access);
         }
         return this.cacheUpgrades;
     }

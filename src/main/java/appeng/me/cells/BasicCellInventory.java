@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.network.chat.Component;
@@ -259,7 +260,7 @@ public class BasicCellInventory implements StorageCell {
     }
 
     public IUpgradeInventory getUpgradesInventory() {
-        return this.cellType.getUpgrades(this.i);
+        return this.cellType.getUpgrades(ItemAccess.forStack(this.i));
     }
 
     public int getBytesPerType() {

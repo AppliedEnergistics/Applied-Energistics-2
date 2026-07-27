@@ -12,6 +12,7 @@ import appeng.api.upgrades.IUpgradeableItem;
 import appeng.api.upgrades.UpgradeInventories;
 import appeng.items.contents.StackDependentSupplier;
 import appeng.util.inv.SupplierInternalInventory;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 
 public final class DelegateItemUpgradeInventory extends SupplierInternalInventory<IUpgradeInventory>
         implements IUpgradeInventory {
@@ -46,7 +47,7 @@ public final class DelegateItemUpgradeInventory extends SupplierInternalInventor
 
     private static IUpgradeInventory inventoryFromStack(ItemStack stack) {
         if (stack.getItem() instanceof IUpgradeableItem upgradeableItem) {
-            return upgradeableItem.getUpgrades(stack);
+            return upgradeableItem.getUpgrades(ItemAccess.forStack(stack));
         } else {
             return UpgradeInventories.empty();
         }

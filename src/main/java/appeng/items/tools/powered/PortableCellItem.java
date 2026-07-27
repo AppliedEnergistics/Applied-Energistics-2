@@ -43,6 +43,7 @@ import appeng.core.AppEng;
 import appeng.items.contents.CellConfig;
 import appeng.items.storage.StorageTier;
 import appeng.util.ConfigInventory;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 
 public class PortableCellItem extends AbstractPortableCell implements IBasicCellItem {
 
@@ -59,8 +60,8 @@ public class PortableCellItem extends AbstractPortableCell implements IBasicCell
     }
 
     @Override
-    public double getChargeRate(ItemInstance stack) {
-        return 80d + 80d * Upgrades.getEnergyCardMultiplier(getUpgrades(stack));
+    public double getChargeRate(ItemAccess access) {
+        return 80d + 80d * Upgrades.getEnergyCardMultiplier(getUpgrades(access));
     }
 
     @Override
@@ -102,8 +103,8 @@ public class PortableCellItem extends AbstractPortableCell implements IBasicCell
     }
 
     @Override
-    public IUpgradeInventory getUpgrades(ItemStack is) {
-        return UpgradeInventories.forItem(is, this.keyType == AEKeyType.items() ? 4 : 3, super::onUpgradesChanged);
+    public int getMaxUpgrades(ItemAccess access) {
+        return this.keyType == AEKeyType.items() ? 4 : 3;
     }
 
     @Override
