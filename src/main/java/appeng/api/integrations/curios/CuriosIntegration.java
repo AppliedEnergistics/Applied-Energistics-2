@@ -1,17 +1,20 @@
 package appeng.api.integrations.curios;
 
+import java.util.stream.IntStream;
+
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+
+import top.theillusivec4.curios.api.CuriosCapability;
+
 import appeng.menu.locator.ItemMenuHostLocator;
 import appeng.menu.locator.MenuLocators;
 import appeng.util.SearchInventoryEvent;
-import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.transfer.access.ItemAccess;
-import top.theillusivec4.curios.api.CuriosCapability;
-
-import java.util.stream.IntStream;
 
 public class CuriosIntegration {
     public static void register() {
-        MenuLocators.register(CuriosItemLocator.class, CuriosItemLocator::writeToPacket, CuriosItemLocator::readFromPacket);
+        MenuLocators.register(CuriosItemLocator.class, CuriosItemLocator::writeToPacket,
+                CuriosItemLocator::readFromPacket);
 
         NeoForge.EVENT_BUS.addListener((SearchInventoryEvent event) -> {
             var cap = event.getEntity().getCapability(CuriosCapability.INVENTORY);

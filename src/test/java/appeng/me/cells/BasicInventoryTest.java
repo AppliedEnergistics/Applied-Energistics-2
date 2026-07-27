@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Objects;
 
-import net.neoforged.neoforge.transfer.access.ItemAccess;
 import org.junit.jupiter.api.Test;
 
 import net.minecraft.core.component.DataComponents;
@@ -12,6 +11,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.material.Fluids;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;

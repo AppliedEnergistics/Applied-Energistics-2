@@ -3,10 +3,10 @@ package appeng.items.tools.powered;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
-import net.neoforged.neoforge.transfer.access.ItemAccess;
 import org.junit.jupiter.api.Test;
 
 import net.minecraft.world.item.Items;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 
 import appeng.api.stacks.AEItemKey;
 import appeng.me.cells.BasicCellHandler;

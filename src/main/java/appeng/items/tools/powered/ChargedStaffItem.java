@@ -21,12 +21,12 @@ package appeng.items.tools.powered;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.AABB;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 
 import appeng.core.AEConfig;
 import appeng.core.particles.ParticleTypes;
 import appeng.items.tools.powered.powersink.AEBasePoweredItem;
-import net.neoforged.neoforge.transfer.access.ItemAccess;
-import net.neoforged.neoforge.transfer.transaction.Transaction;
 
 public class ChargedStaffItem extends AEBasePoweredItem {
 

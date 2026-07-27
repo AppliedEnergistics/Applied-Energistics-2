@@ -28,6 +28,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 
 import appeng.api.config.CopyMode;
 import appeng.api.config.Settings;
@@ -46,7 +47,6 @@ import appeng.util.ConfigInventory;
 import appeng.util.ConfigManager;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.InternalInventoryHost;
-import net.neoforged.neoforge.transfer.access.ItemAccess;
 
 public class CellWorkbenchBlockEntity extends AEBaseBlockEntity
         implements IConfigurableObject, IUpgradeableObject, InternalInventoryHost, IConfigInvHost {

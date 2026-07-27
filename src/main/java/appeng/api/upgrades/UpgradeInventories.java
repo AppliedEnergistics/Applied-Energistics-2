@@ -1,10 +1,11 @@
 package appeng.api.upgrades;
 
-import appeng.api.ids.AEComponents;
 import net.minecraft.world.item.ItemInstance;
 import net.minecraft.world.item.component.ItemContainerContents;
 import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
+
+import appeng.api.ids.AEComponents;
 
 /**
  * Utilities for creating {@link IUpgradeInventory upgrade inventories}.
@@ -44,7 +45,8 @@ public final class UpgradeInventories {
     public static IUpgradeInventory forItem(ItemAccess access, ItemUpgradesChanged changeCallback) {
         var currentItem = access.getResource().getItem();
         if (currentItem instanceof IUpgradeableItem upgradeableItem) {
-            return new ItemUpgradeInventory(upgradeableItem, access, upgradeableItem.getMaxUpgrades(access), changeCallback);
+            return new ItemUpgradeInventory(upgradeableItem, access, upgradeableItem.getMaxUpgrades(access),
+                    changeCallback);
         }
         return EmptyUpgradeInventory.INSTANCE;
     }

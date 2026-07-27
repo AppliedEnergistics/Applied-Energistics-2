@@ -2,7 +2,6 @@ package appeng.client.item;
 
 import com.mojang.serialization.MapCodec;
 
-import net.neoforged.neoforge.transfer.access.ItemAccess;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -10,6 +9,7 @@ import net.minecraft.client.renderer.item.properties.numeric.RangeSelectItemMode
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.ItemOwner;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 
 import appeng.block.networking.EnergyCellBlockItem;
 import appeng.core.AppEng;

@@ -18,12 +18,12 @@
 
 package appeng.api.upgrades;
 
-import net.neoforged.neoforge.transfer.access.ItemAccess;
-import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.ItemContainerContents;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 
 import appeng.api.ids.AEComponents;
 import appeng.util.inv.AppEngInternalInventory;
@@ -38,18 +38,21 @@ final class ItemUpgradeInventory extends UpgradeInventory {
     @Nullable
     private final ItemUpgradesChanged changeCallback;
 
-    public ItemUpgradeInventory(IUpgradeableItem item, ItemAccess access, int upgrades, @Nullable ItemUpgradesChanged changeCallback) {
+    public ItemUpgradeInventory(IUpgradeableItem item, ItemAccess access, int upgrades,
+            @Nullable ItemUpgradesChanged changeCallback) {
         super(item.asItem(), upgrades);
         this.access = access;
         this.changeCallback = changeCallback;
 
-        fromItemContainerContents(access.getResource().getComponents().getOrDefault(AEComponents.UPGRADES, ItemContainerContents.EMPTY));
+        fromItemContainerContents(
+                access.getResource().getComponents().getOrDefault(AEComponents.UPGRADES, ItemContainerContents.EMPTY));
     }
 
     @Override
     public void saveChangedInventory(AppEngInternalInventory inv) {
         try (var tr = Transaction.openRoot()) {
-            access.exchange(access.getResource().with(AEComponents.UPGRADES, toItemContainerContents()), access.getAmount(), tr);
+            access.exchange(access.getResource().with(AEComponents.UPGRADES, toItemContainerContents()),
+                    access.getAmount(), tr);
             tr.commit();
         }
 

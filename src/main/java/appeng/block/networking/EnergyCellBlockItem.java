@@ -25,14 +25,14 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.block.Block;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
 import appeng.api.config.AccessRestriction;
 import appeng.api.ids.AEComponents;
 import appeng.api.implementations.items.IAEItemPowerStorage;
 import appeng.block.AEBaseBlockItem;
 import appeng.core.localization.Tooltips;
-import net.neoforged.neoforge.transfer.access.ItemAccess;
-import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
 public class EnergyCellBlockItem extends AEBaseBlockItem implements IAEItemPowerStorage {
 

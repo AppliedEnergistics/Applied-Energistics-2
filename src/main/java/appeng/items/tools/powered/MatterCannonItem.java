@@ -23,8 +23,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
 
-import net.neoforged.neoforge.transfer.access.ItemAccess;
-import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,6 +58,8 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.util.BlockSnapshot;
 import net.neoforged.neoforge.event.EventHooks;
 import net.neoforged.neoforge.event.level.block.BreakBlockEvent;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
@@ -413,7 +413,8 @@ public class MatterCannonItem extends AEBasePoweredItem implements IBasicCellIte
 
     private void onUpgradesChanged(ItemAccess access, IUpgradeInventory upgrades) {
         // Item is crafted with a normal cell, base energy card contains a dense cell (x8)
-        try (var tr = Transaction.openRoot()) {//FIXME this is potentially problematic. there might already exists an open transaction
+        try (var tr = Transaction.openRoot()) {// FIXME this is potentially problematic. there might already exists an
+                                               // open transaction
             setAEMaxPowerMultiplier(access, 1 + Upgrades.getEnergyCardMultiplier(upgrades) * 8, tr);
             tr.commit();
         }
