@@ -22,6 +22,7 @@ import java.util.function.Consumer;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.world.item.ItemInstance;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
@@ -142,7 +143,7 @@ public class WirelessTerminalItem extends PoweredContainerItem implements IMenuI
      * access point, register a {@link IGridLinkableHandler}.
      */
     @Nullable
-    public GlobalPos getLinkedPosition(ItemInstance item) {
+    public GlobalPos getLinkedPosition(DataComponentGetter item) {
         return item.get(AEComponents.WIRELESS_LINK_TARGET);
     }
 

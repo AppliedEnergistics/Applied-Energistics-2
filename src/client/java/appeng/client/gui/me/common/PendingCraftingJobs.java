@@ -13,7 +13,6 @@ import appeng.core.AELog;
 import appeng.core.network.clientbound.CraftingJobStatusPacket;
 import appeng.items.tools.powered.WirelessTerminalItem;
 import appeng.util.SearchInventoryEvent;
-import net.neoforged.neoforge.transfer.access.ItemAccess;
 
 /**
  * Tracks pending crafting jobs started by this player.
@@ -64,12 +63,12 @@ public final class PendingCraftingJobs {
     }
 
     private static boolean hasNotificationEnablingItem(LocalPlayer player) {
-        return SearchInventoryEvent.getItems(player)
-                .anyMatch(stack -> stack.typeHolder().value() instanceof WirelessTerminalItem wirelessTerminal
+        return SearchInventoryEvent.getInventoryAccessors(player)
+                .anyMatch(accessor -> accessor.getAccess().getResource().typeHolder().value() instanceof WirelessTerminalItem wirelessTerminal
                     // Should have some power
-                    && wirelessTerminal.getAECurrentPower((ItemAccess) stack) > 0
+                    && wirelessTerminal.getAECurrentPower(accessor.getAccess()) > 0
                     // Should be linked (we don't know if it's linked to the grid for which we get notifications)
-                    && wirelessTerminal.getLinkedPosition(stack) != null);
+                    && wirelessTerminal.getLinkedPosition(accessor.getAccess().getResource()) != null);
     }
 
     record PendingJob(UUID jobId, AEKey what, long requestedAmount, long remainingAmount) {
