@@ -64,11 +64,12 @@ public final class PendingCraftingJobs {
 
     private static boolean hasNotificationEnablingItem(LocalPlayer player) {
         return SearchInventoryEvent.getInventoryAccessors(player)
-                .anyMatch(accessor -> accessor.getAccess().getResource().typeHolder().value() instanceof WirelessTerminalItem wirelessTerminal
-                    // Should have some power
-                    && wirelessTerminal.getAECurrentPower(accessor.getAccess()) > 0
-                    // Should be linked (we don't know if it's linked to the grid for which we get notifications)
-                    && wirelessTerminal.getLinkedPosition(accessor.getAccess().getResource()) != null);
+                .anyMatch(accessor -> accessor.getAccess().getResource().typeHolder()
+                        .value() instanceof WirelessTerminalItem wirelessTerminal
+                        // Should have some power
+                        && wirelessTerminal.getAECurrentPower(accessor.getAccess()) > 0
+                        // Should be linked (we don't know if it's linked to the grid for which we get notifications)
+                        && wirelessTerminal.getLinkedPosition(accessor.getAccess().getResource()) != null);
     }
 
     record PendingJob(UUID jobId, AEKey what, long requestedAmount, long remainingAmount) {

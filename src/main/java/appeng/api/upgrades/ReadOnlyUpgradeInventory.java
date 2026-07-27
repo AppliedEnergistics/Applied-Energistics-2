@@ -3,8 +3,8 @@ package appeng.api.upgrades;
 import net.minecraft.world.level.ItemLike;
 
 /**
- * Provides read-only access to an inventory containing upgrades. This allows the upgrades
- * of items to be read without having to account for write-access.
+ * Provides read-only access to an inventory containing upgrades. This allows the upgrades of items to be read without
+ * having to account for write-access.
  */
 public interface ReadOnlyUpgradeInventory {
     /**

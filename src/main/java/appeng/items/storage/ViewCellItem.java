@@ -21,6 +21,7 @@ package appeng.items.storage;
 import java.util.Collection;
 
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.ids.AEComponents;
@@ -38,7 +39,6 @@ import appeng.util.prioritylist.FuzzyPriorityList;
 import appeng.util.prioritylist.IPartitionList;
 import appeng.util.prioritylist.MergedPriorityList;
 import appeng.util.prioritylist.PrecisePriorityList;
-import net.neoforged.neoforge.transfer.access.ItemAccess;
 
 public class ViewCellItem extends AEBaseItem implements ICellWorkbenchItem {
     public ViewCellItem(Properties properties) {

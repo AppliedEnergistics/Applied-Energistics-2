@@ -9,9 +9,9 @@ import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 
 import appeng.api.upgrades.IUpgradeableItem;
-import net.neoforged.neoforge.transfer.access.ItemAccess;
 
 /**
  * Allows adding upgrades to upgradable items.

@@ -23,10 +23,11 @@
 
 package appeng.api.implementations.items;
 
-import appeng.api.config.AccessRestriction;
-import appeng.api.networking.energy.IAEPowerStorage;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
+
+import appeng.api.config.AccessRestriction;
+import appeng.api.networking.energy.IAEPowerStorage;
 
 /**
  * Basically the same as {@link IAEPowerStorage}, but for items.

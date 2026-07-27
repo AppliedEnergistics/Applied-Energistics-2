@@ -2,7 +2,6 @@ package appeng.client.item;
 
 import com.mojang.serialization.MapCodec;
 
-import net.neoforged.neoforge.transfer.access.ItemAccess;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.color.item.ItemTintSource;
@@ -11,6 +10,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 
 import appeng.api.implementations.items.IAEItemPowerStorage;
 import appeng.api.storage.StorageCells;

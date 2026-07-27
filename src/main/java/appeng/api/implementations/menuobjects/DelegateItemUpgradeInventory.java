@@ -6,13 +6,13 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 
 import appeng.api.upgrades.IUpgradeInventory;
 import appeng.api.upgrades.IUpgradeableItem;
 import appeng.api.upgrades.UpgradeInventories;
 import appeng.items.contents.StackDependentSupplier;
 import appeng.util.inv.SupplierInternalInventory;
-import net.neoforged.neoforge.transfer.access.ItemAccess;
 
 public final class DelegateItemUpgradeInventory extends SupplierInternalInventory<IUpgradeInventory>
         implements IUpgradeInventory {

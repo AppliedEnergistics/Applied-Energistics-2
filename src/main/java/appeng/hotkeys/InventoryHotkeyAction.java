@@ -4,15 +4,15 @@ import java.util.ArrayList;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-import appeng.util.SearchInventoryEvent;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.ItemLike;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 
 import appeng.api.features.HotkeyAction;
 import appeng.menu.locator.ItemMenuHostLocator;
 import appeng.menu.locator.MenuLocators;
-import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.transfer.item.ItemResource;
+import appeng.util.SearchInventoryEvent;
 
 public record InventoryHotkeyAction(Predicate<ItemResource> locatable, Opener opener) implements HotkeyAction {
 

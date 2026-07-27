@@ -26,6 +26,7 @@ import com.google.common.base.Preconditions;
 
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
@@ -50,7 +51,6 @@ import appeng.items.tools.powered.AbstractPortableCell;
 import appeng.me.helpers.PlayerSource;
 import appeng.menu.ISubMenu;
 import appeng.menu.locator.ItemMenuHostLocator;
-import net.neoforged.neoforge.transfer.transaction.Transaction;
 
 /**
  * Hosts the terminal interface for a {@link AbstractPortableCell}.

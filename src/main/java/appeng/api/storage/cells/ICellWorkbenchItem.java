@@ -24,11 +24,11 @@
 package appeng.api.storage.cells;
 
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.upgrades.IUpgradeableItem;
 import appeng.util.ConfigInventory;
-import net.neoforged.neoforge.transfer.access.ItemAccess;
 
 public interface ICellWorkbenchItem extends IUpgradeableItem {
     /**

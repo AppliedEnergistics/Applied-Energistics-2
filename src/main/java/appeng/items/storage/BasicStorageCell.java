@@ -33,6 +33,7 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.ids.AEComponents;
@@ -49,7 +50,6 @@ import appeng.recipes.game.StorageCellDisassemblyRecipe;
 import appeng.util.ConfigInventory;
 import appeng.util.InteractionUtil;
 import appeng.util.Platform;
-import net.neoforged.neoforge.transfer.access.ItemAccess;
 
 public class BasicStorageCell extends AEBaseItem implements IBasicCellItem, AEToolItem {
     protected final double idleDrain;

@@ -2,6 +2,7 @@ package appeng.integration.modules.igtooltip.blocks;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.util.Mth;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 
 import appeng.api.implementations.items.IAEItemPowerStorage;
 import appeng.api.integrations.igtooltip.TooltipBuilder;
@@ -10,7 +11,6 @@ import appeng.api.integrations.igtooltip.providers.BodyProvider;
 import appeng.blockentity.misc.ChargerBlockEntity;
 import appeng.core.localization.InGameTooltip;
 import appeng.util.Platform;
-import net.neoforged.neoforge.transfer.access.ItemAccess;
 
 /**
  * Shows the tooltip of the item being charged, which usually includes a charge meter.

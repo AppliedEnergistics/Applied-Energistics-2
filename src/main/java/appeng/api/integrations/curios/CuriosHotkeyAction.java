@@ -1,16 +1,18 @@
 package appeng.api.integrations.curios;
 
-import appeng.api.features.HotkeyAction;
-import appeng.hotkeys.InventoryHotkeyAction;
+import java.util.function.Predicate;
+
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.transfer.item.ItemResource;
+
 import top.theillusivec4.curios.api.CuriosCapability;
 
-import java.util.function.Predicate;
+import appeng.api.features.HotkeyAction;
+import appeng.hotkeys.InventoryHotkeyAction;
 
 public record CuriosHotkeyAction(Predicate<ItemResource> locatable,
-                                 InventoryHotkeyAction.Opener opener) implements HotkeyAction {
+        InventoryHotkeyAction.Opener opener) implements HotkeyAction {
 
     public CuriosHotkeyAction(ItemLike item, InventoryHotkeyAction.Opener opener) {
         this((resource) -> resource.is(item), opener);

@@ -27,15 +27,15 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
 import appeng.api.config.AccessRestriction;
 import appeng.api.ids.AEComponents;
 import appeng.api.implementations.items.IAEItemPowerStorage;
 import appeng.core.localization.Tooltips;
 import appeng.items.AEBaseItem;
-import net.neoforged.neoforge.transfer.access.ItemAccess;
-import net.neoforged.neoforge.transfer.transaction.Transaction;
-import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
 public abstract class AEBasePoweredItem extends AEBaseItem implements IAEItemPowerStorage {
     // Any energy capacity below this threshold will be clamped to zero
@@ -163,7 +163,8 @@ public abstract class AEBasePoweredItem extends AEBaseItem implements IAEItemPow
     }
 
     protected final void setAECurrentPower(ItemAccess access, double power, TransactionContext tr) {
-        //FIXME check if that interacts properly with aborting, tho it probably should if the underlying access works correctly
+        // FIXME check if that interacts properly with aborting, tho it probably should if the underlying access works
+        // correctly
         if (power < MIN_POWER) {
             access.exchange(access.getResource().without(AEComponents.STORED_ENERGY), access.getAmount(), tr);
         } else {

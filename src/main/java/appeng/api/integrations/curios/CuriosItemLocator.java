@@ -1,16 +1,19 @@
 package appeng.api.integrations.curios;
 
-import appeng.menu.locator.ItemMenuHostLocator;
+import java.util.Optional;
+
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.phys.BlockHitResult;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
-import org.jetbrains.annotations.Nullable;
+
 import top.theillusivec4.curios.api.CuriosCapability;
 
-import java.util.Optional;
+import appeng.menu.locator.ItemMenuHostLocator;
 
 /**
  * Implements {@link ItemMenuHostLocator} for items equipped in curios slots.
@@ -21,7 +24,8 @@ record CuriosItemLocator(int curioSlot, @Nullable BlockHitResult hitResult) impl
     }
 
     public static ItemMenuHostLocator forCurioSlot(int curioSlot, UseOnContext context) {
-        var hitResult = new BlockHitResult(context.getClickLocation(), context.getHorizontalDirection(), context.getClickedPos(),
+        var hitResult = new BlockHitResult(context.getClickLocation(), context.getHorizontalDirection(),
+                context.getClickedPos(),
                 context.isInside());
 
         return new CuriosItemLocator(curioSlot, hitResult);

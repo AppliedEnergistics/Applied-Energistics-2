@@ -18,12 +18,12 @@
 
 package appeng.api.implementations.menuobjects;
 
-import net.neoforged.neoforge.transfer.access.ItemAccess;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;

@@ -1,7 +1,5 @@
 package appeng.items.tools.powered;
 
-import net.neoforged.neoforge.transfer.access.ItemAccess;
-import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.resources.Identifier;
@@ -15,6 +13,8 @@ import net.minecraft.world.item.component.DyedItemColor;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 
 import appeng.api.implementations.menuobjects.IMenuItem;
 import appeng.api.storage.StorageCells;
@@ -160,7 +160,8 @@ public abstract class AbstractPortableCell extends PoweredContainerItem
     public void onUpgradesChanged(ItemAccess access, IUpgradeInventory upgrades) {
         // The energy card is crafted with a dense energy cell, while the base portable just uses a normal energy cell.
         // Since the dense cells capacity is 8x the normal capacity, the result should be 9x normal.
-        try (var tr = Transaction.openRoot()) {//FIXME this is potentially problematic. there might already exists an open transaction
+        try (var tr = Transaction.openRoot()) {// FIXME this is potentially problematic. there might already exists an
+                                               // open transaction
             setAEMaxPowerMultiplier(access, 1 + Upgrades.getEnergyCardMultiplier(upgrades) * 8, tr);
             tr.commit();
         }
