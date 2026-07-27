@@ -23,7 +23,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import net.minecraft.world.item.ItemInstance;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
@@ -54,7 +55,6 @@ import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult.Type;
 
-import appeng.api.config.Actionable;
 import appeng.api.util.DimensionalBlockPos;
 import appeng.block.misc.TinyTNTBlock;
 import appeng.core.AEConfig;
@@ -78,14 +78,18 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
     }
 
     @Override
-    public double getChargeRate(ItemInstance stack) {
+    public double getChargeRate(ItemAccess access) {
         return 800d;
     }
 
     @Override
     public void hurtEnemy(ItemStack item, LivingEntity target, LivingEntity hitter) {
-        if (this.getAECurrentPower(item) > ENERGY_PER_USE) {
-            this.extractAEPower(item, ENERGY_PER_USE, Actionable.MODULATE);
+        var access = ItemAccess.forStack(item);
+        if (this.getAECurrentPower(access) > ENERGY_PER_USE) {
+            try (var tr = Transaction.openRoot()) {
+                this.extractAEPower(access, ENERGY_PER_USE, tr);
+                tr.commit();
+            }
             target.igniteForSeconds(8);
         }
     }
@@ -125,7 +129,7 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
                 return InteractionResult.FAIL;
             }
             p = Platform.getFakePlayer(serverLevel, null);
-            // Fake players cannot crouch and we cannot communicate whether they want to heat or cool
+            // Fake players cannot crouch, and we cannot communicate whether they want to heat or cool
             tryBoth = true;
         }
 
@@ -135,7 +139,7 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
             pos = target.getBlockPos();
         }
 
-        if (this.getAECurrentPower(item) > ENERGY_PER_USE) {
+        if (this.getAECurrentPower(ItemAccess.forStack(item)) > ENERGY_PER_USE) {
             if (!p.mayUseItemAt(pos, side, item)) {
                 return InteractionResult.FAIL;
             }
@@ -157,10 +161,14 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
         final Block block = blockState.getBlock();
         final FluidState fluidState = level.getFluidState(pos);
 
+        var access = ItemAccess.forStack(item);
         if (tryBoth || InteractionUtil.isInAlternateUseMode(p)) {
             EntropyRecipe coolRecipe = findRecipe(level, EntropyMode.COOL, blockState, fluidState);
             if (coolRecipe != null) {
-                this.extractAEPower(item, 1600, Actionable.MODULATE);
+                try (var tr = Transaction.openRoot()) {
+                    this.extractAEPower(access, 1600, tr);
+                    tr.commit();
+                }
                 applyRecipe(coolRecipe, level, pos, blockState, fluidState);
                 return true;
             }
@@ -181,7 +189,10 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
 
             EntropyRecipe heatRecipe = findRecipe(level, EntropyMode.HEAT, blockState, fluidState);
             if (heatRecipe != null) {
-                this.extractAEPower(item, 1600, Actionable.MODULATE);
+                try (var tr = Transaction.openRoot()) {
+                    this.extractAEPower(access, 1600, tr);
+                    tr.commit();
+                }
                 applyRecipe(heatRecipe, level, pos, blockState, fluidState);
                 return true;
             }
@@ -206,7 +217,10 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
         }
 
         if (level.isEmptyBlock(offsetPos)) {
-            this.extractAEPower(item, ENERGY_PER_USE, Actionable.MODULATE);
+            try (var tr = Transaction.openRoot()) {
+                this.extractAEPower(ItemAccess.forStack(item), ENERGY_PER_USE, tr);
+                tr.commit();
+            }
             level.playSound(p, offsetPos.getX() + 0.5D, offsetPos.getY() + 0.5D, offsetPos.getZ() + 0.5D,
                     SoundEvents.FLINTANDSTEEL_USE, SoundSource.PLAYERS, 1.0F,
                     level.getRandom().nextFloat() * 0.4F + 0.8F);
@@ -262,7 +276,10 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
             return false; // Block has no drops
         }
 
-        this.extractAEPower(item, ENERGY_PER_USE, Actionable.MODULATE);
+        try (var tr = Transaction.openRoot()) {
+            this.extractAEPower(ItemAccess.forStack(item), ENERGY_PER_USE, tr);
+            tr.commit();
+        }
 
         level.playSound(p, pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D,
                 SoundEvents.FLINTANDSTEEL_USE, SoundSource.PLAYERS, 1.0F,

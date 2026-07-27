@@ -23,7 +23,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
 
-import net.minecraft.world.item.ItemInstance;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -105,8 +106,8 @@ public class MatterCannonItem extends AEBasePoweredItem implements IBasicCellIte
     }
 
     @Override
-    public double getChargeRate(ItemInstance stack) {
-        return 800d + 800d * Upgrades.getEnergyCardMultiplier(getUpgrades(stack));
+    public double getChargeRate(ItemAccess access) {
+        return 800d + 800d * Upgrades.getEnergyCardMultiplier(getUpgrades(access));
     }
 
     @Override
@@ -152,19 +153,23 @@ public class MatterCannonItem extends AEBasePoweredItem implements IBasicCellIte
         }
 
         int shotPower = 1;
-        var cu = getUpgrades(stack);
+        var access = ItemAccess.forStack(stack);
+        var cu = getUpgrades(access);
         if (cu != null) {
             shotPower += cu.getInstalledUpgrades(AEItems.SPEED_CARD);
         }
         shotPower = Math.min(shotPower, (int) req.getLongValue());
 
-        if (getAECurrentPower(stack) < ENERGY_PER_SHOT) {
+        if (getAECurrentPower(access) < ENERGY_PER_SHOT) {
             return false;
         }
 
-        shotPower = Math.min(shotPower, (int) getAECurrentPower(stack) / ENERGY_PER_SHOT);
+        shotPower = Math.min(shotPower, (int) getAECurrentPower(access) / ENERGY_PER_SHOT);
 
-        extractAEPower(stack, ENERGY_PER_SHOT * shotPower, Actionable.MODULATE);
+        try (var tr = Transaction.openRoot()) {
+            extractAEPower(access, ENERGY_PER_SHOT * shotPower, tr);
+            tr.commit();
+        }
 
         if (!(level instanceof ServerLevel serverLevel)) {
             // Up until this point, we can simulate on the client, after this,
@@ -397,13 +402,21 @@ public class MatterCannonItem extends AEBasePoweredItem implements IBasicCellIte
     }
 
     @Override
-    public IUpgradeInventory getUpgrades(ItemStack is) {
-        return UpgradeInventories.forItem(is, 4, this::onUpgradesChanged);
+    public int getMaxUpgrades(ItemAccess access) {
+        return 4;
     }
 
-    private void onUpgradesChanged(ItemStack stack, IUpgradeInventory upgrades) {
+    @Override
+    public IUpgradeInventory getUpgrades(ItemAccess access) {
+        return UpgradeInventories.forItem(access, this::onUpgradesChanged);
+    }
+
+    private void onUpgradesChanged(ItemAccess access, IUpgradeInventory upgrades) {
         // Item is crafted with a normal cell, base energy card contains a dense cell (x8)
-        setAEMaxPowerMultiplier(stack, 1 + Upgrades.getEnergyCardMultiplier(upgrades) * 8);
+        try (var tr = Transaction.openRoot()) {//FIXME this is potentially problematic. there might already exists an open transaction
+            setAEMaxPowerMultiplier(access, 1 + Upgrades.getEnergyCardMultiplier(upgrades) * 8, tr);
+            tr.commit();
+        }
     }
 
     @Override

@@ -10,6 +10,7 @@ import appeng.api.integrations.igtooltip.providers.BodyProvider;
 import appeng.blockentity.misc.ChargerBlockEntity;
 import appeng.core.localization.InGameTooltip;
 import appeng.util.Platform;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 
 /**
  * Shows the tooltip of the item being charged, which usually includes a charge meter.
@@ -26,8 +27,9 @@ public final class ChargerDataProvider implements BodyProvider<ChargerBlockEntit
 
             if (chargingItem.getItem() instanceof IAEItemPowerStorage powerStorage
                     && Platform.isChargeable(chargingItem)) {
-                var fillRate = Mth.floor(powerStorage.getAECurrentPower(chargingItem) * 100 /
-                        powerStorage.getAEMaxPower(chargingItem));
+                var access = ItemAccess.forHandlerIndex(chargerInventory.toResourceHandler(), 0);
+                var fillRate = Mth.floor(powerStorage.getAECurrentPower(access) * 100 /
+                        powerStorage.getAEMaxPower(access));
                 tooltip.addLine(InGameTooltip.Charged.text(fillRate));
             }
         }

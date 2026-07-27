@@ -6,6 +6,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.phys.BlockHitResult;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 import org.jetbrains.annotations.Nullable;
 import top.theillusivec4.curios.api.CuriosCapability;
 
@@ -32,6 +33,15 @@ record CuriosItemLocator(int curioSlot, @Nullable BlockHitResult hitResult) impl
             return ItemStack.EMPTY;
         }
         return cap.getResource(curioSlot).toStack();
+    }
+
+    @Override
+    public ItemAccess itemAccess(Player player) {
+        var cap = player.getCapability(CuriosCapability.ITEM_HANDLER);
+        if (cap == null || curioSlot >= cap.size()) {
+            return ItemAccess.forStack(ItemStack.EMPTY);
+        }
+        return ItemAccess.forHandlerIndexStrict(cap, curioSlot);
     }
 
     public void writeToPacket(FriendlyByteBuf buf) {

@@ -6,7 +6,6 @@ import java.util.UUID;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.world.item.ItemStack;
 
 import appeng.api.stacks.AEKey;
 import appeng.core.AEConfig;
@@ -14,6 +13,7 @@ import appeng.core.AELog;
 import appeng.core.network.clientbound.CraftingJobStatusPacket;
 import appeng.items.tools.powered.WirelessTerminalItem;
 import appeng.util.SearchInventoryEvent;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 
 /**
  * Tracks pending crafting jobs started by this player.
@@ -67,7 +67,7 @@ public final class PendingCraftingJobs {
         return SearchInventoryEvent.getItems(player)
                 .anyMatch(stack -> stack.typeHolder().value() instanceof WirelessTerminalItem wirelessTerminal
                     // Should have some power
-                    && wirelessTerminal.getAECurrentPower(stack) > 0
+                    && wirelessTerminal.getAECurrentPower((ItemAccess) stack) > 0
                     // Should be linked (we don't know if it's linked to the grid for which we get notifications)
                     && wirelessTerminal.getLinkedPosition(stack) != null);
     }

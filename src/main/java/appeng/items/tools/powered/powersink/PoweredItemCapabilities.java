@@ -23,9 +23,9 @@ import net.neoforged.neoforge.transfer.TransferPreconditions;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
-import appeng.api.config.Actionable;
 import appeng.api.config.PowerUnit;
 import appeng.api.implementations.items.IAEItemPowerStorage;
 
@@ -43,17 +43,12 @@ public class PoweredItemCapabilities implements EnergyHandler {
         this.item = item;
     }
 
-    private int getAmountFrom(ItemResource currentItem) {
-        if (!currentItem.is(validItem)) {
-            return 0;
-        }
-        return (int) PowerUnit.AE.convertTo(PowerUnit.FE, item.getAECurrentPower(currentItem.toStack()));
-    }
-
     @Override
     public long getAmountAsLong() {
-        var currentItem = itemAccess.getResource();
-        return getAmountFrom(currentItem);
+        if (!itemAccess.getResource().is(validItem)) {
+            return 0;
+        }
+        return (long) PowerUnit.AE.convertTo(PowerUnit.FE, item.getAECurrentPower(itemAccess));
     }
 
     @Override
@@ -62,7 +57,7 @@ public class PoweredItemCapabilities implements EnergyHandler {
         if (!currentItem.is(validItem)) {
             return 0;
         }
-        return (int) PowerUnit.AE.convertTo(PowerUnit.FE, item.getAEMaxPower(currentItem.toStack()));
+        return (long) PowerUnit.AE.convertTo(PowerUnit.FE, item.getAEMaxPower(itemAccess));
     }
 
     @Override
@@ -86,7 +81,11 @@ public class PoweredItemCapabilities implements EnergyHandler {
         // We'll essentially perform the insertion into a copy of the stack, then convert back to the resource
         var amountAE = PowerUnit.FE.convertTo(PowerUnit.AE, amount);
         var mutableStack = accessResource.toStack();
-        double overflowAE = item.injectAEPower(mutableStack, amountAE, Actionable.MODULATE);
+        double overflowAE;
+        try (var tr = Transaction.openRoot()) {
+            overflowAE = item.injectAEPower(itemAccess, amountAE, tr);
+            tr.commit();
+        }
         var insertedPerItem = (int) PowerUnit.AE.convertTo(PowerUnit.FE, amountAE - overflowAE);
 
         insertedPerItem = Math.min(amountPerItem, insertedPerItem);

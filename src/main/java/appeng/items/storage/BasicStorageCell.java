@@ -50,6 +50,7 @@ import appeng.recipes.game.StorageCellDisassemblyRecipe;
 import appeng.util.ConfigInventory;
 import appeng.util.InteractionUtil;
 import appeng.util.Platform;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 
 public class BasicStorageCell extends AEBaseItem implements IBasicCellItem, AEToolItem {
     protected final double idleDrain;
@@ -113,8 +114,13 @@ public class BasicStorageCell extends AEBaseItem implements IBasicCellItem, AETo
     }
 
     @Override
-    public IUpgradeInventory getUpgrades(ItemStack is) {
-        return UpgradeInventories.forItem(is, keyType == AEKeyType.items() ? 4 : 3);
+    public int getMaxUpgrades(ItemAccess access) {
+        return keyType == AEKeyType.items() ? 4 : 3;
+    }
+
+    @Override
+    public IUpgradeInventory getUpgrades(ItemAccess access) {
+        return UpgradeInventories.forItem(access);
     }
 
     @Override
@@ -169,7 +175,7 @@ public class BasicStorageCell extends AEBaseItem implements IBasicCellItem, AETo
         }
 
         // Drop upgrades
-        getUpgrades(stack).forEach(s -> playerInventory.placeItemBackInInventory(s, Prediction.SERVER_ONLY));
+        getUpgrades(ItemAccess.forStack(stack)).forEach(s -> playerInventory.placeItemBackInInventory(s, Prediction.SERVER_ONLY));
 
         return true;
     }

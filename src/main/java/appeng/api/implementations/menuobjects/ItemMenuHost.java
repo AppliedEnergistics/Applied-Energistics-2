@@ -18,6 +18,7 @@
 
 package appeng.api.implementations.menuobjects;
 
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.world.entity.player.Player;
@@ -91,6 +92,10 @@ public class ItemMenuHost<T extends Item> implements IUpgradeableObject {
      */
     public ItemStack getItemStack() {
         return locator.locateItem(player);
+    }
+
+    public ItemAccess itemAccess() {
+        return locator.itemAccess(player);
     }
 
     /**

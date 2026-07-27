@@ -1,5 +1,6 @@
 package appeng.menu.locator;
 
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,6 +49,8 @@ public interface ItemMenuHostLocator extends MenuHostLocator {
      * <strong>The returned stack will be modified by the {@link ItemMenuHost}</strong>, it must be updated in-place.
      */
     ItemStack locateItem(Player player);
+
+    ItemAccess itemAccess(Player player);
 
     /**
      * @return The slot of the item in the player inventory if this locator represents a location in the player

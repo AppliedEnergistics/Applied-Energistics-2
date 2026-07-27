@@ -2,6 +2,7 @@ package appeng.menu.locator;
 
 import java.util.Optional;
 
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.network.FriendlyByteBuf;
@@ -20,6 +21,11 @@ import appeng.api.implementations.menuobjects.IMenuItem;
 record InventoryItemLocator(int itemIndex, @Nullable BlockHitResult hitResult) implements ItemMenuHostLocator {
     public ItemStack locateItem(Player player) {
         return player.getInventory().getItem(itemIndex);
+    }
+
+    @Override
+    public ItemAccess itemAccess(Player player) {
+        return ItemAccess.forPlayerSlot(player, itemIndex);
     }
 
     public void writeToPacket(FriendlyByteBuf buf) {

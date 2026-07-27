@@ -41,6 +41,7 @@ import appeng.items.AEBaseItem;
 import appeng.items.contents.CellConfig;
 import appeng.me.cells.CreativeCellHandler;
 import appeng.util.ConfigInventory;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 
 public class CreativeCellItem extends AEBaseItem implements ICellWorkbenchItem {
     public CreativeCellItem(Properties props) {
@@ -102,5 +103,10 @@ public class CreativeCellItem extends AEBaseItem implements ICellWorkbenchItem {
             configInv.setStack(i, new GenericStack(AEFluidKey.of(fluids[i]), 1));
         }
         return cell;
+    }
+
+    @Override
+    public int getMaxUpgrades(ItemAccess access) {
+        return 0;
     }
 }

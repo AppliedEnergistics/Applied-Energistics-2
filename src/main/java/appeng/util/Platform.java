@@ -29,6 +29,7 @@ import java.util.stream.Stream;
 import com.google.common.annotations.VisibleForTesting;
 import com.mojang.authlib.GameProfile;
 
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -251,8 +252,9 @@ public class Platform {
             return false;
         }
         if (i.getItem() instanceof IAEItemPowerStorage powerStorage) {
-            return powerStorage.getAEMaxPower(i) > 0 &&
-                    powerStorage.getPowerFlow(i) != AccessRestriction.READ;
+            var access = ItemAccess.forStack(i);
+            return powerStorage.getAEMaxPower(access) > 0 &&
+                    powerStorage.getPowerFlow(access) != AccessRestriction.READ;
         }
         return false;
     }
