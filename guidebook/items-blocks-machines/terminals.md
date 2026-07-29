@@ -76,8 +76,8 @@ mouse/key shortcuts:
     whatever you have bound to "pick block" (usually middle-click) brings up a UI to specify the amount to be crafted. You can also input formulas like `3*64/2`,
     or type `=32` to only craft the number of items needed to reach 32 in your storage.
 *   Holding shift will freeze the displayed items in-place, stopping them from re-organizing themselves when quantities change or new items enter the system.
-*   Right-clicking with a bucket or other fluid container will deposit the fluid, left-clicking a fluid in the terminal with
-    an empty fluid container will withdraw the fluid.
+*   Right-clicking with a bucket or other fluid container will deposit the fluid.
+*   Left-clicking a fluid with an empty hand will withdraw a bucket of the fluid, if the network has an empty bucket in storage. Left-clicking a fluid with a fluid container will withdraw the fluid into the container.
 
 The left section has settings buttons to:
 
@@ -138,7 +138,7 @@ You should have one of these in addition to a crafting terminal.
 
 ## The UI
 
-The crafting terminal has the same UI as the regular terminal, added [pattern](patterns.md) encoding interface.
+The pattern encoding terminal has the same UI as the regular terminal, but with an added [pattern](patterns.md) encoding interface.
 
 The pattern encoding interface has several sections:
 
