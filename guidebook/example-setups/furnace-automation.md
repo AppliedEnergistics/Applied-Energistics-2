@@ -69,4 +69,4 @@ Here's how you can do it with just 1 channel:
 3. The only storage on the green subnet is the <ItemLink id="storage_bus" />ses. The bus filtered to coal places the coal in the furnace's fuel slot through the side face.
     The bus filtered to NOT coal places the items to be smelted in the top slot, through the top face.
 4. The furnace does its furnace-y thing
-5. The hopper pulls the results out the furnace's bottom, and places them in the provider's return slots, returning them to the main network.
+5. The hopper pulls the results from the furnace's bottom face and places them in the provider's return slots, returning them to the main network.

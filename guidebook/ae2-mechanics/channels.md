@@ -69,10 +69,10 @@ An easy way to see how channels are being used and routed through your network i
 
 Channels will consume 1⁄128 AE/t per node they traverse. This means that by
 adding an <ItemLink id="controller" /> for a
-network with 8 devices and over 96 nodes, your power usage might actually
-decrease power consumption because it changes how channels are allocated.
+network with 8 devices and over 96 nodes, your power consumption might actually
+decrease because it changes how channels are allocated.
 
-Of note, **CHANNELS HAVE NOTHING TO DO WITH CABLE COLOR**. All cable color does is make cables not connect.
+Of note, **CHANNELS HAVE NOTHING TO DO WITH CABLE COLOR**. All cable color does is prevent cables from connecting.
 
 ## Channel Routing
 
@@ -131,14 +131,14 @@ Loops and ambiguous channel paths should be minimized.
 ## Ad-Hoc Networks
 
 A Network without an <ItemLink id="controller" />
-is considered to be Ad-Hoc, and can support up to 8 channel-using devices.
+is considered to be Ad-Hoc, and can support up to 8 channel using devices.
 Once you exceed 8 devices, the network's channel-using devices will shut down.
-You can either remove devices, or add an <ItemLink id="controller" />.
+You can either remove devices or add an <ItemLink id="controller" />.
 
 Unlike with controller-equipped networks, [smart cables](../items-blocks-machines/cables.md) on ad-hoc networks will show the number
 of channels in use network-wide instead of the number of channels flowing through that specific cable.
 
-While using ad-hoc networks each device will
+While using ad-hoc networks, each device will
 use 1 channel network-wide. This is very different from how <ItemLink id="controller" />s allocate channels based on
 shortest route.
 

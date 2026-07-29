@@ -102,13 +102,13 @@ all of which serve a specific purpose in the setup.
   <ImportStructure src="../assets/assemblies/ore_fortuner.snbt" />
 
   <BoxAnnotation color="#915dcd" min="0 0 2" max="3 1 3">
-        Network 1: acts like a pipe subnet, restricts what the import bus has access to so it "stores" the ore blocks through the
+        Network 1: Acts like a pipe subnet. Restricts what the import bus has access to so it "stores" the ore blocks through the
         formation planes.
   </BoxAnnotation>
 
   <BoxAnnotation color="#5CA7CD" min="0 0 0" max="3 1 1">
-        Network 2: Acts like another pipe subnet, restricts what the annihilation planes have access to so they store
-        the fortuned ore chunks in the barrel and not in your main network. Also means they don't use up any channels on the
+        Network 2: Acts like another pipe subnet. Restricts what the annihilation planes have access to, so they store
+        the mined ore chunks in the barrel and not in your main network. Also means they don't use up any channels on the
         main network.
   </BoxAnnotation>
 
@@ -130,7 +130,7 @@ network the tunnel is carrying. They *can* be the same network, but they don't h
   <ImportStructure src="../assets/assemblies/p2p_channels_network_connection.snbt" />
 
   <BoxAnnotation color="#915dcd" min="0 0 0" max="1.98 2 1">
-        Network 1: the network being carried (usually your main network)
+        Network 1: The network being carried (usually your main network)
   </BoxAnnotation>
 
   <BoxAnnotation color="#5CA7CD" min="2.02 0 0" max="3.98 1 1">
@@ -138,7 +138,7 @@ network the tunnel is carrying. They *can* be the same network, but they don't h
   </BoxAnnotation>
 
   <BoxAnnotation color="#915dcd" min="4.02 0 0" max="6 1 1">
-        Network 1: the network being carried (usually your main network)
+        Network 1: The network being carried (usually your main network)
   </BoxAnnotation>
 
   <IsometricCamera yaw="195" pitch="30" />
