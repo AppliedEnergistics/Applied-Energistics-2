@@ -16,7 +16,7 @@ item_ids:
 <ImportStructure src="../assets/blocks/storage_bus.snbt" />
 </GameScene>
 
-Ever wanted to *keep* your chest monster instead of replacing it with something sensible? We present the Storage Bus!
+Ever wanted to *keep* your chest monster instead of replacing it with something sensible? We present the storage bus!
 
 The storage bus turns the inventory it's touching into [network storage](../ae2-mechanics/import-export-storage.md).
 It does this by allowing the network to see the contents of that inventory, and by pushing to and pulling from that
@@ -27,17 +27,17 @@ necessarily *have* to use a storage bus for *storage*. By using [subnetworks](..
 to make a storage bus (or handful of storage busses) the *only* storage on a network, you can use it as a source or destination
 for item transfer. (see ["pipe subnet"](../example-setups/pipe-subnet.md))
 
-IMPORTANT NOTE: Big optimized inventories like drawers are fine, but big *un*optimized inventories with many slots, like
+IMPORTANT NOTE: Big optimized inventories like drawers are fine, but big *unoptimized* inventories with many slots, like
 colossal chests, are terrible for performance when used with storage busses.
 
 They are [cable subparts](../ae2-mechanics/cable-subparts.md).
 
 ## Filtering
 
-By default the bus will store everything. Items inserted into its filter slots will act as a whitelist, only
+By default, the bus will store everything. Items inserted into its filter slots will act as a whitelist, only
 allowing those specific items to be stored.
 
-Items and fluids can be dragged into the slots from JEI/REI even if you don't actually have any of that item.
+Items and fluids can be dragged into the slots from JEI/REI, even if you don't actually have any of that item.
 
 Right-click with a fluid container (like a bucket or fluid tank) to set that fluid as a filter instead of the bucket or tank item.
 
@@ -55,10 +55,10 @@ from network storage, higher priority storages will be filled and lower priority
 ## Settings
 
 *   The bus can be partitioned (filtered) to what is currently in the adjacent inventory
-*   The network can be disallowed or allowed to see items in the adjacent inventory that the bus cannot extract
-    (for example, a storage bus cannot extract items from the middle input slot of an <ItemLink id="inscriber" />)
+*   The network can be disallowed or allowed to see items in the adjacent inventory that the bus cannot extract.
+    For example, a storage bus cannot extract items from the middle input slot of an <ItemLink id="inscriber" />.
 *   The bus can filter on both insertion and extraction or just insertion
-*   The bus can be bi-directional, insert-only, or extract-only
+*   The bus can be bidirectional, insert-only, or extract-only
 
 ## Upgrades
 

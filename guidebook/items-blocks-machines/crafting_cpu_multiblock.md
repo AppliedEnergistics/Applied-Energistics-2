@@ -109,7 +109,7 @@ This allows them to keep up with machines that process quickly. An example of th
 distributing the ingredient batches between the surrounding assemblers.
 
 Some complex recipes have multiple steps that can be done in parallel, like making planks and books simultaneously for making bookshelves.
-In the crafting status screen (visible by right clicking a CPU or with the hammer icon in a [terminal](terminals.md)), these
+In the crafting status screen (visible by right-clicking a CPU or with the hammer icon in a [terminal](terminals.md)), these
 steps will all show up as "scheduled". Each extra coprocessor allows one more of these steps to be done in parallel (and thus show up as "crafting").
 However, this is not as relevant because you'll typically have more coprocessors purely for the insertion speed than a recipe has steps that could conceivably be done in parallel.
 

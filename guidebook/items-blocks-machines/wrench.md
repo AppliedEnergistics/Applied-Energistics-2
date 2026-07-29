@@ -21,9 +21,9 @@ item_ids:
 
 Wrenches are used to rotate ae2 devices (right-click), and disassemble ae2 blocks (shift-right-click).
 [Subparts](../ae2-mechanics/cable-subparts.md) can be removed from a cable without breaking everything on the cable
-(or the cable can be removed without breaking the subparts.)
+(or the cable can be removed without breaking the subparts).
 
-Many ae2 blocks can be rotated, so just because this guide doesn't say you can rotate something doesn't mean you can't.
+Many AE2 blocks can be rotated, so just because this guide doesn't say you can rotate something doesn't mean you can't.
 
 ## Recipes
 

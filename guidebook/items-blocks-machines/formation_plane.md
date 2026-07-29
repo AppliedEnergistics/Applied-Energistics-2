@@ -46,7 +46,7 @@ They are [cable subparts](../ae2-mechanics/cable-subparts.md).
 
 ## Filtering
 
-By default the plane will place/drop anything. Items inserted into its filter slots will act as a whitelist, only
+By default, the plane will place/drop anything. Items inserted into its filter slots will act as a whitelist, only
 allowing those specific items to be placed.
 
 Items and fluids can be dragged into the slots from JEI/REI even if you don't actually have any of that item.

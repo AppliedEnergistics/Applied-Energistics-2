@@ -43,7 +43,7 @@ together into a functional system. Here is an example:
     </BoxAnnotation>
 
     <BoxAnnotation color="#33dd33" min="13 9 7" max="14 10 9" thickness="0.05">
-        You don't need that many drive bays and cells for your general storage, 2-4 Drives worth of 4k or 16k
+        You don't need that many drive bays and cells for your general storage, 2–4 Drives worth of 4k or 16k
         cells is almost always enough.
     </BoxAnnotation>
 
@@ -73,7 +73,7 @@ together into a functional system. Here is an example:
     </BoxAnnotation>
 
     <BoxAnnotation color="#33dd33" min="14 1 2" max="16 5 7" thickness="0.05">
-        Typically you'll have 1-2 big crafting CPUs for big jobs and a few smaller ones to handle secondary
+        Typically you'll have 1–2 big crafting CPUs for big jobs and a few smaller ones to handle secondary
         jobs while the big CPUs are busy.
     </BoxAnnotation>
 

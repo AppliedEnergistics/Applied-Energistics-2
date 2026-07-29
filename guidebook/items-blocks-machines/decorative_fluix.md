@@ -19,7 +19,7 @@ item_ids:
 <IsometricCamera yaw="195" pitch="30" />
 </GameScene>
 
-<ItemLink id="fluix_block" />s can be crafted and stonecut into some decorative building blocks.
+<ItemLink id="fluix_block" />s can be crafted and stone-cut into some decorative building blocks.
 
 ## Recipes
 

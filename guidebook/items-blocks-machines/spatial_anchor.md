@@ -19,9 +19,9 @@ it may not function correctly. The Spatial Anchor solves this problem. It forcel
 A single cable extending across a chunk border is enough to load that new chunk.
 
 It will propagate its "loading" across [quantum bridges](quantum_bridge.md), but not cross-dimensionally, so if you
-have a quantum bridge to the nether, you need a spatial anchor on the network in your base and on the network in the nether.
+have a quantum bridge to the Nether, you need a spatial anchor on the network in your base and on the network in the Nether.
 
-By default it will also enable random ticks in its loaded chunks, this can be turned off in the ae2 config.
+By default, it will also enable random ticks in its loaded chunks, but this can be turned off in the AE2 config.
 
 It can be rotated with a <ItemLink id="certus_quartz_wrench" /> if for some reason you want to do that.
 

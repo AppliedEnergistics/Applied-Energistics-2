@@ -35,7 +35,7 @@ Again, each item is 1 bit, so 8 items equals 1 byte. For fluid cells, this is 8 
 
 Many people complain about the limited number of types a cell can hold, but they are a ***necessary limitation***.
 Cells store their data in an NBT tag on the item itself, which makes them rather stable. However, this means putting too much
-data on a cell can cause too much data to be sent to a player, causing an effect similar to "Book Banning" in vanilla minecraft.
+data on a cell can cause too much data to be sent to a player, causing an effect similar to "Book Banning" in vanilla Minecraft.
 Additionally, having too many different types in your system increases the load on sorting and item handling. However, this
 limitation does not end up being very restrictive. One <ItemLink id="drive" /> bay full of cells is 630 types which is actually
 quite a lot as long as you don't store loads of unique unstackable items.
@@ -46,7 +46,7 @@ causing bloat. it is recommended to filter them out of the item stream before th
 
 Gunning straight for top tier storage cells is generally not the best idea,
 since you use more resources but don't get any extra type storage. This means that all sizes of cell are still useful even
-lategame, as they have tradeoffs.
+late-game, as they have tradeoffs.
 
 Below is a table comparing the different tiers of storage cells, how much they store, and
 a rough estimate of their cost.

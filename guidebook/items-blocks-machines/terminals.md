@@ -71,7 +71,7 @@ There are several sections of a basic terminal's UI
 The center section gives access to your network's storage. You can put things in and take things out. There are several
 mouse/key shortcuts:
 
-*   Left-click grabs a stack, right-click grabs half a stack.
+*   Left-click grabs a stack. Right-click grabs half a stack.
 *   If an item or fluid or etc. is able to be [autocrafted](../ae2-mechanics/autocrafting.md),
     whatever you have bound to "pick block" (usually middle-click) brings up a UI to specify the amount to be crafted. You can also input formulas like `3*64/2`,
     or type `=32` to only craft the number of items needed to reach 32 in your storage.
@@ -88,7 +88,7 @@ The left section has settings buttons to:
 *   Open the detailed terminal settings window
 *   Change the height of the terminal UI
 
-On the right there are slots for <ItemLink id="view_cell" />s
+On the right, there are slots for <ItemLink id="view_cell" />s.
 
 The top-right of the center section (hammer button) brings up the [autocrafting](../ae2-mechanics/autocrafting.md) status
 UI, allowing you to see the progress of your autocrafts and what each [crafting CPU](crafting_cpu_multiblock.md) is doing.
@@ -131,7 +131,7 @@ There are 2 additional buttons, to empty the crafting grid into network storage 
 </GameScene>
 
 The Pattern Encoding Terminal is similar to a regular terminal, with all the same settings and sections, but with an added
-[pattern](patterns.md) encoding interface. It looks similar to a crafting terminal's UI but this crafting grid doesn't actually
+[pattern](patterns.md) encoding interface. It looks similar to a crafting terminal's UI, but this crafting grid doesn't actually
 perform crafts.
 
 You should have one of these in addition to a crafting terminal.
@@ -159,7 +159,7 @@ The central UI changes depending on the type of pattern to be encoded:
 
 *   In crafting mode:
     *   Left-click in or drag from JEI/REI the ingredients to form the recipe. Right-click to remove the ingredient.
-    *   Enabling substitiutions allows things like crafting sticks from any plank type. This should only be used
+    *   Enabling substitutions allows things like crafting sticks from any plank type. This should only be used
         when absolutely necessary.
     *   Fluid substitutions allows using stored fluids in place of buckets of fluids.
     *   You can also directly encode a pattern from the JEI/REI recipe screen.
@@ -171,10 +171,10 @@ The central UI changes depending on the type of pattern to be encoded:
         remove the whole stack and right-click to decrement the stack by 1. Whatever you have bound to "pick block" (usually middle-click)
         lets you specify a precise amount of the item or fluid.
     * The output slots have a primary output and space for any secondary outputs you might want the autocrafting algorithm to know about.
-    * Both input and output slots scroll, so you can have 81 different ingredients and 26 secondary outputs
+    * Both input and output slots scroll, so you can have 81 different ingredients and 26 secondary outputs.
     * You can also directly encode a pattern from the JEI/REI recipe screen.
 
-*   The smithing and stonecutting mode UIs work similarly to a smithing table and stonecutter respectively.
+*   The smithing and stonecutting mode UIs work similarly to a smithing table and stonecutter, respectively.
 
 ## Recipe
 

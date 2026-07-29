@@ -31,7 +31,7 @@ It also acts as the workstation for the [Fluix Researcher](fluix_researcher.md).
 
 ## Simple Automation
 
-As an example, the rotateability lets you semi-automate chargers like so:
+As an example, the rotatability lets you semi-automate chargers like so:
 
 <GameScene zoom="4" background="transparent">
   <ImportStructure src="../assets/assemblies/charger_hopper.snbt" />

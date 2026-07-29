@@ -39,7 +39,7 @@ item_ids:
   <IsometricCamera yaw="195" pitch="30" />
 </GameScene>
 
-<ItemLink id="quartz_block" />s can be crafted, smelted, and stonecut into some decorative building blocks
+<ItemLink id="quartz_block" />s can be crafted, smelted, and stone-cut into some decorative building blocks
 
 ## Recipes
 

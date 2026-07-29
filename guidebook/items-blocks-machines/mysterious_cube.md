@@ -19,7 +19,7 @@ Remember when you had to find a bunch of meteors to find all the presses? No mor
 
 I wonder what happens when you break it (without silk touch)...
 
-You can also make a replica, the Not So Mysterious Cube
+You can also make a replica: the Not So Mysterious Cube.
 
 ## Recipe
 

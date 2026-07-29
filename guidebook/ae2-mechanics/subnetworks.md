@@ -51,7 +51,7 @@ all the devices are still connected to the main network through various fullbloc
 
 Cables with different colors have nothing to do with making a subnetwork other than that they won't connect to each other.
 
-Some examples are:
+Some subnetwork examples are:
 
 * A setup to replace your Trash Can/Void Upgrade with an entire AE2 network that decides how to best utilize your garbage. Intelligently
   route items to a composter array or some modded recycler depending on availability and demand.

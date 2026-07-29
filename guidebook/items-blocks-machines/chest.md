@@ -65,8 +65,8 @@ their first destination. In the case of two storages or cells have the same prio
 if one already contains the item, they will prefer that storage over any
 other. Any [partitioned](cell_workbench.md) cells will be treated as already containing the item
 when in the same priority group as other storages. Items being removed from storage will
-be removed from the storage with the lowest priority. This priority system means as items are inserted and removed
-from network storage, higher priority storages will be filled and lower priority storages will be emptied.
+be removed from the storage with the lowest priority. This priority system means that as items are inserted and removed
+from network storage, higher priority storages will be filled, and lower priority storages will be emptied.
 
 ## Recipe
 
