@@ -32,7 +32,7 @@ To actively move items, use an <ItemLink id="io_port" />.
         pulled from the network, it is pulled from *everywhere except here*, so coal "migrates" to this drawer.
 
         IMPORTANT NOTE: Big optimized inventories like drawers are fine for this, but big *un*optimized inventories with many slots, like
-        colossal chests, are terrible for performance when used with storage busses.
+        colossal chests, are terrible for performance when used with storage buses.
     </BoxAnnotation>
 
     <BoxAnnotation color="#33dd33" min="11 0 3" max="12 1 4" thickness="0.05">

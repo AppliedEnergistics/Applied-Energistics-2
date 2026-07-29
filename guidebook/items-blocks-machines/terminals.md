@@ -20,7 +20,7 @@ item_ids:
   <IsometricCamera yaw="195" pitch="30" />
 </GameScene>
 
-While <ItemLink id="pattern_provider" />s, <ItemLink id="import_bus" />ses, <ItemLink id="storage_bus" />ses, and the et cetera
+While <ItemLink id="pattern_provider" />s, <ItemLink id="import_bus" />es, <ItemLink id="storage_bus" />es, et cetera
 are the primary method by which an AE2 network interacts with the world, Terminals are the primary method by which an AE2
 network interacts with *you*. There are several variants with differing functions.
 

@@ -73,7 +73,7 @@ Redstone cards add redstone control, adding a toggle button in the device's GUI 
 
 <ItemImage id="capacity_card" scale="2" />
 
-Capacity cards increase the amount of filter slots in import, export, and storage busses, as well as formation planes.
+Capacity cards increase the amount of filter slots in import, export, and storage buses, as well as formation planes.
 
 <RecipeFor id="capacity_card" />
 
@@ -128,7 +128,7 @@ bus config, top is the compared item.
 
 <ItemImage id="speed_card" scale="2" />
 
-Acceleration cards make stuff go faster. Import and export busses can move more items per operation,
+Acceleration cards make stuff go faster. Import and export buses can move more items per operation,
 and inscribers and assemblers complete operations faster.
 
 <RecipeFor id="speed_card" />

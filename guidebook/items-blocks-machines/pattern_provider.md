@@ -81,7 +81,7 @@ This is a general illustration of providing to multiple machines
   </BoxAnnotation>
 
 <BoxAnnotation color="#dddddd" min="1 0 0" max="1.3 1 4">
-        Storage Busses
+        Storage Buses
   </BoxAnnotation>
 
 <BoxAnnotation color="#dddddd" min="0 0 0" max="1 1 4">

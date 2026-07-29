@@ -31,8 +31,8 @@ Thus, they are useful in some niche cases where you want to store a small amount
 
 ## How An Interface Works Internally
 
-As previously stated, an interface is essentially a chest/tank with some super duper <ItemLink id="import_bus" />ses and
-<ItemLink id="export_bus" />ses attached, with a bunch of <ItemLink id="level_emitter" />s.
+As previously stated, an interface is essentially a chest/tank with some super duper <ItemLink id="import_bus" />es and
+<ItemLink id="export_bus" />es attached, with a bunch of <ItemLink id="level_emitter" />s.
 
 <GameScene zoom="3" interactive={true}>
   <ImportStructure src="../assets/assemblies/interface_internals.snbt" />
@@ -52,14 +52,14 @@ As previously stated, an interface is essentially a chest/tank with some super d
   </BoxAnnotation>
 
   <BoxAnnotation color="#dddddd" min="1.3 1.3 1.3" max="9.7 2 1.7">
-        A bunch of super duper import busses that can transfer 1 stack per gametick
+        A bunch of super duper import buses that can transfer 1 stack per gametick
         <GameScene zoom="4" background="transparent">
         <ImportStructure src="../assets/blocks/import_bus.snbt" />
         </GameScene>
   </BoxAnnotation>
 
   <BoxAnnotation color="#dddddd" min="1.3 3 1.3" max="9.7 3.7 1.7">
-        A bunch of super duper export busses that can transfer 1 stack per gametick
+        A bunch of super duper export buses that can transfer 1 stack per gametick
         <GameScene zoom="4" background="transparent">
         <ImportStructure src="../assets/blocks/export_bus.snbt" />
         </GameScene>
@@ -97,7 +97,7 @@ skipping the interface and not filling it with recipe batches, and more importan
   </BoxAnnotation>
 
 <BoxAnnotation color="#dddddd" min="1 0 0" max="1.3 1 4">
-        Storage Busses
+        Storage Buses
   </BoxAnnotation>
 
 <BoxAnnotation color="#dddddd" min="0 0 0" max="1 1 4">

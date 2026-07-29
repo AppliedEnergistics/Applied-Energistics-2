@@ -24,11 +24,11 @@ inventory in order to fulfill the needs of [devices](../ae2-mechanics/devices.md
 
 Due to AE2's philosophy of emergent mechanics through interaction of the functions of the [devices](../ae2-mechanics/devices.md), you don't
 necessarily *have* to use a storage bus for *storage*. By using [subnetworks](../ae2-mechanics/subnetworks.md)
-to make a storage bus (or handful of storage busses) the *only* storage on a network, you can use it as a source or destination
+to make a storage bus (or handful of storage buses) the *only* storage on a network, you can use it as a source or destination
 for item transfer. For examples, see ["pipe subnet"](../example-setups/pipe-subnet.md).
 
 IMPORTANT NOTE: Big optimized inventories like drawers are fine, but big *unoptimized* inventories with many slots, like
-colossal chests, are terrible for performance when used with storage busses.
+colossal chests, are terrible for performance when used with storage buses.
 
 They are [cable subparts](../ae2-mechanics/cable-subparts.md).
 

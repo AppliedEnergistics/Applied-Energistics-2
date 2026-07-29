@@ -40,13 +40,13 @@ for more details.
 
 Each crafting CPU handles 1 request or job, so if you want to request both a calculation processor and 256 smooth stone at once, you need 2 CPU multiblocks.
 
-They can be set to handle requests from players, automation (export busses and interfaces), or both.
+They can be set to handle requests from players, automation (export buses and interfaces), or both.
 
 Right-clicking one brings up a crafting status UI where you can check the progress on the crafting job the CPU is handling.
 
 ## Settings
 
-*   The CPU can be set to accept requests from just players, just automation (like <ItemLink id="export_bus" />ses with
+*   The CPU can be set to accept requests from just players, just automation (like <ItemLink id="export_bus" />es with
     <ItemLink id="crafting_card" />s), or both.
 
 ## Construction

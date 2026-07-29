@@ -124,7 +124,7 @@ Crafting CPUs are made out of:
 
 Each crafting CPU handles 1 request or job, so if you want to request both a calculation processor and 256 smooth stone at once, you need 2 CPU multiblocks.
 
-They can be set to handle requests from players, automation (export busses and interfaces), or both.
+They can be set to handle requests from players, automation (export buses and interfaces), or both.
 
 # Pattern Providers
 
