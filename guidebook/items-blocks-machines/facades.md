@@ -39,7 +39,7 @@ Be clever with them to improve your base aesthetic or make blocks with different
 
 ## Hiding Facades
 
-Facades will be hidden while holding a <a href="network_tool.md">network tool</a> in either hand.
+Facades will be hidden while holding a <ItemLink id="network_tool" /> in either hand.
 
 You can interact with blocks behind hidden facades without having to remove the facades first.
 

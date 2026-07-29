@@ -35,7 +35,7 @@ This window is also helpful for figuring out if two different cables or devices 
 
 ## Hiding Facades
 
-<a href="facades.md">Facades</a> will be hidden while holding a network tool in either hand.
+<ItemLink id="facade" />s will be hidden while holding a network tool in either hand.
 
 You can interact with blocks behind hidden facades without having to remove the facades first.
 
