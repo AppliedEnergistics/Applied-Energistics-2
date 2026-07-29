@@ -86,8 +86,8 @@ To show an image, just put it (.png or .jpg) in the `guidebook/assets` folder an
 
 The following custom tags are supported in our Markdown pages.
 
-In all custom tags, item and page ids by default inherit the namespace of the page they're on. So if the
-page is in AE2s guidebook, all ids automatically use the `ae2` namespace, unless specified.
+In all custom tags, item and page IDs by default inherit the namespace of the page they're on. So if the
+page is in AE2s guidebook, all IDs automatically use the `ae2` namespace, unless specified.
 
 #### Column / Row Layout
 
@@ -107,9 +107,9 @@ Example:
 #### Item Links
 
 To automatically show the translated item name, including an appropriate tooltip, and have the item name link to the
-primary guidebook page for that item, use the  `<ItemLink id="item_id" />` tag. The id can omit the `ae2` namespace.
+primary guidebook page for that item, use the  `<ItemLink id="item_id" />` tag. The ID can omit the `ae2` namespace.
 
-[Pages need to be set as the primary target for certain item ids manually](#declaring-pages-as-itemlink-targets).
+[Pages need to be set as the primary target for certain item IDs manually](#declaring-pages-as-itemlink-targets).
 
 #### Recipes
 
@@ -168,7 +168,7 @@ To show an item, use:
 <ItemImage id="mod:item_id" />
 ```
 
-IDs from your own mod don't need to be qualified with the mod id.
+IDs from your own mod don't need to be qualified with the mod ID.
 
 The tag also supports the following attributes:
 
@@ -185,7 +185,7 @@ To show a 3d rendering of a block, use:
 <BlockImage id="mod:block_id" />
 ```
 
-IDs from your own mod don't need to be qualified with the mod id.
+IDs from your own mod don't need to be qualified with the mod ID.
 
 The tag also supports the following attributes:
 
@@ -292,7 +292,7 @@ The tag supports the following attributes:
 ## For Addon Authors
 
 The guidebook will automatically load all pages that are in the `ae2guide` subfolder of all resource packs across
-all namespaces (yes your addon mod id too).
+all namespaces (yes, your addon mod ID too).
 
 AE2 will merge your pages into the navigation tree as if they were within AE2 itself.
 

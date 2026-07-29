@@ -74,7 +74,7 @@ Priorities can be set by clicking the wrench in the top-right of some GUIs.
 Items entering the network will start at the highest priority storage, as
 their first destination, in the case of two storages have the same priority,
 if one already contains the item, they will prefer that storage over any
-other. Any Whitelisted cells will be treated as already containing the item
+other. Any whitelisted cells will be treated as already containing the item
 when in the same priority group as other storages. Items being removed from storage will
 be removed from the storage with the lowest priority. This priority system means as items are inserted and removed
 from network storage, higher priority storages will be filled and lower priority storages will be emptied.

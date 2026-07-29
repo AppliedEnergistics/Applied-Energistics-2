@@ -60,7 +60,7 @@ You can use this to pattern provide into multiple sides of a machine, or multipl
   </BoxAnnotation>
 
 <BoxAnnotation color="#dddddd" min="0 2 0" max="1 2.3 1">
-        (4) Storage Bus #2: IFiltered to blacklist coal, using an inverter card.
+        (4) Storage Bus #2: Filtered to blacklist coal, using an inverter card.
         <Row><ItemImage id="minecraft:coal" scale="2" /><ItemImage id="inverter_card" scale="2" /></Row>
   </BoxAnnotation>
 
@@ -201,7 +201,7 @@ It's really this simple, just put the patterns in the providers:
   <IsometricCamera yaw="195" pitch="30" />
 </GameScene>
 
-*Note that this has exactly 8 providers, the maximum amount of channels that can be routed through a single assembler, provider, or
+*Note that this has exactly 8 providers, the maximum number of channels that can be routed through a single assembler, provider, or
 non-dense cable.*
 
 ## Recipes

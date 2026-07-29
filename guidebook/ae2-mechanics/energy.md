@@ -54,8 +54,8 @@ The ratios for conversion of Forge Energy and Techreborn Energy are
   <BlockImage id="creative_energy_cell" scale="4" />
 </Row>
 
-For relatively obvious reasons, a network cannot intake or consume more energy in a gametick than it can store. If a network
-can only store 800 AE, when its [devices](../ae2-mechanics/devices.md) request energy, they will only be able to use up to 800 AE (assuming the storage is full)
+For relatively obvious reasons, a network cannot intake or consume more energy in a game tick than it can store. If a network
+can only store 800 AE, when its [devices](../ae2-mechanics/devices.md) request energy, they will only be able to use up to 800 AE (assuming the storage is full),
 and an energy acceptor will only be able to insert up to 800 AE into the network (assuming the storage is empty).
 
 This is a common cause for odd behavior, where one makes a small network with just an energy acceptor, drive, terminal, and

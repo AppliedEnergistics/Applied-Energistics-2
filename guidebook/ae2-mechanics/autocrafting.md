@@ -15,7 +15,7 @@ navigation:
 </GameScene>
 
 Autocrafting is one of the primary functions of AE2. Instead of manually having to craft the correct number of each sub-ingredient
-and labor away like some sort of *plebian*, you can ask your ME system to do it for you. Or automatically craft items and export them somewhere.
+and labor away like some sort of *plebeian*, you can ask your ME system to do it for you. Or automatically craft items and export them somewhere.
 Or automatically keep certain amounts of items in stock through clever emergent behavior. It also works with fluids, and, if you have
 certain addons for extra mod material types, like Mekanism gasses, those materials too. It's pretty great.
 
@@ -29,7 +29,7 @@ An autocrafting setup consists of 3 things:
 Here is what happens:
 
 1.  Something creates a crafting request. This can be you in the terminal clicking on something autocraftable,
-    or an export bus or interface with a crafting card requesting one of the item they're set to export/stock.
+    or an export bus or interface with a crafting card requesting one of the items they're set to export/stock.
 
 *   (**IMPORTANT:** use whatever you have bound to "pick block" (usually middle-mouse) to request crafts of something you already have in stock, this can conflict with inventory sorting mods),
 
@@ -49,7 +49,7 @@ Here is what happens:
 <ItemImage id="minecraft:netherite_upgrade_smithing_template" scale="4" />
 
 One thing the autocrafting algorithm *cannot* handle is recursive recipes. For example, duplication recipes like
-"1 redstone dust = 2 redstone dust", from throwing redstone in a Botania manapool. Another example would be smithing templates
+"1 redstone dust = 2 redstone dust", from throwing redstone in a Botania Mana Pool. Another example would be smithing templates
 in vanilla Minecraft. However, there is [a way to handle these recipes.](../example-setups/recursive-crafting-setup.md)
 
 # Patterns
@@ -86,7 +86,7 @@ There are several different types of pattern for different things:
     the ingredients into an entire complex factory production chain which will sort out stuff, take in other ingredients from infinitely-producing
     farms, print the entirety of the Bee Movie script, the ME system does not care as long as it gets the result the pattern specifies. In fact,
     it doesn't even care if the ingredients are in any way related to the result. You could tell it "1 cherry wood planks = 1 nether star" and have
-    your wither farm kill a wither upon receiving a cherry wood planks and it would work.
+    your Wither farm kill a Wither upon receiving a cherry wood planks and it would work.
 
 Multiple <ItemLink id="pattern_provider" />s with identical patterns are supported and work in parallel. Additionally, you can have a pattern say,
 for example, 8 cobblestone = 8 stone instead of 1 cobblestone = 1 stone, and the pattern provider will insert 8 cobblestone into

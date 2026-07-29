@@ -28,7 +28,7 @@ item_ids:
 
 Certus quartz buds will sprout from budding certus blocks, similar to amethyst. These are found in [meteorites](../ae2-mechanics/meteorites.md).
 There are 4 tiers of budding certus blocks: Flawless, Flawed, Chipped, and Damaged. They can be most easily identified
-with a mod like HWYLA, Jade, The One Probe, etc. (or the f3 screen)
+with a mod like HWYLA, Jade, The One Probe, etc. (or the F3 screen)
 
 With flawed, chipped, and damaged budding certus, every time a bud grows by another stage, the budding block has a chance
 to degrade by one tier, eventually turning into a plain <ItemLink id="quartz_block" />.
@@ -36,7 +36,7 @@ to degrade by one tier, eventually turning into a plain <ItemLink id="quartz_blo
 Flawless budding certus will not degrade from growing buds, and act as an infinite source.
 
 If broken with a regular pickaxe, budding certus blocks will degrade by 1 tier. If broken with a pickaxe
-enchanted with silk touch, they will not degrade, unless they were flawless. **This means that flawless budding certus blocks cannot
+enchanted with Silk Touch, they will not degrade, unless they were flawless. **This means that flawless budding certus blocks cannot
 be picked up and moved with a pickaxe**. Instead, [Spatial Storage](../ae2-mechanics/spatial-io.md) can be used to
 cut-and-paste the flawless budding blocks around.
 
