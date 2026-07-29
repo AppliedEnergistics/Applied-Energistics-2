@@ -23,4 +23,6 @@ You can also make a replica: the Not So Mysterious Cube.
 
 ## Recipe
 
+While you can't make a Mysterious Cube, you can make a replica: the Not So Mysterious Cube.
+
 <RecipeFor id="not_so_mysterious_cube" />
