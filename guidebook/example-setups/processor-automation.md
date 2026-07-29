@@ -156,8 +156,8 @@ inputs the raw resources and outputs the completed processor, and since the pres
   ![Calculation Pattern](../assets/diagrams/calculation_pattern.png)
   ![Engineering Pattern](../assets/diagrams/engineering_pattern.png)
 
-* The <ItemLink id="storage_bus" />ses (2, 17, 18, 20) are in their default configurations.
-* The <ItemLink id="export_bus" />ses (3–7) are filtered to the relevant ingredient. They have 2 <ItemLink id="speed_card" />s.
+* The <ItemLink id="storage_bus" />es (2, 17, 18, 20) are in their default configurations.
+* The <ItemLink id="export_bus" />es (3–7) are filtered to the relevant ingredient. They have 2 <ItemLink id="speed_card" />s.
     <Row>
       <ItemImage id="silicon" scale="2" />
       <ItemImage id="minecraft:gold_ingot" scale="2" />
@@ -165,7 +165,7 @@ inputs the raw resources and outputs the completed processor, and since the pres
       <ItemImage id="minecraft:diamond" scale="2" />
       <ItemImage id="minecraft:redstone" scale="2" />
     </Row>
-* The <ItemLink id="import_bus" />ses (13–16, 19) are in their default configurations. They have 2 <ItemLink id="speed_card" />s.
+* The <ItemLink id="import_bus" />es (13–16, 19) are in their default configurations. They have 2 <ItemLink id="speed_card" />s.
 * The <ItemLink id="inscriber" />s are in their default configurations. They have the relevant [press](../items-blocks-machines/presses.md),
    and 4 <ItemLink id="speed_card" />s.
    <Row>

@@ -82,7 +82,7 @@ The [upfront cost of types](../ae2-mechanics/bytes-and-types.md) is such that a 
 
 ## Partitioning
 
-Cells can be filtered to only accept certain items, similar to how <ItemLink id="storage_bus" />ses can be filtered. This is
+Cells can be filtered to only accept certain items, similar to how <ItemLink id="storage_bus" />es can be filtered. This is
 done in a <ItemLink id="cell_workbench" />.
 
 Items can be dragged into the slots from JEI/REI even if you don't actually have any of that item.

@@ -19,7 +19,7 @@ item_ids:
 The Drive is the [device](../ae2-mechanics/devices.md) you plug your [storage cells](storage_cells.md) into in order to use them for
 [network storage](../ae2-mechanics/import-export-storage.md). It has 10 slots which each accept a cell.
 
-You can push and pull the cells from its inventory using any item logistics like hoppers or AE2 busses.
+You can push and pull the cells from its inventory using any item logistics like hoppers or AE2 buses.
 
 It can be rotated with a <ItemLink id="certus_quartz_wrench" />.
 

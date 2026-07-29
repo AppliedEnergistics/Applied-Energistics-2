@@ -191,7 +191,7 @@ not pass channels through one side.
 </Row>
 
 Other parts that do not provide directional network connections are most [subpart](../ae2-mechanics/cable-subparts.md)
-[devices](../ae2-mechanics/devices.md) like <ItemLink id="import_bus" />ses, <ItemLink id="storage_bus" />ses, and
+[devices](../ae2-mechanics/devices.md) like <ItemLink id="import_bus" />es, <ItemLink id="storage_bus" />es, and
 <ItemLink id="cable_interface" />s.
 
 <GameScene zoom="6" background="transparent">
