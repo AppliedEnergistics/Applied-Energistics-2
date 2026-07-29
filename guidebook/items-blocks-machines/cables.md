@@ -108,7 +108,7 @@ Differently colored cables can be used to ensure that adjacent cables do not con
 allowing [channels](../ae2-mechanics/channels.md) to be distributed more efficiently. They also affect the color of terminals connected to them,
 so you don't have to have all your terminals be purple. Fluix cables connect to every other color.
 
-Of note, **CHANNELS HAVE NOTHING TO DO WITH CABLE COLOR**
+Of note, **CHANNELS HAVE NOTHING TO DO WITH CABLE COLOR**. All cable color does is prevent cables from connecting.
 
 ## An Important Note
 
@@ -117,8 +117,8 @@ It will show how channels are routed through your network, making their behavior
 
 ## Another Note
 
-**These are not item or fluid or energy or etc. pipes.** They have no internal inventory, pattern providers and machines do not "push"
-into them, all they do is connect AE2 [devices](../ae2-mechanics/devices.md) together into a network.
+**These are not pipes for items, fluid, energy, etc.** They have no internal inventory, pattern providers and machines do not "push"
+into them; all they do is connect AE2 [devices](../ae2-mechanics/devices.md) together into a network.
 
 ## Glass Cable
 
@@ -169,8 +169,8 @@ redstone and glowstone to make <ItemLink id="fluix_covered_dense_cable" />.
   <IsometricCamera yaw="195" pitch="30" />
 </GameScene>
 
-Higher Capacity cable, can carry 32 channels unlike standard cable which can only carry 8,
-however it doesn't support buses so you must first step down from dense to a
+Higher-capacity cable. Can carry 32 channels, unlike standard cables that can only carry 8.
+However, it doesn't support buses, so you must first step down from dense to a
 smaller cable (such as <ItemLink id="fluix_glass_cable" /> or <ItemLink id="fluix_smart_cable" />) before using buses or
 panels.
 

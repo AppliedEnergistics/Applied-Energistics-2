@@ -35,15 +35,15 @@ Right-click with a fluid container (like a bucket or fluid tank) to set that flu
 
 ## Upgrades
 
-The import bus supports the following [upgrades](upgrade_cards.md):
+The export bus supports the following [upgrades](upgrade_cards.md):
 
-*   <ItemLink id="capacity_card" /> increases the number of filter slots, and brings up a setting on what order to export what is filtered.
+*   <ItemLink id="capacity_card" /> increases the number of filter slots.
 *   <ItemLink id="speed_card" /> increases the amount of stuff moved per operation.
 *   <ItemLink id="fuzzy_card" /> lets the bus filter by damage level and/or ignore item NBT.
 *   <ItemLink id="crafting_card" /> lets the bus send crafting requests to your [autocrafting](../ae2-mechanics/autocrafting.md)
     system to get the items it desires. Can be set to pull the items from storage if possible, or to always make a request
     for a new item to be crafted.
-*   <ItemLink id="redstone_card" /> adds redstone control, allowing active on high signal, low signal, or once per pulse
+*   <ItemLink id="redstone_card" /> adds redstone control, causing the bus to operate during a high signal, low signal, or once per pulse.
 
 ## Speeds
 

@@ -34,7 +34,7 @@ acting like a wireless [dense cable](cables.md#dense-cable).
   <IsometricCamera yaw="195" pitch="30" />
 </GameScene>
 
-Of note, **both sides must be chunkloaded** so a <ItemLink id="spatial_anchor" /> or other chunk loader must be used
+Of note, **both sides must be loaded by the game** so a <ItemLink id="spatial_anchor" /> or other chunk loader must be used
 if the 2 sides are far apart.
 
 # Quantum Ring

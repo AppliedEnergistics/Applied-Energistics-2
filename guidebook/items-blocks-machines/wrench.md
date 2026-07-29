@@ -19,7 +19,7 @@ item_ids:
   <ItemImage id="nether_quartz_wrench" scale="4" />
 </Row>
 
-Wrenches are used to rotate ae2 devices (right-click), and disassemble ae2 blocks (shift-right-click).
+Wrenches are used to rotate (right-click) and disassemble (shift-right-click) AE2 devices, machines, and other blocks.
 [Subparts](../ae2-mechanics/cable-subparts.md) can be removed from a cable without breaking everything on the cable
 (or the cable can be removed without breaking the subparts).
 

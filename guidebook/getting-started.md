@@ -98,16 +98,16 @@ Produce a few of each type of processor in preparation for the next step, making
 
 It's pronounced Emm-Eee, and stands for Matter Energy.
 
-Matter Energy is the main component of Applied Energistics 2, it's like a mad scientist version of a Multi-Block chest,
-and it can revolutionize your storage situation. ME is extremely different than other storage systems in Minecraft, and
-it might take a little out of the box thinking to get used to; but once you get started vast amounts of storage in tiny
-space, and multiple access terminals are just the tip of the iceberg of what becomes possible.
+Matter Energy is the main component of Applied Energistics 2; it's like a mad scientist version of a Multi-Block chest,
+and it can revolutionize your storage situation. ME is extremely different from other storage systems in Minecraft, and
+it might take a little out-of-the-box thinking to get used to. But once you get started, vast amounts of storage in tiny
+space and multiple access terminals are just the tip of the iceberg of what will become possible.
 
 ### What do I need to know to get started?
 
-First, ME Stores items inside of other items, called [Storage cells](items-blocks-machines/storage_cells.md); there are 5 tiers with ever increasing amounts of
-storage. In order to use a Storage Cell it must be placed inside either an <ItemLink id="me_chest" />,
-or an <ItemLink id="drive" />.
+First, ME stores items inside other items, called [Storage cells](items-blocks-machines/storage_cells.md).
+There are 5 tiers with ever-increasing amounts of storage.
+In order to use a storage cell, it must be placed inside either an <ItemLink id="me_chest" /> or an <ItemLink id="drive" />.
 
 The <ItemLink id="me_chest" /> shows you the contents of the Cell as soon as it's placed inside, and you
 can add and remove items from it as if it were a <ItemLink id="minecraft:chest" />, with the exception that the items are
@@ -118,7 +118,7 @@ take advantage of AE2, you need to set up an [ME Network](ae2-mechanics/me-netwo
 
 ## Your Very First ME System
 
-Now that you have all of the basic materials and machines for Applied Energistics 2, you can make your first ME (Matter Energy) system. This will be a very basic one, no autocrafting, no logistics, just nice, simple, searchable storage.
+Now that you have all the basic materials and machines for Applied Energistics 2, you can make your first ME (Matter Energy) system. This will be a very basic one: no autocrafting, no logistics, just nice, simple, searchable storage.
 
 <GameScene zoom="6" interactive={true}>
 <ImportStructure src="assets/assemblies/tiny_me_system.snbt" />
@@ -131,7 +131,7 @@ Now that you have all of the basic materials and machines for Applied Energistic
     * 1x <ItemLink id="energy_acceptor" />
     * A few [cables](items-blocks-machines/cables.md), either glass, covered, or smart, but not dense
     * A few [storage cells](items-blocks-machines/storage_cells.md), recommended of the 4k variety for a good mix of
-    capacity and types (it would be more efficient to [partition](items-blocks-machines/cell_workbench.md) a mix of 4k and 1k but that's a complexity we won't go into now)
+    capacity and types (it would be more efficient to [partition](items-blocks-machines/cell_workbench.md) a mix of 4k and 1k, but that's a complexity we won't go into now)
 ---
 1.  Place the drive down.
 2.  The energy acceptor (and several other AE2 [devices](ae2-mechanics/devices.md)) comes in 2 modes, cube and flat. They can be switched between in a crafting grid. If your energy acceptor is a cube, place it down next to the drive. If it's a flat square, place a cable on the drive and place the acceptor on that.
@@ -148,9 +148,8 @@ Now that you have all of the basic materials and machines for Applied Energistic
 So you have some basic storage, and access to that storage. It's a good start, but you'll likely be looking to maybe
 automate some processing.
 
-A great example of this is to place an <ItemLink id="export_bus" /> on the top of a furnace to
-dump in ores, and an <ItemLink id="import_bus" />
-on the bottom of the furnace to extract smelted ores.
+A great example of this is to place an <ItemLink id="export_bus" /> on the top of a furnace to dump in ores,
+and an <ItemLink id="import_bus" /> on the bottom of the furnace to extract smelted ores.
 
 The <ItemLink id="export_bus" /> lets you export items from the network, into the attached
 inventory, while the <ItemLink id="import_bus" /> imports items from the attached inventory into
@@ -158,10 +157,10 @@ the network.
 
 ### Overcoming Limits
 
-At this point you probably getting close to 8 or so [devices](ae2-mechanics/devices.md), once you hit 9 devices you'll have to start
-managing [channels](ae2-mechanics/channels.md). Many devices but not all, require a channel to
-function.
+At this point you are probably getting close to 8 or so [devices](ae2-mechanics/devices.md).
+Once you hit 9 devices, you'll have to start managing [channels](ae2-mechanics/channels.md).
+Many devices—but not all—require a channel to function.
 
 By default, a network can support 8 channels, once you break this limit, you'll have to add
-an <ItemLink id="controller" /> to your network. This allows you to expand your network greatly.
+an <ItemLink id="controller" /> to your network. this allows you to expand your network greatly.
 [Smart cables](items-blocks-machines/cables.md) will allow you to see how channels are routed through your network. Use them extensively when starting out to learn how channels act, or if you have a lot of redstone and glowstone.

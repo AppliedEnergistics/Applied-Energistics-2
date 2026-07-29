@@ -58,10 +58,10 @@ For relatively obvious reasons, a network cannot intake or consume more energy i
 can only store 800 AE, when its [devices](../ae2-mechanics/devices.md) request energy, they will only be able to use up to 800 AE (assuming the storage is full),
 and an energy acceptor will only be able to insert up to 800 AE into the network (assuming the storage is empty).
 
-This is a common cause for odd behavior, where one makes a small network with just an energy acceptor, drive, terminal, and
-some devices and tries to dump an inventory full of cobblestone from their inventory into the network. Inserting that cobble all at once in a
-single gametick requires more energy than the network has in storage, so not all of the cobble is inserted, the network
-runs out of energy, and thus reboots.
+This is a common cause for odd behavior: One makes a small network with just an energy acceptor, drive, terminal, and
+some devices and tries to dump a lot of items from their inventory into the network. Inserting many items at once 
+requires more energy than the network has in storage during that game tick, so some items are not inserted,
+and the network runs out of energy and thus reboots.
 
 **This can be solved by the addition of energy cells.**
 

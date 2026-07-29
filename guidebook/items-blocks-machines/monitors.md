@@ -53,7 +53,7 @@ item will instead open a UI to specify the amount to be crafted.
 
 Additional keybinds:
 
-*   Left-click to extract a stack of the configured item, or request craft of that item if none are in storage.
+*   Left-click to extract a stack of the configured item (or if none are in storage, to request craft of that item).
 *   Right-click with any item to insert that item.
 *   Right-click with an empty hand to insert all of the configured item from your inventory.
 

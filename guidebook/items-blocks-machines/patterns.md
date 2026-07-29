@@ -46,14 +46,14 @@ There are several different types of pattern for different things:
     saying "if a pattern provider pushes these ingredients to adjacent inventories, the ME system will receive these items at some point in the
     near or distant future". They are how you will autocraft with almost any modded machine, or furnaces and the like. Because they are so
     general in use and do not care what happens between pushing ingredients and receiving the result, you can do some really funky stuff, like inputting
-    the ingredients into an entire complex factory production chain which will sort out stuff, take in other ingredients from infinitely-producing
-    farms, print the entirety of the Bee Movie script, the ME system does not care as long as it gets the result the pattern specifies. In fact,
-    it doesn't even care if the ingredients are in any way related to the result. You could tell it "1 cherry wood planks = 1 nether star" and have
-    your wither farm kill a wither upon receiving a cherry wood planks and it would work.
+    the ingredients into an entire complex factory production chain which will sort out stuff, taking in other ingredients from infinitely-producing
+    farms, printing the entirety of the Bee Movie script... The ME system does not care, as long as it gets the result specified by the pattern. In fact,
+    it doesn't even care if the ingredients are related to the result in any way. You could encode a pattern like "1 Cherry Wood Planks ⇒ 1 Nether Star" and have
+    your Wither farm kill a Wither upon receiving a Cherry Wood Planks, and the automation would work.
 
-Multiple <ItemLink id="pattern_provider" />s with identical patterns are supported and work in parallel. Additionally, you can have a pattern say,
-for example, 8 cobblestone = 8 stone instead of 1 cobblestone = 1 stone, and the pattern provider will insert 8 cobblestone into
-your smelting setup every operation instead of one at a time.
+Multiple <ItemLink id="pattern_provider" />s with identical patterns are supported and work in parallel. Additionally, you can set up a pattern like,
+for example, 8 cobblestone ⇒ 8 stone instead of 1 cobblestone ⇒ 1 stone, and the pattern provider will insert 8 cobblestone into
+your smelting setup per operation, instead of one at a time.
 
 ## Recipe
 

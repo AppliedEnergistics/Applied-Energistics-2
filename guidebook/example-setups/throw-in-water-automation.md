@@ -56,11 +56,11 @@ This setup is meant to be used in combination with [charger automation](charger-
 ## Configurations and Patterns
 
 * The <ItemLink id="pattern_provider" /> (1) is in its default configuration, with the relevant <ItemLink id="processing_pattern" />s
-  * For <ItemLink id="fluix_crystal" /> the default recipe from JEI/REI works fine:
+  * For <ItemLink id="fluix_crystal" />, the default recipe from JEI/REI works fine:
 
     ![Fluix Pattern](../assets/diagrams/fluix_pattern.png)
 
-  * For <ItemLink id="flawed_budding_quartz" /> it's probably best to make it directly from <ItemLink id="quartz_block" />,
+  * For <ItemLink id="flawed_budding_quartz" />, it's probably best to make it directly from <ItemLink id="quartz_block" />,
     which avoids issues with the input of one recipe being the output of another, causing the storage bus to not be able to filter:
 
     ![Flawed Budding Pattern](../assets/diagrams/flawed_budding_pattern.png)

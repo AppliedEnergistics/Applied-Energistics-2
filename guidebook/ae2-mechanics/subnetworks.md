@@ -46,8 +46,8 @@ main network or does some small task. They are typically small enough to not req
     busses on several machines, using 1 channel, instead of putting a pattern provider on each machine, using several channels.
 
 Very important in making a subnet is keeping track of the [network connections](../ae2-mechanics/me-network-connections.md).
-Often, people put together some jumble of interfaces and busses and stuff and expect it to be a subnet when
-all the devices are still connected to the main network through various fullblock devices.
+Often, people put together some jumble of interfaces and busses and stuff and expect it to be a subnet, while
+all the devices are still connected to the main network through various full-block devices.
 
 Cables with different colors have nothing to do with making a subnetwork other than that they won't connect to each other.
 

@@ -51,8 +51,8 @@ connected to the network, and it all fits in a smaller space too.
 
 # Terminal Search
 
-The searchbox accepts Regex terms, so you can, for example, write "gtceu:.*ore" to get all ores from Gregtech. Learning
-Regex is left as an exercise for the reader.
+The terminal search box accepts regular expression (*regex*) terms. For example, you can write "gtceu:.*ore" to get all ores from GregTech.
+Learning regular expression syntax is left as an exercise for the reader.
 
 # Terminal
 
@@ -82,8 +82,8 @@ mouse/key shortcuts:
 The left section has settings buttons to:
 
 *   Sort by different attributes like name, mod, and quantity
-*   View stored, craftable, or both
-*   View items, fluids, or both
+*   Filter the view to stored, craftable, or both
+*   Filter the view to items, fluids, or both
 *   Change the sort order
 *   Open the detailed terminal settings window
 *   Change the height of the terminal UI
@@ -115,7 +115,7 @@ You should upgrade your terminal into a crafting terminal ASAP.
 
 The crafting terminal has the same UI as the regular terminal, but with an added crafting grid in the middle.
 
-There are 2 additional buttons, to empty the crafting grid into network storage or your inventory.
+There are 2 additional buttons for emptying the crafting grid into network storage or your inventory.
 
 ## Recipe
 
@@ -146,9 +146,9 @@ A slot to insert <ItemLink id="blank_pattern" />s.
 
 A big arrow to encode the pattern.
 
-A slot for encoded patterns. Place a pattern that has already been encoded in this slot in order to edit it, then click the "encode" arrow.
+A slot for encoded patterns. To edit an existing pattern, place the pattern into this slot. You can click the "encode" arrow to overwrite with new data.
 
-4 tabs on the right to swap the type of pattern to be encoded between
+4 tabs on the right will choose the type of pattern:
 
 *   Crafting
 *   Processing
@@ -168,7 +168,7 @@ The central UI changes depending on the type of pattern to be encoded:
     * Left-click or right-click in or drag from JEI/REI the ingredients to specify the inputs and outputs of the recipe.
     * Right-click with a fluid container (like a bucket or fluid tank) to set that fluid as an ingredient instead of the bucket or tank item.
     * When holding a stack, left-click places the whole stack, right-click places one item. Left-click on an existing ingredient stack to
-        remove the whole stack and right-click to decrement the stack by 1. Whatever you have bound to "pick block" (usually middle-click)
+        remove the whole stack and right-click to decrement the stack by 1. Using the key/button you have bound to "Pick Block" (usually middle-click)
         lets you specify a precise amount of the item or fluid.
     * The output slots have a primary output and space for any secondary outputs you might want the autocrafting algorithm to know about.
     * Both input and output slots scroll, so you can have 81 different ingredients and 26 secondary outputs.
@@ -189,10 +189,10 @@ The central UI changes depending on the type of pattern to be encoded:
   <IsometricCamera yaw="180" />
 </GameScene>
 
-The Pattern Access Terminal serves to solve a specific issue: in a dense tower of <ItemLink id="pattern_provider" />s
+The pattern access terminal allows access to all pattern providers on the network.
+This serves to solve a specific issue: in a dense tower of <ItemLink id="pattern_provider" />s
 and <ItemLink id="molecular_assembler" />s, you can't physically access the providers to insert new patterns. Additionally,
-perhaps you're lazy and don't want to walk across your base to insert a [pattern](patterns.md). The pattern access terminal
-allows access to all pattern providers on the network.
+perhaps you're lazy and don't want to walk across your base to insert or update a [pattern](patterns.md).
 
 ## The UI
 
@@ -202,8 +202,8 @@ It has settings for terminal height and which pattern providers to show.
 
 Each row in the terminal corresponds to a specific pattern provider.
 
-Pattern providers in the terminal are sorted by what blocks they are connected to, or what name you have given them (in an anvil or
-with a <ItemLink id="name_press" />).
+Pattern providers in the terminal are sorted and grouped by which blocks they are connected to,
+or what name you have given them (using a <ItemLink id="name_press" /> or an anvil).
 
 ## Recipe
 
