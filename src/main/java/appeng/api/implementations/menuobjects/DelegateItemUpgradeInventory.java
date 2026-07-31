@@ -1,8 +1,5 @@
 package appeng.api.implementations.menuobjects;
 
-import java.util.function.Supplier;
-
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
@@ -11,13 +8,13 @@ import net.neoforged.neoforge.transfer.access.ItemAccess;
 import appeng.api.upgrades.IUpgradeInventory;
 import appeng.api.upgrades.IUpgradeableItem;
 import appeng.api.upgrades.UpgradeInventories;
-import appeng.items.contents.StackDependentSupplier;
+import appeng.items.contents.AccessDependentSupplier;
 import appeng.util.inv.SupplierInternalInventory;
 
 public final class DelegateItemUpgradeInventory extends SupplierInternalInventory<IUpgradeInventory>
         implements IUpgradeInventory {
-    public DelegateItemUpgradeInventory(Supplier<ItemStack> stackSupplier) {
-        super(new StackDependentSupplier<>(stackSupplier, DelegateItemUpgradeInventory::inventoryFromStack));
+    public DelegateItemUpgradeInventory(ItemAccess access) {
+        super(new AccessDependentSupplier<>(access, DelegateItemUpgradeInventory::inventoryFromAccess));
     }
 
     @Override
@@ -45,9 +42,9 @@ public final class DelegateItemUpgradeInventory extends SupplierInternalInventor
         getDelegate().writeToNBT(output, subtag);
     }
 
-    private static IUpgradeInventory inventoryFromStack(ItemStack stack) {
-        if (stack.getItem() instanceof IUpgradeableItem upgradeableItem) {
-            return upgradeableItem.getUpgrades(ItemAccess.forStack(stack));
+    private static IUpgradeInventory inventoryFromAccess(ItemAccess access) {
+        if (access.getResource().getItem() instanceof IUpgradeableItem upgradeableItem) {
+            return upgradeableItem.getUpgrades(access);
         } else {
             return UpgradeInventories.empty();
         }

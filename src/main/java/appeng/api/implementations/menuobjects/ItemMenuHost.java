@@ -59,7 +59,7 @@ public class ItemMenuHost<T extends Item> implements IUpgradeableObject {
             throw new IllegalArgumentException("The current item in-slot is " + currentStack.getItem() + " but " +
                     "this menu requires " + item);
         }
-        this.upgrades = new DelegateItemUpgradeInventory(this::getItemStack);
+        this.upgrades = new DelegateItemUpgradeInventory(itemAccess());
     }
 
     /**

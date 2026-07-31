@@ -148,7 +148,7 @@ public class WirelessTerminalItem extends PoweredContainerItem implements IMenuI
     }
 
     @Nullable
-    public IGrid getLinkedGrid(ItemInstance item, Level level, @Nullable Consumer<Component> errorConsumer) {
+    public IGrid getLinkedGrid(DataComponentGetter item, Level level, @Nullable Consumer<Component> errorConsumer) {
         if (!(level instanceof ServerLevel serverLevel)) {
             return null;
         }
