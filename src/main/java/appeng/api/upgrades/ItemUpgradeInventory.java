@@ -23,9 +23,9 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.ItemContainerContents;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
-import net.neoforged.neoforge.transfer.transaction.Transaction;
 
 import appeng.api.ids.AEComponents;
+import appeng.items.contents.ItemAccessHelper;
 import appeng.util.inv.AppEngInternalInventory;
 
 /**
@@ -50,12 +50,7 @@ final class ItemUpgradeInventory extends UpgradeInventory {
 
     @Override
     public void saveChangedInventory(AppEngInternalInventory inv) {
-        try (var tr = Transaction.openRoot()) {
-            access.exchange(access.getResource().with(AEComponents.UPGRADES, toItemContainerContents()),
-                    access.getAmount(), tr);
-            tr.commit();
-        }
-
+        ItemAccessHelper.modify(access, resource -> resource.with(AEComponents.UPGRADES, toItemContainerContents()));
         super.saveChangedInventory(inv);
     }
 

@@ -20,6 +20,8 @@ package appeng.helpers;
 
 import java.util.function.BiConsumer;
 
+import appeng.items.contents.AccessDependentSupplier;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 import org.apache.commons.lang3.mutable.MutableObject;
 import org.jetbrains.annotations.Nullable;
 
@@ -49,7 +51,6 @@ import appeng.blockentity.networking.WirelessAccessPointBlockEntity;
 import appeng.core.AEConfig;
 import appeng.core.localization.GuiText;
 import appeng.core.localization.PlayerMessages;
-import appeng.items.contents.StackDependentSupplier;
 import appeng.items.tools.powered.WirelessTerminalItem;
 import appeng.me.helpers.PlayerSource;
 import appeng.me.storage.NullInventory;
@@ -78,8 +79,7 @@ public class WirelessTerminalMenuHost<T extends WirelessTerminalItem> extends It
         super(item, player, locator);
         this.returnToMainMenu = returnToMainMenu;
 
-        this.storage = new SupplierStorage(new StackDependentSupplier<>(
-                this::getItemStack, this::getStorageFromStack));
+        this.storage = new SupplierStorage(new AccessDependentSupplier<>(itemAccess(), this::getStorageFromStack));
 
         updateConnectedAccessPoint();
         updateLinkStatus();
@@ -90,9 +90,8 @@ public class WirelessTerminalMenuHost<T extends WirelessTerminalItem> extends It
         return linkStatus;
     }
 
-    @Nullable
-    private MEStorage getStorageFromStack(ItemStack stack) {
-        var targetGrid = getLinkedGrid(stack);
+    private MEStorage getStorageFromStack(ItemAccess access) {
+        var targetGrid = getLinkedGrid(access);
         if (targetGrid != null) {
             return targetGrid.getStorageService().getInventory();
         }
@@ -100,8 +99,8 @@ public class WirelessTerminalMenuHost<T extends WirelessTerminalItem> extends It
     }
 
     @Nullable
-    private IGrid getLinkedGrid(ItemStack stack) {
-        return getItem().getLinkedGrid(stack, getPlayer().level(), null);
+    private IGrid getLinkedGrid(ItemAccess access) {
+        return getItem().getLinkedGrid(access.getResource(), getPlayer().level(), null);
     }
 
     @Override
@@ -150,7 +149,7 @@ public class WirelessTerminalMenuHost<T extends WirelessTerminalItem> extends It
         this.currentDistanceFromGrid = Double.MAX_VALUE;
         this.currentRemainingRange = Double.MIN_VALUE;
 
-        var targetGrid = getLinkedGrid(getItemStack());
+        var targetGrid = getLinkedGrid(itemAccess());
         if (targetGrid != null) {
             @Nullable
             IWirelessAccessPoint bestWap = null;
