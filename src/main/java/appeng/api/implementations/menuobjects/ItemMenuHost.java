@@ -91,7 +91,7 @@ public class ItemMenuHost<T extends Item> implements IUpgradeableObject {
      * @return The item stack hosting the menu. This can change.
      */
     public ItemStack getItemStack() {
-        return locator.locateItem(player).copy();
+        return locator.locateItem(player);
     }
 
     public ItemAccess itemAccess() {
