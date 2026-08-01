@@ -20,7 +20,6 @@ package appeng.items.tools.powered;
 
 import java.util.function.Consumer;
 import java.util.function.DoubleSupplier;
-import java.util.function.Supplier;
 
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -235,8 +234,8 @@ public class WirelessTerminalItem extends PoweredContainerItem implements IMenuI
      *
      * @return config manager of wireless terminal
      */
-    public IConfigManager getConfigManager(Supplier<ItemStack> target) {
-        return IConfigManager.builder(target)
+    public IConfigManager getConfigManager(ItemAccess access) {
+        return IConfigManager.builder(access)
                 .registerSetting(Settings.SORT_BY, SortOrder.NAME)
                 .registerSetting(Settings.VIEW_MODE, ViewItems.ALL)
                 .registerSetting(Settings.SORT_DIRECTION, SortDir.ASCENDING)
