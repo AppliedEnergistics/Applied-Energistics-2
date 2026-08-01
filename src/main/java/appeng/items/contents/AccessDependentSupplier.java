@@ -3,9 +3,10 @@ package appeng.items.contents;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import org.jspecify.annotations.NullMarked;
+
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.item.ItemResource;
-import org.jspecify.annotations.NullMarked;
 
 /**
  * A supplier that can cache its resulting value as long as the Resource in an ItemAccess is the same.
