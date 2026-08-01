@@ -12,7 +12,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.BlockHitResult;
+import net.neoforged.fml.ModList;
 
+import appeng.api.integrations.curios.CuriosIntegration;
 import appeng.parts.AEBasePart;
 
 /**
@@ -29,6 +31,9 @@ public final class MenuLocators {
         register(BlockEntityLocator.class, BlockEntityLocator::writeToPacket, BlockEntityLocator::readFromPacket);
         register(PartLocator.class, PartLocator::writeToPacket, PartLocator::readFromPacket);
         register(InventoryItemLocator.class, InventoryItemLocator::writeToPacket, InventoryItemLocator::readFromPacket);
+        if (ModList.get().isLoaded("curios")) {
+            CuriosIntegration.register();
+        }
     }
 
     /**
