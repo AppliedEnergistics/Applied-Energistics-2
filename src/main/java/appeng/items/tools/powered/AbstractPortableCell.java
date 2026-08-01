@@ -160,8 +160,7 @@ public abstract class AbstractPortableCell extends PoweredContainerItem
     public void onUpgradesChanged(ItemAccess access, IUpgradeInventory upgrades) {
         // The energy card is crafted with a dense energy cell, while the base portable just uses a normal energy cell.
         // Since the dense cells capacity is 8x the normal capacity, the result should be 9x normal.
-        try (var tr = Transaction.openRoot()) {// FIXME this is potentially problematic. there might already exists an
-                                               // open transaction
+        try (var tr = Transaction.openRoot()) {
             setAEMaxPowerMultiplier(access, 1 + Upgrades.getEnergyCardMultiplier(upgrades) * 8, tr);
             tr.commit();
         }

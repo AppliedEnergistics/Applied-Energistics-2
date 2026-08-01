@@ -254,8 +254,7 @@ public class WirelessTerminalItem extends PoweredContainerItem implements IMenuI
     }
 
     private void onUpgradesChanged(ItemAccess access, IUpgradeInventory upgrades) {
-        try (var tr = Transaction.openRoot()) {// FIXME this is potentially problematic. there might already exists an
-                                               // open transaction
+        try (var tr = Transaction.openRoot()) {
             setAEMaxPowerMultiplier(access, 1 + Upgrades.getEnergyCardMultiplier(upgrades), tr);
             tr.commit();
         }

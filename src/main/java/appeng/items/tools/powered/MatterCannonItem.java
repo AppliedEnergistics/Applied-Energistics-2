@@ -413,8 +413,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IBasicCellIte
 
     private void onUpgradesChanged(ItemAccess access, IUpgradeInventory upgrades) {
         // Item is crafted with a normal cell, base energy card contains a dense cell (x8)
-        try (var tr = Transaction.openRoot()) {// FIXME this is potentially problematic. there might already exists an
-                                               // open transaction
+        try (var tr = Transaction.openRoot()) {
             setAEMaxPowerMultiplier(access, 1 + Upgrades.getEnergyCardMultiplier(upgrades) * 8, tr);
             tr.commit();
         }
