@@ -36,7 +36,6 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
-import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
@@ -147,12 +146,12 @@ public class WirelessTerminalItem extends PoweredContainerItem implements IMenuI
     }
 
     @Nullable
-    public IGrid getLinkedGrid(DataComponentGetter item, Level level, @Nullable Consumer<Component> errorConsumer) {
+    public IGrid getLinkedGrid(ItemAccess access, Level level, @Nullable Consumer<Component> errorConsumer) {
         if (!(level instanceof ServerLevel serverLevel)) {
             return null;
         }
 
-        var linkedPos = getLinkedPosition(item);
+        var linkedPos = getLinkedPosition(access.getResource());
         if (linkedPos == null) {
             if (errorConsumer != null) {
                 errorConsumer.accept(PlayerMessages.DeviceNotLinked.text());
@@ -206,7 +205,7 @@ public class WirelessTerminalItem extends PoweredContainerItem implements IMenuI
      * @return True if the wireless terminal can be opened (it's linked, network in range, power, etc.)
      */
     protected boolean checkPreconditions(ItemAccess access) {
-        return access.getResource().is((ItemLike) this);
+        return access.getResource().is(this);
     }
 
     /**

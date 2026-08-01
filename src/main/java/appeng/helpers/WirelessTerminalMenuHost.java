@@ -100,7 +100,7 @@ public class WirelessTerminalMenuHost<T extends WirelessTerminalItem> extends It
 
     @Nullable
     private IGrid getLinkedGrid(ItemAccess access) {
-        return getItem().getLinkedGrid(access.getResource(), getPlayer().level(), null);
+        return getItem().getLinkedGrid(access, getPlayer().level(), null);
     }
 
     @Override
@@ -133,7 +133,7 @@ public class WirelessTerminalMenuHost<T extends WirelessTerminalItem> extends It
 
     @Override
     public KeyTypeSelection getKeyTypeSelection() {
-        return KeyTypeSelection.forStack(getItemStack(), keyType -> true);
+        return KeyTypeSelection.forStack(itemAccess(), _ -> true);
     }
 
     @Override
@@ -224,7 +224,7 @@ public class WirelessTerminalMenuHost<T extends WirelessTerminalItem> extends It
             this.linkStatus = ILinkStatus.ofConnected();
         } else {
             MutableObject<Component> errorHolder = new MutableObject<>();
-            if (getItem().getLinkedGrid(getItemStack(), getPlayer().level(), errorHolder::setValue) == null) {
+            if (getItem().getLinkedGrid(itemAccess(), getPlayer().level(), errorHolder::setValue) == null) {
                 this.linkStatus = ILinkStatus.ofDisconnected(errorHolder.getValue());
             } else {
                 // If a grid exists, but no access point, we're out of range
