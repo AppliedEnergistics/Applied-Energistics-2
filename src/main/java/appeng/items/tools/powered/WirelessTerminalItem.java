@@ -33,10 +33,10 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.item.ItemInstance;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
+import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
@@ -99,9 +99,9 @@ public class WirelessTerminalItem extends PoweredContainerItem implements IMenuI
      * @return True if the menu was opened.
      */
     protected boolean openFromInventory(Player player, ItemMenuHostLocator locator, boolean returningFromSubmenu) {
-        var is = locator.locateItem(player);
+        var access = locator.itemAccess(player);
 
-        if (!player.level().isClientSide() && checkPreconditions(is)) {
+        if (!player.level().isClientSide() && checkPreconditions(access)) {
             return MenuOpener.open(getMenuType(), player, locator, returningFromSubmenu);
         }
         return false;
@@ -112,9 +112,9 @@ public class WirelessTerminalItem extends PoweredContainerItem implements IMenuI
      */
     @Override
     public InteractionResult use(Level level, Player player, InteractionHand hand) {
-        var is = player.getItemInHand(hand);
+        var access = ItemAccess.forPlayerInteraction(player, hand);
 
-        if (!player.level().isClientSide() && checkPreconditions(is)) {
+        if (!player.level().isClientSide() && checkPreconditions(access)) {
             if (MenuOpener.open(getMenuType(), player, MenuLocators.forHand(player, hand))) {
                 return InteractionResult.SUCCESS;
             }
@@ -205,8 +205,8 @@ public class WirelessTerminalItem extends PoweredContainerItem implements IMenuI
      *
      * @return True if the wireless terminal can be opened (it's linked, network in range, power, etc.)
      */
-    protected boolean checkPreconditions(@Nullable ItemInstance item) {
-        return item != null && item.is(this);
+    protected boolean checkPreconditions(ItemAccess access) {
+        return access.getResource().is((ItemLike) this);
     }
 
     /**
