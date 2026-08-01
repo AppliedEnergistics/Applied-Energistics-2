@@ -20,14 +20,13 @@ package appeng.helpers;
 
 import java.util.function.BiConsumer;
 
-import appeng.items.contents.AccessDependentSupplier;
-import net.neoforged.neoforge.transfer.access.ItemAccess;
 import org.apache.commons.lang3.mutable.MutableObject;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 
 import appeng.api.config.Actionable;
@@ -51,6 +50,7 @@ import appeng.blockentity.networking.WirelessAccessPointBlockEntity;
 import appeng.core.AEConfig;
 import appeng.core.localization.GuiText;
 import appeng.core.localization.PlayerMessages;
+import appeng.items.contents.AccessDependentSupplier;
 import appeng.items.tools.powered.WirelessTerminalItem;
 import appeng.me.helpers.PlayerSource;
 import appeng.me.storage.NullInventory;
