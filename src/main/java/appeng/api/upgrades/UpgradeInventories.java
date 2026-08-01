@@ -1,11 +1,7 @@
 package appeng.api.upgrades;
 
-import net.minecraft.world.item.ItemInstance;
-import net.minecraft.world.item.component.ItemContainerContents;
 import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
-
-import appeng.api.ids.AEComponents;
 
 /**
  * Utilities for creating {@link IUpgradeInventory upgrade inventories}.
@@ -49,30 +45,5 @@ public final class UpgradeInventories {
                     changeCallback);
         }
         return EmptyUpgradeInventory.INSTANCE;
-    }
-
-    /**
-     * Same as {@link #forItem(ItemAccess)}, but read only.
-     */
-    public static ReadOnlyUpgradeInventory forReadOnlyItem(ItemInstance item) {
-        // FIXME finish or remove this
-        var upgrades = item.getOrDefault(AEComponents.UPGRADES, ItemContainerContents.EMPTY);
-
-        return new ReadOnlyUpgradeInventory() {
-            @Override
-            public ItemLike getUpgradableItem() {
-                return item.typeHolder().value();
-            }
-
-            @Override
-            public int getInstalledUpgrades(ItemLike u) {
-                return 0;
-            }
-
-            @Override
-            public int getMaxInstalled(ItemLike u) {
-                return 0;
-            }
-        };
     }
 }

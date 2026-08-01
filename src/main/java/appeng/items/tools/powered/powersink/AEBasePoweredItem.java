@@ -163,8 +163,6 @@ public abstract class AEBasePoweredItem extends AEBaseItem implements IAEItemPow
     }
 
     protected final void setAECurrentPower(ItemAccess access, double power, TransactionContext tr) {
-        // FIXME check if that interacts properly with aborting, tho it probably should if the underlying access works
-        // correctly
         if (power < MIN_POWER) {
             access.exchange(access.getResource().without(AEComponents.STORED_ENERGY), access.getAmount(), tr);
         } else {
