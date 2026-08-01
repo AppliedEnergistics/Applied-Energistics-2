@@ -32,4 +32,8 @@ public interface ISaveProvider {
      * Cell has changed and needs to be persisted.
      */
     void saveChanges();
+
+    default boolean requiresExternalPersist() {
+        return false;
+    }
 }
