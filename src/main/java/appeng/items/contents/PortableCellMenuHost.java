@@ -71,7 +71,7 @@ public class PortableCellMenuHost<T extends AbstractPortableCell> extends ItemMe
         Objects.requireNonNull(cellStorage, "Portable cell doesn't expose a cell inventory.");
         this.item = item;
         this.updateLinkStatus();
-        this.configManager = IConfigManager.builder(this::getItemStack)
+        this.configManager = IConfigManager.builder(itemAccess())
                 .registerSetting(Settings.SORT_BY, SortOrder.NAME)
                 .registerSetting(Settings.VIEW_MODE, ViewItems.ALL)
                 .registerSetting(Settings.SORT_DIRECTION, SortDir.ASCENDING)

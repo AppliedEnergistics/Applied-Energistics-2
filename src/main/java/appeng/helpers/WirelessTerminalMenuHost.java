@@ -128,7 +128,7 @@ public class WirelessTerminalMenuHost<T extends WirelessTerminalItem> extends It
 
     @Override
     public IConfigManager getConfigManager() {
-        return getItem().getConfigManager(this::getItemStack);
+        return getItem().getConfigManager(itemAccess());
     }
 
     @Override
