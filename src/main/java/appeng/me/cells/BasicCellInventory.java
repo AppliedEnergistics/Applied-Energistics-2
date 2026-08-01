@@ -225,6 +225,9 @@ public class BasicCellInventory implements StorageCell {
 
         this.isPersisted = false;
         if (this.container != null) {
+            if (container.requiresExternalPersist()) {
+                persist();
+            }
             this.container.saveChanges();
         } else {
             // if there is no ISaveProvider, store to NBT immediately
