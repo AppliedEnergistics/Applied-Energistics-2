@@ -115,8 +115,7 @@ public class ItemMenuHost<T extends Item> implements IUpgradeableObject {
      * Checks if the item underlying this host is still in place.
      */
     public boolean isValid() {
-        var currentItem = getItemStack();
-        return !currentItem.isEmpty() && currentItem.is(item);
+        return itemAccess().getResource().is(item);
     }
 
     /**

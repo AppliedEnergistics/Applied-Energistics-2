@@ -65,7 +65,7 @@ public class PortableCellMenuHost<T extends AbstractPortableCell> extends ItemMe
     public PortableCellMenuHost(T item, Player player, ItemMenuHostLocator locator,
             BiConsumer<Player, ISubMenu> returnMainMenu) {
         super(item, player, locator);
-        Preconditions.checkArgument(getItemStack().is(item), "Stack doesn't match item");
+        Preconditions.checkArgument(itemAccess().getResource().is(item), "Stack doesn't match item");
         this.returnMainMenu = returnMainMenu;
         this.cellStorage = new SupplierStorage(new CellStorageSupplier());
         Objects.requireNonNull(cellStorage, "Portable cell doesn't expose a cell inventory.");
