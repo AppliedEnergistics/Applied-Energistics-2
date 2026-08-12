@@ -51,6 +51,8 @@ import appeng.api.config.SortOrder;
 import appeng.api.config.ViewItems;
 import appeng.api.implementations.blockentities.IViewCellStorage;
 import appeng.api.implementations.menuobjects.IPortableTerminal;
+import appeng.api.implementations.menus.IStorageTerminalMenu;
+import appeng.api.implementations.menus.TerminalKeyFilters;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.energy.IEnergySource;
@@ -93,7 +95,7 @@ import appeng.util.Platform;
  * @see MEStorageScreen
  */
 public class MEStorageMenu extends AEBaseMenu
-        implements IConfigurableObject, IMEInteractionHandler, LinkStatusAwareMenu,
+        implements IConfigurableObject, IMEInteractionHandler, IStorageTerminalMenu, LinkStatusAwareMenu,
         KeyTypeSelectionMenu {
 
     public static final MenuType<MEStorageMenu> TYPE = MenuTypeBuilder
@@ -218,6 +220,17 @@ public class MEStorageMenu extends AEBaseMenu
         return null;
     }
 
+    @Override
+    @Nullable
+    public IGrid getGrid() {
+        if (!isServerSide()) {
+            return null;
+        }
+
+        var gridNode = getGridNode();
+        return gridNode != null ? gridNode.getGrid() : null;
+    }
+
     public boolean isKeyVisible(AEKey key) {
         // If the host is a basic item cell with a limited key space, account for this
         if (itemMenuHost != null && itemMenuHost.getItem() instanceof IBasicCellItem basicCellItem) {
@@ -225,6 +238,16 @@ public class MEStorageMenu extends AEBaseMenu
         }
 
         return true;
+    }
+
+    private boolean isKeyVisibleInTerminal(AEKey key) {
+        return isKeyVisible(key) && TerminalKeyFilters.isVisible(getGrid(), key);
+    }
+
+    @Override
+    public void requestFullInventoryUpdate() {
+        Platform.assertServerThread();
+        updateHelper.clear();
     }
 
     @Override
@@ -257,28 +280,34 @@ public class MEStorageMenu extends AEBaseMenu
             var requestables = new KeyCounter();
 
             try {
-                // Craftables
-                // Newly craftable
-                Sets.difference(previousCraftables, craftables).forEach(updateHelper::addChange);
-                // No longer craftable
-                Sets.difference(craftables, previousCraftables).forEach(updateHelper::addChange);
+                if (!updateHelper.isFullUpdate()) {
+                    // Craftables
+                    // Newly craftable
+                    Sets.difference(previousCraftables, craftables).forEach(updateHelper::addChange);
+                    // No longer craftable
+                    Sets.difference(craftables, previousCraftables).forEach(updateHelper::addChange);
 
-                // Available changes
-                previousAvailableStacks.removeAll(availableStacks);
-                previousAvailableStacks.removeZeros();
-                previousAvailableStacks.keySet().forEach(updateHelper::addChange);
+                    // Available changes
+                    previousAvailableStacks.removeAll(availableStacks);
+                    previousAvailableStacks.removeZeros();
+                    previousAvailableStacks.keySet().forEach(updateHelper::addChange);
+                }
 
                 if (updateHelper.hasChanges()) {
                     var builder = MEInventoryUpdatePacket
                             .builder(containerId, updateHelper.isFullUpdate(), getPlayer().registryAccess());
-                    builder.setFilter(this::isKeyVisible);
-                    builder.addChanges(updateHelper, availableStacks, craftables, requestables);
+                    builder.setFilter(this::isKeyVisibleInTerminal);
+                    if (updateHelper.isFullUpdate()) {
+                        builder.addFull(updateHelper, availableStacks, craftables, requestables);
+                    } else {
+                        builder.addChanges(updateHelper, availableStacks, craftables, requestables);
+                    }
                     builder.buildAndSend(this::sendPacketToClient);
                     updateHelper.commitChanges();
                 }
 
             } catch (Exception e) {
-                AELog.warn(e, "Failed to send incremental inventory update to client");
+                AELog.warn(e, "Failed to send inventory update to client");
             }
 
             previousCraftables = ImmutableSet.copyOf(craftables);

@@ -195,6 +195,11 @@ public record MEInventoryUpdatePacket(
                 encodedEntries = null;
                 entryCount = 0;
                 fullUpdate = false; // Only the first packet in a chain is a full update
+            } else if (fullUpdate && packets.isEmpty()) {
+                // An empty full update still needs to reach the client to clear its previous contents. Keep an empty
+                // decoded entry list for the singleplayer path, where this packet instance is handled directly.
+                packets.add(new MEInventoryUpdatePacket(true, containerId, List.of(), 0, null));
+                fullUpdate = false;
             }
         }
 
