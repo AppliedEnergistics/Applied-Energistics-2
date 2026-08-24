@@ -166,7 +166,7 @@ public final class AEFluidKey extends AEKey {
 
     @Override
     public boolean hasComponents() {
-        return !stack.getComponentsPatch().isEmpty();
+        return !stack.isComponentsPatchEmpty();
     }
 
     public FluidResource toResource() {
