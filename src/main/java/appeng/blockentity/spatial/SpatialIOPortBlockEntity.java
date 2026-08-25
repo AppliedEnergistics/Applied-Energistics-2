@@ -140,10 +140,6 @@ public class SpatialIOPortBlockEntity extends AENetworkedInvBlockEntity {
     }
 
     private void transition() {
-        if (!(this.level instanceof ServerLevel serverLevel)) {
-            return;
-        }
-
         final ItemStack cell = this.inv.getStackInSlot(0);
         if (!this.isSpatialCell(cell) || !this.inv.getStackInSlot(1).isEmpty()) {
             return;
@@ -160,6 +156,9 @@ public class SpatialIOPortBlockEntity extends AENetworkedInvBlockEntity {
             if (!spc.hasRegion() || !spc.isValidRegion()) {
                 return;
             }
+            if (!(spc.getLevel() instanceof ServerLevel teleportLevel)) {
+                return;
+            }
 
             var energy = grid.getEnergyService();
             final double req = spc.requiredPower();
@@ -169,7 +168,7 @@ public class SpatialIOPortBlockEntity extends AENetworkedInvBlockEntity {
                 if (!evt.isTransitionPrevented()) {
                     int playerId = node.getOwningPlayerId();
 
-                    boolean success = sc.doSpatialTransition(cell, serverLevel, spc.getMin(), spc.getMax(),
+                    boolean success = sc.doSpatialTransition(cell, teleportLevel, spc.getMin(), spc.getMax(),
                             playerId);
                     if (success) {
                         energy.extractAEPower(req, Actionable.MODULATE, PowerMultiplier.CONFIG);
