@@ -26,6 +26,8 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
@@ -48,7 +50,7 @@ import appeng.blockentity.networking.WirelessAccessPointBlockEntity;
 import appeng.core.AEConfig;
 import appeng.core.localization.GuiText;
 import appeng.core.localization.PlayerMessages;
-import appeng.items.contents.StackDependentSupplier;
+import appeng.items.contents.AccessDependentSupplier;
 import appeng.items.tools.powered.WirelessTerminalItem;
 import appeng.me.helpers.PlayerSource;
 import appeng.me.storage.NullInventory;
@@ -77,8 +79,7 @@ public class WirelessTerminalMenuHost<T extends WirelessTerminalItem> extends It
         super(item, player, locator);
         this.returnToMainMenu = returnToMainMenu;
 
-        this.storage = new SupplierStorage(new StackDependentSupplier<>(
-                this::getItemStack, this::getStorageFromStack));
+        this.storage = new SupplierStorage(new AccessDependentSupplier<>(itemAccess(), this::getStorageFromStack));
 
         updateConnectedAccessPoint();
         updateLinkStatus();
@@ -89,9 +90,8 @@ public class WirelessTerminalMenuHost<T extends WirelessTerminalItem> extends It
         return linkStatus;
     }
 
-    @Nullable
-    private MEStorage getStorageFromStack(ItemStack stack) {
-        var targetGrid = getLinkedGrid(stack);
+    private MEStorage getStorageFromStack(ItemAccess access) {
+        var targetGrid = getLinkedGrid(access);
         if (targetGrid != null) {
             return targetGrid.getStorageService().getInventory();
         }
@@ -99,8 +99,8 @@ public class WirelessTerminalMenuHost<T extends WirelessTerminalItem> extends It
     }
 
     @Nullable
-    private IGrid getLinkedGrid(ItemStack stack) {
-        return getItem().getLinkedGrid(stack, getPlayer().level(), null);
+    private IGrid getLinkedGrid(ItemAccess access) {
+        return getItem().getLinkedGrid(access, getPlayer().level(), null);
     }
 
     @Override
@@ -110,23 +110,30 @@ public class WirelessTerminalMenuHost<T extends WirelessTerminalItem> extends It
 
     @Override
     public double extractAEPower(double amt, Actionable mode, PowerMultiplier usePowerMultiplier) {
-        final double extracted = Math.min(amt, getItem().getAECurrentPower(getItemStack()));
+        final double extracted = Math.min(amt, getItem().getAECurrentPower(itemAccess()));
 
         if (mode == Actionable.SIMULATE) {
             return extracted;
         }
 
-        return getItem().usePower(getPlayer(), extracted, getItemStack()) ? extracted : 0;
+        boolean success;
+        try (var tr = Transaction.openRoot()) {
+            success = getItem().usePower(itemAccess(), extracted, tr);
+            if (success) {
+                tr.commit();
+            }
+        }
+        return success ? extracted : 0;
     }
 
     @Override
     public IConfigManager getConfigManager() {
-        return getItem().getConfigManager(this::getItemStack);
+        return getItem().getConfigManager(itemAccess());
     }
 
     @Override
     public KeyTypeSelection getKeyTypeSelection() {
-        return KeyTypeSelection.forStack(getItemStack(), keyType -> true);
+        return KeyTypeSelection.forStack(itemAccess(), _ -> true);
     }
 
     @Override
@@ -142,7 +149,7 @@ public class WirelessTerminalMenuHost<T extends WirelessTerminalItem> extends It
         this.currentDistanceFromGrid = Double.MAX_VALUE;
         this.currentRemainingRange = Double.MIN_VALUE;
 
-        var targetGrid = getLinkedGrid(getItemStack());
+        var targetGrid = getLinkedGrid(itemAccess());
         if (targetGrid != null) {
             @Nullable
             IWirelessAccessPoint bestWap = null;
@@ -217,7 +224,7 @@ public class WirelessTerminalMenuHost<T extends WirelessTerminalItem> extends It
             this.linkStatus = ILinkStatus.ofConnected();
         } else {
             MutableObject<Component> errorHolder = new MutableObject<>();
-            if (getItem().getLinkedGrid(getItemStack(), getPlayer().level(), errorHolder::setValue) == null) {
+            if (getItem().getLinkedGrid(itemAccess(), getPlayer().level(), errorHolder::setValue) == null) {
                 this.linkStatus = ILinkStatus.ofDisconnected(errorHolder.getValue());
             } else {
                 // If a grid exists, but no access point, we're out of range

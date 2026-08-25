@@ -21,12 +21,14 @@ package appeng.block.networking;
 import java.util.function.Consumer;
 
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.block.Block;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
 import appeng.api.config.AccessRestriction;
-import appeng.api.config.Actionable;
 import appeng.api.ids.AEComponents;
 import appeng.api.implementations.items.IAEItemPowerStorage;
 import appeng.block.AEBaseBlockItem;
@@ -41,59 +43,54 @@ public class EnergyCellBlockItem extends AEBaseBlockItem implements IAEItemPower
     @Override
     public void addCheckedInformation(ItemStack stack, TooltipContext context, Consumer<Component> lines,
             TooltipFlag tooltipFlags) {
-        var storedEnergy = getAECurrentPower(stack);
-        var maxEnergy = getAEMaxPower(stack);
+        var access = ItemAccess.forStack(stack);
+        var storedEnergy = getAECurrentPower(access);
+        var maxEnergy = getAEMaxPower(access);
         lines.accept(Tooltips.energyStorageComponent(storedEnergy, maxEnergy));
     }
 
     @Override
-    public double injectAEPower(ItemStack is, double amount, Actionable mode) {
-        final double internalCurrentPower = getAECurrentPower(is);
-        final double internalMaxPower = this.getAEMaxPower(is);
+    public double injectAEPower(ItemAccess access, double amount, TransactionContext tr) {
+        final double internalCurrentPower = getAECurrentPower(access);
+        final double internalMaxPower = getAEMaxPower(access);
         final double required = internalMaxPower - internalCurrentPower;
-        final double overflow = Math.max(0, Math.min(amount - required, amount));
+        final double overflow = Mth.clamp(amount - required, 0, amount);
 
-        if (mode == Actionable.MODULATE) {
-            final double toAdd = Math.min(required, amount);
-            final double newPowerStored = internalCurrentPower + toAdd;
-
-            setAECurrentPower(is, newPowerStored);
-        }
+        final double toAdd = Math.min(required, amount);
+        final double newPowerStored = internalCurrentPower + toAdd;
+        setAECurrentPower(access, newPowerStored, tr);
 
         return overflow;
     }
 
     @Override
-    public double extractAEPower(ItemStack is, double amount, Actionable mode) {
-        final double internalCurrentPower = getAECurrentPower(is);
+    public double extractAEPower(ItemAccess access, double amount, TransactionContext tr) {
+        final double internalCurrentPower = getAECurrentPower(access);
         final double fulfillable = Math.min(amount, internalCurrentPower);
 
-        if (mode == Actionable.MODULATE) {
-            final double newPowerStored = internalCurrentPower - fulfillable;
-
-            setAECurrentPower(is, newPowerStored);
-        }
+        final double newPowerStored = internalCurrentPower - fulfillable;
+        setAECurrentPower(access, newPowerStored, tr);
 
         return fulfillable;
     }
 
     @Override
-    public double getAEMaxPower(ItemStack is) {
+    public double getAEMaxPower(ItemAccess access) {
         return this.getMaxEnergyCapacity();
     }
 
     @Override
-    public double getAECurrentPower(ItemStack is) {
-        return is.getOrDefault(AEComponents.STORED_ENERGY, 0.0);
+    public double getAECurrentPower(ItemAccess access) {
+        return access.getResource().getOrDefault(AEComponents.STORED_ENERGY, 0.0);
     }
 
     @Override
-    public AccessRestriction getPowerFlow(ItemStack is) {
+    public AccessRestriction getPowerFlow(ItemAccess access) {
         return AccessRestriction.WRITE;
     }
 
     @Override
-    public double getChargeRate(ItemStack stack) {
+    public double getChargeRate(ItemAccess access) {
         return ((EnergyCellBlock) getBlock()).getChargeRate();
     }
 
@@ -101,11 +98,11 @@ public class EnergyCellBlockItem extends AEBaseBlockItem implements IAEItemPower
         return ((EnergyCellBlock) getBlock()).getMaxPower();
     }
 
-    private void setAECurrentPower(ItemStack is, double amt) {
+    private void setAECurrentPower(ItemAccess access, double amt, TransactionContext tr) {
         if (amt < 0.00001) {
-            is.remove(AEComponents.STORED_ENERGY);
+            access.exchange(access.getResource().without(AEComponents.STORED_ENERGY), access.getAmount(), tr);
         } else {
-            is.set(AEComponents.STORED_ENERGY, amt);
+            access.exchange(access.getResource().with(AEComponents.STORED_ENERGY, amt), access.getAmount(), tr);
         }
     }
 

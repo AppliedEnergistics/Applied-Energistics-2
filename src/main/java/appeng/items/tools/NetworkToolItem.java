@@ -40,6 +40,7 @@ import net.minecraft.world.item.component.ItemContainerContents;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 
 import appeng.api.implementations.menuobjects.IMenuItem;
 import appeng.api.inventories.InternalInventory;
@@ -51,6 +52,7 @@ import appeng.api.upgrades.Upgrades;
 import appeng.api.util.DimensionalBlockPos;
 import appeng.api.util.INetworkToolAware;
 import appeng.items.AEBaseItem;
+import appeng.items.contents.ItemAccessHelper;
 import appeng.items.contents.NetworkToolMenuHost;
 import appeng.items.storage.StorageCellTooltipComponent;
 import appeng.menu.MenuOpener;
@@ -186,11 +188,12 @@ public class NetworkToolItem extends AEBaseItem implements IMenuItem {
     /**
      * Gets the internal inventory of the network tool. Changes to the inventory will be persisted to the stack.
      */
-    public static InternalInventory getInventory(ItemStack stack) {
+    public static InternalInventory getInventory(ItemAccess access) {
         var inv = new AppEngInternalInventory(new InternalInventoryHost() {
             @Override
             public void saveChangedInventory(AppEngInternalInventory inv) {
-                stack.set(DataComponents.CONTAINER, inv.toItemContainerContents());
+                ItemAccessHelper.modify(access,
+                        resource -> resource.with(DataComponents.CONTAINER, inv.toItemContainerContents()));
             }
 
             @Override
@@ -200,7 +203,8 @@ public class NetworkToolItem extends AEBaseItem implements IMenuItem {
         }, 9);
         inv.setEnableClientEvents(true); // Also write to NBT on the client to prevent desyncs
         inv.setFilter(new NetworkToolInventoryFilter());
-        inv.fromItemContainerContents(stack.getOrDefault(DataComponents.CONTAINER, ItemContainerContents.EMPTY));
+        inv.fromItemContainerContents(
+                access.getResource().getOrDefault(DataComponents.CONTAINER, ItemContainerContents.EMPTY));
         return inv;
     }
 

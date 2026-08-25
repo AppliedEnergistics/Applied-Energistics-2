@@ -6,7 +6,6 @@ import java.util.UUID;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.world.item.ItemStack;
 
 import appeng.api.stacks.AEKey;
 import appeng.core.AEConfig;
@@ -64,17 +63,13 @@ public final class PendingCraftingJobs {
     }
 
     private static boolean hasNotificationEnablingItem(LocalPlayer player) {
-        for (ItemStack stack : SearchInventoryEvent.getItems(player)) {
-            if (!stack.isEmpty()
-                    && stack.getItem() instanceof WirelessTerminalItem wirelessTerminal
-                    // Should have some power
-                    && wirelessTerminal.getAECurrentPower(stack) > 0
-                    // Should be linked (we don't know if it's linked to the grid for which we get notifications)
-                    && wirelessTerminal.getLinkedPosition(stack) != null) {
-                return true;
-            }
-        }
-        return false;
+        return SearchInventoryEvent.getInventoryAccessors(player)
+                .anyMatch(accessor -> accessor.getAccess().getResource().typeHolder()
+                        .value() instanceof WirelessTerminalItem wirelessTerminal
+                        // Should have some power
+                        && wirelessTerminal.getAECurrentPower(accessor.getAccess()) > 0
+                        // Should be linked (we don't know if it's linked to the grid for which we get notifications)
+                        && wirelessTerminal.getLinkedPosition(accessor.getAccess().getResource()) != null);
     }
 
     record PendingJob(UUID jobId, AEKey what, long requestedAmount, long remainingAmount) {

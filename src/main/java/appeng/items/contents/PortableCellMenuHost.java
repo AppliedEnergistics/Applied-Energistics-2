@@ -20,12 +20,14 @@ package appeng.items.contents;
 
 import java.util.Objects;
 import java.util.function.BiConsumer;
-import java.util.function.Supplier;
 
 import com.google.common.base.Preconditions;
 
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
@@ -44,6 +46,8 @@ import appeng.api.storage.StorageCells;
 import appeng.api.storage.StorageHelper;
 import appeng.api.storage.SupplierStorage;
 import appeng.api.storage.cells.IBasicCellItem;
+import appeng.api.storage.cells.ISaveProvider;
+import appeng.api.storage.cells.StorageCell;
 import appeng.api.util.IConfigManager;
 import appeng.core.localization.GuiText;
 import appeng.items.tools.powered.AbstractPortableCell;
@@ -56,7 +60,7 @@ import appeng.menu.locator.ItemMenuHostLocator;
  */
 public class PortableCellMenuHost<T extends AbstractPortableCell> extends ItemMenuHost<T> implements IPortableTerminal {
     private final BiConsumer<Player, ISubMenu> returnMainMenu;
-    private final MEStorage cellStorage;
+    private final SupplierStorage cellStorage;
     private final AbstractPortableCell item;
     private final IConfigManager configManager;
     private ILinkStatus linkStatus = ILinkStatus.ofDisconnected();
@@ -64,13 +68,13 @@ public class PortableCellMenuHost<T extends AbstractPortableCell> extends ItemMe
     public PortableCellMenuHost(T item, Player player, ItemMenuHostLocator locator,
             BiConsumer<Player, ISubMenu> returnMainMenu) {
         super(item, player, locator);
-        Preconditions.checkArgument(getItemStack().is(item), "Stack doesn't match item");
+        Preconditions.checkArgument(itemAccess().getResource().is(item), "Stack doesn't match item");
         this.returnMainMenu = returnMainMenu;
-        this.cellStorage = new SupplierStorage(new CellStorageSupplier());
+        this.cellStorage = new SupplierStorage(new AccessDependentSupplier<>(itemAccess(), this::getCellInventory));
         Objects.requireNonNull(cellStorage, "Portable cell doesn't expose a cell inventory.");
         this.item = item;
         this.updateLinkStatus();
-        this.configManager = IConfigManager.builder(this::getItemStack)
+        this.configManager = IConfigManager.builder(itemAccess())
                 .registerSetting(Settings.SORT_BY, SortOrder.NAME)
                 .registerSetting(Settings.VIEW_MODE, ViewItems.ALL)
                 .registerSetting(Settings.SORT_DIRECTION, SortDir.ASCENDING)
@@ -120,10 +124,16 @@ public class PortableCellMenuHost<T extends AbstractPortableCell> extends ItemMe
         amt = usePowerMultiplier.multiply(amt);
 
         if (mode == Actionable.SIMULATE) {
-            return usePowerMultiplier.divide(Math.min(amt, this.item.getAECurrentPower(getItemStack())));
+            return usePowerMultiplier.divide(Math.min(amt, this.item.getAECurrentPower(itemAccess())));
         }
 
-        return usePowerMultiplier.divide(this.item.extractAEPower(getItemStack(), amt, Actionable.MODULATE));
+        double used;
+        try (var tr = Transaction.openRoot()) {
+            used = this.item.extractAEPower(itemAccess(), amt, tr);
+            tr.commit();
+        }
+
+        return usePowerMultiplier.divide(used);
     }
 
     @Override
@@ -158,18 +168,18 @@ public class PortableCellMenuHost<T extends AbstractPortableCell> extends ItemMe
         return null; // We don't know
     }
 
-    private class CellStorageSupplier implements Supplier<MEStorage> {
-        private MEStorage currentStorage;
-        private ItemStack currentStack;
-
-        @Override
-        public MEStorage get() {
-            var stack = getItemStack();
-            if (stack != currentStack) {
-                currentStorage = StorageCells.getCellInventory(stack, null);
-                currentStack = stack;
+    private StorageCell getCellInventory(ItemAccess access) {
+        var stack = access.getResource().toStack();
+        return StorageCells.getCellInventory(stack, new ISaveProvider() {
+            @Override
+            public void saveChanges() {
+                ItemAccessHelper.modify(access, _ -> ItemResource.of(stack));
             }
-            return currentStorage;
-        }
+
+            @Override
+            public boolean requiresExternalPersist() {
+                return true;
+            }
+        });
     }
 }

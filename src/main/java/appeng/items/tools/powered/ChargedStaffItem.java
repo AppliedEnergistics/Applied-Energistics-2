@@ -21,8 +21,9 @@ package appeng.items.tools.powered;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.AABB;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 
-import appeng.api.config.Actionable;
 import appeng.core.AEConfig;
 import appeng.core.particles.ParticleTypes;
 import appeng.items.tools.powered.powersink.AEBasePoweredItem;
@@ -35,8 +36,12 @@ public class ChargedStaffItem extends AEBasePoweredItem {
 
     @Override
     public void hurtEnemy(ItemStack item, LivingEntity target, LivingEntity hitter) {
-        if (this.getAECurrentPower(item) > 300) {
-            this.extractAEPower(item, 300, Actionable.MODULATE);
+        var access = ItemAccess.forStack(item);
+        if (this.getAECurrentPower(access) > 300) {
+            try (var tr = Transaction.openRoot()) {
+                this.extractAEPower(access, 300, tr);
+                tr.commit();
+            }
             var level = target.level();
             if (!level.isClientSide()) {
                 for (int x = 0; x < 2; x++) {
@@ -57,7 +62,7 @@ public class ChargedStaffItem extends AEBasePoweredItem {
     }
 
     @Override
-    public double getChargeRate(ItemStack stack) {
+    public double getChargeRate(ItemAccess access) {
         return 32d;
     }
 }

@@ -26,6 +26,7 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import it.unimi.dsi.fastutil.objects.Object2LongMaps;
@@ -224,6 +225,9 @@ public class BasicCellInventory implements StorageCell {
 
         this.isPersisted = false;
         if (this.container != null) {
+            if (container.requiresExternalPersist()) {
+                persist();
+            }
             this.container.saveChanges();
         } else {
             // if there is no ISaveProvider, store to NBT immediately
@@ -259,7 +263,7 @@ public class BasicCellInventory implements StorageCell {
     }
 
     public IUpgradeInventory getUpgradesInventory() {
-        return this.cellType.getUpgrades(this.i);
+        return this.cellType.getUpgrades(ItemAccess.forStack(this.i));
     }
 
     public int getBytesPerType() {

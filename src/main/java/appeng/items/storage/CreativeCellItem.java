@@ -28,6 +28,7 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.material.Fluid;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.stacks.AEFluidKey;
@@ -102,5 +103,10 @@ public class CreativeCellItem extends AEBaseItem implements ICellWorkbenchItem {
             configInv.setStack(i, new GenericStack(AEFluidKey.of(fluids[i]), 1));
         }
         return cell;
+    }
+
+    @Override
+    public int getMaxUpgrades(ItemAccess access) {
+        return 0;
     }
 }

@@ -23,10 +23,10 @@
 
 package appeng.api.implementations.items;
 
-import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
 import appeng.api.config.AccessRestriction;
-import appeng.api.config.Actionable;
 import appeng.api.networking.energy.IAEPowerStorage;
 
 /**
@@ -38,7 +38,7 @@ public interface IAEItemPowerStorage {
      *
      * @return amount unable to be stored
      */
-    double injectAEPower(ItemStack stack, double amount, Actionable mode);
+    double injectAEPower(ItemAccess access, double amount, TransactionContext tr);
 
     /**
      * Attempt to extract power from the device, it will extract what it can and return it.
@@ -46,27 +46,27 @@ public interface IAEItemPowerStorage {
      * @param amount to be extracted power from device
      * @return what it could extract
      */
-    double extractAEPower(ItemStack stack, double amount, Actionable mode);
+    double extractAEPower(ItemAccess access, double amount, TransactionContext tr);
 
     /**
      * @return the current maximum power ( this can change :P )
      */
-    double getAEMaxPower(ItemStack stack);
+    double getAEMaxPower(ItemAccess access);
 
     /**
      * @return the current AE Power Level, this may exceed getMEMaxPower()
      */
-    double getAECurrentPower(ItemStack stack);
+    double getAECurrentPower(ItemAccess access);
 
     /**
      * Control the power flow by telling what the network can do, either add? or subtract? or both!
      *
      * @return access restriction of network
      */
-    AccessRestriction getPowerFlow(ItemStack stack);
+    AccessRestriction getPowerFlow(ItemAccess access);
 
     /**
      * @return The amount of AE per tick that the AE charger will charge this item at.
      */
-    double getChargeRate(ItemStack stack);
+    double getChargeRate(ItemAccess access);
 }

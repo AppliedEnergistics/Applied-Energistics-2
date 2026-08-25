@@ -33,6 +33,7 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.ids.AEComponents;
@@ -112,8 +113,13 @@ public class BasicStorageCell extends AEBaseItem implements IBasicCellItem, AETo
     }
 
     @Override
-    public IUpgradeInventory getUpgrades(ItemStack is) {
-        return UpgradeInventories.forItem(is, keyType == AEKeyType.items() ? 4 : 3);
+    public int getMaxUpgrades(ItemAccess access) {
+        return keyType == AEKeyType.items() ? 4 : 3;
+    }
+
+    @Override
+    public IUpgradeInventory getUpgrades(ItemAccess access) {
+        return UpgradeInventories.forItem(access);
     }
 
     @Override
@@ -168,7 +174,7 @@ public class BasicStorageCell extends AEBaseItem implements IBasicCellItem, AETo
         }
 
         // Drop upgrades
-        getUpgrades(stack).forEach(playerInventory::placeItemBackInInventory);
+        getUpgrades(ItemAccess.forStack(stack)).forEach(playerInventory::placeItemBackInInventory);
 
         return true;
     }

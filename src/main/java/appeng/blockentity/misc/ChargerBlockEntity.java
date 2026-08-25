@@ -31,6 +31,8 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
@@ -150,13 +152,14 @@ public class ChargerBlockEntity extends AENetworkedPoweredBlockEntity implements
 
             if (Platform.isChargeable(myItem)) {
                 var ps = (IAEItemPowerStorage) myItem.getItem();
+                var access = ItemAccess.forHandlerIndex(inv.toResourceHandler(), 0);
 
-                var currentPower = ps.getAECurrentPower(myItem);
-                var maxPower = ps.getAEMaxPower(myItem);
+                var currentPower = ps.getAECurrentPower(access);
+                var maxPower = ps.getAEMaxPower(access);
                 if (currentPower < maxPower) {
                     // Since we specify the charge rate in "per tick", calculate it per tick of the charger,
                     // which only ticks once every few actual game ticks.
-                    var chargeRate = ps.getChargeRate(myItem) * ticksSinceLastCall
+                    var chargeRate = ps.getChargeRate(access) * ticksSinceLastCall
                             * AEConfig.instance().getChargerChargeRate();
 
                     // First charge from the local buffer
@@ -175,7 +178,11 @@ public class ChargerBlockEntity extends AENetworkedPoweredBlockEntity implements
                     }
 
                     if (extractedAmount > 0) {
-                        var adjustment = ps.injectAEPower(myItem, extractedAmount, Actionable.MODULATE);
+                        double adjustment;
+                        try (var tr = Transaction.openRoot()) {
+                            adjustment = ps.injectAEPower(access, extractedAmount, tr);
+                            tr.commit();
+                        }
 
                         this.setInternalCurrentPower(this.getInternalCurrentPower() + adjustment);
 
@@ -247,7 +254,8 @@ public class ChargerBlockEntity extends AENetworkedPoweredBlockEntity implements
 
             if (Platform.isChargeable(extractedItem)) {
                 final IAEItemPowerStorage ips = (IAEItemPowerStorage) extractedItem.getItem();
-                if (ips.getAECurrentPower(extractedItem) >= ips.getAEMaxPower(extractedItem)) {
+                var access = ItemAccess.forHandlerIndex(inv.toResourceHandler(), slotIndex);
+                if (ips.getAECurrentPower(access) >= ips.getAEMaxPower(access)) {
                     return true;
                 }
             }

@@ -12,6 +12,7 @@ import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 
 import appeng.api.upgrades.IUpgradeableItem;
 
@@ -44,7 +45,7 @@ public class RemoveItemUpgradeRecipe extends CustomRecipe {
         }
 
         var upgradable = item.copy();
-        var upgrades = upgradableItem.getUpgrades(upgradable);
+        var upgrades = upgradableItem.getUpgrades(ItemAccess.forStack(upgradable));
         for (int i = 0; i < upgrades.size(); i++) {
             var upgrade = upgrades.extractItem(i, 1, false);
             if (!upgrade.isEmpty()) {
