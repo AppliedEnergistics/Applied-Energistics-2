@@ -43,15 +43,15 @@ main network or does some small task. They are typically small enough to not req
 * To restrict what [devices](../ae2-mechanics/devices.md) have access to what storage (you don't want the import bus on a "pipe" subnet to have access to your main net
     storage, or it will put the items in your storage cells instead of in the destination inventory).
 * To save channels on your main network, like having a pattern provider output to an interface connected to several storage
-    busses on several machines, using 1 channel, instead of putting a pattern provider on each machine, using several channels.
+    buses on several machines, using 1 channel, instead of putting a pattern provider on each machine, using several channels.
 
 Very important in making a subnet is keeping track of the [network connections](../ae2-mechanics/me-network-connections.md).
-Often, people put together some jumble of interfaces and busses and stuff and expect it to be a subnet when
-all the devices are still connected to the main network through various fullblock devices.
+Often, people put together some jumble of interfaces and buses and stuff and expect it to be a subnet, while
+all the devices are still connected to the main network through various full-block devices.
 
 Cables with different colors have nothing to do with making a subnetwork other than that they won't connect to each other.
 
-Some examples are:
+Some subnetwork examples are:
 
 * A setup to replace your Trash Can/Void Upgrade with an entire AE2 network that decides how to best utilize your garbage. Intelligently
   route items to a composter array or some modded recycler depending on availability and demand.

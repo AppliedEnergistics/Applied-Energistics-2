@@ -53,9 +53,9 @@ It shows
 To perform a spatial IO operation, place a spatial storage cell in the input slot and give the spatial IO port a redstone pulse.
 It will then *swap* the volume in the pylons with the volume in the spatial storage dimension. This means that if you send some
 set of blocks to the spatial storage dimension, *then put another set of blocks in the pylons*, put the cell back in the input slot,
-and trigger the IO port again, the 2nd set of blocks will disappear and the 1st set of blcks will reappear.
+and trigger the IO port again, the 2nd set of blocks will disappear and the 1st set of blocks will reappear.
 
-**BE CAREFUL, Any entity in the defined volume, including you, will be carried along, and if you have no way of getting out, you will be trapped
+**BE CAREFUL: Any entity in the defined volume, including you, will be carried along, and if you have no way of getting out, you will be trapped
 in the spatial storage dimension, in a dark, featureless box.** Use this to prank your friends!
 
 ## Pylons

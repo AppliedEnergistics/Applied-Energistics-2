@@ -21,8 +21,8 @@ item_ids:
 
 Cutting knives are used to make <ItemLink id="name_press" />es and <ItemLink id="cable_anchor" />s.
 
-To craft a name press, right click the cutting knife and insert an ingot of metal, you will then have to type the name you
-wish to write onto the plate then simply extract the finished plate.
+To craft a name press, right-click the cutting knife and insert an ingot of metal, you will then have to type the name you
+wish to write onto the plate, then simply extract the finished plate.
 
 ## Recipes
 

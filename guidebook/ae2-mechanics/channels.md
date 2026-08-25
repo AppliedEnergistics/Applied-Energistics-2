@@ -67,16 +67,16 @@ the bundle, which obviously means that "wire" isn't available further down the l
 
 An easy way to see how channels are being used and routed through your network is to use [smart cables](../items-blocks-machines/cables.md), which will display on them the paths and usage of channels.
 
-Channels will consume 1⁄128 ae/t per node they transverse, this means that by
-adding a <ItemLink id="controller" /> for a
-network with 8 devices and over 96 nodes your power usage might actually
-decrease power consumption because it changes how channels are allocated.
+Channels will consume 1⁄128 AE/t per node they traverse. This means that by
+adding an <ItemLink id="controller" /> for a
+network with 8 devices and over 96 nodes, your power consumption might actually
+decrease because it changes how channels are allocated.
 
-Of note, **CHANNELS HAVE NOTHING TO DO WITH CABLE COLOR**, all cable color does is make cables not connect.
+Of note, **CHANNELS HAVE NOTHING TO DO WITH CABLE COLOR**. All cable color does is prevent cables from connecting.
 
 ## Channel Routing
 
-When using a <ItemLink id="controller" />,
+When using an <ItemLink id="controller" />,
 channels route via 3 steps. They first take the shortest path through adjacent machines to the nearest [normal cable](../items-blocks-machines/cables.md)
 (glass, covered, or smart). They then take the shortest path through that normal cable to the nearest [dense cable](../items-blocks-machines/cables.md)
 (dense or dense smart). They then take the shortest path through that dense cable to the <ItemLink id="controller" />.
@@ -130,16 +130,16 @@ Loops and ambiguous channel paths should be minimized.
 
 ## Ad-Hoc Networks
 
-A Network without a <ItemLink id="controller" />
+A Network without an <ItemLink id="controller" />
 is considered to be Ad-Hoc, and can support up to 8 channel using devices.
-Once you exceed 8 devices the network's channel using devices will shutdown,
-you can either remove devices, or add a <ItemLink id="controller" />.
+Once you exceed 8 devices, the network's channel-using devices will shut down.
+You can either remove devices or add an <ItemLink id="controller" />.
 
-Unlike with controllered networks, [smart cables](../items-blocks-machines/cables.md) on ad-hoc networks will show the number
+Unlike with controller-equipped networks, [smart cables](../items-blocks-machines/cables.md) on ad-hoc networks will show the number
 of channels in use network-wide instead of the number of channels flowing through that specific cable.
 
-While using ad-hoc networks each device will
-use 1 channel network wide, this is very different from how <ItemLink id="controller" /> allocate channels based on
+While using ad-hoc networks, each device will
+use 1 channel network-wide. This is very different from how <ItemLink id="controller" />s allocate channels based on
 shortest route.
 
 ## Design

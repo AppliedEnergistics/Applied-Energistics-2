@@ -20,7 +20,7 @@ The material [meteorites](../ae2-mechanics/meteorites.md) are made out of, used 
 
 ## Recipes
 
-place an annihilation plane facing up at max worldheight to get sky stone dust
+Place an <ItemLink id="annihilation_plane" /> facing upward at the world's maximum build height to get <ItemLink id="sky_dust" />.
 
 <RecipeFor id="sky_stone_block" />
 

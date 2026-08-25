@@ -12,11 +12,11 @@ with an <ItemLink id="annihilation_plane" /> do not work on amethyst buds. Unlik
 <ItemLink id="certus_quartz_dust" />, non-mature amethyst buds drop nothing, so an annihilation plane will always break them
 because a network can always store "nothing".
 
-The way around this is to enchant the annihilation plane with silk touch. Then the non-mature amethyst buds *do* drop something
+The way around this is to enchant the annihilation plane with Silk Touch. Then the non-mature amethyst buds *do* drop something
 (the various stages of the physical bud blocks), and thus can be filtered.
 
 The <ItemLink id="minecraft:amethyst_cluster" /> must then be placed again by a <ItemLink id="formation_plane" />, to then be
-re-broken by an <ItemLink id="annihilation_plane" /> without silk touch, in order to get <ItemLink id="minecraft:amethyst_shard" />s.
+re-broken by an <ItemLink id="annihilation_plane" /> without Silk Touch, in order to get <ItemLink id="minecraft:amethyst_shard" />s.
 
 Note that due to the directionality of the cluster, there must be a solid block face directly opposite of the formation plane.
 
@@ -55,7 +55,7 @@ Note that due to the directionality of the cluster, there must be a solid block 
 
 ## Configurations
 
-* The first <ItemLink id="annihilation_plane" /> (1) has no GUI and cannot be configured, but must be enchanted with silk touch.
+* The first <ItemLink id="annihilation_plane" /> (1) has no GUI and cannot be configured, but must be enchanted with Silk Touch.
 * The <ItemLink id="formation_plane" /> (2) is filtered to <ItemLink id="minecraft:amethyst_cluster" />.
 * The second <ItemLink id="annihilation_plane" /> (3) has no GUI and cannot be configured, but can be enchanted with fortune.
 * The first <ItemLink id="storage_bus" /> (4) is filtered to <ItemLink id="minecraft:amethyst_shard" />.
@@ -66,7 +66,7 @@ Note that due to the directionality of the cluster, there must be a solid block 
 
 1. The first <ItemLink id="annihilation_plane" /> attempts to break what is in front of it, but can only break <ItemLink id="minecraft:amethyst_cluster" />
     because the only storage on the subnet is the <ItemLink id="formation_plane" />, filtered to amethyst cluster. This only works because
-the plane is enchanted with silk touch, otherwise it would be able to break the non-mature buds because they drop nothing.
+the plane is enchanted with Silk Touch, otherwise it would be able to break the non-mature buds because they drop nothing.
 2. The <ItemLink id="formation_plane" /> places the cluster on the block opposing it.
 3. The second <ItemLink id="annihilation_plane" /> breaks the cluster, producing <ItemLink id="minecraft:amethyst_shard" />.
 4. The first <ItemLink id="storage_bus" /> stores the shards in the barrel. This technically doesn't need to be filtered because the only

@@ -73,7 +73,7 @@ Redstone cards add redstone control, adding a toggle button in the device's GUI 
 
 <ItemImage id="capacity_card" scale="2" />
 
-Capacity cards increase the amount of filter slots in import, export, and storage busses, and formation planes.
+Capacity cards increase the amount of filter slots in import, export, and storage buses, as well as formation planes.
 
 <RecipeFor id="capacity_card" />
 
@@ -128,8 +128,8 @@ bus config, top is the compared item.
 
 <ItemImage id="speed_card" scale="2" />
 
-Acceleration cards make stuff go faster, making import and export busses move more items per operation, and making inscribers
-and assemblers work faster.
+Acceleration cards make stuff go faster. Import and export buses can move more items per operation,
+and inscribers and assemblers complete operations faster.
 
 <RecipeFor id="speed_card" />
 
@@ -154,9 +154,9 @@ system to get the items it desires.
 
 <ItemImage id="equal_distribution_card" scale="2" />
 
-Equal distribution cards can be applied to [storage cells](storage_cells.md) in a <ItemLink id="cell_workbench" /> and
-split the cell into equally-sized sections based on what the card is [partitioned](cell_workbench.md) to. This prevents one item type from completely
-filling the cell.
+Equal distribution cards can be applied to [storage cells](storage_cells.md) in a <ItemLink id="cell_workbench" />. They
+split the cell into equally-sized sections based on what the card is [partitioned](cell_workbench.md) to.
+This prevents one item type from completely filling the cell.
 
 <RecipeFor id="equal_distribution_card" />
 
