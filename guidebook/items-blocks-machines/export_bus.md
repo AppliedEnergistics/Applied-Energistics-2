@@ -35,7 +35,7 @@ Right-click with a fluid container (like a bucket or fluid tank) to set that flu
 
 ## Upgrades
 
-The import bus supports the following [upgrades](upgrade_cards.md):
+The export bus supports the following [upgrades](upgrade_cards.md):
 
 *   <ItemLink id="capacity_card" /> increases the amount of filter slots, and brings up a setting on what order to export what is filtered.
 *   <ItemLink id="speed_card" /> increases the amount of stuff moved per operation
