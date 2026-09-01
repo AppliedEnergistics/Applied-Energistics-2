@@ -9,7 +9,6 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.handlers.IGhostIngredientHandler;
@@ -18,9 +17,6 @@ import mezz.jei.api.ingredients.ITypedIngredient;
 
 import appeng.api.stacks.GenericStack;
 import appeng.client.gui.AEBaseScreen;
-import appeng.core.network.serverbound.InventoryActionPacket;
-import appeng.helpers.InventoryAction;
-import appeng.menu.slot.AppEngSlot;
 import appeng.menu.slot.FakeSlot;
 
 /**
@@ -86,7 +82,7 @@ class GhostIngredientHandler implements IGhostIngredientHandler<AEBaseScreen> {
             return true;
         }
 
-        int index = -1;
+        FakeSlot firstFreeSlot = null;
         GenericStack ingredientStack = GenericStack.fromItemStack(wrapped);
 
         for (var slot : gui.getMenu().slots) {
@@ -96,9 +92,9 @@ class GhostIngredientHandler implements IGhostIngredientHandler<AEBaseScreen> {
                     continue;
                 }
 
-                // Remember first free slot index if we later want to insert the ghost item
-                if (!fakeSlot.hasItem() && index == -1) {
-                    index = slot.index;
+                // Remember first free slot if we later want to insert the ghost item
+                if (!fakeSlot.hasItem() && firstFreeSlot == null) {
+                    firstFreeSlot = fakeSlot;
                 }
 
                 // Ghost item already in one of the slots?
@@ -111,9 +107,8 @@ class GhostIngredientHandler implements IGhostIngredientHandler<AEBaseScreen> {
             }
         }
 
-        if (index > -1) {
-            ClientPacketDistributor.sendToServer(new InventoryActionPacket(InventoryAction.SET_FILTER,
-                    index, wrapped));
+        if (firstFreeSlot != null) {
+            firstFreeSlot.setFilterTo(wrapped);
         }
 
         return true;
@@ -121,10 +116,10 @@ class GhostIngredientHandler implements IGhostIngredientHandler<AEBaseScreen> {
 
     private static class ItemSlotTarget<I> implements Target<I> {
         private final IIngredientType<I> type;
-        private final AppEngSlot slot;
+        private final FakeSlot slot;
         private final Rect2i area;
 
-        public ItemSlotTarget(IIngredientType<I> type, AEBaseScreen<?> screen, AppEngSlot slot) {
+        public ItemSlotTarget(IIngredientType<I> type, AEBaseScreen<?> screen, FakeSlot slot) {
             this.type = type;
             this.slot = slot;
             this.area = new Rect2i(screen.getGuiLeft() + slot.x, screen.getGuiTop() + slot.y, 16, 16);
@@ -138,10 +133,8 @@ class GhostIngredientHandler implements IGhostIngredientHandler<AEBaseScreen> {
         @Override
         public void accept(I ingredient) {
             var wrapped = wrapDraggedItem(type, ingredient);
-
             if (wrapped != null) {
-                ClientPacketDistributor.sendToServer(new InventoryActionPacket(InventoryAction.SET_FILTER,
-                        slot.index, wrapped));
+                slot.setFilterTo(wrapped);
             }
         }
     }
