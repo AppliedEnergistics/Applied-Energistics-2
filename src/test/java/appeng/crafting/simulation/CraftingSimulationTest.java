@@ -2,6 +2,7 @@ package appeng.crafting.simulation;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -280,6 +281,192 @@ public class CraftingSimulationTest {
                 .bytesMatch(2, 2, 0);
     }
 
+    @Test
+    public void testPatternWithNonPositivePrimaryOutputAmount() {
+        for (var invalidAmount : List.of(0L, -1L)) {
+            var env = new SimulationEnv();
+
+            var input = item(Items.COBBLESTONE);
+            var output = item(Items.DIAMOND);
+            env.addPattern(new ProcessingPatternBuilder(new GenericStack(output.what(), invalidAmount))
+                    .addPreciseInput(1, input)
+                    .build());
+
+            env.addStoredItem(input);
+
+            var plan = env.runSimulation(output, CalculationStrategy.REPORT_MISSING_ITEMS);
+            assertThatPlan(plan)
+                    .failed()
+                    .patternsMatch(Map.of())
+                    .emittedMatch()
+                    .missingMatch(output)
+                    .usedMatch();
+        }
+    }
+
+    @Test
+    public void testValidPatternIsUnaffectedByOutputValidation() {
+        var env = new SimulationEnv();
+
+        var input = item(Items.COBBLESTONE);
+        var output = item(Items.DIAMOND);
+        var pattern = env.addPattern(new ProcessingPatternBuilder(output)
+                .addPreciseInput(1, input)
+                .build());
+
+        env.addStoredItem(input);
+
+        var plan = env.runSimulation(output, CalculationStrategy.REPORT_MISSING_ITEMS);
+        assertThatPlan(plan)
+                .succeeded()
+                .patternsMatch(pattern, 1)
+                .emittedMatch()
+                .missingMatch()
+                .usedMatch(input);
+    }
+
+    @Test
+    public void testLimitedPatternWithZeroPrimaryOutputAmount() {
+        var env = new SimulationEnv();
+
+        var input = item(Items.WATER_BUCKET);
+        var output = item(Items.DIAMOND);
+        env.addPattern(new ProcessingPatternBuilder(new GenericStack(output.what(), 0))
+                .addPreciseInput(1, true, input)
+                .build());
+
+        env.addStoredItem(input);
+
+        var plan = env.runSimulation(output, CalculationStrategy.REPORT_MISSING_ITEMS);
+        assertThatPlan(plan)
+                .failed()
+                .patternsMatch(Map.of())
+                .emittedMatch()
+                .missingMatch(output)
+                .usedMatch();
+    }
+
+    @Test
+    public void testPatternWithNegativeByproductAmount() {
+        var env = new SimulationEnv();
+
+        var input = item(Items.COBBLESTONE);
+        var output = item(Items.DIAMOND);
+        var byproduct = item(Items.GOLD_INGOT);
+        env.addPattern(new ProcessingPatternBuilder(output, new GenericStack(byproduct.what(), -1))
+                .addPreciseInput(1, input)
+                .build());
+
+        env.addStoredItem(input);
+
+        var plan = env.runSimulation(output, CalculationStrategy.REPORT_MISSING_ITEMS);
+        assertThatPlan(plan)
+                .failed()
+                .patternsMatch(Map.of())
+                .emittedMatch()
+                .missingMatch(output)
+                .usedMatch();
+    }
+
+    @Test
+    public void testPatternWithZeroByproductAmount() {
+        var env = new SimulationEnv();
+
+        var input = item(Items.COBBLESTONE);
+        var output = item(Items.DIAMOND);
+        var byproduct = item(Items.GOLD_INGOT);
+        var pattern = env.addPattern(new ProcessingPatternBuilder(output, new GenericStack(byproduct.what(), 0))
+                .addPreciseInput(1, input)
+                .build());
+
+        env.addStoredItem(input);
+
+        var plan = env.runSimulation(output, CalculationStrategy.REPORT_MISSING_ITEMS);
+        assertThatPlan(plan)
+                .succeeded()
+                .patternsMatch(pattern, 1)
+                .emittedMatch()
+                .missingMatch()
+                .usedMatch(input);
+    }
+
+    @Test
+    public void testPatternWithOverflowingPrimaryOutputAmount() {
+        var env = new SimulationEnv();
+
+        var input = item(Items.COBBLESTONE);
+        var output = item(Items.DIAMOND);
+        env.addPattern(new ProcessingPatternBuilder(
+                new GenericStack(output.what(), Long.MAX_VALUE),
+                new GenericStack(output.what(), 1))
+                .addPreciseInput(1, input)
+                .build());
+
+        env.addStoredItem(input);
+
+        var plan = env.runSimulation(output, CalculationStrategy.REPORT_MISSING_ITEMS);
+        assertThatPlan(plan)
+                .failed()
+                .patternsMatch(Map.of())
+                .emittedMatch()
+                .missingMatch(output)
+                .usedMatch();
+    }
+
+    @Test
+    public void testCraftLessWithZeroPrimaryOutputAmount() {
+        var env = new SimulationEnv();
+
+        var input = item(Items.COBBLESTONE);
+        var output = item(Items.DIAMOND);
+        env.addPattern(new ProcessingPatternBuilder(new GenericStack(output.what(), 0))
+                .addPreciseInput(1, input)
+                .build());
+
+        env.addStoredItem(mult(input, 100));
+
+        var plan = env.runSimulation(mult(output, 100), CalculationStrategy.CRAFT_LESS);
+        assertThatPlan(plan)
+                .failed()
+                .patternsMatch(Map.of())
+                .emittedMatch()
+                .missingMatch(mult(output, 100))
+                .usedMatch()
+                .outputMatches(mult(output, 100));
+    }
+
+    @Test
+    public void testInvalidPatternDoesNotHideValidAlternative() {
+        var env = new SimulationEnv();
+
+        var zeroOutputInput = item(Items.COBBLESTONE);
+        var mismatchedOutputInput = item(Items.STONE);
+        var validInput = item(Items.OAK_PLANKS);
+        var output = item(Items.DIAMOND);
+        env.addPattern(withPrimaryOutput(output,
+                new ProcessingPatternBuilder(new GenericStack(output.what(), 0))
+                        .addPreciseInput(1, zeroOutputInput)
+                        .build()));
+        env.addPattern(withPrimaryOutput(output, new ProcessingPatternBuilder(item(Items.STONE))
+                .addPreciseInput(1, mismatchedOutputInput)
+                .build()));
+        var validPattern = env.addPattern(new ProcessingPatternBuilder(output)
+                .addPreciseInput(1, validInput)
+                .build());
+
+        env.addStoredItem(zeroOutputInput);
+        env.addStoredItem(mismatchedOutputInput);
+        env.addStoredItem(validInput);
+
+        var plan = env.runSimulation(output, CalculationStrategy.REPORT_MISSING_ITEMS);
+        assertThatPlan(plan)
+                .succeeded()
+                .patternsMatch(validPattern, 1)
+                .emittedMatch()
+                .missingMatch()
+                .usedMatch(validInput);
+    }
+
     /**
      * Basic test for multiple paths (multiple patterns that produce the same output).
      */
@@ -395,6 +582,30 @@ public class CraftingSimulationTest {
                 .succeeded()
                 .patternsMatch(mainPattern, 10, secondaryInputPattern, 10)
                 .emittedMatch(mult(secondaryInputSource, 10));
+    }
+
+    private static IPatternDetails withPrimaryOutput(GenericStack primaryOutput, IPatternDetails delegate) {
+        return new IPatternDetails() {
+            @Override
+            public AEItemKey getDefinition() {
+                return delegate.getDefinition();
+            }
+
+            @Override
+            public IInput[] getInputs() {
+                return delegate.getInputs();
+            }
+
+            @Override
+            public GenericStack getPrimaryOutput() {
+                return primaryOutput;
+            }
+
+            @Override
+            public List<GenericStack> getOutputs() {
+                return delegate.getOutputs();
+            }
+        };
     }
 
     private static GenericStack item(Item item) {
