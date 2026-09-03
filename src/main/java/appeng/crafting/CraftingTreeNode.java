@@ -32,6 +32,7 @@ import appeng.api.networking.crafting.ICraftingService;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
 import appeng.api.stacks.KeyCounter;
+import appeng.core.AELog;
 import appeng.crafting.execution.CraftingCpuHelper;
 import appeng.crafting.execution.InputTemplate;
 import appeng.crafting.inv.ChildCraftingSimulationState;
@@ -125,7 +126,14 @@ public class CraftingTreeNode {
 
                 for (var details : craftingService.getCraftingFor(this.what)) {
                     if (this.parent == null || this.parent.notRecursive(details)) {
-                        this.nodes.add(new CraftingTreeProcess(craftingService, job, details, this));
+                        var process = new CraftingTreeProcess(craftingService, job, details, this);
+                        if (!process.hasValidOutputs(this.what)) {
+                            AELog.warn(
+                                    "Ignoring crafting pattern of type %s for %s because it has invalid outputs. Outputs: %s",
+                                    process.details.getClass().getName(), this.what, process.details.getOutputs());
+                            continue;
+                        }
+                        this.nodes.add(process);
                     }
                 }
             }

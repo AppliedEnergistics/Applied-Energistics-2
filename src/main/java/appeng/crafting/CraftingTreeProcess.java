@@ -155,6 +155,25 @@ public class CraftingTreeProcess {
         return tot;
     }
 
+    boolean hasValidOutputs(AEKey expectedOutput) {
+        long expectedOutputAmount = 0;
+
+        for (var output : this.details.getOutputs()) {
+            if (output.amount() < 0) {
+                return false;
+            }
+            if (expectedOutput.matches(output)) {
+                try {
+                    expectedOutputAmount = Math.addExact(expectedOutputAmount, output.amount());
+                } catch (ArithmeticException ignored) {
+                    return false;
+                }
+            }
+        }
+
+        return expectedOutputAmount > 0;
+    }
+
     boolean hasMultiplePaths() {
         for (var entry : nodes.entrySet()) {
             if (entry.getKey().hasMultiplePaths()) {

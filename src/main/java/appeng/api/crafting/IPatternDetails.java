@@ -57,14 +57,16 @@ public interface IPatternDetails {
 
     /**
      * The primary output of this pattern. The pattern will only be used to craft the primary output; the others are
-     * just byproducts.
+     * just byproducts. The returned key must occur in {@link #getOutputs()} with a positive total amount that fits in a
+     * {@code long}.
      */
     default GenericStack getPrimaryOutput() {
         return getOutputs().get(0);
     }
 
     /**
-     * The outputs of this pattern.
+     * The outputs of this pattern. The list must not be empty and output amounts must not be negative. The returned
+     * output keys and amounts must remain stable for the lifetime of this pattern.
      */
     List<GenericStack> getOutputs();
 
