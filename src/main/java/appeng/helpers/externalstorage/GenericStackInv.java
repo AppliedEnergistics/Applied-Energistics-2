@@ -456,6 +456,10 @@ public class GenericStackInv extends SnapshotJournal<GenericStack[]> implements 
         }
     }
 
+    public int getEstimatedStackCount() {
+        return stacks.length;
+    }
+
     @Override
     public Component getDescription() {
         return description;

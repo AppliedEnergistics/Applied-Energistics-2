@@ -44,6 +44,11 @@ public abstract class ExternalStorageFacade implements MEStorage {
 
     public abstract int getSlots();
 
+    @Override
+    public int getEstimatedStackCount() {
+        return getSlots();
+    }
+
     @Nullable
     public abstract GenericStack getStackInSlot(int slot);
 
