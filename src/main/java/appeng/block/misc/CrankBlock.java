@@ -79,14 +79,10 @@ public class CrankBlock extends AEBaseEntityBlock<CrankBlockEntity> {
     @Override
     protected BlockState updateShape(BlockState state, LevelReader level, ScheduledTickAccess scheduledTickAccess,
             BlockPos pos, Direction direction, BlockPos neighborPos, BlockState neighborState, RandomSource random) {
-        var crank = level.getBlockEntity(pos);
-        if (crank != null) {
-            return Blocks.AIR.defaultBlockState();
-        }
-
         // Does the change originate from the block we're attached to?
         if (getAttachedToPos(state, pos).equals(neighborPos)) {
-            if (getCrankable(state, crank.getLevel(), pos) == null) {
+            var crank = level.getBlockEntity(pos);
+            if (crank == null || getCrankable(state, crank.getLevel(), pos) == null) {
                 return Blocks.AIR.defaultBlockState();
             }
         }
