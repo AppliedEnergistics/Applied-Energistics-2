@@ -21,6 +21,7 @@ plugins {
     id 'maven-publish'
     id 'signing'
     id 'com.diffplug.spotless'
+    id 'me.champeau.jmh' version '0.7.3'
 }
 
 apply plugin: ProjectDefaultsPlugin
@@ -403,5 +404,23 @@ signing {
     if (signingKey && signingPassword) {
         useInMemoryPgpKeys(signingKey, signingPassword)
         sign publishing.publications.maven
+    }
+}
+
+jmh {
+    zip64 = true
+    warmupForks = 0
+    warmupIterations = 1
+    fork = 1
+    iterations = project.property("jmh.iterations").toInteger()
+    threads = 1
+    humanOutputFile = project.layout.buildDirectory.file("results/jmh/human.txt")
+    resultFormat = 'JSON'
+    profilers = ['async:output=flamegraph;dir=build/results/jmh']
+
+    jmhJar {
+        manifest {
+            attributes 'Multi-Release': 'true'
+        }
     }
 }
