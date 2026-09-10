@@ -97,6 +97,6 @@ final class SubInventoryProxy extends BaseInternalInventory {
 
     @Override
     protected ResourceHandler<ItemResource> createResourceHandler() {
-        return RangedResourceHandler.of(toResourceHandler(), fromSlot, toSlot);
+        return RangedResourceHandler.of(delegate.toResourceHandler(), fromSlot, toSlot);
     }
 }
