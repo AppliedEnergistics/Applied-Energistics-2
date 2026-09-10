@@ -1,14 +1,13 @@
 package appeng.integration.modules.itemlists;
 
+import static appeng.helpers.FilterTransferHelper.addOrMerge;
+
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.function.Predicate;
-
-import com.google.common.math.LongMath;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.Nullable;
@@ -194,29 +193,6 @@ public final class EncodingHelper {
                 .max(Comparator.comparingInt(Pair::getRight))
                 .map(Pair::getLeft)
                 .orElseThrow();
-    }
-
-    /**
-     * In processing mode it makes sense to merge stacks of the same type together.
-     */
-    private static void addOrMerge(List<GenericStack> stacks, GenericStack newStack) {
-        for (int i = 0; i < stacks.size(); i++) {
-            var existingStack = stacks.get(i);
-            if (Objects.equals(existingStack.what(), newStack.what())) {
-                // Add the new amount onto the existing amount
-                long newAmount = LongMath.saturatedAdd(existingStack.amount(), newStack.amount());
-                stacks.set(i, new GenericStack(newStack.what(), newAmount));
-
-                // Determine if the addition overflowed. If it did, add the remainder as a new stack.
-                long overflow = newStack.amount() - (newAmount - existingStack.amount());
-                if (overflow > 0) {
-                    stacks.add(new GenericStack(newStack.what(), overflow));
-                }
-                return;
-            }
-        }
-
-        stacks.add(newStack);
     }
 
     /**
