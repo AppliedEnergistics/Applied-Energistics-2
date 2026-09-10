@@ -48,6 +48,7 @@ public enum InGameTooltip implements LocalizationEnum {
     P2PUnlinked("Unlinked"),
     Showing("Showing"),
     Stored("Stored: %s / %s"),
+    NetworkStored("Network Stored: %s / %s"),
     Suppressed("Suppressed"),
     Unlocked("Unlocked");
 
