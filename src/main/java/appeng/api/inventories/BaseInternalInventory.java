@@ -42,7 +42,5 @@ public abstract class BaseInternalInventory implements InternalInventory {
         return platformWrapper;
     }
 
-    protected ResourceHandler<ItemResource> createResourceHandler() {
-        return new InternalInventoryResourceHandler(this);
-    }
+    protected abstract ResourceHandler<ItemResource> createResourceHandler();
 }

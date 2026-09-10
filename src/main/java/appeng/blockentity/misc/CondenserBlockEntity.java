@@ -26,6 +26,7 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.resource.Resource;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
@@ -230,6 +231,11 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
         @Override
         public ItemStack extractItem(int slot, int amount, boolean simulate) {
             return ItemStack.EMPTY;
+        }
+
+        @Override
+        protected ResourceHandler<ItemResource> createResourceHandler() {
+            return new CondenseResourceHandler<>(ItemResource.EMPTY, 1, Integer.MAX_VALUE);
         }
     }
 
