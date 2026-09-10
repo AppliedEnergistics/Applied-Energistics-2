@@ -23,6 +23,9 @@
 
 package appeng.api.inventories;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 
@@ -31,6 +34,8 @@ import net.neoforged.neoforge.transfer.item.ItemResource;
  * over time.
  */
 public abstract class BaseInternalInventory implements InternalInventory {
+
+    private static final Logger LOG = LoggerFactory.getLogger(BaseInternalInventory.class);
 
     private ResourceHandler<ItemResource> platformWrapper;
 
@@ -42,5 +47,10 @@ public abstract class BaseInternalInventory implements InternalInventory {
         return platformWrapper;
     }
 
-    protected abstract ResourceHandler<ItemResource> createResourceHandler();
+    protected ResourceHandler<ItemResource> createResourceHandler() {
+        LOG.error(
+                "'{}' does not override createResourceHandler() but should, since the default implementation is broken.",
+                getClass());
+        return new InternalInventoryResourceHandler(this);
+    }
 }

@@ -23,6 +23,7 @@ import java.util.Objects;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.transfer.DelegatingResourceHandler;
 import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.ResourceHandlerUtil;
 import net.neoforged.neoforge.transfer.TransferPreconditions;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
@@ -117,19 +118,7 @@ public class FilteredInternalInventory extends BaseInternalInventory {
 
         @Override
         public int insert(ItemResource resource, int amount, TransactionContext transaction) {
-            // This duplicates the default implementation from ResourceHandler, which is inaccessible here
-            // We need to check the filter for each index we access, which is impossible if we call the delegates
-            // implementation
-            TransferPreconditions.checkNonEmptyNonNegative(resource, amount);
-
-            int inserted = 0;
-            int size = size();
-            for (int index = 0; index < size; index++) {
-                inserted += insert(index, resource, amount - inserted, transaction);
-                if (inserted == amount)
-                    break;
-            }
-            return inserted;
+            return ResourceHandlerUtil.insertStacking(this, resource, amount, transaction);
         }
 
         @Override

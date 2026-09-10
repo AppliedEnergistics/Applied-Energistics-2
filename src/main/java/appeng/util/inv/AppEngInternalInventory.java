@@ -19,7 +19,6 @@
 package appeng.util.inv;
 
 import java.util.Arrays;
-import java.util.BitSet;
 
 import com.google.common.base.Preconditions;
 
@@ -221,7 +220,6 @@ public class AppEngInternalInventory extends BaseInternalInventory {
             implements ResourceHandler<ItemResource>, IndexModifier<ItemResource> {
         @Nullable
         private Snapshot lastReleasedSnapshot;
-        private final BitSet changedSlots = new BitSet(size());
 
         @Override
         public void set(int index, ItemResource resource, int amount) {
@@ -236,12 +234,13 @@ public class AppEngInternalInventory extends BaseInternalInventory {
 
             updateSnapshots(transaction);
 
+            var prevInTransactionalCode = inTransactionalCode;
             inTransactionalCode = true;
             try {
                 var overflow = addItems(stack);
                 return maxAmount - overflow.getCount();
             } finally {
-                inTransactionalCode = false;
+                inTransactionalCode = prevInTransactionalCode;
             }
         }
 
@@ -256,13 +255,14 @@ public class AppEngInternalInventory extends BaseInternalInventory {
 
             updateSnapshots(transaction);
 
+            var prevInTransactionalCode = inTransactionalCode;
             inTransactionalCode = true;
             try {
                 ItemStack extracted = removeItems(maxAmount, resource.toStack(), null);
 
                 return extracted.getCount();
             } finally {
-                inTransactionalCode = false;
+                inTransactionalCode = prevInTransactionalCode;
             }
         }
 
@@ -272,12 +272,13 @@ public class AppEngInternalInventory extends BaseInternalInventory {
 
             updateSnapshots(transaction);
 
+            var prevInTransactionalCode = inTransactionalCode;
             inTransactionalCode = true;
             try {
                 var overflow = insertItem(index, resource.toStack(maxAmount), false).getCount();
                 return maxAmount - overflow;
             } finally {
-                inTransactionalCode = false;
+                inTransactionalCode = prevInTransactionalCode;
             }
         }
 
@@ -292,11 +293,12 @@ public class AppEngInternalInventory extends BaseInternalInventory {
 
             updateSnapshots(transaction);
 
+            var prevInTransactionalCode = inTransactionalCode;
             inTransactionalCode = true;
             try {
                 return extractItem(index, maxAmount, false).getCount();
             } finally {
-                inTransactionalCode = false;
+                inTransactionalCode = prevInTransactionalCode;
             }
         }
 
@@ -322,6 +324,9 @@ public class AppEngInternalInventory extends BaseInternalInventory {
 
         @Override
         public long getCapacityAsLong(int index, ItemResource resource) {
+            if (!resource.isEmpty() && !isValid(index, resource)) {
+                return 0;
+            }
             return AppEngInternalInventory.this.getSlotLimit(index);
         }
 
@@ -380,7 +385,7 @@ public class AppEngInternalInventory extends BaseInternalInventory {
             for (int i = 0; i < original.items.length; i++) {
                 var current = stacks.get(i);
                 if (current != original.items[i] || current.getCount() != original.counts[i]) {
-                    sendChangeNotification(i);
+                    notifyContentsChanged(i);
                 }
             }
         }
