@@ -19,6 +19,10 @@
 package appeng.blockentity.inventory;
 
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.transfer.DelegatingResourceHandler;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
 import appeng.api.inventories.BaseInternalInventory;
 import appeng.api.storage.cells.StorageCell;
@@ -98,5 +102,50 @@ public class AppEngCellInventory extends BaseInternalInventory {
     @Override
     public void sendChangeNotification(int slot) {
         inv.sendChangeNotification(slot);
+    }
+
+    @Override
+    protected ResourceHandler<ItemResource> createResourceHandler() {
+        return new CellInventoryResourceHandler();
+    }
+
+    /**
+     * Just wraps the internal inventories resource handler and ensures any pending disk writes are persisted to
+     * itemstacks when they're viewed through the handler.
+     */
+    private class CellInventoryResourceHandler extends DelegatingResourceHandler<ItemResource> {
+        public CellInventoryResourceHandler() {
+            super(inv.toResourceHandler());
+        }
+
+        @Override
+        public ItemResource getResource(int index) {
+            persist(index);
+            return super.getResource(index);
+        }
+
+        @Override
+        public int insert(int index, ItemResource resource, int amount, TransactionContext transaction) {
+            persist(index);
+            return super.insert(index, resource, amount, transaction);
+        }
+
+        @Override
+        public int extract(int index, ItemResource resource, int amount, TransactionContext transaction) {
+            persist(index);
+            return super.extract(index, resource, amount, transaction);
+        }
+
+        @Override
+        public int insert(ItemResource resource, int amount, TransactionContext transaction) {
+            persist();
+            return super.insert(resource, amount, transaction);
+        }
+
+        @Override
+        public int extract(ItemResource resource, int amount, TransactionContext transaction) {
+            persist();
+            return super.extract(resource, amount, transaction);
+        }
     }
 }

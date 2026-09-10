@@ -19,6 +19,7 @@
 package appeng.util.inv;
 
 import java.util.Arrays;
+import java.util.BitSet;
 
 import com.google.common.base.Preconditions;
 
@@ -30,8 +31,15 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.ItemContainerContents;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.transfer.IndexModifier;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.TransferPreconditions;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.SnapshotJournal;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
 import appeng.api.inventories.BaseInternalInventory;
+import appeng.core.definitions.AEItems;
 import appeng.util.inv.filter.IAEItemFilter;
 
 public class AppEngInternalInventory extends BaseInternalInventory {
@@ -41,6 +49,7 @@ public class AppEngInternalInventory extends BaseInternalInventory {
     private final int[] maxStack;
     private IAEItemFilter filter;
     private boolean notifyingChanges = false;
+    private boolean inTransactionalCode;
 
     public AppEngInternalInventory(InternalInventoryHost host, int size, int maxStack, IAEItemFilter filter) {
         this.setHost(host);
@@ -83,7 +92,9 @@ public class AppEngInternalInventory extends BaseInternalInventory {
     }
 
     private void notifyContentsChanged(int slot) {
-        onContentsChanged(slot);
+        if (!inTransactionalCode) {
+            onContentsChanged(slot);
+        }
     }
 
     @Override
@@ -105,7 +116,6 @@ public class AppEngInternalInventory extends BaseInternalInventory {
         if (stack.getCount() <= toExtract) {
             if (!simulate) {
                 setItemDirect(slot, ItemStack.EMPTY);
-                notifyContentsChanged(slot);
                 return stack;
             } else {
                 return stack.copy();
@@ -199,5 +209,180 @@ public class AppEngInternalInventory extends BaseInternalInventory {
     @Override
     public int size() {
         return stacks.size();
+    }
+
+    @Override
+    protected ResourceHandler<ItemResource> createResourceHandler() {
+        return new AppEngInternalInventoryResourceHandler();
+    }
+
+    private class AppEngInternalInventoryResourceHandler
+            extends SnapshotJournal<AppEngInternalInventoryResourceHandler.Snapshot>
+            implements ResourceHandler<ItemResource>, IndexModifier<ItemResource> {
+        @Nullable
+        private Snapshot lastReleasedSnapshot;
+        private final BitSet changedSlots = new BitSet(size());
+
+        @Override
+        public void set(int index, ItemResource resource, int amount) {
+            setItemDirect(index, resource.toStack(amount));
+        }
+
+        @Override
+        public int insert(ItemResource resource, int maxAmount, TransactionContext transaction) {
+            TransferPreconditions.checkNonEmptyNonNegative(resource, maxAmount);
+
+            var stack = resource.toStack(maxAmount);
+
+            updateSnapshots(transaction);
+
+            inTransactionalCode = true;
+            try {
+                var overflow = addItems(stack);
+                return maxAmount - overflow.getCount();
+            } finally {
+                inTransactionalCode = false;
+            }
+        }
+
+        @Override
+        public int extract(ItemResource resource, int maxAmount, TransactionContext transaction) {
+            TransferPreconditions.checkNonEmptyNonNegative(resource, maxAmount);
+
+            // Do not allow extraction of wrapped fluid stacks because they're an internal detail
+            if (resource.getItem() == AEItems.WRAPPED_GENERIC_STACK.asItem()) {
+                return 0;
+            }
+
+            updateSnapshots(transaction);
+
+            inTransactionalCode = true;
+            try {
+                ItemStack extracted = removeItems(maxAmount, resource.toStack(), null);
+
+                return extracted.getCount();
+            } finally {
+                inTransactionalCode = false;
+            }
+        }
+
+        @Override
+        public int insert(int index, ItemResource resource, int maxAmount, TransactionContext transaction) {
+            TransferPreconditions.checkNonEmptyNonNegative(resource, maxAmount);
+
+            updateSnapshots(transaction);
+
+            inTransactionalCode = true;
+            try {
+                var overflow = insertItem(index, resource.toStack(maxAmount), false).getCount();
+                return maxAmount - overflow;
+            } finally {
+                inTransactionalCode = false;
+            }
+        }
+
+        @Override
+        public int extract(int index, ItemResource resource, int maxAmount, TransactionContext transaction) {
+            TransferPreconditions.checkNonEmptyNonNegative(resource, maxAmount);
+
+            // Do not allow extraction of wrapped fluid stacks because they're an internal detail
+            if (resource.getItem() == AEItems.WRAPPED_GENERIC_STACK.asItem()) {
+                return 0;
+            }
+
+            updateSnapshots(transaction);
+
+            inTransactionalCode = true;
+            try {
+                return extractItem(index, maxAmount, false).getCount();
+            } finally {
+                inTransactionalCode = false;
+            }
+        }
+
+        @Override
+        public int size() {
+            return AppEngInternalInventory.this.size();
+        }
+
+        @Override
+        public boolean isValid(int index, ItemResource resource) {
+            return AppEngInternalInventory.this.isItemValid(index, resource.toStack());
+        }
+
+        @Override
+        public ItemResource getResource(int index) {
+            return ItemResource.of(AppEngInternalInventory.this.getStackInSlot(index));
+        }
+
+        @Override
+        public long getAmountAsLong(int index) {
+            return AppEngInternalInventory.this.getStackInSlot(index).getCount();
+        }
+
+        @Override
+        public long getCapacityAsLong(int index, ItemResource resource) {
+            return AppEngInternalInventory.this.getSlotLimit(index);
+        }
+
+        @Override
+        protected Snapshot createSnapshot() {
+            Snapshot snapshot;
+            if (this.lastReleasedSnapshot != null && this.lastReleasedSnapshot.items.length == size()) {
+                snapshot = this.lastReleasedSnapshot;
+                this.lastReleasedSnapshot = null;
+            } else {
+                snapshot = new Snapshot();
+            }
+
+            for (int i = 0; i < size(); i++) {
+                var stack = stacks.get(i);
+                snapshot.items[i] = stack;
+                snapshot.counts[i] = stack.getCount();
+            }
+            return snapshot;
+        }
+
+        @Override
+        protected void revertToSnapshot(Snapshot snapshot) {
+            var items = snapshot.items;
+            var counts = snapshot.counts;
+            for (int i = 0; i < items.length; i++) {
+                var stack = items[i];
+                // Restore the previous count as well, the inventory might mutate the stack count for extract/insert
+                // We do not restore NBT since the Storage API does not give access to the original NBT and the
+                // inventory
+                // doesn't mutate it itself
+                if (stack.getCount() != counts[i]) {
+                    stack.setCount(counts[i]);
+                }
+                stacks.set(i, stack);
+            }
+        }
+
+        @Override
+        protected void releaseSnapshot(Snapshot snapshot) {
+            this.lastReleasedSnapshot = snapshot;
+        }
+
+        public class Snapshot {
+            final ItemStack[] items;
+            final int[] counts;
+
+            public Snapshot() {
+                this.items = new ItemStack[size()];
+                this.counts = new int[size()];
+            }
+        }
+
+        @Override
+        public void onRootCommit(Snapshot original) {
+            for (int i = 0; i < original.items.length; i++) {
+                var current = stacks.get(i);
+                if (current != original.items[i] || current.getCount() != original.counts[i]) {
+                    sendChangeNotification(i);
+                }
+            }
+        }
     }
 }
