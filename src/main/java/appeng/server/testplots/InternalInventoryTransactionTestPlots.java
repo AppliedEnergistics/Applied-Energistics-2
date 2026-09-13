@@ -28,42 +28,79 @@ public final class InternalInventoryTransactionTestPlots {
     }
 
     /**
-     * Tests QuantumBridge - side-effect is cluster.updateStatus() when singularity inserted/removed
+     * Tests QuantumBridge - side-effect is cluster.updateStatus() when singularity inserted/removed.
+     * To verify the side-effect is deferred, we build two QNB rings, insert matching singularities,
+     * and verify they don't link (same grid) until after commit.
      */
     @TestPlot("qnb_deferred_side_effects")
     public static void testQuantumBridge(PlotBuilder plot) {
-        plot.block(BlockPos.ZERO, AEBlocks.QUANTUM_LINK);
+        var qnbA = BlockPos.ZERO.above();
+        var qnbB = qnbA.east(4);
+
+        buildQnbRing(plot, qnbA);
+        buildQnbRing(plot, qnbB);
 
         plot.test(helper -> {
             helper.startSequence()
+                    // Wait until both QNBs have formed
+                    .thenWaitUntil(() -> {
+                        var coreA = helper.getBlockEntity(qnbA, appeng.blockentity.qnb.QuantumBridgeBlockEntity.class);
+                        var coreB = helper.getBlockEntity(qnbB, appeng.blockentity.qnb.QuantumBridgeBlockEntity.class);
+                        helper.check(coreA.isFormed(), "QNB A not formed", qnbA);
+                        helper.check(coreB.isFormed(), "QNB B not formed", qnbB);
+                    })
                     .thenExecute(() -> {
-                        var qnb = helper.getBlockEntity(BlockPos.ZERO,
-                                appeng.blockentity.qnb.QuantumBridgeBlockEntity.class);
-                        var handler = qnb.getExposedItemHandler(Direction.NORTH);
-                        helper.check(handler != null, "handler should not be null", BlockPos.ZERO);
+                        var coreA = helper.getBlockEntity(qnbA, appeng.blockentity.qnb.QuantumBridgeBlockEntity.class);
+                        var coreB = helper.getBlockEntity(qnbB, appeng.blockentity.qnb.QuantumBridgeBlockEntity.class);
 
-                        var singularity = AEItems.QUANTUM_ENTANGLED_SINGULARITY.stack();
-                        appeng.blockentity.qnb.QuantumBridgeBlockEntity.assignFrequency(singularity);
-                        var resource = ItemResource.of(singularity);
+                        // Create matching singularities
+                        var singularities = AEItems.QUANTUM_ENTANGLED_SINGULARITY.stack();
+                        appeng.blockentity.qnb.QuantumBridgeBlockEntity.assignFrequency(singularities);
+                        var resource = ItemResource.of(singularities);
+
+                        // Get handlers for both QNBs
+                        var handlerA = coreA.getExposedItemHandler(Direction.NORTH);
+                        var handlerB = coreB.getExposedItemHandler(Direction.NORTH);
 
                         try (var tx = Transaction.open(null)) {
-                            var inserted = handler.insert(resource, singularity.getCount(), tx);
-                            helper.check(inserted == singularity.getCount(), "Should insert singularity", BlockPos.ZERO);
+                            // Insert singularities into both QNBs
+                            helper.check(handlerA.insert(resource, 1, tx) == 1, "Should insert singularity A", qnbA);
+                            helper.check(handlerB.insert(resource, 1, tx) == 1, "Should insert singularity B", qnbB);
 
-                            // Verify change is visible within transaction
-                            var currentSlot = qnb.getInternalInventory().getStackInSlot(0);
-                            helper.check(!currentSlot.isEmpty(), "Change visible in transaction", BlockPos.ZERO);
+                            // Verify singularities are visible
+                            helper.check(!coreA.getInternalInventory().getStackInSlot(0).isEmpty(),
+                                    "Singularity A visible in transaction", qnbA);
+                            helper.check(!coreB.getInternalInventory().getStackInSlot(0).isEmpty(),
+                                    "Singularity B visible in transaction", qnbB);
+
+                            // But clusters should NOT be linked yet (side-effect not triggered)
+                            var gridA = helper.getGrid(qnbA);
+                            var gridB = helper.getGrid(qnbB);
+                            helper.check(gridA != gridB, "Grids should NOT be linked before commit", qnbA);
 
                             tx.commit();
                         }
-
-                        // After commit, verify item is still there
-                        var finalSlot = qnb.getInternalInventory().getStackInSlot(0);
-                        helper.check(!finalSlot.isEmpty() && AEItems.QUANTUM_ENTANGLED_SINGULARITY.is(finalSlot),
-                                "Singularity in inventory after commit", BlockPos.ZERO);
+                    })
+                    // Wait until linked (-> same grid) after commit
+                    .thenWaitUntil(() -> {
+                        var gridA = helper.getGrid(qnbA);
+                        var gridB = helper.getGrid(qnbB);
+                        helper.check(gridA == gridB, "Grids should be linked after commit", qnbA);
                     })
                     .thenSucceed();
         });
+    }
+
+    private static void buildQnbRing(PlotBuilder plot, BlockPos origin) {
+        plot.block(origin, AEBlocks.QUANTUM_LINK);
+        for (var x = -1; x <= 1; x++) {
+            for (var y = -1; y <= 1; y++) {
+                var pos = origin.offset(x, y, 0);
+                if (x != 0 || y != 0) {
+                    plot.block(pos, AEBlocks.QUANTUM_RING);
+                }
+            }
+        }
     }
 
     /**
