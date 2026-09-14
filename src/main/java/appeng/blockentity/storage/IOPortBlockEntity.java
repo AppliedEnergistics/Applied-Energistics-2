@@ -70,6 +70,7 @@ import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.CombinedInternalInventory;
 import appeng.util.inv.FilteredInternalInventory;
 import appeng.util.inv.filter.AEItemFilters;
+import appeng.util.inv.filter.IAEItemFilter;
 
 public class IOPortBlockEntity extends AENetworkedInvBlockEntity
         implements IUpgradeableObject, IConfigurableObject, IGridTickable {
@@ -84,7 +85,7 @@ public class IOPortBlockEntity extends AENetworkedInvBlockEntity
             this.outputCells);
 
     private final InternalInventory inputCellsExt = new FilteredInternalInventory(this.inputCells,
-            AEItemFilters.INSERT_ONLY);
+            new StorageCellInsertOnlyFilter());
     private final InternalInventory outputCellsExt = new FilteredInternalInventory(this.outputCells,
             AEItemFilters.EXTRACT_ONLY);
 
@@ -402,5 +403,17 @@ public class IOPortBlockEntity extends AENetworkedInvBlockEntity
     public void clearContent() {
         super.clearContent();
         upgrades.clear();
+    }
+
+    private static class StorageCellInsertOnlyFilter implements IAEItemFilter {
+        @Override
+        public boolean allowExtract(InternalInventory inv, int slot, int amount) {
+            return false;
+        }
+
+        @Override
+        public boolean allowInsert(InternalInventory inv, int slot, ItemStack stack) {
+            return !stack.isEmpty() && StorageCells.isCellHandled(stack);
+        }
     }
 }
