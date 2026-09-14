@@ -7,6 +7,9 @@ import net.minecraft.world.item.Items;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 
+import appeng.api.config.Actionable;
+import appeng.api.networking.security.IActionSource;
+import appeng.api.stacks.AEItemKey;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import appeng.server.testworld.PlotBuilder;
@@ -141,7 +144,8 @@ public final class InternalInventoryTransactionTestPlots {
     }
 
     /**
-     * Tests Inscriber - side-effect is clearTask() when inventory changes
+     * Tests Inscriber - side-effect is resetting the processing time (and cached recipe) when the
+     * recipe-relevant inventory slots change.
      */
     @TestPlot("inscriber_deferred_side_effects")
     public static void testInscriber(PlotBuilder plot) {
@@ -156,31 +160,56 @@ public final class InternalInventoryTransactionTestPlots {
                         var handler = inscriber.getExposedItemHandler(Direction.UP);
                         helper.check(handler != null, "handler should not be null", BlockPos.ZERO);
 
-                        var press = AEItems.CALCULATION_PROCESSOR_PRESS.stack();
-                        var resource = ItemResource.of(press);
+                        // Set up a valid recipe (press + matching material) so the inscriber starts processing
+                        try (var tx = Transaction.open(null)) {
+                            var press = AEItems.CALCULATION_PROCESSOR_PRESS.stack();
+                            helper.check(handler.insert(ItemResource.of(press), 1, tx) == 1,
+                                    "Should insert press", BlockPos.ZERO);
+
+                            var crystal = AEItems.CERTUS_QUARTZ_CRYSTAL.stack();
+                            helper.check(handler.insert(ItemResource.of(crystal), 1, tx) == 1,
+                                    "Should insert crystal", BlockPos.ZERO);
+
+                            tx.commit();
+                        }
+                    })
+                    // Wait until the inscriber has actually started processing the recipe
+                    .thenWaitUntil(() -> {
+                        var inscriber = helper.getBlockEntity(BlockPos.ZERO,
+                                appeng.blockentity.misc.InscriberBlockEntity.class);
+                        helper.check(inscriber.getProcessingTime() > 0,
+                                "Processing time should have advanced", BlockPos.ZERO);
+                    })
+                    .thenExecute(() -> {
+                        var inscriber = helper.getBlockEntity(BlockPos.ZERO,
+                                appeng.blockentity.misc.InscriberBlockEntity.class);
+                        var handler = inscriber.getExposedItemHandler(Direction.UP);
+                        var processingTimeBeforeChange = inscriber.getProcessingTime();
 
                         try (var tx = Transaction.open(null)) {
-                            var inserted = handler.insert(resource, 1, tx);
-                            helper.check(inserted == 1, "Should insert press", BlockPos.ZERO);
+                            // Filling the (still empty) bottom plate slot changes the recipe inputs
+                            var namePress = AEItems.NAME_PRESS.stack();
+                            helper.check(handler.insert(ItemResource.of(namePress), 1, tx) == 1,
+                                    "Should insert name press", BlockPos.ZERO);
 
-                            // Change should be visible
-                            var currentSlot = inscriber.getInternalInventory().getStackInSlot(0);
-                            helper.check(!currentSlot.isEmpty(), "Change visible in transaction", BlockPos.ZERO);
+                            // Processing time should not be reset yet
+                            helper.check(inscriber.getProcessingTime() == processingTimeBeforeChange,
+                                    "No side-effects during transaction", BlockPos.ZERO);
 
                             tx.commit();
                         }
 
-                        // Verify press is in inventory after commit
-                        var finalSlot = inscriber.getInternalInventory().getStackInSlot(0);
-                        helper.check(AEItems.CALCULATION_PROCESSOR_PRESS.is(finalSlot),
-                                "Press in inventory after commit", BlockPos.ZERO);
+                        // After commit, the processing time should have been reset
+                        helper.check(inscriber.getProcessingTime() == 0,
+                                "Processing time reset after commit", BlockPos.ZERO);
                     })
                     .thenSucceed();
         });
     }
 
     /**
-     * Tests MEChest - side-effect is IStorageProvider.requestUpdate() when cell inserted/removed
+     * Tests MEChest - side-effect is invalidating the cached storage cell (cellHandler / isCached) when the
+     * cell slot changes, forcing IStorageProvider.requestUpdate() and a lazy rebuild on next access.
      */
     @TestPlot("mechest_deferred_side_effects")
     public static void testMEChest(PlotBuilder plot) {
@@ -192,34 +221,98 @@ public final class InternalInventoryTransactionTestPlots {
                     .thenExecute(() -> {
                         var chest = helper.getBlockEntity(BlockPos.ZERO,
                                 appeng.blockentity.storage.MEChestBlockEntity.class);
+
+                        // Give the chest an initial cell, then force its storage cache to be built
+                        chest.setCell(AEItems.ITEM_CELL_1K.stack());
+                        // Store a diamond on the cached cell so we can tell its content apart from the new cell
+                        chest.getInventory().insert(AEItemKey.of(Items.DIAMOND), 1, Actionable.MODULATE,
+                                IActionSource.empty());
+
+                        var stacksBefore = chest.getInventory().getAvailableStacks();
+                        helper.check(stacksBefore.get(AEItemKey.of(Items.DIAMOND)) == 1,
+                                "Chest should expose the diamond stored on the first cell", BlockPos.ZERO);
+
                         var handler = chest.getExposedItemHandler(chest.getFront());
                         helper.check(handler != null, "handler should not be null", BlockPos.ZERO);
 
-                        var cell = AEItems.ITEM_CELL_1K.stack();
-                        var resource = ItemResource.of(cell);
-
                         try (var tx = Transaction.open(null)) {
-                            var inserted = handler.insert(resource, 1, tx);
-                            helper.check(inserted == 1, "Should insert cell", BlockPos.ZERO);
+                            // Swap out the cell for a different, empty one
+                            var extracted = handler.extract(ItemResource.of(chest.getCell()), 1, tx);
+                            helper.check(extracted == 1, "Should extract old cell", BlockPos.ZERO);
 
-                            // Change should be visible
-                            var currentSlot = chest.getCell();
-                            helper.check(!currentSlot.isEmpty(), "Change visible in transaction", BlockPos.ZERO);
+                            var newCell = AEItems.ITEM_CELL_4K.stack();
+                            var inserted = handler.insert(ItemResource.of(newCell), 1, tx);
+                            helper.check(inserted == 1, "Should insert new cell", BlockPos.ZERO);
+
+                            // The cache is only invalidated on commit, so the chest should still report the
+                            // OLD cell's content here even though a different cell now sits in the slot.
+                            var stacksDuring = chest.getInventory().getAvailableStacks();
+                            helper.check(stacksDuring.get(AEItemKey.of(Items.DIAMOND)) == 1,
+                                    "No side-effects during transaction", BlockPos.ZERO);
 
                             tx.commit();
                         }
 
-                        // Verify cell is in inventory after commit
-                        var finalSlot = chest.getCell();
-                        helper.check(AEItems.ITEM_CELL_1K.is(finalSlot),
-                                "Cell in inventory after commit", BlockPos.ZERO);
+                        // After commit, the cache should have been invalidated, so the chest now correctly
+                        // reports the new (empty) cell's content instead of the stale old one.
+                        var stacksAfter = chest.getInventory().getAvailableStacks();
+                        helper.check(stacksAfter.get(AEItemKey.of(Items.DIAMOND)) == 0,
+                                "Storage cache invalidated after commit", BlockPos.ZERO);
                     })
                     .thenSucceed();
         });
     }
 
     /**
-     * Tests Drive - side-effect is updateState() when cells inserted/removed
+     * Tests MEChest - side-effect is moving items placed on the input side into the cell's storage
+     * (tryToStoreContents()).
+     */
+    @TestPlot("mechest_input_deferred_side_effects")
+    public static void testMEChestInput(PlotBuilder plot) {
+        plot.creativeEnergyCell(BlockPos.ZERO.below());
+        plot.blockEntity(BlockPos.ZERO, AEBlocks.ME_CHEST, chest -> {
+            chest.setCell(AEItems.ITEM_CELL_1K.stack());
+        });
+
+        plot.test(helper -> {
+            helper.startSequence()
+                    .thenExecute(() -> {
+                        var chest = helper.getBlockEntity(BlockPos.ZERO,
+                                appeng.blockentity.storage.MEChestBlockEntity.class);
+
+                        // The input slot (any side other than the front) has its own side-effect: items
+                        // placed there get automatically moved into the cell's storage (tryToStoreContents()).
+                        var inputSide = chest.getFront().getOpposite();
+                        var inputHandler = chest.getExposedItemHandler(inputSide);
+                        helper.check(inputHandler != null, "input handler should not be null", BlockPos.ZERO);
+
+                        try (var tx = Transaction.open(null)) {
+                            var inserted = inputHandler.insert(ItemResource.of(Items.EMERALD), 1, tx);
+                            helper.check(inserted == 1, "Should insert emerald into input slot", BlockPos.ZERO);
+
+                            // The item should sit in the raw input slot, but not yet be moved into the cell
+                            helper.check(!chest.getInternalInventory().getStackInSlot(0).isEmpty(),
+                                    "Emerald visible in input slot during transaction", BlockPos.ZERO);
+                            helper.check(chest.getInventory().getAvailableStacks().get(AEItemKey.of(Items.EMERALD)) == 0,
+                                    "Emerald should not be in cell storage yet", BlockPos.ZERO);
+
+                            tx.commit();
+                        }
+
+                        // After commit, the emerald should have been moved out of the input slot and into the cell
+                        helper.check(chest.getInternalInventory().getStackInSlot(0).isEmpty(),
+                                "Input slot should be empty after commit", BlockPos.ZERO);
+                        helper.check(chest.getInventory().getAvailableStacks().get(AEItemKey.of(Items.EMERALD)) == 1,
+                                "Emerald should have been stored in the cell after commit", BlockPos.ZERO);
+                    })
+                    .thenSucceed();
+        });
+    }
+
+    /**
+     * Tests Drive - side-effect is invalidating the cached storage cell for a slot (isCached / invBySlot) when
+     * that slot's cell changes, forcing IStorageProvider.requestUpdate() and a rebuild. Same approach as the
+     * MEChest cache-invalidation test, since a Drive is essentially a MEChest with more cell slots.
      */
     @TestPlot("drive_deferred_side_effects")
     public static void testDrive(PlotBuilder plot) {
@@ -231,27 +324,46 @@ public final class InternalInventoryTransactionTestPlots {
                     .thenExecute(() -> {
                         var drive = helper.getBlockEntity(BlockPos.ZERO,
                                 appeng.blockentity.storage.DriveBlockEntity.class);
+
+                        // Give the drive an initial cell, then force its storage cache to be built
+                        drive.getInternalInventory().setItemDirect(0, AEItems.ITEM_CELL_1K.stack());
+                        drive.setPriority(drive.getPriority());
+                        var oldCellHandler = drive.getCellInventory(0);
+                        helper.check(oldCellHandler != null, "Cell inventory should be cached", BlockPos.ZERO);
+
+                        // Store a diamond on the cached cell so we can tell its content apart from the new cell
+                        oldCellHandler.insert(AEItemKey.of(Items.DIAMOND), 1, Actionable.MODULATE,
+                                IActionSource.empty());
+                        helper.check(oldCellHandler.getAvailableStacks().get(AEItemKey.of(Items.DIAMOND)) == 1,
+                                "Drive should expose the diamond stored on the first cell", BlockPos.ZERO);
+
                         var handler = drive.getExposedItemHandler(Direction.UP);
                         helper.check(handler != null, "handler should not be null", BlockPos.ZERO);
 
-                        var cell = AEItems.ITEM_CELL_4K.stack();
-                        var resource = ItemResource.of(cell);
-
                         try (var tx = Transaction.open(null)) {
-                            var inserted = handler.insert(resource, 1, tx);
-                            helper.check(inserted == 1, "Should insert cell", BlockPos.ZERO);
+                            // Swap out the cell for a different, empty one
+                            var oldCellStack = drive.getInternalInventory().getStackInSlot(0);
+                            var extracted = handler.extract(ItemResource.of(oldCellStack), 1, tx);
+                            helper.check(extracted == 1, "Should extract old cell", BlockPos.ZERO);
 
-                            // Change should be visible
-                            var currentSlot = drive.getInternalInventory().getStackInSlot(0);
-                            helper.check(!currentSlot.isEmpty(), "Change visible in transaction", BlockPos.ZERO);
+                            var newCell = AEItems.ITEM_CELL_4K.stack();
+                            var inserted = handler.insert(ItemResource.of(newCell), 1, tx);
+                            helper.check(inserted == 1, "Should insert new cell", BlockPos.ZERO);
+
+                            // The cache is only invalidated on commit, so the drive should still report the
+                            // OLD cell's content here even though a different cell now sits in the slot.
+                            var stacksDuring = drive.getCellInventory(0).getAvailableStacks();
+                            helper.check(stacksDuring.get(AEItemKey.of(Items.DIAMOND)) == 1,
+                                    "No side-effects during transaction", BlockPos.ZERO);
 
                             tx.commit();
                         }
 
-                        // Verify cell is in inventory after commit
-                        var finalSlot = drive.getInternalInventory().getStackInSlot(0);
-                        helper.check(AEItems.ITEM_CELL_4K.is(finalSlot),
-                                "Cell in inventory after commit", BlockPos.ZERO);
+                        // After commit, the cache should have been invalidated and rebuilt, so the drive now
+                        // correctly reports the new (empty) cell's content instead of the stale old one.
+                        var stacksAfter = drive.getCellInventory(0).getAvailableStacks();
+                        helper.check(stacksAfter.get(AEItemKey.of(Items.DIAMOND)) == 0,
+                                "Storage cache invalidated after commit", BlockPos.ZERO);
                     })
                     .thenSucceed();
         });
