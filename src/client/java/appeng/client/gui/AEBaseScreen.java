@@ -41,6 +41,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.ComponentRenderUtils;
+import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.input.KeyEvent;
@@ -560,6 +561,13 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
     public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
         this.drag_click.clear();
 
+        // Pick-block bound to a mouse button
+        var pickBlockKey = InputConstants.Type.MOUSE.getOrCreate(event.button());
+        if (getMinecraft().options.keyPickItem.isActiveAndMatches(pickBlockKey)
+                && handlePickBlock(this.getHoveredSlot(event.x(), event.y()))) {
+            return true;
+        }
+
         // Forward right-clicks as-if they were left-clicks
         if (event.button() == 1) {
             handlingRightClick = true;
@@ -603,6 +611,27 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
     }
 
     @Override
+    public boolean keyPressed(KeyEvent event) {
+        // Pick Block bound to a keyboard key. Don't intercept while a text field is being typed into.
+        if (!(getFocused() instanceof EditBox)
+                && getMinecraft().options.keyPickItem.isActiveAndMatches(InputConstants.getKey(event))
+                && handlePickBlock(this.hoveredSlot)) {
+            return true;
+        }
+
+        return super.keyPressed(event);
+    }
+
+    /**
+     * Called when the player uses the Pick Block binding (mouse button or key) while hovering the given slot.
+     *
+     * @return whether the event was handled and should not be processed further
+     */
+    protected boolean handlePickBlock(@Nullable Slot slot) {
+        return false;
+    }
+
+    @Override
     public boolean mouseDragged(MouseButtonEvent event, double dragX, double dragY) {
         final Slot slot = this.getHoveredSlot(event.x(), event.y());
         var itemstack = getMenu().getCarried();
@@ -642,9 +671,17 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
             return;
         }
 
-        // Prevent cloning of wrapped itemstacks
-        if (clickType == ContainerInput.CLONE && slot != null && GenericStack.isWrapped(slot.getItem())) {
-            return;
+        if (clickType == ContainerInput.CLONE) {
+            // Vanilla dispatches a CLONE click when the Pick Block binding is pressed over a slot. The fake slot
+            // handling below would treat that as a pickup with an empty hand and clear the slot, so ignore it.
+            if (slot instanceof FakeSlot) {
+                return;
+            }
+
+            // Wrapped stacks (fluids etc.) cannot be cloned into the player's hand
+            if (slot != null && GenericStack.isWrapped(slot.getItem())) {
+                return;
+            }
         }
 
         if (this.drag_click.size() <= 1

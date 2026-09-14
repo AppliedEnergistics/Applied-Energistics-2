@@ -513,15 +513,6 @@ public class MEStorageScreen<C extends MEStorageMenu>
             // Don't return immediately to also grab focus.
         }
 
-        // handler for middle mouse button crafting in survival mode
-        if (Minecraft.getInstance().options.keyPickItem.matchesMouse(event)) {
-            Slot slot = this.getHoveredSlot(event.x(), event.y());
-            if (slot instanceof RepoSlot repoSlot && repoSlot.isCraftable()) {
-                handleGridInventoryEntryMouseClick(repoSlot.getEntry(), event.button(), ContainerInput.CLONE);
-                return true;
-            }
-        }
-
         return super.mouseClicked(event, doubleClick);
     }
 
@@ -553,6 +544,20 @@ public class MEStorageScreen<C extends MEStorageMenu>
         }
 
         super.slotClicked(slot, slotIdx, mouseButton, clickType);
+    }
+
+    /**
+     * Handler for Pick Block crafting in survival mode
+     */
+    @Override
+    protected boolean handlePickBlock(Slot slot) {
+        if (slot instanceof RepoSlot repoSlot && repoSlot.isCraftable()) {
+            var entry = repoSlot.getEntry();
+            menu.handleInteraction(entry.getSerial(), InventoryAction.AUTO_CRAFT);
+            return true;
+        }
+
+        return super.handlePickBlock(slot);
     }
 
     @Override

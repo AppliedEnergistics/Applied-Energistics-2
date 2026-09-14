@@ -128,9 +128,11 @@ public final class Tooltips {
                         emptyingAction.description().copy().withStyle(NORMAL_TOOLTIP_TEXT)).withStyle(MUTED_COLOR));
     }
 
-    public static Component getSetAmountTooltip() {
-        return ButtonToolTips.ModifyAmountAction.text(Tooltips.getMouseButtonText(InputConstants.MOUSE_BUTTON_MIDDLE))
-                .withStyle(MUTED_COLOR);
+    /**
+     * @param keyName The display name of the mouse/key binding that opens the amount dialog (i.e. Pick Block).
+     */
+    public static Component getSetAmountTooltip(Component keyName) {
+        return ButtonToolTips.ModifyAmountAction.text(keyName).withStyle(MUTED_COLOR);
     }
 
     public static Component getMouseButtonText(int button) {
