@@ -119,7 +119,7 @@ jobs:
       - name: Validate artifacts exist
         run: test -d ./build
       - name: Upload to Curseforge
-        uses: Kir-Antipov/mc-publish@4db8bd126f74d5e143822181a2b1201308e2c796
+        uses: Kira-NT/mc-publish@52307b03863581dec6b652b83e597aec02ebb075
         with:
           name: AE2 ${{ needs.build.outputs.VERSION }} [FABRIC]
           version: ${{ needs.build.outputs.VERSION }}
@@ -131,6 +131,7 @@ jobs:
             jei(optional){modrinth:u6dRKJwZ}{curseforge:238222}
           curseforge-id: 223794
           curseforge-token: ${{ secrets.CURSEFORGE }}
+          environment: all
 
   deploy-modmaven:
     name: Deploy to Modmaven
@@ -167,7 +168,7 @@ jobs:
       - name: Validate artifacts exist
         run: test -d ./build
       - name: Upload to Modrinth
-        uses: Kir-Antipov/mc-publish@4db8bd126f74d5e143822181a2b1201308e2c796
+        uses: Kira-NT/mc-publish@52307b03863581dec6b652b83e597aec02ebb075
         with:
           name: AE2 ${{ needs.build.outputs.VERSION }} [FABRIC]
           version: ${{ needs.build.outputs.VERSION }}
@@ -179,3 +180,4 @@ jobs:
             jei(optional){modrinth:u6dRKJwZ}{curseforge:238222}
           modrinth-id: XxWD5pD3
           modrinth-token: ${{ secrets.MODRINTH }}
+          environment: all
