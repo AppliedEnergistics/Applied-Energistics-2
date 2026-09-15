@@ -122,7 +122,7 @@ class GhostIngredientHandler implements IGhostIngredientHandler<AEBaseScreen> {
         public ItemSlotTarget(IIngredientType<I> type, AEBaseScreen<?> screen, FakeSlot slot) {
             this.type = type;
             this.slot = slot;
-            this.area = new Rect2i(screen.getGuiLeft() + slot.x, screen.getGuiTop() + slot.y, 16, 16);
+            this.area = new Rect2i(screen.getGuiLeft() + slot.x, Math.max(0, screen.getGuiTop()) + slot.y, 16, 16);
         }
 
         @Override
