@@ -21,6 +21,12 @@ package appeng.util.inv;
 import java.util.Objects;
 
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.transfer.DelegatingResourceHandler;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.ResourceHandlerUtil;
+import net.neoforged.neoforge.transfer.TransferPreconditions;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
 import appeng.api.inventories.BaseInternalInventory;
 import appeng.api.inventories.InternalInventory;
@@ -84,5 +90,60 @@ public class FilteredInternalInventory extends BaseInternalInventory {
     @Override
     public void sendChangeNotification(int slot) {
         delegate.sendChangeNotification(slot);
+    }
+
+    @Override
+    protected ResourceHandler<ItemResource> createResourceHandler() {
+        return new FilteringResourceHandler();
+    }
+
+    class FilteringResourceHandler extends DelegatingResourceHandler<ItemResource> {
+        public FilteringResourceHandler() {
+            super(FilteredInternalInventory.this.delegate.toResourceHandler());
+        }
+
+        @Override
+        public boolean isValid(int index, ItemResource resource) {
+            return super.isValid(index, resource)
+                    && filter.allowInsert(FilteredInternalInventory.this.delegate, index, resource.toStack());
+        }
+
+        @Override
+        public int insert(int index, ItemResource resource, int amount, TransactionContext transaction) {
+            if (!filter.allowInsert(FilteredInternalInventory.this.delegate, index, resource.toStack())) {
+                return 0;
+            }
+            return super.insert(index, resource, amount, transaction);
+        }
+
+        @Override
+        public int insert(ItemResource resource, int amount, TransactionContext transaction) {
+            return ResourceHandlerUtil.insertStacking(this, resource, amount, transaction);
+        }
+
+        @Override
+        public int extract(int index, ItemResource resource, int amount, TransactionContext transaction) {
+            if (!filter.allowExtract(FilteredInternalInventory.this.delegate, index, amount)) {
+                return 0;
+            }
+            return super.extract(index, resource, amount, transaction);
+        }
+
+        @Override
+        public int extract(ItemResource resource, int amount, TransactionContext transaction) {
+            // This duplicates the default implementation from ResourceHandler, which is inaccessible here
+            // We need to check the filter for each index we access, which is impossible if we call the delegates
+            // implementation
+            TransferPreconditions.checkNonEmptyNonNegative(resource, amount);
+
+            int extracted = 0;
+            int size = size();
+            for (int index = 0; index < size; index++) {
+                extracted += extract(index, resource, amount - extracted, transaction);
+                if (extracted == amount)
+                    break;
+            }
+            return extracted;
+        }
     }
 }
