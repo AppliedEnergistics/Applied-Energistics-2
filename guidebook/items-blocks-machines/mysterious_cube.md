@@ -17,10 +17,12 @@ item_ids:
 
 Remember when you had to find a bunch of meteors to find all the presses? No more! Now meteorites come with a Mysterious Cube.
 
-I wonder what happens when you break it (without silk touch)...
+I wonder what happens when you break it (without Silk Touch)...
 
-You can also make a replica, the Not So Mysterious Cube
+You can also make a replica: the Not So Mysterious Cube.
 
 ## Recipe
+
+While you can't make a Mysterious Cube, you can make a replica: the Not So Mysterious Cube.
 
 <RecipeFor id="not_so_mysterious_cube" />

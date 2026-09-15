@@ -59,7 +59,7 @@ or <ItemLink id="me_chest" />s.
 
 See [Bytes and Types](../ae2-mechanics/bytes-and-types.md) for an explanation of their capacities in bytes and types.
 
-Storage components can be removed from the housing if the cell is empty by shift-right clicking with the cell in your hand.
+Cells can be disassembled back into a storage component and housing: First empty the cell, then shift-right-click with the cell in your hand.
 
 <Row>
     <Recipe id="upgrade/item_storage_cell_1k_to_4k" />
@@ -82,7 +82,7 @@ The [upfront cost of types](../ae2-mechanics/bytes-and-types.md) is such that a 
 
 ## Partitioning
 
-Cells can be filtered to only accept certain items, similar to how <ItemLink id="storage_bus" />ses can be filtered. This is
+Cells can be filtered to only accept certain items, similar to how <ItemLink id="storage_bus" />es can be filtered. This is
 done in a <ItemLink id="cell_workbench" />.
 
 Items can be dragged into the slots from JEI/REI even if you don't actually have any of that item.

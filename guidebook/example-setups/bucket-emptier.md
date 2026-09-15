@@ -74,7 +74,7 @@ vanilla Minecraft has a slightly-less-convenient way, the <ItemLink id="minecraf
 ## How It Works
 
 1. The <ItemLink id="pattern_provider" /> pushes the ingredients into the <ItemLink id="interface" />.
-   (Actually, as an optimization, it pushes directly through the storage bus asi fit was an extension of the provider's faces. The items never actually enter the interface.)
+   (Actually, as an optimization, it pushes directly through the storage bus as if it were an extension of the provider's faces. The items never actually enter the interface.)
 2. Through mechanisms described in [pipe subnets](pipe-subnet.md#providing-to-multiple-places),
    the bucket ends up in the <ItemLink id="minecraft:dispenser" />.
 3. The <ItemLink id="minecraft:comparator" /> detects the bucket in the dispenser and thus simultaneously powers the dispenser and locks

@@ -54,7 +54,7 @@ The answer is use of an <ItemLink id="io_port" /> and some subnetting to restric
 2. The only storage on the subnet is the <ItemLink id="storage_bus" />, which stores the items or fluids or etc. in whatever
     you put in front of it.
 * The <ItemLink id="energy_cell" /> provides a large enough buffer of [energy](../ae2-mechanics/energy.md) that the network does
-    not run out from the power draw of transferring so many items per gametick.
+    not run out from the power draw of transferring so many items per game tick.
 
 ### In "Transfer To Storage Cell" Mode
 
@@ -63,4 +63,4 @@ The answer is use of an <ItemLink id="io_port" /> and some subnetting to restric
 2. The only storage on the subnet is the <ItemLink id="storage_bus" />, which pulls the items or fluids or etc. out of whatever
    you put in front of it.
 * The <ItemLink id="energy_cell" /> provides a large enough buffer of [energy](../ae2-mechanics/energy.md) that the network does
-  not run out from the power draw of transferring so many items per gametick.
+  not run out from the power draw of transferring so many items per game tick.

@@ -36,14 +36,14 @@ public enum GuiText implements LocalizationEnum {
     Brown("Brown"),
     BytesUsed("%s Bytes Used"),
     CPUs("CPU"),
-    CalculatingWait("Calculating Please Wait..."),
+    CalculatingWait("Calculating. Please Wait..."),
     CanBeEnchanted("Can be enchanted"),
     Cancel("Cancel"),
     CantStoreItems("Can't Store Contents!"),
     CantFitInsideStorageCell("This item does not fit in other storage cells"),
     CellWorkbench("Cell Workbench"),
     CertusQuartzObtain(
-            "Certus Quartz is grown by the various Budding Certus Quartz blocks, which can be found in meteors, or crafted from regular Certus Quartz blocks."),
+            "Certus Quartz is grown by the various Budding Certus Quartz blocks, which can be found in meteorites, or crafted from regular Certus Quartz blocks."),
     ChannelEnergyDrain("Channel Passive Drain: %s"),
     Clean("Clean"),
     CompatibleUpgrade("%s (%s)"),
@@ -52,8 +52,8 @@ public enum GuiText implements LocalizationEnum {
     Config("Config"),
     ConfigureImportedTypes("Configure Imported Types"),
     ConfigureVisibleTypes("Configure Visible Types"),
-    ConfirmCraftCpuStatus("Storage: %s : Co Processors: %s"),
-    ConfirmCraftNoCpu("Storage: N/A : Co Processors: N/A"),
+    ConfirmCraftCpuStatus("Storage: %s : Co-Processors: %s"),
+    ConfirmCraftNoCpu("Storage: N/A : Co-Processors: N/A"),
     CopyMode("Copy Mode"),
     CopyModeDesc("Controls if the contents of the configuration pane are cleared when you remove the cell."),
     CraftingLockIsLocked("Crafting is locked"),
@@ -113,7 +113,7 @@ public enum GuiText implements LocalizationEnum {
     ImportBus("ME Import Bus"),
     ImportBusFluids("ME Fluid Import Bus"),
     IncompatibleWithCell("Incompatible with cell"),
-    InWorldCrafting("AE2 In World Crafting"),
+    InWorldCrafting("AE2 In-World Crafting"),
     Included("Included"),
     IncreasedEnergyUseFromEnchants("Enchants increase energy use"),
     Inscriber("Inscriber"),
@@ -121,7 +121,7 @@ public enum GuiText implements LocalizationEnum {
     Interface("ME Interface"),
     Interfaces("ME Interfaces"),
     IntrinsicEnchant("Always has at least %s"),
-    InvalidNumber("Please enter a number or a mathematical expression e.g. : 3*4"),
+    InvalidNumber("Please enter a number or a mathematical expression, e.g., 3*4"),
     InvalidPattern("Invalid Pattern"),
     InvalidSingularity("Invalid Singularity"),
     Items("Items"),
@@ -157,8 +157,8 @@ public enum GuiText implements LocalizationEnum {
     OfSecondOutput("%1$d%% Chance for second output."),
     OutOfPower("Out of Power"),
     Orange("Orange"),
-    P2PAttunementEnergy("Portable Energy Storage (i.e. Batteries)"),
-    P2PAttunementFluid("Portable Fluid Storage (i.e. Tanks, Buckets)"),
+    P2PAttunementEnergy("Portable Energy Storage (e.g., Batteries)"),
+    P2PAttunementFluid("Portable Fluid Storage (e.g., Tanks, Buckets)"),
     PartialPlan("Partial Plan (Missing Ingredients)"),
     Partitioned("Partitioned"),
     PatternAccessTerminal("Pattern Access Terminal"),
@@ -270,9 +270,9 @@ public enum GuiText implements LocalizationEnum {
     Yellow("Yellow"),
     Yes("Yes"),
     inWorldCraftingPresses(
-            "Crafting Presses are obtained by breaking a Mysterious Cube. Mysterious Cubes are in the center of meteorites which can be found in around the world. They can be located by using a meteorite compass."),
+            "Crafting Presses are obtained by breaking a Mysterious Cube. Mysterious Cubes are in the center of meteorites, which can be found around the world. They can be located by using a Meteorite Compass."),
     inWorldSingularity(
-            "To create drop 1 Singularity and 1 Ender Dust and cause an explosion within range of the items.");
+            "To create, drop 1 Singularity and 1 Ender Dust, and cause an explosion within range of the items.");
 
     private final String root;
 

@@ -11,7 +11,7 @@ The <ItemLink id="annihilation_plane" /> can be enchanted with any pickaxe encha
 apply fortune to a few, and have <ItemLink id="formation_plane" />s and <ItemLink id="annihilation_plane" />s rapidly place and
 break ores.
 
-Note that since <ItemLink id="import_bus" />ses "spin up to speed", the setup will start slow then reach full speed in a few seconds.
+Note that since <ItemLink id="import_bus" />es "spin up to speed", the setup will start slow then reach full speed in a few seconds.
 
 <GameScene zoom="6" interactive={true}>
   <ImportStructure src="../assets/assemblies/ore_fortuner.snbt" />

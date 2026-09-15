@@ -104,21 +104,21 @@ item_ids:
 While ME networks are also created by adjacent ME-capable machines, cables are the primary way of
 extending an ME network over larger areas.
 
-Differently colored cables can be used to ensure adjacent cables do not connected to each other,
+Differently colored cables can be used to ensure that adjacent cables do not connect to each other,
 allowing [channels](../ae2-mechanics/channels.md) to be distributed more efficiently. They also affect the color of terminals connected to them,
 so you don't have to have all your terminals be purple. Fluix cables connect to every other color.
 
-Of note, **CHANNELS HAVE NOTHING TO DO WITH CABLE COLOR**
+Of note, **CHANNELS HAVE NOTHING TO DO WITH CABLE COLOR**. All cable color does is prevent cables from connecting.
 
 ## An Important Note
 
-**If you are new to AE2 and unfamiliar with channels, use smart cable and dense smart cable wherever you can.
+**If you are new to AE2 and unfamiliar with channels, use Smart Cable and Dense Smart Cable wherever you can.
 It will show how channels are routed through your network, making their behavior more understandable.**
 
 ## Another Note
 
-**These are not item or fluid or energy or etc. pipes.** They have no internal inventory, pattern providers and machines do not "push"
-into them, all they do is connect AE2 [devices](../ae2-mechanics/devices.md) together into a network.
+**These are not pipes for items, fluid, energy, etc.** They have no internal inventory, pattern providers and machines do not "push"
+into them; all they do is connect AE2 [devices](../ae2-mechanics/devices.md) together into a network.
 
 ## Glass Cable
 
@@ -127,13 +127,13 @@ into them, all they do is connect AE2 [devices](../ae2-mechanics/devices.md) tog
 <IsometricCamera yaw="195" pitch="30" />
 </GameScene>
 
-<ItemLink id="fluix_glass_cable" /> is the simplest cable to make, transfers power
+<ItemLink id="fluix_glass_cable" /> is the simplest cable to make, and transfers power
 and up to 8 [channels](../ae2-mechanics/channels.md). It comes in 17 different colors, the default
 being Fluix, and can be dyed any color using any of the 16 dyes.
 
-To craft colored cables surround a dye of any type with 8 cables of the same
-type ( color of the cables dosn't matter, but they must be the same type,
-glass, smart, etc ). You can also paint cables with any forge compatible paint
+To craft colored cables, surround a dye of any type with 8 cables of the same
+type (color of the cables doesn't matter, but they must be the same type:
+Glass, Smart, etc.). You can also paint cables with any Forge-compatible paint
 brush in world.
 
 You can craft any colored cable with a water bucket to remove the dye.
@@ -169,12 +169,12 @@ redstone and glowstone to make <ItemLink id="fluix_covered_dense_cable" />.
   <IsometricCamera yaw="195" pitch="30" />
 </GameScene>
 
-Higher Capacity cable, can carry 32 channels unlike standard cable which can only carry 8,
-however it doesn't support buses so you must first step down from dense to a
+Higher-capacity cable. Can carry 32 channels, unlike standard cables that can only carry 8.
+However, it doesn't support buses, so you must first step down from dense to a
 smaller cable (such as <ItemLink id="fluix_glass_cable" /> or <ItemLink id="fluix_smart_cable" />) before using buses or
 panels.
 
-Dense cables slightly override the "shortest path" behavior of channels, channels will take the shortest path to a
+Dense cables slightly override the "shortest path" behavior of channels: channels will take the shortest path to a
 dense cable, and then the shortest path through that dense cable to a controller.
 
 <Recipe id="network/cables/dense_covered_fluix" />
@@ -198,10 +198,10 @@ While bearing some similarity to <ItemLink id="fluix_covered_cable" /> in appear
 provide diagnostic function by visualizing the channel usage on the cables,
 the channels appear as lit colored lines that run along the black stripe on
 the cables giving you an understanding of how your channels are being used on
-your network. For regular smart cables, the first four channels show as lines matching the color of the
-cable, the next four show as white lines. For dense smart cable, each stripe represents 4 channels.
+your network. For regular Smart Cables, the first four channels show as lines matching the color of the
+cable, the next four show as white lines. For Dense Smart Cable, each stripe represents 4 channels.
 
-On networks with a <ItemLink id="controller" />, the lines on the cables show the exact path the channels take.
+On networks with an <ItemLink id="controller" />, the lines on the cables show the exact path the channels take.
 
 Smart cables on ad-hoc networks will instead show the number of channels in use network-wide instead of the number of channels flowing through that specific cable.
 

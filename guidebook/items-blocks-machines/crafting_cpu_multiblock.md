@@ -40,13 +40,13 @@ for more details.
 
 Each crafting CPU handles 1 request or job, so if you want to request both a calculation processor and 256 smooth stone at once, you need 2 CPU multiblocks.
 
-They can be set to handle requests from players, automation (export busses and interfaces), or both.
+They can be set to handle requests from players, automation (export buses and interfaces), or both.
 
 Right-clicking one brings up a crafting status UI where you can check the progress on the crafting job the CPU is handling.
 
 ## Settings
 
-*   The CPU can be set to accept requests from just players, just automation (like <ItemLink id="export_bus" />ses with
+*   The CPU can be set to accept requests from just players, just automation (like <ItemLink id="export_bus" />es with
     <ItemLink id="crafting_card" />s), or both.
 
 ## Construction
@@ -109,7 +109,7 @@ This allows them to keep up with machines that process quickly. An example of th
 distributing the ingredient batches between the surrounding assemblers.
 
 Some complex recipes have multiple steps that can be done in parallel, like making planks and books simultaneously for making bookshelves.
-In the crafting status screen (visible by right clicking a CPU or with the hammer icon in a [terminal](terminals.md)), these
+In the crafting status screen (visible by right-clicking a CPU or with the hammer icon in a [terminal](terminals.md)), these
 steps will all show up as "scheduled". Each extra coprocessor allows one more of these steps to be done in parallel (and thus show up as "crafting").
 However, this is not as relevant because you'll typically have more coprocessors purely for the insertion speed than a recipe has steps that could conceivably be done in parallel.
 
