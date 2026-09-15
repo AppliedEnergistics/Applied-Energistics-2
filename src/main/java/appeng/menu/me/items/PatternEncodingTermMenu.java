@@ -21,6 +21,7 @@ package appeng.menu.me.items;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
@@ -46,7 +47,9 @@ import it.unimi.dsi.fastutil.ints.IntArraySet;
 import it.unimi.dsi.fastutil.ints.IntSet;
 import it.unimi.dsi.fastutil.shorts.ShortSet;
 
+import appeng.api.config.Actionable;
 import appeng.api.crafting.PatternDetailsHelper;
+import appeng.api.networking.security.IActionSource;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.GenericStack;
 import appeng.core.definitions.AEItems;
@@ -289,21 +292,48 @@ public class PatternEncodingTermMenu extends MEStorageMenu {
                 return;
             } // if nothing is there we should snag a new pattern.
             else if (encodeOutput.isEmpty()) {
+                this.refillBlank();
                 var blankPattern = this.blankPatternSlot.getItem();
                 if (!isPattern(blankPattern)) {
                     return; // no blanks.
                 }
 
-                // remove one, and clear the input slot.
+                // remove one, and try to pull another if needed
                 blankPattern.shrink(1);
                 if (blankPattern.getCount() <= 0) {
-                    this.blankPatternSlot.set(ItemStack.EMPTY);
+                    this.refillBlank();
                 }
             }
 
             this.encodedPatternSlot.set(encodedPattern);
         } else {
             clearPattern();
+        }
+    }
+
+    @Override
+    public void setFilter(int slotIndex, ItemStack item) {
+        super.setFilter(slotIndex, item);
+        this.refillBlank();
+    }
+
+    /**
+     * Refills the blank pattern slot if it is empty by pulling one from the grid storage
+     */
+    public void refillBlank() {
+        if (this.blankPatternSlot.getItem().isEmpty()) {
+            long extracted = Objects.requireNonNull(this.getGridNode()).getGrid().getStorageService()
+                    .getInventory().extract(
+                            AEItemKey.of(AEItems.BLANK_PATTERN),
+                            1,
+                            Actionable.MODULATE,
+                            IActionSource.ofMachine(this.getActionHost()));
+
+            if (extracted > 0) {
+                this.blankPatternSlot.set(new ItemStack(AEItems.BLANK_PATTERN, (int) extracted));
+            } else {
+                this.blankPatternSlot.set(ItemStack.EMPTY);
+            }
         }
     }
 
