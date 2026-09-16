@@ -1007,6 +1007,7 @@
   "waila.ae2.ErrorTooManyChannels": "Error: Too Many Channels",
   "waila.ae2.Locked": "Locked",
   "waila.ae2.NetworkBooting": "Network Booting",
+  "waila.ae2.NetworkStored": "Network Stored: %s / %s",
   "waila.ae2.P2PFrequency": "Frequency: %s",
   "waila.ae2.P2PInputManyOutputs": "Linked (Input Side) - %d Outputs",
   "waila.ae2.P2PInputOneOutput": "Linked (Input Side)",
