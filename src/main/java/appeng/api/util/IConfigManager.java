@@ -25,14 +25,14 @@ package appeng.api.util;
 
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Supplier;
 
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 
 import appeng.api.config.Setting;
 import appeng.api.ids.AEComponents;
+import appeng.items.contents.ItemAccessHelper;
 import appeng.util.ConfigManager;
 
 /**
@@ -102,18 +102,12 @@ public interface IConfigManager {
     Map<String, String> exportSettings();
 
     /**
-     * Get a builder for configuration manager that stores its settings in a block entity.
+     * Get a builder for configuration manager that stores its settings in an ItemStack.
      */
-    static IConfigManagerBuilder builder(ItemStack stack) {
-        return builder(() -> stack);
-    }
-
-    /**
-     * Get a builder for configuration manager that stores its settings in a block entity.
-     */
-    static IConfigManagerBuilder builder(Supplier<ItemStack> stack) {
-        var manager = new ConfigManager((mgr, settingName) -> {
-            stack.get().set(AEComponents.EXPORTED_SETTINGS, mgr.exportSettings());
+    static IConfigManagerBuilder builder(ItemAccess access) {
+        var manager = new ConfigManager((mgr, _) -> {
+            ItemAccessHelper.modify(access,
+                    resource -> resource.with(AEComponents.EXPORTED_SETTINGS, mgr.exportSettings()));
         });
 
         return new IConfigManagerBuilder() {
@@ -125,7 +119,7 @@ public interface IConfigManager {
 
             @Override
             public IConfigManager build() {
-                manager.importSettings(stack.get().getOrDefault(AEComponents.EXPORTED_SETTINGS, Map.of()));
+                manager.importSettings(access.getResource().getOrDefault(AEComponents.EXPORTED_SETTINGS, Map.of()));
                 return manager;
             }
         };

@@ -60,6 +60,7 @@ import net.neoforged.fml.loading.FMLLoader;
 import net.neoforged.fml.util.thread.SidedThreadGroups;
 import net.neoforged.neoforge.common.util.FakePlayerFactory;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.PowerUnit;
@@ -251,8 +252,9 @@ public class Platform {
             return false;
         }
         if (i.getItem() instanceof IAEItemPowerStorage powerStorage) {
-            return powerStorage.getAEMaxPower(i) > 0 &&
-                    powerStorage.getPowerFlow(i) != AccessRestriction.READ;
+            var access = ItemAccess.forStack(i);
+            return powerStorage.getAEMaxPower(access) > 0 &&
+                    powerStorage.getPowerFlow(access) != AccessRestriction.READ;
         }
         return false;
     }

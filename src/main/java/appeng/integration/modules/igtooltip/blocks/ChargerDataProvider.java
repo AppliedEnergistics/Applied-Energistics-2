@@ -2,6 +2,7 @@ package appeng.integration.modules.igtooltip.blocks;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.util.Mth;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 
 import appeng.api.implementations.items.IAEItemPowerStorage;
 import appeng.api.integrations.igtooltip.TooltipBuilder;
@@ -26,8 +27,9 @@ public final class ChargerDataProvider implements BodyProvider<ChargerBlockEntit
 
             if (chargingItem.getItem() instanceof IAEItemPowerStorage powerStorage
                     && Platform.isChargeable(chargingItem)) {
-                var fillRate = Mth.floor(powerStorage.getAECurrentPower(chargingItem) * 100 /
-                        powerStorage.getAEMaxPower(chargingItem));
+                var access = ItemAccess.forHandlerIndex(chargerInventory.toResourceHandler(), 0);
+                var fillRate = Mth.floor(powerStorage.getAECurrentPower(access) * 100 /
+                        powerStorage.getAEMaxPower(access));
                 tooltip.addLine(InGameTooltip.Charged.text(fillRate));
             }
         }

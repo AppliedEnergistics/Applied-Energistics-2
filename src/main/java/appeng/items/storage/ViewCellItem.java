@@ -20,8 +20,8 @@ package appeng.items.storage;
 
 import java.util.Collection;
 
-import net.minecraft.world.item.Item.Properties;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.ids.AEComponents;
@@ -79,7 +79,7 @@ public class ViewCellItem extends AEBaseItem implements ICellWorkbenchItem {
                 }
 
                 if (!priorityList.isEmpty()) {
-                    var upgrades = vc.getUpgrades(currentViewCell);
+                    var upgrades = vc.getUpgrades(ItemAccess.forStack(currentViewCell));
                     var hasInverter = upgrades.isInstalled(AEItems.INVERTER_CARD);
                     if (upgrades.isInstalled(AEItems.FUZZY_CARD)) {
                         myMergedList.addNewList(new FuzzyPriorityList(priorityList, fzMode), !hasInverter);
@@ -96,8 +96,13 @@ public class ViewCellItem extends AEBaseItem implements ICellWorkbenchItem {
     }
 
     @Override
-    public IUpgradeInventory getUpgrades(ItemStack is) {
-        return UpgradeInventories.forItem(is, 2);
+    public int getMaxUpgrades(ItemAccess access) {
+        return 2;
+    }
+
+    @Override
+    public IUpgradeInventory getUpgrades(ItemAccess access) {
+        return UpgradeInventories.forItem(access);
     }
 
     @Override

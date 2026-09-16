@@ -1,7 +1,7 @@
 package appeng.api.upgrades;
 
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 
 /**
  * Utilities for creating {@link IUpgradeInventory upgrade inventories}.
@@ -31,14 +31,19 @@ public final class UpgradeInventories {
      * Creates an upgrade inventory that manages the upgrades inserted into an upgradable item stack such as portable
      * cells or wireless terminals. Changes to the upgrades are immediately written into the given stack's NBT.
      */
-    public static IUpgradeInventory forItem(ItemStack stack, int maxUpgrades) {
-        return new ItemUpgradeInventory(stack, maxUpgrades, null);
+    public static IUpgradeInventory forItem(ItemAccess access) {
+        return forItem(access, null);
     }
 
     /**
-     * Same as {@link #forItem(ItemStack, int)}, but with change notifications.
+     * Same as {@link #forItem(ItemAccess)}, but with change notifications.
      */
-    public static IUpgradeInventory forItem(ItemStack stack, int maxUpgrades, ItemUpgradesChanged changeCallback) {
-        return new ItemUpgradeInventory(stack, maxUpgrades, changeCallback);
+    public static IUpgradeInventory forItem(ItemAccess access, ItemUpgradesChanged changeCallback) {
+        var currentItem = access.getResource().getItem();
+        if (currentItem instanceof IUpgradeableItem upgradeableItem) {
+            return new ItemUpgradeInventory(upgradeableItem, access, upgradeableItem.getMaxUpgrades(access),
+                    changeCallback);
+        }
+        return EmptyUpgradeInventory.INSTANCE;
     }
 }

@@ -6,13 +6,14 @@ import java.util.Map;
 import java.util.function.Predicate;
 
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 
 import appeng.api.ids.AEComponents;
 import appeng.api.stacks.AEKeyType;
 import appeng.api.stacks.AEKeyTypes;
+import appeng.items.contents.ItemAccessHelper;
 
 /**
  * Helper class to store the selection of key types.
@@ -34,11 +35,12 @@ public class KeyTypeSelection {
         }
     }
 
-    public static KeyTypeSelection forStack(ItemStack stack, Predicate<AEKeyType> allowKeyType) {
+    public static KeyTypeSelection forStack(ItemAccess access, Predicate<AEKeyType> allowKeyType) {
         var out = new KeyTypeSelection(selection -> {
-            stack.set(AEComponents.ENABLED_KEY_TYPES, selection.enabledSet());
+            ItemAccessHelper.modify(access,
+                    resource -> resource.with(AEComponents.ENABLED_KEY_TYPES, selection.enabledSet()));
         }, allowKeyType);
-        var selected = stack.get(AEComponents.ENABLED_KEY_TYPES);
+        var selected = access.getResource().get(AEComponents.ENABLED_KEY_TYPES);
         if (selected != null) {
             out.setEnabledSet(selected);
         }

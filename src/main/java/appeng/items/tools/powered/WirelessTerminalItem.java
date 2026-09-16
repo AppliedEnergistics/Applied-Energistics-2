@@ -20,13 +20,13 @@ package appeng.items.tools.powered;
 
 import java.util.function.Consumer;
 import java.util.function.DoubleSupplier;
-import java.util.function.Supplier;
 
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.minecraft.core.GlobalPos;
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
@@ -38,8 +38,10 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
-import appeng.api.config.Actionable;
 import appeng.api.config.Settings;
 import appeng.api.config.SortDir;
 import appeng.api.config.SortOrder;
@@ -75,8 +77,8 @@ public class WirelessTerminalItem extends PoweredContainerItem implements IMenuI
     }
 
     @Override
-    public double getChargeRate(ItemStack stack) {
-        return 800d + 800d * Upgrades.getEnergyCardMultiplier(getUpgrades(stack));
+    public double getChargeRate(ItemAccess access) {
+        return 800d + 800d * Upgrades.getEnergyCardMultiplier(getUpgrades(access));
     }
 
     /**
@@ -96,9 +98,9 @@ public class WirelessTerminalItem extends PoweredContainerItem implements IMenuI
      * @return True if the menu was opened.
      */
     protected boolean openFromInventory(Player player, ItemMenuHostLocator locator, boolean returningFromSubmenu) {
-        var is = locator.locateItem(player);
+        var access = locator.itemAccess(player);
 
-        if (!player.level().isClientSide() && checkPreconditions(is)) {
+        if (!player.level().isClientSide() && checkPreconditions(access)) {
             return MenuOpener.open(getMenuType(), player, locator, returningFromSubmenu);
         }
         return false;
@@ -109,9 +111,9 @@ public class WirelessTerminalItem extends PoweredContainerItem implements IMenuI
      */
     @Override
     public InteractionResult use(Level level, Player player, InteractionHand hand) {
-        var is = player.getItemInHand(hand);
+        var access = ItemAccess.forPlayerInteraction(player, hand);
 
-        if (!player.level().isClientSide() && checkPreconditions(is)) {
+        if (!player.level().isClientSide() && checkPreconditions(access)) {
             if (MenuOpener.open(getMenuType(), player, MenuLocators.forHand(player, hand))) {
                 return InteractionResult.SUCCESS;
             }
@@ -139,17 +141,17 @@ public class WirelessTerminalItem extends PoweredContainerItem implements IMenuI
      * access point, register a {@link IGridLinkableHandler}.
      */
     @Nullable
-    public GlobalPos getLinkedPosition(ItemStack item) {
+    public GlobalPos getLinkedPosition(DataComponentGetter item) {
         return item.get(AEComponents.WIRELESS_LINK_TARGET);
     }
 
     @Nullable
-    public IGrid getLinkedGrid(ItemStack item, Level level, @Nullable Consumer<Component> errorConsumer) {
+    public IGrid getLinkedGrid(ItemAccess access, Level level, @Nullable Consumer<Component> errorConsumer) {
         if (!(level instanceof ServerLevel serverLevel)) {
             return null;
         }
 
-        var linkedPos = getLinkedPosition(item);
+        var linkedPos = getLinkedPosition(access.getResource());
         if (linkedPos == null) {
             if (errorConsumer != null) {
                 errorConsumer.accept(PlayerMessages.DeviceNotLinked.text());
@@ -202,8 +204,8 @@ public class WirelessTerminalItem extends PoweredContainerItem implements IMenuI
      *
      * @return True if the wireless terminal can be opened (it's linked, network in range, power, etc.)
      */
-    protected boolean checkPreconditions(ItemStack item) {
-        return !item.isEmpty() && item.getItem() == this;
+    protected boolean checkPreconditions(ItemAccess access) {
+        return access.getResource().is(this);
     }
 
     /**
@@ -213,8 +215,8 @@ public class WirelessTerminalItem extends PoweredContainerItem implements IMenuI
      *               hasPower
      * @return true if wireless terminal uses power
      */
-    public boolean usePower(Player player, double amount, ItemStack is) {
-        return extractAEPower(is, amount, Actionable.MODULATE) >= amount - 0.5;
+    public boolean usePower(ItemAccess access, double amount, TransactionContext tr) {
+        return extractAEPower(access, amount, tr) >= amount - 0.5;
     }
 
     /**
@@ -222,8 +224,8 @@ public class WirelessTerminalItem extends PoweredContainerItem implements IMenuI
      *
      * @return returns true if there is any power left.
      */
-    public boolean hasPower(Player player, double amt, ItemStack is) {
-        return getAECurrentPower(is) >= amt;
+    public boolean hasPower(ItemAccess access, double amt) {
+        return getAECurrentPower(access) >= amt;
     }
 
     /**
@@ -231,8 +233,8 @@ public class WirelessTerminalItem extends PoweredContainerItem implements IMenuI
      *
      * @return config manager of wireless terminal
      */
-    public IConfigManager getConfigManager(Supplier<ItemStack> target) {
-        return IConfigManager.builder(target)
+    public IConfigManager getConfigManager(ItemAccess access) {
+        return IConfigManager.builder(access)
                 .registerSetting(Settings.SORT_BY, SortOrder.NAME)
                 .registerSetting(Settings.VIEW_MODE, ViewItems.ALL)
                 .registerSetting(Settings.SORT_DIRECTION, SortDir.ASCENDING)
@@ -240,12 +242,20 @@ public class WirelessTerminalItem extends PoweredContainerItem implements IMenuI
     }
 
     @Override
-    public IUpgradeInventory getUpgrades(ItemStack stack) {
-        return UpgradeInventories.forItem(stack, 2, this::onUpgradesChanged);
+    public int getMaxUpgrades(ItemAccess access) {
+        return 2;
     }
 
-    private void onUpgradesChanged(ItemStack stack, IUpgradeInventory upgrades) {
-        setAEMaxPowerMultiplier(stack, 1 + Upgrades.getEnergyCardMultiplier(upgrades));
+    @Override
+    public IUpgradeInventory getUpgrades(ItemAccess access) {
+        return UpgradeInventories.forItem(access, this::onUpgradesChanged);
+    }
+
+    private void onUpgradesChanged(ItemAccess access, IUpgradeInventory upgrades) {
+        try (var tr = Transaction.openRoot()) {
+            setAEMaxPowerMultiplier(access, 1 + Upgrades.getEnergyCardMultiplier(upgrades), tr);
+            tr.commit();
+        }
     }
 
     private static class LinkableHandler implements IGridLinkableHandler {

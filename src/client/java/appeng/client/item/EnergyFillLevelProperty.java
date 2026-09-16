@@ -9,6 +9,7 @@ import net.minecraft.client.renderer.item.properties.numeric.RangeSelectItemMode
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.ItemOwner;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 
 import appeng.block.networking.EnergyCellBlockItem;
 import appeng.core.AppEng;
@@ -21,8 +22,9 @@ public class EnergyFillLevelProperty implements RangeSelectItemModelProperty {
     @Override
     public float get(ItemStack stack, @Nullable ClientLevel level, @Nullable ItemOwner owner, int seed) {
         if (stack.getItem() instanceof EnergyCellBlockItem energyCell) {
-            double curPower = energyCell.getAECurrentPower(stack);
-            double maxPower = energyCell.getAEMaxPower(stack);
+            var access = ItemAccess.forStack(stack);
+            double curPower = energyCell.getAECurrentPower(access);
+            double maxPower = energyCell.getAEMaxPower(access);
 
             return (float) (curPower / maxPower);
         }
