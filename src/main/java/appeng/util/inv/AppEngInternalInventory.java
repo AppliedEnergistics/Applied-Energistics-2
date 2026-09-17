@@ -270,12 +270,20 @@ public class AppEngInternalInventory extends BaseInternalInventory {
         public int insert(int index, ItemResource resource, int maxAmount, TransactionContext transaction) {
             TransferPreconditions.checkNonEmptyNonNegative(resource, maxAmount);
 
+            var stack = resource.toStack(maxAmount);
+
+            // Cheaply check via simulation whether anything would actually be inserted before paying for an
+            // O(size) snapshot of the whole inventory.
+            if (insertItem(index, stack, true).getCount() == maxAmount) {
+                return 0;
+            }
+
             updateSnapshots(transaction);
 
             var prevInTransactionalCode = inTransactionalCode;
             inTransactionalCode = true;
             try {
-                var overflow = insertItem(index, resource.toStack(maxAmount), false).getCount();
+                var overflow = insertItem(index, stack, false).getCount();
                 return maxAmount - overflow;
             } finally {
                 inTransactionalCode = prevInTransactionalCode;
@@ -288,6 +296,13 @@ public class AppEngInternalInventory extends BaseInternalInventory {
 
             // Do not allow extraction of wrapped fluid stacks because they're an internal detail
             if (resource.getItem() == AEItems.WRAPPED_GENERIC_STACK.asItem()) {
+                return 0;
+            }
+
+            // The resource must actually match what's stored at this index, otherwise callers relying on the
+            // ResourceHandler contract (e.g. generic item movers) could extract a completely different item than
+            // the one they asked for.
+            if (!resource.matches(getStackInSlot(index))) {
                 return 0;
             }
 

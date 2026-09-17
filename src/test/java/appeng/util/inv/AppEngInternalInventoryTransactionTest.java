@@ -71,6 +71,47 @@ class AppEngInternalInventoryTransactionTest {
     }
 
     @Test
+    void testIndexedExtractRejectsMismatchedResource() {
+        var changeCounter = new AtomicInteger(0);
+        var inv = createInventory(changeCounter);
+        inv.setItemDirect(0, new ItemStack(Items.DIAMOND, 5));
+        changeCounter.set(0);
+
+        var handler = inv.toResourceHandler();
+        var wrongResource = ItemResource.of(Items.EMERALD);
+
+        try (var tx = Transaction.open(null)) {
+            // Slot 0 holds diamonds, not emeralds - extracting emeralds from it must not succeed,
+            // regardless of the requested amount.
+            var extracted = handler.extract(0, wrongResource, 2, tx);
+            assertThat(extracted).isEqualTo(0);
+            tx.commit();
+        }
+
+        assertThat(inv.getStackInSlot(0).getItem()).isEqualTo(Items.DIAMOND);
+        assertThat(inv.getStackInSlot(0).getCount()).isEqualTo(5);
+        assertThat(changeCounter.get()).isEqualTo(0);
+    }
+
+    @Test
+    void testIndexedExtractRejectsResourceFromEmptySlot() {
+        var changeCounter = new AtomicInteger(0);
+        var inv = createInventory(changeCounter);
+
+        var handler = inv.toResourceHandler();
+        var resource = ItemResource.of(Items.DIAMOND);
+
+        try (var tx = Transaction.open(null)) {
+            var extracted = handler.extract(0, resource, 1, tx);
+            assertThat(extracted).isEqualTo(0);
+            tx.commit();
+        }
+
+        assertThat(inv.getStackInSlot(0).isEmpty()).isTrue();
+        assertThat(changeCounter.get()).isEqualTo(0);
+    }
+
+    @Test
     void testMultipleChangesInSingleTransaction() {
         var changeCounter = new AtomicInteger(0);
         var inv = createInventory(changeCounter);
