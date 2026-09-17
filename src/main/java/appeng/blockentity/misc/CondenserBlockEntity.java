@@ -235,7 +235,18 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
 
         @Override
         protected ResourceHandler<ItemResource> createResourceHandler() {
-            return new CondenseResourceHandler<>(ItemResource.EMPTY, 1, Integer.MAX_VALUE);
+            // Mirrors insertItem/isItemValid above: don't void items (i.e. convert them to power) while the
+            // output slot can't accept the configured output item, otherwise items pushed in through the
+            // Storage/Transfer capability would be destroyed for nothing.
+            return new CondenseResourceHandler<>(ItemResource.EMPTY, 1, Integer.MAX_VALUE) {
+                @Override
+                public int insert(ItemResource resource, int amount, TransactionContext transaction) {
+                    if (!canAddOutput()) {
+                        return 0;
+                    }
+                    return super.insert(resource, amount, transaction);
+                }
+            };
         }
     }
 
