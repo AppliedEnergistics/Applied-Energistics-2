@@ -132,7 +132,7 @@ public class FilteredInternalInventory extends BaseInternalInventory {
         @Override
         public int extract(ItemResource resource, int amount, TransactionContext transaction) {
             // This duplicates the default implementation from ResourceHandler, which is inaccessible here
-            // We need to check the filter for each index we access, which is impossible if we call the delegates
+            // We need to check the filter for each index we access, which is impossible if we call the delegate's
             // implementation
             TransferPreconditions.checkNonEmptyNonNegative(resource, amount);
 
