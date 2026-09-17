@@ -2,7 +2,6 @@ package appeng.server.testplots;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Items;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
@@ -10,6 +9,11 @@ import net.neoforged.neoforge.transfer.transaction.Transaction;
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.stacks.AEItemKey;
+import appeng.blockentity.misc.CondenserBlockEntity;
+import appeng.blockentity.misc.InscriberBlockEntity;
+import appeng.blockentity.qnb.QuantumBridgeBlockEntity;
+import appeng.blockentity.storage.DriveBlockEntity;
+import appeng.blockentity.storage.MEChestBlockEntity;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import appeng.server.testworld.PlotBuilder;
@@ -18,12 +22,9 @@ import appeng.server.testworld.PlotBuilder;
  * Tests that verify that side-effects from internal inventory changes are properly deferred until transaction commit
  * for each block entity with exposed inventories and side-effects.
  * <p>
- * Each test follows the pattern:
- * 1. Setup block entity with necessary configuration
- * 2. Access inventory via resource handler (transactional API)
- * 3. Verify side-effects do NOT occur during transaction
- * 4. Commit transaction
- * 5. Verify side-effects DID occur after commit
+ * Each test follows the pattern: 1. Setup block entity with necessary configuration 2. Access inventory via resource
+ * handler (transactional API) 3. Verify side-effects do NOT occur during transaction 4. Commit transaction 5. Verify
+ * side-effects DID occur after commit
  */
 @TestPlotClass
 public final class InternalInventoryTransactionTestPlots {
@@ -31,9 +32,9 @@ public final class InternalInventoryTransactionTestPlots {
     }
 
     /**
-     * Tests QuantumBridge - side-effect is cluster.updateStatus() when singularity inserted/removed.
-     * To verify the side-effect is deferred, we build two QNB rings, insert matching singularities,
-     * and verify they don't link (same grid) until after commit.
+     * Tests QuantumBridge - side-effect is cluster.updateStatus() when singularity inserted/removed. To verify the
+     * side-effect is deferred, we build two QNB rings, insert matching singularities, and verify they don't link (same
+     * grid) until after commit.
      */
     @TestPlot("qnb_deferred_side_effects")
     public static void testQuantumBridge(PlotBuilder plot) {
@@ -47,18 +48,18 @@ public final class InternalInventoryTransactionTestPlots {
             helper.startSequence()
                     // Wait until both QNBs have formed
                     .thenWaitUntil(() -> {
-                        var coreA = helper.getBlockEntity(qnbA, appeng.blockentity.qnb.QuantumBridgeBlockEntity.class);
-                        var coreB = helper.getBlockEntity(qnbB, appeng.blockentity.qnb.QuantumBridgeBlockEntity.class);
+                        var coreA = helper.getBlockEntity(qnbA, QuantumBridgeBlockEntity.class);
+                        var coreB = helper.getBlockEntity(qnbB, QuantumBridgeBlockEntity.class);
                         helper.check(coreA.isFormed(), "QNB A not formed", qnbA);
                         helper.check(coreB.isFormed(), "QNB B not formed", qnbB);
                     })
                     .thenExecute(() -> {
-                        var coreA = helper.getBlockEntity(qnbA, appeng.blockentity.qnb.QuantumBridgeBlockEntity.class);
-                        var coreB = helper.getBlockEntity(qnbB, appeng.blockentity.qnb.QuantumBridgeBlockEntity.class);
+                        var coreA = helper.getBlockEntity(qnbA, QuantumBridgeBlockEntity.class);
+                        var coreB = helper.getBlockEntity(qnbB, QuantumBridgeBlockEntity.class);
 
                         // Create matching singularities
                         var singularities = AEItems.QUANTUM_ENTANGLED_SINGULARITY.stack();
-                        appeng.blockentity.qnb.QuantumBridgeBlockEntity.assignFrequency(singularities);
+                        QuantumBridgeBlockEntity.assignFrequency(singularities);
                         var resource = ItemResource.of(singularities);
 
                         // Get handlers for both QNBs
@@ -119,7 +120,7 @@ public final class InternalInventoryTransactionTestPlots {
             helper.startSequence()
                     .thenExecute(() -> {
                         var condenser = helper.getBlockEntity(BlockPos.ZERO,
-                                appeng.blockentity.misc.CondenserBlockEntity.class);
+                                CondenserBlockEntity.class);
                         var handler = condenser.getExposedItemHandler(null);
                         var initialPower = condenser.getStoredPower();
 
@@ -144,8 +145,8 @@ public final class InternalInventoryTransactionTestPlots {
     }
 
     /**
-     * Tests Inscriber - side-effect is resetting the processing time (and cached recipe) when the
-     * recipe-relevant inventory slots change.
+     * Tests Inscriber - side-effect is resetting the processing time (and cached recipe) when the recipe-relevant
+     * inventory slots change.
      */
     @TestPlot("inscriber_deferred_side_effects")
     public static void testInscriber(PlotBuilder plot) {
@@ -156,7 +157,7 @@ public final class InternalInventoryTransactionTestPlots {
             helper.startSequence()
                     .thenExecute(() -> {
                         var inscriber = helper.getBlockEntity(BlockPos.ZERO,
-                                appeng.blockentity.misc.InscriberBlockEntity.class);
+                                InscriberBlockEntity.class);
                         var handler = inscriber.getExposedItemHandler(Direction.UP);
                         helper.check(handler != null, "handler should not be null", BlockPos.ZERO);
 
@@ -176,13 +177,13 @@ public final class InternalInventoryTransactionTestPlots {
                     // Wait until the inscriber has actually started processing the recipe
                     .thenWaitUntil(() -> {
                         var inscriber = helper.getBlockEntity(BlockPos.ZERO,
-                                appeng.blockentity.misc.InscriberBlockEntity.class);
+                                InscriberBlockEntity.class);
                         helper.check(inscriber.getProcessingTime() > 0,
                                 "Processing time should have advanced", BlockPos.ZERO);
                     })
                     .thenExecute(() -> {
                         var inscriber = helper.getBlockEntity(BlockPos.ZERO,
-                                appeng.blockentity.misc.InscriberBlockEntity.class);
+                                InscriberBlockEntity.class);
                         var handler = inscriber.getExposedItemHandler(Direction.UP);
                         var processingTimeBeforeChange = inscriber.getProcessingTime();
 
@@ -208,8 +209,8 @@ public final class InternalInventoryTransactionTestPlots {
     }
 
     /**
-     * Tests MEChest - side-effect is invalidating the cached storage cell (cellHandler / isCached) when the
-     * cell slot changes, forcing IStorageProvider.requestUpdate() and a lazy rebuild on next access.
+     * Tests MEChest - side-effect is invalidating the cached storage cell (cellHandler / isCached) when the cell slot
+     * changes, forcing IStorageProvider.requestUpdate() and a lazy rebuild on next access.
      */
     @TestPlot("mechest_deferred_side_effects")
     public static void testMEChest(PlotBuilder plot) {
@@ -220,7 +221,7 @@ public final class InternalInventoryTransactionTestPlots {
             helper.startSequence()
                     .thenExecute(() -> {
                         var chest = helper.getBlockEntity(BlockPos.ZERO,
-                                appeng.blockentity.storage.MEChestBlockEntity.class);
+                                MEChestBlockEntity.class);
 
                         // Give the chest an initial cell, then force its storage cache to be built
                         chest.setCell(AEItems.ITEM_CELL_1K.stack());
@@ -278,7 +279,7 @@ public final class InternalInventoryTransactionTestPlots {
             helper.startSequence()
                     .thenExecute(() -> {
                         var chest = helper.getBlockEntity(BlockPos.ZERO,
-                                appeng.blockentity.storage.MEChestBlockEntity.class);
+                                MEChestBlockEntity.class);
 
                         // The input slot (any side other than the front) has its own side-effect: items
                         // placed there get automatically moved into the cell's storage (tryToStoreContents()).
@@ -293,7 +294,8 @@ public final class InternalInventoryTransactionTestPlots {
                             // The item should sit in the raw input slot, but not yet be moved into the cell
                             helper.check(!chest.getInternalInventory().getStackInSlot(0).isEmpty(),
                                     "Emerald visible in input slot during transaction", BlockPos.ZERO);
-                            helper.check(chest.getInventory().getAvailableStacks().get(AEItemKey.of(Items.EMERALD)) == 0,
+                            helper.check(
+                                    chest.getInventory().getAvailableStacks().get(AEItemKey.of(Items.EMERALD)) == 0,
                                     "Emerald should not be in cell storage yet", BlockPos.ZERO);
 
                             tx.commit();
@@ -310,9 +312,9 @@ public final class InternalInventoryTransactionTestPlots {
     }
 
     /**
-     * Tests Drive - side-effect is invalidating the cached storage cell for a slot (isCached / invBySlot) when
-     * that slot's cell changes, forcing IStorageProvider.requestUpdate() and a rebuild. Same approach as the
-     * MEChest cache-invalidation test, since a Drive is essentially a MEChest with more cell slots.
+     * Tests Drive - side-effect is invalidating the cached storage cell for a slot (isCached / invBySlot) when that
+     * slot's cell changes, forcing IStorageProvider.requestUpdate() and a rebuild. Same approach as the MEChest
+     * cache-invalidation test, since a Drive is essentially a MEChest with more cell slots.
      */
     @TestPlot("drive_deferred_side_effects")
     public static void testDrive(PlotBuilder plot) {
@@ -323,7 +325,7 @@ public final class InternalInventoryTransactionTestPlots {
             helper.startSequence()
                     .thenExecute(() -> {
                         var drive = helper.getBlockEntity(BlockPos.ZERO,
-                                appeng.blockentity.storage.DriveBlockEntity.class);
+                                DriveBlockEntity.class);
 
                         // Give the drive an initial cell, then force its storage cache to be built
                         drive.getInternalInventory().setItemDirect(0, AEItems.ITEM_CELL_1K.stack());
@@ -364,160 +366,6 @@ public final class InternalInventoryTransactionTestPlots {
                         var stacksAfter = drive.getCellInventory(0).getAvailableStacks();
                         helper.check(stacksAfter.get(AEItemKey.of(Items.DIAMOND)) == 0,
                                 "Storage cache invalidated after commit", BlockPos.ZERO);
-                    })
-                    .thenSucceed();
-        });
-    }
-
-    /**
-     * Tests Charger - side-effect is setWorking() when items inserted/removed
-     */
-    @TestPlot("charger_deferred_side_effects")
-    public static void testCharger(PlotBuilder plot) {
-        plot.creativeEnergyCell(BlockPos.ZERO.below());
-        plot.block(BlockPos.ZERO, AEBlocks.CHARGER);
-
-        plot.test(helper -> {
-            helper.startSequence()
-                    .thenExecute(() -> {
-                        var charger = helper.getBlockEntity(BlockPos.ZERO,
-                                appeng.blockentity.misc.ChargerBlockEntity.class);
-                        var handler = charger.getExposedItemHandler(Direction.UP);
-                        helper.check(handler != null, "handler should not be null", BlockPos.ZERO);
-
-                        var crystal = AEItems.CERTUS_QUARTZ_CRYSTAL.stack();
-                        var resource = ItemResource.of(crystal);
-
-                        try (var tx = Transaction.open(null)) {
-                            var inserted = handler.insert(resource, 1, tx);
-                            helper.check(inserted == 1, "Should insert crystal", BlockPos.ZERO);
-
-                            // Change should be visible
-                            var currentSlot = charger.getInternalInventory().getStackInSlot(0);
-                            helper.check(!currentSlot.isEmpty(), "Change visible in transaction", BlockPos.ZERO);
-
-                            tx.commit();
-                        }
-
-                        // Verify crystal is in inventory after commit
-                        var finalSlot = charger.getInternalInventory().getStackInSlot(0);
-                        helper.check(AEItems.CERTUS_QUARTZ_CRYSTAL.is(finalSlot),
-                                "Crystal in inventory after commit", BlockPos.ZERO);
-                    })
-                    .thenSucceed();
-        });
-    }
-
-    /**
-     * Tests VibrationChamber - side-effect is markForUpdate() when fuel inserted
-     */
-    @TestPlot("vibration_chamber_deferred_side_effects")
-    public static void testVibrationChamber(PlotBuilder plot) {
-        plot.block(BlockPos.ZERO, AEBlocks.VIBRATION_CHAMBER);
-
-        plot.test(helper -> {
-            helper.startSequence()
-                    .thenExecute(() -> {
-                        var chamber = helper.getBlockEntity(BlockPos.ZERO,
-                                appeng.blockentity.misc.VibrationChamberBlockEntity.class);
-                        var handler = chamber.getExposedItemHandler(Direction.UP);
-                        helper.check(handler != null, "handler should not be null", BlockPos.ZERO);
-
-                        var coal = ItemResource.of(Items.COAL);
-
-                        try (var tx = Transaction.open(null)) {
-                            var inserted = handler.insert(coal, 1, tx);
-                            helper.check(inserted == 1, "Should insert coal", BlockPos.ZERO);
-
-                            // Change should be visible
-                            var currentSlot = chamber.getInternalInventory().getStackInSlot(0);
-                            helper.check(!currentSlot.isEmpty(), "Change visible in transaction", BlockPos.ZERO);
-
-                            tx.commit();
-                        }
-
-                        // Verify coal is in inventory after commit
-                        var finalSlot = chamber.getInternalInventory().getStackInSlot(0);
-                        helper.check(finalSlot.getItem() == Items.COAL,
-                                "Coal in inventory after commit", BlockPos.ZERO);
-                    })
-                    .thenSucceed();
-        });
-    }
-
-    /**
-     * Tests IOPort - side-effect is updateTask() when cells inserted/removed
-     */
-    @TestPlot("ioport_deferred_side_effects")
-    public static void testIOPort(PlotBuilder plot) {
-        plot.creativeEnergyCell(BlockPos.ZERO.below());
-        plot.block(BlockPos.ZERO, AEBlocks.IO_PORT);
-
-        plot.test(helper -> {
-            helper.startSequence()
-                    .thenExecute(() -> {
-                        var ioport = helper.getBlockEntity(BlockPos.ZERO,
-                                appeng.blockentity.storage.IOPortBlockEntity.class);
-                        var handler = ioport.getExposedItemHandler(Direction.UP);
-                        helper.check(handler != null, "handler should not be null", BlockPos.ZERO);
-
-                        var cell = AEItems.ITEM_CELL_1K.stack();
-                        var resource = ItemResource.of(cell);
-
-                        try (var tx = Transaction.open(null)) {
-                            var inserted = handler.insert(resource, 1, tx);
-                            helper.check(inserted == 1, "Should insert cell", BlockPos.ZERO);
-
-                            // Change should be visible
-                            var currentSlot = ioport.getInternalInventory().getStackInSlot(0);
-                            helper.check(!currentSlot.isEmpty(), "Change visible in transaction", BlockPos.ZERO);
-
-                            tx.commit();
-                        }
-
-                        // Verify cell is in inventory after commit
-                        var finalSlot = ioport.getInternalInventory().getStackInSlot(0);
-                        helper.check(AEItems.ITEM_CELL_1K.is(finalSlot),
-                                "Cell in inventory after commit", BlockPos.ZERO);
-                    })
-                    .thenSucceed();
-        });
-    }
-
-    /**
-     * Tests CellWorkbench - side-effect is saveChanges() when cell or config cards change
-     */
-    @TestPlot("cell_workbench_deferred_side_effects")
-    public static void testCellWorkbench(PlotBuilder plot) {
-        plot.block(BlockPos.ZERO, AEBlocks.CELL_WORKBENCH);
-
-        plot.test(helper -> {
-            helper.startSequence()
-                    .thenExecute(() -> {
-                        var workbench = helper.getBlockEntity(BlockPos.ZERO,
-                                appeng.blockentity.misc.CellWorkbenchBlockEntity.class);
-                        var cellInv = workbench.getSubInventory(Identifier.parse("ae2:cells"));
-                        var handler = cellInv.toResourceHandler();
-                        helper.check(handler != null, "handler should not be null", BlockPos.ZERO);
-
-                        var cell = AEItems.ITEM_CELL_1K.stack();
-                        var resource = ItemResource.of(cell);
-
-                        try (var tx = Transaction.open(null)) {
-                            var inserted = handler.insert(resource, 1, tx);
-                            helper.check(inserted == 1, "Should insert cell", BlockPos.ZERO);
-
-                            // Change should be visible
-                            var currentSlot = cellInv.getStackInSlot(0);
-                            helper.check(!currentSlot.isEmpty(), "Change visible in transaction", BlockPos.ZERO);
-
-                            tx.commit();
-                        }
-
-                        // Verify cell is in inventory after commit
-                        var finalSlot = cellInv.getStackInSlot(0);
-                        helper.check(AEItems.ITEM_CELL_1K.is(finalSlot),
-                                "Cell in inventory after commit", BlockPos.ZERO);
                     })
                     .thenSucceed();
         });

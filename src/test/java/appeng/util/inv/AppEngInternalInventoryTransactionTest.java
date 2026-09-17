@@ -17,8 +17,8 @@ import net.neoforged.testframework.junit.EphemeralTestServerProvider;
 import appeng.util.BootstrapMinecraft;
 
 /**
- * Tests that verify AppEngInternalInventory properly defers side-effects (onChangeInventory callbacks)
- * until transaction commit when accessed via resource handlers (the transactional API).
+ * Tests that verify AppEngInternalInventory properly defers side-effects (onChangeInventory callbacks) until
+ * transaction commit when accessed via resource handlers (the transactional API).
  */
 @BootstrapMinecraft
 @ExtendWith(EphemeralTestServerProvider.class)
