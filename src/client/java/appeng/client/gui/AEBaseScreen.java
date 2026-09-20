@@ -32,7 +32,6 @@ import com.mojang.blaze3d.platform.InputConstants;
 
 import org.jetbrains.annotations.MustBeInvokedByOverriders;
 import org.jetbrains.annotations.Nullable;
-import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -145,6 +144,11 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
      * The positions of all slots when a subscreen is opened.
      */
     private final List<SavedSlotInfo> savedSlotInfos = new ArrayList<>();
+    /**
+     * Set while {@link #switchToScreen} is handing control to a sub-screen of the same menu, so that {@link #removed()}
+     * does not tell the server to close the container.
+     */
+    private boolean switchingToOtherScreen;
 
     public AEBaseScreen(T menu, Inventory playerInventory, Component title, ScreenStyle style) {
         super(menu, playerInventory, title);
@@ -671,7 +675,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
             InventoryAction action;
             if (getMinecraft().hasShiftDown()) {
                 action = InventoryAction.CRAFT_SHIFT;
-            } else if (InputConstants.isKeyDown(getMinecraft().getWindow(), GLFW.GLFW_KEY_SPACE)) {
+            } else if (InputConstants.isKeyDown(InputConstants.KEY_SPACE)) {
                 action = InventoryAction.CRAFT_ALL;
             } else {
                 // Craft stack on right-click, craft single on left-click
@@ -684,7 +688,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
             return;
         }
 
-        if (slot != null && InputConstants.isKeyDown(getMinecraft().getWindow(), GLFW.GLFW_KEY_SPACE)) {
+        if (slot != null && InputConstants.isKeyDown(InputConstants.KEY_SPACE)) {
             int slotNum = slot.index;
             final InventoryActionPacket p = new InventoryActionPacket(InventoryAction.MOVE_REGION, slotNum, 0);
             ClientPacketDistributor.sendToServer(p);
@@ -1018,8 +1022,16 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
             slot.y = HIDDEN_SLOT_POS.getY();
         }
 
-        minecraft.screen = null;
-        minecraft.setScreen(screen);
+        // Minecraft.screen is gone; the screen now lives on the (private) Gui.screen field, so the old
+        // trick of nulling it out before setScreen() to suppress the outgoing screen's removed() is not available.
+        // Instead we suppress it from our own removed() override - see switchingToOtherScreen. Both variants keep
+        // the server-side container open while switching between sub-screens of the same menu.
+        switchingToOtherScreen = true;
+        try {
+            minecraft.gui.setScreen(screen);
+        } finally {
+            switchingToOtherScreen = false;
+        }
 
         if (!screen.savedSlotInfos.isEmpty()) {
             // Restore slot state to that of the new screen
@@ -1028,6 +1040,24 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
             }
             screen.savedSlotInfos.clear();
         }
+    }
+
+    /**
+     * True while this screen is handing over to another screen that is backed by the same menu (see
+     * {@link #switchToScreen}). Overrides of {@link #removed()} must not do any tear-down in that case.
+     */
+    protected final boolean isSwitchingToOtherScreen() {
+        return switchingToOtherScreen;
+    }
+
+    @Override
+    public void removed() {
+        // See switchToScreen. Skipping super.removed() keeps the menu open on the server while we hand
+        // over to another screen backed by the very same menu.
+        if (switchingToOtherScreen) {
+            return;
+        }
+        super.removed();
     }
 
     /**

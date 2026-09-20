@@ -3,7 +3,7 @@
   "criteria": {
     "has_the_recipe": {
       "conditions": {
-        "recipe": "ae2:shaped/not_so_mysterious_cube"
+        "recipes": "ae2:shaped/not_so_mysterious_cube"
       },
       "trigger": "minecraft:recipe_unlocked"
     },

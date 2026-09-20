@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "ae2:network/blocks/storage_drive"
+        "recipes": "ae2:network/blocks/storage_drive"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

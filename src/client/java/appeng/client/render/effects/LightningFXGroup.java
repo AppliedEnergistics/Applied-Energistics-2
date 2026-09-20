@@ -19,7 +19,9 @@ import net.minecraft.util.Mth;
 import appeng.client.render.AERenderTypes;
 
 public class LightningFXGroup extends ParticleGroup<LightningFX> {
-    public static ParticleRenderType GROUP = new ParticleRenderType("AE2_LIGHTNING");
+    // ParticleRenderType is now a record (String name, String shorthand); the shorthand is the
+    // abbreviation shown in the F3 particle counter.
+    public static ParticleRenderType GROUP = new ParticleRenderType("AE2_LIGHTNING", "AEL");
 
     public LightningFXGroup(ParticleEngine engine) {
         super(engine);

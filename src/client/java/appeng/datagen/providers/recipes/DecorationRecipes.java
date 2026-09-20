@@ -20,12 +20,13 @@ package appeng.datagen.providers.recipes;
 
 import static appeng.datagen.providers.recipes.RecipeCriteria.criterionName;
 
-import net.minecraft.core.HolderLookup;
+import net.minecraft.advancements.Advancement;
 import net.minecraft.data.recipes.RecipeCategory;
-import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.SingleItemRecipeBuilder;
+import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.block.Block;
 
 import appeng.core.ConventionTags;
@@ -58,8 +59,9 @@ public class DecorationRecipes extends AE2RecipeProvider {
             { AEBlocks.QUARTZ_PILLAR, AEBlocks.QUARTZ_PILLAR_SLAB, AEBlocks.QUARTZ_PILLAR_STAIRS,
                     AEBlocks.QUARTZ_PILLAR_WALL }, };
 
-    public DecorationRecipes(HolderLookup.Provider registries, RecipeOutput output) {
-        super(registries, output);
+    public DecorationRecipes(BootstrapContext<Recipe<?>> recipeOutput,
+            BootstrapContext<Advancement> advancementOutput) {
+        super(recipeOutput, advancementOutput);
     }
 
     @Override

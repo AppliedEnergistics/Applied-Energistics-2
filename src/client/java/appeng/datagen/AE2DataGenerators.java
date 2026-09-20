@@ -29,10 +29,9 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.advancements.AdvancementProvider;
-import net.minecraft.data.registries.RegistryPatchGenerator;
+import net.minecraft.data.advancements.AdvancementSubProvider;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.common.data.DatapackBuiltinEntriesProvider;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 
 import appeng.core.AppEng;
@@ -66,18 +65,23 @@ public class AE2DataGenerators {
     @SubscribeEvent
     public static void onGatherData(GatherDataEvent.Client event) {
         var generator = event.getGenerator();
-        var registries = RegistryPatchGenerator.createLookup(event.getLookupProvider(), createDatapackEntriesBuilder())
-                .thenApply(RegistrySetBuilder.PatchedRegistries::full);
-
         var localization = new LocalizationProvider(generator);
+
+        // GatherDataEvent lost getLookupProvider() and now distinguishes the "world"
+        // datapack registry layer from the "reloadable" one. Loot tables, advancements and recipes
+        // all became reloadable datapack registries in 26.3, so they are no longer standalone
+        // DataProviders - they are registered through a RegistrySetBuilder here instead. The
+        // generated files land in exactly the same places (data/ae2/loot_table, data/ae2/advancement
+        // and data/ae2/recipe) because those are the registries' element directories.
+        event.createWorldRegistryObjects(createWorldEntriesBuilder(), Set.of(AppEng.MOD_ID));
+        event.createReloadableRegistryObjects(createReloadableEntriesBuilder(localization),
+                Set.of(AppEng.MOD_ID));
+
+        // This now includes AE2's own world-layer datapack entries, which is what
+        // RegistryPatchGenerator.createLookup(...).full() used to provide.
+        var registries = event.getWorldLookupProvider();
+
         var pack = generator.getVanillaPack(true);
-
-        // Worldgen et al
-        pack.addProvider(output -> new DatapackBuiltinEntriesProvider(output, event.getLookupProvider(),
-                createDatapackEntriesBuilder(), Set.of(AppEng.MOD_ID)));
-
-        // Loot
-        pack.addProvider(packOutput -> new AE2LootTableProvider(packOutput, registries));
 
         // Tags
         var blockTagsProvider = pack
@@ -100,12 +104,7 @@ public class AE2DataGenerators {
                 PartModelProvider::new));
 
         // Misc
-        pack.addProvider(packOutput -> new AdvancementProvider(packOutput, registries, List.of(
-                new AdvancementGenerator(localization))));
         pack.addProvider(AE2ParticleDescriptionProvider::new);
-
-        // Recipes
-        pack.addProvider(bindRegistries(AE2RecipeProvider.Runner::new, registries));
 
         // DataMaps
         pack.addProvider(bindRegistries(RaidHeroGiftsProvider::new, registries));
@@ -114,7 +113,7 @@ public class AE2DataGenerators {
         pack.addProvider(packOutput -> localization);
     }
 
-    private static RegistrySetBuilder createDatapackEntriesBuilder() {
+    private static RegistrySetBuilder createWorldEntriesBuilder() {
         return new RegistrySetBuilder()
                 .add(Registries.DIMENSION_TYPE, InitDimensionTypes::init)
                 .add(Registries.STRUCTURE, InitStructures::initDatagenStructures)
@@ -123,6 +122,14 @@ public class AE2DataGenerators {
                 .add(Registries.DAMAGE_TYPE, AEDamageTypes::init)
                 .add(Registries.TRADE_SET, InitVillager::bootstrapTradeSets)
                 .add(Registries.VILLAGER_TRADE, InitVillager::bootstrapTrades);
+    }
+
+    private static RegistrySetBuilder createReloadableEntriesBuilder(LocalizationProvider localization) {
+        return new RegistrySetBuilder()
+                .add(Registries.LOOT_TABLE, new AE2LootTableProvider())
+                .add(Registries.ADVANCEMENT, new AdvancementProvider(List.<AdvancementSubProvider.Factory>of(
+                        output -> new AdvancementGenerator(output, localization))))
+                .add(AE2RecipeProvider.bootstrap());
     }
 
     private static <T extends DataProvider> DataProvider.Factory<T> bindRegistries(

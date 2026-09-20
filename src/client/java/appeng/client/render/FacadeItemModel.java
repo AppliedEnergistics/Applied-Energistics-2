@@ -137,9 +137,14 @@ public class FacadeItemModel implements ItemModel {
                 submitNodeCollector.submitCustomGeometry(poseStack, renderType, (pose, consumer) -> {
                     for (var cullFace : Platform.CULL_FACES) {
                         for (var quad : blockModelPart.getQuads(cullFace)) {
-                            var shade = (quad.materialInfo().shade() && quad.direction() != null)
-                                    ? getShade(quad.direction())
-                                    : 1f;
+                            // MaterialInfo#shade() (boolean) is gone. In 26.3 a quad is always
+                            // diffuse-shaded; only the face used to pick the shade factor can be overridden
+                            // via MaterialInfo#shadeDirectionOverride(). This mirrors vanilla
+                            // BlockModelLighter: use the override when present, otherwise the quad direction.
+                            var shadeDirection = quad.materialInfo().shadeDirectionOverride() != null
+                                    ? quad.materialInfo().shadeDirectionOverride()
+                                    : quad.direction();
+                            var shade = shadeDirection != null ? getShade(shadeDirection) : 1f;
                             qi.setColor(-1);
                             qi.scaleColor(shade);
                             consumer.putBakedQuad(

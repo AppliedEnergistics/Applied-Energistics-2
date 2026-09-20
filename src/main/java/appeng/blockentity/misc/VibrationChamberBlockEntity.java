@@ -19,21 +19,32 @@
 package appeng.blockentity.misc;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.Identifier;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.CookingFuel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.LootParams;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
+import net.minecraft.world.level.storage.loot.providers.number.ints.ResolvableInt;
+import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.common.loot.NeoForgeLootContextParams;
 
 import appeng.api.config.Actionable;
 import appeng.api.inventories.ISegmentedInventory;
@@ -314,11 +325,29 @@ public class VibrationChamberBlockEntity extends AENetworkedInvBlockEntity
     }
 
     public int getBurnTime(ItemStack is) {
-        return is.getBurnTime(null, level.fuelValues());
+        // ItemStack#getBurnTime(RecipeType, FuelValues) and FuelValues were removed in 26.3.
+        // Burn time now lives in the minecraft:cooking_fuel data component and is resolved against a loot
+        // context, exactly like AbstractFurnaceBlockEntity#getBurnDuration does. Since resolving requires a
+        // ServerLevel, this returns 0 on the client (where the value is not used for simulation).
+        if (!(level instanceof ServerLevel serverLevel)) {
+            return 0;
+        }
+        var lootParams = new LootParams.Builder(serverLevel)
+                .withParameter(LootContextParams.BLOCK_STATE, getBlockState())
+                .withParameter(LootContextParams.BLOCK_ENTITY, this)
+                .withParameter(LootContextParams.CONTAINER, getInternalInventory().toContainer())
+                .withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(getBlockPos()))
+                .withOptionalParameter(NeoForgeLootContextParams.QUERIED_STACK, is.isEmpty() ? null : is)
+                .create(LootContextParamSets.CONTAINER_PROCESS);
+        return ResolvableInt.getFromItem(is, DataComponents.COOKING_FUEL, CookingFuel::burnTime,
+                new LootContext.Builder(lootParams).create(Optional.empty()), 0);
     }
 
     public boolean hasBurnTime(ItemStack is) {
-        return getBurnTime(is) > 0;
+        // The actual burn time can only be resolved on the server (see #getBurnTime), but the
+        // "is this a fuel?" question is answered by the presence of the cooking fuel component on both
+        // sides, which keeps the fuel slot filter consistent between client and server.
+        return is.has(DataComponents.COOKING_FUEL);
     }
 
     public double getCurrentFuelTicksPerTick() {

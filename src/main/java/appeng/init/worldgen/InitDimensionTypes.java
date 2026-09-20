@@ -32,6 +32,8 @@ public final class InitDimensionTypes {
     @NotNull
     private static DimensionType createSpatialDimensionType(BootstrapContext<DimensionType> context) {
         var timelines = context.lookup(Registries.TIMELINE);
+        // infiniburn is a HolderSet<Block> now, not a TagKey.
+        var blocks = context.lookup(Registries.BLOCK);
 
         return new DimensionType(
                 true, // fixedTime
@@ -42,13 +44,15 @@ public final class InitDimensionTypes {
                 SpatialStorageChunkGenerator.MIN_Y, // minY
                 SpatialStorageChunkGenerator.HEIGHT, // height
                 SpatialStorageChunkGenerator.HEIGHT, // logicalHeight
-                BlockTags.INFINIBURN_OVERWORLD, // infiniburn
+                blocks.getOrThrow(BlockTags.INFINIBURN_OVERWORLD), // infiniburn
                 1.0f, // ambientLight
                 new DimensionType.MonsterSettings(ConstantInt.of(0), 0),
                 DimensionType.Skybox.OVERWORLD,
                 CardinalLighting.Type.DEFAULT,
                 EnvironmentAttributeMap.builder()
-                        .set(EnvironmentAttributes.BED_RULE, BedRule.EXPLODES)
+                        // BedRule.EXPLODES was renamed to BedRule.DESTROY_ON_USE (same behaviour: the bed is
+                        // removed and explodes when slept in; this is what the Nether/End use).
+                        .set(EnvironmentAttributes.BED_RULE, BedRule.DESTROY_ON_USE)
                         .set(EnvironmentAttributes.RESPAWN_ANCHOR_WORKS, false)
                         // TODO 1.21.11: environmental effects SpatialStorageDimensionIds.SKY_PROPERTIES_ID
                         .build(),

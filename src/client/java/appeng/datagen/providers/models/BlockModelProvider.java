@@ -150,7 +150,10 @@ public class BlockModelProvider extends ModelSubProvider {
         craftingModel(AEBlocks.CRAFTING_STORAGE_64K, "64k_storage", CraftingUnitType.STORAGE_64K);
         craftingModel(AEBlocks.CRAFTING_STORAGE_256K, "256k_storage", CraftingUnitType.STORAGE_256K);
 
-        simpleBlockAndItem(AEBlocks.CELL_WORKBENCH, TexturedModel.CUBE_TOP_BOTTOM
+        // TexturedModel.CUBE_TOP_BOTTOM was renamed to CUBE_BOTTOM_TOP. Same texture
+        // mapping (TextureMapping::cubeBottomTop) and same minecraft:block/cube_bottom_top parent,
+        // so the generated models are unchanged.
+        simpleBlockAndItem(AEBlocks.CELL_WORKBENCH, TexturedModel.CUBE_BOTTOM_TOP
                 .updateTexture(textures -> textures
                         .put(TextureSlot.TOP, makeMaterial("block/cell_workbench_top"))
                         .put(TextureSlot.BOTTOM, MACHINE_BOTTOM)
@@ -361,8 +364,8 @@ public class BlockModelProvider extends ModelSubProvider {
 
     private void quartzGrowthAccelerator() {
         var block = AEBlocks.GROWTH_ACCELERATOR.block();
-        var unpoweredModel = TexturedModel.CUBE_TOP_BOTTOM.create(block, modelOutput);
-        var poweredModel = TexturedModel.CUBE_TOP_BOTTOM
+        var unpoweredModel = TexturedModel.CUBE_BOTTOM_TOP.create(block, modelOutput);
+        var poweredModel = TexturedModel.CUBE_BOTTOM_TOP
                 .updateTexture(textures -> textures
                         .put(TextureSlot.SIDE, getBlockTexture(block, "_side_on"))
                         .put(TextureSlot.TOP, getBlockTexture(block, "_top_on")))

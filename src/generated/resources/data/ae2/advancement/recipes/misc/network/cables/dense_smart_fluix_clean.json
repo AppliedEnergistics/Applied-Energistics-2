@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "ae2:network/cables/dense_smart_fluix_clean"
+        "recipes": "ae2:network/cables/dense_smart_fluix_clean"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

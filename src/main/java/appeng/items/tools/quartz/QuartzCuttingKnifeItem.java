@@ -23,6 +23,7 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.component.SwingAnimation;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
@@ -56,7 +57,8 @@ public class QuartzCuttingKnifeItem extends AEBaseItem implements IMenuItem {
         if (!level.isClientSide()) {
             MenuOpener.open(QuartzKnifeMenu.TYPE, p, MenuLocators.forHand(p, hand));
         }
-        p.swing(hand);
+        // swing() now takes an animation and a send-to-self flag; old swing(hand) meant false.
+        p.swing(hand, SwingAnimation.DEFAULT, false);
         return InteractionResult.SUCCESS;
     }
 

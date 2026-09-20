@@ -81,7 +81,7 @@ public class SkyStoneChestRenderer implements BlockEntityRenderer<SkyStoneChestB
             CameraRenderState cameraRenderState) {
         poseStack.pushPose();
         poseStack.translate(0.5D, 0.5D, 0.5D);
-        poseStack.mulPose(new Quaternionf().rotationY(Mth.DEG_TO_RAD * -state.angle));
+        poseStack.rotate(new Quaternionf().rotationY(Mth.DEG_TO_RAD * -state.angle));
         poseStack.translate(-0.5D, -0.5D, -0.5D);
 
         float lidAngle = state.open;
@@ -91,8 +91,14 @@ public class SkyStoneChestRenderer implements BlockEntityRenderer<SkyStoneChestB
         var renderType = state.material.renderType(RenderTypes::entityCutout);
         var sprite = sprites.get(state.material);
 
+        // submitModel no longer takes a trailing CrumblingOverlay. The block-breaking overlay is a
+        // separate submit now (see vanilla ChestRenderer#submit), pushed one order later so it draws on top.
         nodes.submitModel(model, lidAngle, poseStack, renderType, state.lightCoords, OverlayTexture.NO_OVERLAY, -1,
-                sprite, 0, state.breakProgress);
+                sprite, 0);
+        if (state.breakProgress != null) {
+            nodes.order(1).submitCrumblingOverlay(model, lidAngle, poseStack, renderType, state.lightCoords,
+                    OverlayTexture.NO_OVERLAY, -1, state.breakProgress);
+        }
 
         poseStack.popPose();
     }

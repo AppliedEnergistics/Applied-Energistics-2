@@ -22,9 +22,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+import com.mojang.blaze3d.platform.InputConstants;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.lwjgl.glfw.GLFW;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -112,8 +113,9 @@ public class AETextField extends EditBox implements IResizableWidget, ITooltip {
 
         // Swallow all key presses except for focus escape when we're focused to prevent "e" from
         // closing the window instead of typing into the text field
-        return isFocused() && canConsumeInput() && event.key() != GLFW.GLFW_KEY_TAB
-                && event.key() != GLFW.GLFW_KEY_ESCAPE;
+        // KeyEvent.key() is an SDL scancode now; the GLFW key constants moved to InputConstants.
+        return isFocused() && canConsumeInput() && event.key() != InputConstants.KEY_TAB
+                && event.key() != InputConstants.KEY_ESCAPE;
     }
 
     @Override

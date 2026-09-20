@@ -349,7 +349,8 @@ public class MatterCannonItem extends AEBasePoweredItem implements IBasicCellIte
                     if (entityHit instanceof LivingEntity el) {
                         penetration -= dmg;
                         if (el.hurtServer(level, dmgSrc, dmg)) {
-                            el.knockback(0, -direction.x, -direction.z);
+                            // knockback now takes the attributing DamageSource and damage amount.
+                            el.knockback(0, -direction.x, -direction.z, dmgSrc, dmg);
                             if (!el.isAlive()) {
                                 hasDestroyed = true;
                             }

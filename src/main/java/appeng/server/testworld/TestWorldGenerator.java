@@ -21,8 +21,9 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.Rotation;
-import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.entity.BlockEntityTypes;
 import net.minecraft.world.level.block.entity.SignText;
+import net.minecraft.world.level.block.entity.SignTextSlot;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 
@@ -120,10 +121,12 @@ public class TestWorldGenerator {
         level.setBlock(signPos,
                 Blocks.OAK_SIGN.defaultBlockState().rotate(Rotation.CLOCKWISE_180),
                 Block.UPDATE_ALL);
-        level.getBlockEntity(signPos, BlockEntityType.SIGN).ifPresent(sign -> {
-            var signText = sign.getText(true);
+        level.getBlockEntity(signPos, BlockEntityTypes.SIGN).ifPresent(sign -> {
+            // SignBlockEntity#getText(boolean)/setText(SignText, boolean) now take a SignTextSlot,
+            // and SignText became immutable (mutations go through SignText.Mutable; setMessage -> setLine).
+            var signText = sign.getText(SignTextSlot.FRONT).asMutable();
             sign.setAllowedPlayerEditor(null);
-            signText.setHasGlowingText(true);
+            signText.setTextGlowing(true);
             signText.setColor(DyeColor.WHITE);
 
             var text = new StringBuilder(positionedPlot.plot.getId().getPath());
@@ -133,10 +136,10 @@ public class TestWorldGenerator {
                 var lineText = text.substring(0, lineLength);
                 text.delete(0, lineLength);
 
-                signText = signText.setMessage(line++, Component.literal(lineText));
+                signText = signText.setLine(line++, Component.literal(lineText));
             }
 
-            sign.setText(signText, true);
+            sign.setText(signText.asImmutable(), SignTextSlot.FRONT);
         });
     }
 

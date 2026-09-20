@@ -50,7 +50,9 @@ public class SkyStoneTankBlockEntity extends AEBaseBlockEntity {
     }
 
     public boolean onPlayerUse(Player player, InteractionHand hand) {
-        return FluidUtil.interactWithFluidHandler(player, hand, getBlockPos(), tank);
+        // interactWithFluidHandler gained a trailing (nullable) TransactionContext parameter;
+        // passing null keeps the previous behaviour of opening a root transaction internally.
+        return FluidUtil.interactWithFluidHandler(player, hand, getBlockPos(), tank, null);
     }
 
     public ResourceHandler<FluidResource> getFluidHandler() {

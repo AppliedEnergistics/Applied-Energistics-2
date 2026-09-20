@@ -18,11 +18,12 @@
 
 package appeng.items.tools.quartz;
 
-import net.minecraft.world.item.HoeItem;
-import net.minecraft.world.item.ToolMaterial;
+import net.minecraft.world.item.Item;
 
-public class QuartzHoeItem extends HoeItem {
+// net.minecraft.world.item.HoeItem no longer exists; tools are plain Items configured via
+// Item.Properties (see AEItems, which applies Properties#hoe with the same material and stats).
+public class QuartzHoeItem extends Item {
     public QuartzHoeItem(Properties props) {
-        super(ToolMaterial.IRON, -2, -1.0F, props);
+        super(props);
     }
 }

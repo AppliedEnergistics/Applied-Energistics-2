@@ -1,6 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "key": {
     "a": "ae2:smooth_sky_stone_block",
     "b": "ae2:fluix_crystal",

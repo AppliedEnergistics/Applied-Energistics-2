@@ -5,10 +5,13 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleEngine;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.util.Util;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.client.extensions.common.IClientBlockExtensions;
 
 import appeng.block.networking.CableBusBlock;
@@ -25,8 +28,13 @@ public class CableBusBlockClientExtensions implements IClientBlockExtensions {
         this.block = block;
     }
 
+    // IClientBlockExtensions#addHitEffects no longer receives the HitResult; it is now
+    // (BlockState, Level, BlockPos, Direction, ParticleEngine) - see ClientLevel#addBreakingBlockEffects.
+    // AE2 needs the exact impact point (it deliberately concentrates the particles there and halves the
+    // rate to compensate), so we recover it from the client's current crosshair target when that target is
+    // this very block, and otherwise fall back to a point on the struck face like vanilla does.
     @Override
-    public boolean addHitEffects(BlockState state, Level level, HitResult target,
+    public boolean addHitEffects(BlockState state, Level level, BlockPos pos, Direction face,
             ParticleEngine effectRenderer) {
 
         // Half the particle rate. Since we're spawning concentrated on a specific spot,
@@ -35,13 +43,9 @@ public class CableBusBlockClientExtensions implements IClientBlockExtensions {
             return true;
         }
 
-        if (target.getType() != HitResult.Type.BLOCK) {
-            return false;
-        }
-        BlockPos blockPos = BlockPos.containing(target.getLocation().x, target.getLocation().y,
-                target.getLocation().z);
+        var location = getHitLocation(pos, face);
 
-        ICableBusContainer cb = block.cb(level, blockPos);
+        ICableBusContainer cb = block.cb(level, pos);
 
         // Our built-in model has the actual baked sprites we need
         var model = Minecraft.getInstance().getModelManager()
@@ -59,9 +63,9 @@ public class CableBusBlockClientExtensions implements IClientBlockExtensions {
         var textures = cableBusModel.getParticleMaterials(renderState);
         if (!textures.isEmpty()) {
             var texture = Util.getRandom(textures, level.getRandom());
-            double x = target.getLocation().x;
-            double y = target.getLocation().y;
-            double z = target.getLocation().z;
+            double x = location.x;
+            double y = location.y;
+            double z = location.z;
             // FIXME: Check how this looks, probably like shit, maybe provide parts the ability to supply particle
             // textures???
             effectRenderer.add(
@@ -69,6 +73,20 @@ public class CableBusBlockClientExtensions implements IClientBlockExtensions {
         }
 
         return true;
+    }
+
+    private static Vec3 getHitLocation(BlockPos pos, Direction face) {
+        if (Minecraft.getInstance().hitResult instanceof BlockHitResult blockHit
+                && blockHit.getType() == HitResult.Type.BLOCK
+                && blockHit.getBlockPos().equals(pos)) {
+            return blockHit.getLocation();
+        }
+        // Fall back to the center of the struck face.
+        var normal = face.getUnitVec3i();
+        return new Vec3(
+                pos.getX() + 0.5 + normal.getX() * 0.5,
+                pos.getY() + 0.5 + normal.getY() * 0.5,
+                pos.getZ() + 0.5 + normal.getZ() * 0.5);
     }
 
     @Override

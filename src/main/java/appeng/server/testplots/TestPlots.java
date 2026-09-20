@@ -30,7 +30,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.Util;
-import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -42,7 +42,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.ChestBlock;
 import net.minecraft.world.level.block.DispenserBlock;
-import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.entity.BlockEntityTypes;
 import net.minecraft.world.level.block.entity.ChestBlockEntity;
 import net.minecraft.world.level.block.state.properties.ChestType;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
@@ -613,7 +613,7 @@ public final class TestPlots {
     public static void matterCannonRange(PlotBuilder plot) {
         var origin = BlockPos.ZERO;
 
-        plot.fencedEntity(origin.offset(0, 0, 5), EntityType.COW, entity -> {
+        plot.fencedEntity(origin.offset(0, 0, 5), EntityTypes.COW, entity -> {
             entity.setSilent(true);
         });
         plot.creativeEnergyCell(origin.below());
@@ -636,7 +636,7 @@ public final class TestPlots {
     private static void matterCannonDispenser(PlotBuilder plot, Item... ammos) {
         plot.blockState(BlockPos.ZERO, Blocks.DISPENSER.defaultBlockState()
                 .setValue(DispenserBlock.FACING, Direction.SOUTH));
-        plot.customizeBlockEntity(BlockPos.ZERO, BlockEntityType.DISPENSER, dispenser -> {
+        plot.customizeBlockEntity(BlockPos.ZERO, BlockEntityTypes.DISPENSER, dispenser -> {
             dispenser.setItem(0, createMatterCannon(ammos));
         });
         plot.buttonOn(BlockPos.ZERO, Direction.NORTH);

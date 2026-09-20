@@ -40,7 +40,6 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.SlabBlock;
 import net.minecraft.world.level.block.SoundType;
@@ -251,7 +250,7 @@ public final class AEBlocks {
     public static final BlockDefinition<CubeGeneratorBlock> DEBUG_CUBE_GEN = block("Dev.CubeGen", AppEng.makeId("debug_cube_gen"), CubeGeneratorBlock::new);
     public static final BlockDefinition<EnergyGeneratorBlock> DEBUG_ENERGY_GEN = block("Dev.EnergyGen", AppEng.makeId("debug_energy_gen"), EnergyGeneratorBlock::new);
 
-    public static final BlockDefinition<CrankBlock> CRANK = block("Wooden Crank", AEBlockIds.CRANK, p -> new CrankBlock(defaultProps(p, MapColor.WOOD, SoundType.WOOD).isViewBlocking(Blocks::never).noCollision()));
+    public static final BlockDefinition<CrankBlock> CRANK = block("Wooden Crank", AEBlockIds.CRANK, p -> new CrankBlock(defaultProps(p, MapColor.WOOD, SoundType.WOOD).isViewBlocking((state, level, pos, aabb) -> false).noCollision()));
 
     // spotless:on
 

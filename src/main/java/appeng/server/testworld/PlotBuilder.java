@@ -22,6 +22,7 @@ import net.minecraft.world.level.block.HopperBlock;
 import net.minecraft.world.level.block.LeverBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.entity.BlockEntityTypes;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.AttachFace;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
@@ -199,7 +200,7 @@ public interface PlotBuilder {
 
     default void chest(String bb, ItemStack... stacks) {
         block(bb, Blocks.CHEST);
-        customizeBlockEntity(bb, BlockEntityType.CHEST, chest -> {
+        customizeBlockEntity(bb, BlockEntityTypes.CHEST, chest -> {
             for (int i = 0; i < stacks.length; i++) {
                 chest.setItem(i, stacks[i]);
             }
@@ -214,7 +215,7 @@ public interface PlotBuilder {
 
     default void filledHopper(String bb, Direction direction, ItemStack stack) {
         blockState(bb, Blocks.HOPPER.defaultBlockState().setValue(HopperBlock.FACING, direction));
-        customizeBlockEntity(bb, BlockEntityType.HOPPER, hopper -> {
+        customizeBlockEntity(bb, BlockEntityTypes.HOPPER, hopper -> {
             for (int i = 0; i < hopper.getContainerSize(); i++) {
                 hopper.setItem(i, stack.copy());
             }
@@ -235,7 +236,7 @@ public interface PlotBuilder {
 
     default void hopper(String bb, Direction direction, ItemStack... stacks) {
         blockState(bb, Blocks.HOPPER.defaultBlockState().setValue(HopperBlock.FACING, direction));
-        customizeBlockEntity(bb, BlockEntityType.HOPPER, hopper -> {
+        customizeBlockEntity(bb, BlockEntityTypes.HOPPER, hopper -> {
             for (int i = 0; i < stacks.length; i++) {
                 hopper.setItem(i, stacks[i]);
             }

@@ -1,6 +1,5 @@
 package appeng.init;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -24,8 +23,8 @@ import net.minecraft.world.item.trading.TradeSet;
 import net.minecraft.world.item.trading.VillagerTrade;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.storage.loot.LootTable;
-import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
-import net.minecraft.world.level.storage.loot.providers.number.NumberProvider;
+import net.minecraft.world.level.storage.loot.providers.number.ints.ContextIntProvider;
+import net.minecraft.world.level.storage.loot.providers.number.ints.ContextIntProviders;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 
@@ -135,13 +134,14 @@ public class InitVillager {
 
     public static Holder.Reference<TradeSet> register(BootstrapContext<TradeSet> context,
             ResourceKey<TradeSet> resourceKey, TagKey<VillagerTrade> tradeTag) {
-        return register(context, resourceKey, tradeTag, ConstantValue.exactly(2.0F));
+        return register(context, resourceKey, tradeTag, ContextIntProviders.exactly(2));
     }
 
     public static Holder.Reference<TradeSet> register(BootstrapContext<TradeSet> context,
-            ResourceKey<TradeSet> resourceKey, TagKey<VillagerTrade> tradeTag, NumberProvider numberProvider) {
+            ResourceKey<TradeSet> resourceKey, TagKey<VillagerTrade> tradeTag,
+            Holder<ContextIntProvider> amount) {
         return context.register(resourceKey,
-                new TradeSet(context.lookup(Registries.VILLAGER_TRADE).getOrThrow(tradeTag), numberProvider, false,
+                new TradeSet(context.lookup(Registries.VILLAGER_TRADE).getOrThrow(tradeTag), amount, false,
                         Optional.of(resourceKey.identifier().withPrefix("trade_set/"))));
     }
 
@@ -150,14 +150,12 @@ public class InitVillager {
             ItemLike soldItem, int numberOfItems, int maxUses, int xp) {
         return context.register(
                 key,
-                new VillagerTrade(
+                VillagerTrade.builder(
                         new TradeCost(soldItem, numberOfItems),
                         new ItemStackTemplate(Items.EMERALD),
                         maxUses,
                         xp,
-                        0.05F,
-                        Optional.empty(),
-                        List.of()));
+                        0.05F).build());
     }
 
     private static Holder<VillagerTrade> buyItems(BootstrapContext<VillagerTrade> context,
@@ -165,14 +163,12 @@ public class InitVillager {
             ItemLike boughtItem, int emeraldCost, int numberOfItems, int xp) {
         return context.register(
                 key,
-                new VillagerTrade(
+                VillagerTrade.builder(
                         new TradeCost(Items.EMERALD, emeraldCost),
                         new ItemStackTemplate(boughtItem.asItem()),
                         numberOfItems,
                         xp,
-                        0.05F,
-                        Optional.empty(),
-                        List.of()));
+                        0.05F).build());
     }
 
     private static ResourceKey<VillagerTrade> tradeKey(String id) {

@@ -26,6 +26,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Prediction;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -182,7 +183,7 @@ public abstract class AbstractCraftingUnitBlock<T extends CraftingBlockEntity> e
             return InteractionResult.FAIL;
         }
 
-        player.getInventory().placeItemBackInInventory(removedUpgrade);
+        player.getInventory().placeItemBackInInventory(removedUpgrade, Prediction.SERVER_ONLY);
 
         return InteractionResult.SUCCESS;
     }

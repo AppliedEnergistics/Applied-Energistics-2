@@ -19,6 +19,7 @@ import net.minecraft.client.renderer.item.ItemModelResolver;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.resources.model.ModelDebugName;
 import net.minecraft.client.resources.model.geometry.BakedQuad;
+import net.minecraft.client.resources.model.geometry.ItemQuads;
 import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.Identifier;
@@ -36,7 +37,9 @@ import appeng.items.tools.MemoryCardItem;
 
 public class MemoryCardItemModel implements ItemModel {
     private final ItemBaseModelWrapper baseModel;
-    private final LoadingCache<MemoryCardColors, List<BakedQuad>> hashModelCache;
+    // LayerRenderState#prepareQuadList() is gone, layers take a pre-split ItemQuads via
+    // setQuads(). Cache the split result instead of the raw quad list so it is only computed once per color.
+    private final LoadingCache<MemoryCardColors, ItemQuads> hashModelCache;
     private final Matrix4fc transform;
 
     public MemoryCardItemModel(ItemBaseModelWrapper baseModel, Material.Baked hashSprite, Matrix4fc transform) {
@@ -45,8 +48,8 @@ public class MemoryCardItemModel implements ItemModel {
                 .maximumSize(100)
                 .build(new CacheLoader<>() {
                     @Override
-                    public List<BakedQuad> load(MemoryCardColors colors) {
-                        return buildColorQuads(hashSprite, colors);
+                    public ItemQuads load(MemoryCardColors colors) {
+                        return ItemQuads.split(buildColorQuads(hashSprite, colors));
                     }
                 });
         this.transform = transform;
@@ -79,7 +82,7 @@ public class MemoryCardItemModel implements ItemModel {
         colorLayer.setLocalTransform(transform);
         colorLayer.setExtents(baseModel.extents());
         baseModel.renderProperties().applyToLayer(colorLayer, displayContext);
-        colorLayer.prepareQuadList().addAll(hashModelCache.getUnchecked(colors));
+        colorLayer.setQuads(hashModelCache.getUnchecked(colors));
         renderState.appendModelIdentityElement(colors);
     }
 

@@ -23,11 +23,14 @@ import java.util.concurrent.CompletableFuture;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
+import net.minecraft.data.tags.TagAppender;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagEntry;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.common.Tags;
@@ -47,6 +50,77 @@ public class ItemTagsProvider extends BlockTagCopyingItemTagProvider implements 
     public ItemTagsProvider(PackOutput packOutput, CompletableFuture<HolderLookup.Provider> registries,
             CompletableFuture<TagLookup<Block>> blockTagsProvider) {
         super(packOutput, registries, blockTagsProvider, AppEng.MOD_ID);
+    }
+
+    // TagAppender only accepts ResourceKeys in 26.3 (IntrinsicHolderTagsProvider is
+    // gone). This wrapper restores the intrinsic Item overloads so the tag definitions below can
+    // stay unchanged, and therefore produce byte-identical tag files.
+    protected record Appender(TagAppender<Item> delegate) implements TagAppender<Item> {
+        @Override
+        public Appender add(ResourceKey<Item> element) {
+            delegate.add(element);
+            return this;
+        }
+
+        @SafeVarargs
+        public final Appender add(ResourceKey<Item>... elements) {
+            delegate.add(elements);
+            return this;
+        }
+
+        public Appender add(Item... items) {
+            for (Item item : items) {
+                delegate.add(item.builtInRegistryHolder().key());
+            }
+            return this;
+        }
+
+        @Override
+        public Appender addOptional(ResourceKey<Item> element) {
+            delegate.addOptional(element);
+            return this;
+        }
+
+        @Override
+        public Appender addTag(TagKey<Item> tag) {
+            delegate.addTag(tag);
+            return this;
+        }
+
+        @Override
+        public Appender addOptionalTag(TagKey<Item> tag) {
+            delegate.addOptionalTag(tag);
+            return this;
+        }
+
+        @Override
+        public Appender add(TagEntry entry) {
+            delegate.add(entry);
+            return this;
+        }
+
+        @Override
+        public Appender replace(boolean value) {
+            delegate.replace(value);
+            return this;
+        }
+
+        @Override
+        public Appender remove(ResourceKey<Item> element) {
+            delegate.remove(element);
+            return this;
+        }
+
+        @Override
+        public Appender remove(TagKey<Item> tag) {
+            delegate.remove(tag);
+            return this;
+        }
+    }
+
+    @Override
+    protected Appender tag(TagKey<Item> tag) {
+        return new Appender(super.tag(tag));
     }
 
     @Override

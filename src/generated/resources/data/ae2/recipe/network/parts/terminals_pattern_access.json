@@ -1,6 +1,5 @@
 {
   "type": "minecraft:crafting_shapeless",
-  "category": "misc",
   "ingredients": [
     "#ae2:illuminated_panel",
     "ae2:engineering_processor",

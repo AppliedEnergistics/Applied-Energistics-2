@@ -19,26 +19,25 @@
 package appeng.datagen.providers.recipes;
 
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
-import net.minecraft.core.HolderGetter;
-import net.minecraft.core.HolderLookup;
+import net.minecraft.advancements.Advancement;
+import net.minecraft.core.registries.MultiRegistryBootstrap;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.data.PackOutput;
-import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
+import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Recipe;
 
 import appeng.core.AppEng;
 
+// Recipes became a reloadable datapack registry. RecipeProvider is no longer a
+// DataProvider and its nested Runner is gone; it is constructed from the recipe and advancement
+// BootstrapContexts and hooked up through RecipeProvider.asBootstrap(). The inherited
+// `items` HolderGetter is now provided by RecipeProvider itself, so AE2's own copy was dropped.
 public abstract class AE2RecipeProvider extends RecipeProvider {
-    protected final HolderGetter<Item> items;
-
-    public AE2RecipeProvider(HolderLookup.Provider registries, RecipeOutput output) {
-        super(registries, output);
-        this.items = registries.lookupOrThrow(Registries.ITEM);
+    public AE2RecipeProvider(BootstrapContext<Recipe<?>> recipeOutput,
+            BootstrapContext<Advancement> advancementOutput) {
+        super(recipeOutput, advancementOutput);
     }
 
     protected final String makeId(String path) {
@@ -51,43 +50,34 @@ public abstract class AE2RecipeProvider extends RecipeProvider {
 
     @FunctionalInterface
     public interface RecipeProviderFactory {
-        AE2RecipeProvider create(HolderLookup.Provider registries, RecipeOutput output);
+        AE2RecipeProvider create(BootstrapContext<Recipe<?>> recipeOutput,
+                BootstrapContext<Advancement> advancementOutput);
     }
 
-    public static final class Runner extends RecipeProvider.Runner {
-        private static final List<RecipeProviderFactory> PROVIDERS = List.of(
-                DecorationRecipes::new,
-                DecorationBlockRecipes::new,
-                MatterCannonAmmoProvider::new,
-                EntropyRecipes::new,
-                InscriberRecipes::new,
-                SmeltingRecipes::new,
-                CraftingRecipes::new,
-                SmithingRecipes::new,
-                TransformRecipes::new,
-                ChargerRecipes::new,
-                QuartzCuttingRecipesProvider::new,
-                UpgradeRecipes::new);
+    private static final List<RecipeProviderFactory> PROVIDERS = List.of(
+            DecorationRecipes::new,
+            DecorationBlockRecipes::new,
+            MatterCannonAmmoProvider::new,
+            EntropyRecipes::new,
+            InscriberRecipes::new,
+            SmeltingRecipes::new,
+            CraftingRecipes::new,
+            SmithingRecipes::new,
+            TransformRecipes::new,
+            ChargerRecipes::new,
+            QuartzCuttingRecipesProvider::new,
+            UpgradeRecipes::new);
 
-        public Runner(PackOutput packOutput, CompletableFuture<HolderLookup.Provider> registries) {
-            super(packOutput, registries);
-        }
-
-        @Override
-        protected RecipeProvider createRecipeProvider(HolderLookup.Provider registries, RecipeOutput output) {
-            return new RecipeProvider(registries, output) {
-                @Override
-                protected void buildRecipes() {
-                    for (var provider : PROVIDERS) {
-                        provider.create(registries, output).buildRecipes();
-                    }
+    // Replaces the old AE2RecipeProvider.Runner DataProvider.
+    public static MultiRegistryBootstrap bootstrap() {
+        return RecipeProvider.asBootstrap((recipeOutput, advancementOutput) -> new AE2RecipeProvider(recipeOutput,
+                advancementOutput) {
+            @Override
+            protected void buildRecipes() {
+                for (var provider : PROVIDERS) {
+                    provider.create(recipeOutput, advancementOutput).buildRecipes();
                 }
-            };
-        }
-
-        @Override
-        public String getName() {
-            return "AE2 Recipes";
-        }
+            }
+        });
     }
 }

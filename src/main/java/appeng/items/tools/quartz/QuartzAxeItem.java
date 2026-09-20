@@ -18,11 +18,12 @@
 
 package appeng.items.tools.quartz;
 
-import net.minecraft.world.item.AxeItem;
-import net.minecraft.world.item.ToolMaterial;
+import net.minecraft.world.item.Item;
 
-public class QuartzAxeItem extends AxeItem {
+// net.minecraft.world.item.AxeItem no longer exists; tools are plain Items configured via
+// Item.Properties (see AEItems, which applies Properties#axe with the same material and stats).
+public class QuartzAxeItem extends Item {
     public QuartzAxeItem(Properties props) {
-        super(ToolMaterial.IRON, 6.0F, -3.1F, props);
+        super(props);
     }
 }

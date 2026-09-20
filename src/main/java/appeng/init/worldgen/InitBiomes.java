@@ -35,7 +35,8 @@ public final class InitBiomes {
 
     public static void init(BootstrapContext<Biome> context) {
         var placedFeatures = context.lookup(Registries.PLACED_FEATURE);
-        var configuredCarvers = context.lookup(Registries.CONFIGURED_CARVER);
+        // Registries.CONFIGURED_CARVER was renamed to Registries.CARVER.
+        var configuredCarvers = context.lookup(Registries.CARVER);
 
         var specialEffects = new BiomeSpecialEffects.Builder()
                 .waterColor(4159204)

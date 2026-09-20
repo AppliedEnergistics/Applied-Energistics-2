@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import io.netty.buffer.ByteBuf;
+
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -16,6 +18,11 @@ public record ClientboundInitialGuiSyncData(int containerId,
         Map<Integer, SynchronizedFieldHeader> fields) implements CustomPacketPayload {
 
     public static final Type<ClientboundInitialGuiSyncData> TYPE = new Type<>(AppEng.makeId("gui_sync_schema"));
+
+    // FriendlyByteBuf#writeCollection/#readCollection were removed in 26.3; use an explicit
+    // ByteBufCodecs.collection stream codec, which has the same wire format (var-int count + elements).
+    private static final StreamCodec<ByteBuf, List<String>> CLASS_LIST_STREAM_CODEC = ByteBufCodecs
+            .collection(ArrayList::new, ByteBufCodecs.STRING_UTF8);
 
     public static final StreamCodec<FriendlyByteBuf, Map<Integer, SynchronizedFieldHeader>> FIELDS_STREAM_CODEC = StreamCodec
             .of(
@@ -47,7 +54,7 @@ public record ClientboundInitialGuiSyncData(int containerId,
                 classIdMap.put(field.className, classId);
             }
         }
-        buffer.writeCollection(classList, ByteBufCodecs.STRING_UTF8);
+        CLASS_LIST_STREAM_CODEC.encode(buffer, classList);
 
         // Now write out the fields
         buffer.writeInt(fields.size());
@@ -61,7 +68,7 @@ public record ClientboundInitialGuiSyncData(int containerId,
     }
 
     private static Map<Integer, SynchronizedFieldHeader> decodeFields(FriendlyByteBuf buffer) {
-        var classNames = buffer.readCollection(ArrayList::new, ByteBufCodecs.STRING_UTF8);
+        var classNames = CLASS_LIST_STREAM_CODEC.decode(buffer);
         var fieldCount = buffer.readInt();
         var fields = new HashMap<Integer, SynchronizedFieldHeader>(fieldCount);
         for (int i = 0; i < fieldCount; i++) {

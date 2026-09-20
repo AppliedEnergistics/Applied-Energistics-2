@@ -1,6 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "key": {
     "C": "ae2:controller",
     "S": "ae2:smooth_sky_stone_block",

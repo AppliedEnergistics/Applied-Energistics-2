@@ -82,9 +82,9 @@ public class TinyTNTPrimedRenderer extends EntityRenderer<TinyTNTPrimedEntity, T
             poseStack.scale(f3, f3, f3);
         }
 
-        poseStack.mulPose(new Quaternionf().rotationY(Mth.DEG_TO_RAD * -90.0F));
+        poseStack.rotate(new Quaternionf().rotationY(Mth.DEG_TO_RAD * -90.0F));
         poseStack.translate(-0.5D, -0.5D, 0.5D);
-        poseStack.mulPose(new Quaternionf().rotationY(Mth.DEG_TO_RAD * 90.0F));
+        poseStack.rotate(new Quaternionf().rotationY(Mth.DEG_TO_RAD * 90.0F));
         if (!renderState.blockState.isEmpty()) {
             TntMinecartRenderer.submitWhiteSolidBlock(
                     renderState.blockState,

@@ -156,14 +156,17 @@ public class CableBusBlock extends AEBaseEntityBlock<CableBusBlockEntity> implem
                 && this.cb(useContext.getLevel(), useContext.getClickedPos()).isEmpty();
     }
 
+    // NeoForge's IBlockExtension#canConnectRedstone was replaced by vanilla's
+    // BlockBehaviour#shouldRedstoneWireConnectTo, which uses the same direction convention
+    // (direction points from the wire towards this block, null means above/below).
     @Override
-    public boolean canConnectRedstone(BlockState state, BlockGetter level, BlockPos pos,
-            @Nullable Direction side) {
-        if (side == null) {
+    protected boolean shouldRedstoneWireConnectTo(BlockState state, BlockGetter level, BlockPos pos,
+            @Nullable Direction direction) {
+        if (direction == null) {
             return false;
         }
 
-        return this.cb(level, pos).canConnectRedstone(side.getOpposite());
+        return this.cb(level, pos).canConnectRedstone(direction.getOpposite());
     }
 
     @Override

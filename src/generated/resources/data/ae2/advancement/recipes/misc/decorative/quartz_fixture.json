@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "ae2:decorative/quartz_fixture"
+        "recipes": "ae2:decorative/quartz_fixture"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

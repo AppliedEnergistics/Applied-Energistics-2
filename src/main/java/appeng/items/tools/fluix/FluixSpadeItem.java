@@ -4,10 +4,9 @@ import java.util.function.Consumer;
 
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.Item.Properties;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemInstance;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.ShovelItem;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.enchantment.Enchantment;
@@ -15,12 +14,12 @@ import net.minecraft.world.item.enchantment.Enchantments;
 
 import appeng.hooks.IntrinsicEnchantItem;
 
-public class FluixSpadeItem extends ShovelItem implements IntrinsicEnchantItem {
+public class FluixSpadeItem extends Item implements IntrinsicEnchantItem {
     private final IntrinsicEnchantment intrinsicEnchantment = new IntrinsicEnchantment(Enchantments.FORTUNE, 1);
 
     public FluixSpadeItem(Properties props) {
-        super(FluixToolType.FLUIX.getMaterial(), 1.5F, -3.0F,
-                props.repairable(FluixToolType.FLUIX.getRepairIngredient()));
+        super(props.shovel(FluixToolType.FLUIX.getMaterial(), 1.5F, -3.0F)
+                .repairable(FluixToolType.FLUIX.getRepairIngredient()));
     }
 
     @Override

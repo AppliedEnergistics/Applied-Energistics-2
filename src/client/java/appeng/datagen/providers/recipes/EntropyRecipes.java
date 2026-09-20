@@ -18,10 +18,11 @@
 
 package appeng.datagen.providers.recipes;
 
-import net.minecraft.core.HolderLookup;
-import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.advancements.Advancement;
+import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.material.Fluids;
 
@@ -29,8 +30,8 @@ import appeng.core.AppEng;
 import appeng.recipes.entropy.EntropyRecipeBuilder;
 
 public class EntropyRecipes extends AE2RecipeProvider {
-    public EntropyRecipes(HolderLookup.Provider registries, RecipeOutput output) {
-        super(registries, output);
+    public EntropyRecipes(BootstrapContext<Recipe<?>> recipeOutput, BootstrapContext<Advancement> advancementOutput) {
+        super(recipeOutput, advancementOutput);
     }
 
     @Override

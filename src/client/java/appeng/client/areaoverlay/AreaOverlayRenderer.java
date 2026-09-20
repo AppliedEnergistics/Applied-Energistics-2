@@ -27,8 +27,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import org.joml.Matrix4f;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.util.context.ContextKey;
 import net.minecraft.world.level.ChunkPos;
@@ -36,7 +35,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.client.event.ExtractLevelRenderStateEvent;
-import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
+import net.neoforged.neoforge.client.event.SubmitCustomGeometryEvent;
 
 import appeng.client.render.AERenderTypes;
 import appeng.core.AppEng;
@@ -64,56 +63,65 @@ public class AreaOverlayRenderer {
         event.getRenderState().setRenderData(OVERLAY_AREAS, areasInThisLevel);
     }
 
+    /*
+     * MultiBufferSource is gone, so this can no longer grab a BufferSource in RenderLevelStageEvent.AfterWeather and
+     * flush it itself. Geometry that is not tied to a block entity / entity / particle is now submitted through
+     * NeoForge's SubmitCustomGeometryEvent, which hands us the level's SubmitNodeCollector and an identity,
+     * camera-relative PoseStack (LevelRenderer#submitFeatures). SubmitNodeCollection#submitCustomGeometry routes each
+     * submit by render type: the un-blended AREA_OVERLAY_LINE_OCCLUDED lands in the solid phase and the two blended
+     * types in the translucent custom-geometry phase, which preserves the old "occluded lines, then faces, then lines"
+     * draw order.
+     */
     @SubscribeEvent
-    public void renderWorldLastEvent(RenderLevelStageEvent.AfterWeather event) {
+    public void submitCustomGeometry(SubmitCustomGeometryEvent event) {
         var visibleAreas = event.getLevelRenderState().getRenderDataOrDefault(OVERLAY_AREAS, List.of());
 
         if (visibleAreas.isEmpty()) {
             return;
         }
 
-        Minecraft minecraft = Minecraft.getInstance();
-        MultiBufferSource.BufferSource buffer = minecraft.renderBuffers().bufferSource();
+        var collector = event.getSubmitNodeCollector();
         PoseStack poseStack = event.getPoseStack();
 
         poseStack.pushPose();
 
-        Vec3 projectedView = minecraft.gameRenderer.getMainCamera().position();
+        // GameRenderer#getMainCamera() is gone; the camera position for the frame being submitted
+        // lives on the extracted LevelRenderState now.
+        Vec3 projectedView = event.getLevelRenderState().cameraRenderState.pos;
         poseStack.translate(-projectedView.x, -projectedView.y, -projectedView.z);
 
         for (var visibleArea : visibleAreas) {
-            render(visibleArea, poseStack, buffer);
+            render(visibleArea, poseStack, collector);
         }
 
         poseStack.popPose();
-
-        buffer.endBatch(AERenderTypes.AREA_OVERLAY_LINE_OCCLUDED);
-        buffer.endBatch(AERenderTypes.AREA_OVERLAY_FACE);
-        buffer.endBatch(AERenderTypes.AREA_OVERLAY_LINE);
     }
 
-    public void render(IAreaOverlayDataSource area, PoseStack poseStack, MultiBufferSource buffer) {
+    public void render(IAreaOverlayDataSource area, PoseStack poseStack, SubmitNodeCollector collector) {
         Level level = area.getOverlaySourceLocation().getLevel();
         Collection<ChunkPos> allChunks = area.getOverlayChunks();
 
         RenderType typeLinesOccluded = AERenderTypes.AREA_OVERLAY_LINE_OCCLUDED;
-        render(level, allChunks, poseStack, buffer.getBuffer(typeLinesOccluded), true, 0x30ffffff);
+        render(level, allChunks, poseStack, collector, typeLinesOccluded, true, 0x30ffffff);
 
         RenderType typeFaces = AERenderTypes.AREA_OVERLAY_FACE;
-        render(level, allChunks, poseStack, buffer.getBuffer(typeFaces), false, area.getOverlayColor());
+        render(level, allChunks, poseStack, collector, typeFaces, false, area.getOverlayColor());
 
         RenderType typeLines = AERenderTypes.AREA_OVERLAY_LINE;
-        render(level, allChunks, poseStack, buffer.getBuffer(typeLines), true, area.getOverlayColor());
+        render(level, allChunks, poseStack, collector, typeLines, true, area.getOverlayColor());
     }
 
-    private void render(Level level, Collection<ChunkPos> allChunks, PoseStack poseStack, VertexConsumer builder,
-            boolean renderLines, int color) {
+    private void render(Level level, Collection<ChunkPos> allChunks, PoseStack poseStack,
+            SubmitNodeCollector collector, RenderType renderType, boolean renderLines, int color) {
         int[] cols = decomposeColor(color);
         for (ChunkPos pos : allChunks) {
             poseStack.pushPose();
             poseStack.translate(pos.getMinBlockX(), 0, pos.getMinBlockZ());
-            Matrix4f posMat = poseStack.last().pose();
-            addVertices(level, allChunks, builder, posMat, pos, cols, renderLines);
+            // The vertices can no longer be written immediately - submitCustomGeometry captures a
+            // copy of the current pose and calls us back with a VertexConsumer during the render pass. The
+            // baked-in Matrix4f is taken from that callback pose, not from the (by then popped) PoseStack.
+            collector.submitCustomGeometry(poseStack, renderType,
+                    (pose, builder) -> addVertices(level, allChunks, builder, pose.pose(), pos, cols, renderLines));
             poseStack.popPose();
         }
     }

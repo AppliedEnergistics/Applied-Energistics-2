@@ -18,31 +18,30 @@
 
 package appeng.datagen.providers.loot;
 
-import java.util.function.BiConsumer;
-
-import net.minecraft.core.HolderLookup;
 import net.minecraft.data.loot.LootTableSubProvider;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
-import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
+import net.minecraft.world.level.storage.loot.providers.number.ints.ContextIntProviders;
 
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import appeng.init.InitVillager;
 
 public class RaidHeroGiftLootProvider implements LootTableSubProvider {
-    public RaidHeroGiftLootProvider(HolderLookup.Provider lookupProvider) {
+    private final LootTableSubProvider.Context output;
+
+    public RaidHeroGiftLootProvider(LootTableSubProvider.Context output) {
+        this.output = output;
     }
 
     @Override
-    public void generate(BiConsumer<ResourceKey<LootTable>, LootTable.Builder> biConsumer) {
-        biConsumer.accept(
+    public void run() {
+        this.output.accept(
                 InitVillager.LOOT_TABLE_KEY,
                 LootTable.lootTable()
                         .withPool(LootPool.lootPool()
-                                .setRolls(ConstantValue.exactly(1.0F))
+                                .setRolls(ContextIntProviders.exactly(1))
                                 .add(LootItem.lootTableItem(AEItems.CERTUS_QUARTZ_CRYSTAL))
                                 .add(LootItem.lootTableItem(AEItems.FLUIX_CRYSTAL))
                                 .add(LootItem.lootTableItem(AEBlocks.SKY_STONE_BLOCK))));

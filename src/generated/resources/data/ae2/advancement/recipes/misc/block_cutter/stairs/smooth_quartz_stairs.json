@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "ae2:block_cutter/stairs/smooth_quartz_stairs"
+        "recipes": "ae2:block_cutter/stairs/smooth_quartz_stairs"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

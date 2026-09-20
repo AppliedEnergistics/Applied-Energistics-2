@@ -1,5 +1,6 @@
 package appeng.recipes.entropy;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -9,13 +10,21 @@ import com.mojang.serialization.DataResult;
 import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
+import io.netty.buffer.ByteBuf;
+
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.level.block.state.StateHolder;
 import net.minecraft.world.level.block.state.properties.Property;
 
 public sealed interface PropertyValueMatcher
         permits PropertyValueMatcher.SingleValue, PropertyValueMatcher.MultiValue, PropertyValueMatcher.Range {
+    // FriendlyByteBuf#readList/#writeCollection were removed in 26.3; this stream codec has the
+    // same wire format (var-int count followed by the strings).
+    StreamCodec<ByteBuf, List<String>> VALUES_STREAM_CODEC = ByteBufCodecs.collection(ArrayList::new,
+            ByteBufCodecs.STRING_UTF8);
+
     Codec<PropertyValueMatcher> CODEC = new Codec<>() {
         @Override
         public <T> DataResult<Pair<PropertyValueMatcher, T>> decode(DynamicOps<T> ops, T input) {
@@ -65,7 +74,7 @@ public sealed interface PropertyValueMatcher
             var type = buffer.readByte();
             return switch (type) {
                 case 0 -> new SingleValue(buffer.readUtf());
-                case 1 -> new MultiValue(buffer.readList(FriendlyByteBuf::readUtf));
+                case 1 -> new MultiValue(VALUES_STREAM_CODEC.decode(buffer));
                 case 2 -> new Range(buffer.readUtf(), buffer.readUtf());
                 default -> throw new IllegalStateException("Invalid property value matcher type: " + type);
             };
@@ -111,7 +120,7 @@ public sealed interface PropertyValueMatcher
         @Override
         public void toNetwork(FriendlyByteBuf buffer) {
             buffer.writeByte(1);
-            buffer.writeCollection(values, FriendlyByteBuf::writeUtf);
+            VALUES_STREAM_CODEC.encode(buffer, values);
         }
 
         @Override

@@ -22,6 +22,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
@@ -76,8 +77,11 @@ public class GameTestPlotAdapter extends GameTestInstance {
             }
 
             Holder<TestEnvironmentDefinition<?>> environment = Holder.direct(new TestEnvironmentDefinition.AllOf());
+            // TestData gained a dimension field right after the environment; the overworld is the
+            // dimension the previous (dimension-less) constructor implied.
             var testData = new TestData<>(
                     environment,
+                    Level.OVERWORLD,
                     plot.id(),
                     test.maxTicks(),
                     test.setupTicks(),

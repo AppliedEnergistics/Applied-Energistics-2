@@ -26,8 +26,11 @@ import java.util.concurrent.CompletableFuture;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
-import net.minecraft.data.tags.IntrinsicHolderTagsProvider;
+import net.minecraft.data.tags.TagAppender;
+import net.minecraft.data.tags.TagsProvider;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.TagEntry;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -40,9 +43,82 @@ import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.BlockDefinition;
 import appeng.datagen.providers.IAE2DataProvider;
 
-public class BlockTagsProvider extends IntrinsicHolderTagsProvider<Block> implements IAE2DataProvider {
+// IntrinsicHolderTagsProvider was removed. TagsProvider#tag now hands out a
+// TagAppender that only accepts ResourceKeys, so we re-add the intrinsic Block overloads via a
+// wrapping appender. This mirrors NeoForgeBlockTagsProvider.Appender in NeoForge 26.3 and keeps
+// every tag entry (and its order) byte-identical to what IntrinsicHolderTagsProvider produced.
+public class BlockTagsProvider extends TagsProvider<Block> implements IAE2DataProvider {
     public BlockTagsProvider(PackOutput packOutput, CompletableFuture<HolderLookup.Provider> registries) {
-        super(packOutput, Registries.BLOCK, registries, block -> block.builtInRegistryHolder().key(), AppEng.MOD_ID);
+        super(packOutput, Registries.BLOCK, registries, AppEng.MOD_ID);
+    }
+
+    // replacement for IntrinsicHolderTagsProvider.IntrinsicTagAppender
+    protected record Appender(TagAppender<Block> delegate) implements TagAppender<Block> {
+        @Override
+        public Appender add(ResourceKey<Block> element) {
+            delegate.add(element);
+            return this;
+        }
+
+        @SafeVarargs
+        public final Appender add(ResourceKey<Block>... elements) {
+            delegate.add(elements);
+            return this;
+        }
+
+        public Appender add(Block... blocks) {
+            for (Block block : blocks) {
+                delegate.add(block.builtInRegistryHolder().key());
+            }
+            return this;
+        }
+
+        @Override
+        public Appender addOptional(ResourceKey<Block> element) {
+            delegate.addOptional(element);
+            return this;
+        }
+
+        @Override
+        public Appender addTag(TagKey<Block> tag) {
+            delegate.addTag(tag);
+            return this;
+        }
+
+        @Override
+        public Appender addOptionalTag(TagKey<Block> tag) {
+            delegate.addOptionalTag(tag);
+            return this;
+        }
+
+        @Override
+        public Appender add(TagEntry entry) {
+            delegate.add(entry);
+            return this;
+        }
+
+        @Override
+        public Appender replace(boolean value) {
+            delegate.replace(value);
+            return this;
+        }
+
+        @Override
+        public Appender remove(ResourceKey<Block> element) {
+            delegate.remove(element);
+            return this;
+        }
+
+        @Override
+        public Appender remove(TagKey<Block> tag) {
+            delegate.remove(tag);
+            return this;
+        }
+    }
+
+    @Override
+    protected Appender tag(TagKey<Block> tag) {
+        return new Appender(super.tag(tag));
     }
 
     @Override

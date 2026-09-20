@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "ae2:tools/paintballs_lumen_red"
+        "recipes": "ae2:tools/paintballs_lumen_red"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

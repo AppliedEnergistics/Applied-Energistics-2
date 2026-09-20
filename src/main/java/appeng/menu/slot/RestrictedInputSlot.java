@@ -18,6 +18,7 @@
 
 package appeng.menu.slot;
 
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
@@ -134,7 +135,11 @@ public class RestrictedInputSlot extends AppEngSlot {
             case VIEW_CELL:
                 return AEItems.VIEW_CELL.is(stack);
             case FUEL:
-                return stack.getBurnTime(null, getLevel().fuelValues()) > 0;
+                // ItemStack#getBurnTime and FuelValues were removed in 26.3. Whether an item is a
+                // furnace fuel is now expressed by the presence of the minecraft:cooking_fuel data component
+                // (see AbstractFurnaceBlockEntity#canPlaceItem). The concrete burn time needs a loot context
+                // and is not required for this yes/no filter.
+                return stack.has(DataComponents.COOKING_FUEL);
             case POWERED_TOOL:
                 return Platform.isChargeable(stack);
             case QE_SINGULARITY:

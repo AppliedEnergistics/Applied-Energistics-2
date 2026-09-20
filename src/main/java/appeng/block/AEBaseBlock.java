@@ -26,7 +26,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -91,7 +91,7 @@ public abstract class AEBaseBlock extends Block implements IOrientableBlock {
         return defaultProps(p, MapColor.METAL, SoundType.GLASS)
                 .noCollision()
                 .noOcclusion()
-                .pushReaction(PushReaction.DESTROY);
+                .pushReaction(PushReaction.POPPED);
     }
 
     public void addToMainCreativeTab(CreativeModeTab.ItemDisplayParameters parameters, CreativeModeTab.Output output) {
@@ -116,11 +116,15 @@ public abstract class AEBaseBlock extends Block implements IOrientableBlock {
         return getOrientationStrategy().getStateForPlacement(state, context);
     }
 
+    // Block#spawnDestroyParticles(Level, Player, BlockPos, BlockState) was replaced by
+    // #spawnDestroyByEntityParticles(Level, Entity, BlockPos, BlockState); the player-less
+    // #spawnDestroyParticles(Level, BlockPos, BlockState) delegates to it, so overriding this one covers
+    // both call paths.
     @Override
-    protected void spawnDestroyParticles(Level level, Player player, BlockPos pos, BlockState state) {
+    public void spawnDestroyByEntityParticles(Level level, @Nullable Entity entity, BlockPos pos, BlockState state) {
         // Suppress break particles & sound when being disassembled by a wrench
         if (!WrenchHook.isDisassembling()) {
-            super.spawnDestroyParticles(level, player, pos, state);
+            super.spawnDestroyByEntityParticles(level, entity, pos, state);
         }
     }
 

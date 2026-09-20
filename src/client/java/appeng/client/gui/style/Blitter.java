@@ -20,8 +20,8 @@ package appeng.client.gui.style;
 
 import java.util.Objects;
 
-import com.mojang.blaze3d.pipeline.ColorTargetState;
-import com.mojang.blaze3d.pipeline.RenderPipeline;
+import com.mojang.renderpearl.api.pipeline.ColorTargetState;
+import com.mojang.renderpearl.api.pipeline.RenderPipeline;
 
 import org.joml.Matrix3x2f;
 
@@ -47,6 +47,9 @@ import appeng.util.Icon;
 public final class Blitter {
     public static final RenderPipeline GUI_TEXTURED_OPAQUE = RenderPipelines.GUI_TEXTURED.toBuilder()
             .withLocation(AppEng.makeId("pipeline/gui_textured_opaque"))
+            // The pipeline classes moved from com.mojang.blaze3d.pipeline to
+            // com.mojang.renderpearl.api.pipeline. ColorTargetState.DEFAULT still exists there (no blend function,
+            // RGBA8_UNORM, WRITE_ALL) and is what vanilla's own opaque GUI pipeline uses, so keep using it.
             .withColorTargetState(ColorTargetState.DEFAULT)
             .build();
 

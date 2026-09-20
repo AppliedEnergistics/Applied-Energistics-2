@@ -6,8 +6,7 @@ import java.util.List;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.ShapeRenderer;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.state.level.BlockOutlineRenderState;
@@ -103,8 +102,9 @@ public class RenderBlockOutlineHook {
 
             var selectedPart = partHost.selectPartWorld(evt.getHitResult().getLocation());
             boolean highContrast = evt.isHighContrast();
+            // GameRenderer#getGameRenderState() -> GameRenderer#gameRenderState()
             float lineWidth = Minecraft.getInstance().gameRenderer
-                    .getGameRenderState().windowRenderState.appropriateLineWidth;
+                    .gameRenderState().windowRenderState.appropriateLineWidth;
             if (selectedPart.facade != null) {
                 evt.addCustomRenderer(
                         new FacadeOutlineRenderer(selectedPart.facade, selectedPart.side, cameraRelativePos,
@@ -119,19 +119,25 @@ public class RenderBlockOutlineHook {
         }
     }
 
+    /*
+     * CustomBlockOutlineRenderer#render lost its MultiBufferSource.BufferSource and its `translucentPass` boolean and
+     * instead receives the SubmitNodeCollector: render(BlockOutlineRenderState, SubmitNodeCollector, PoseStack,
+     * LevelRenderState). It is now invoked exactly once per frame (LevelRenderer#submitBlockOutline) rather than once
+     * per pass; which pass the geometry ends up in is decided by SubmitNodeCollection#submitShapeOutline from the
+     * colour's alpha and the `afterTerrain` flag, which vanilla feeds from BlockOutlineRenderState#isTranslucent().
+     */
     record PartPlacementPreviewRenderer(PartPlacement.Placement placement,
             IPart part, Vec3 cameraRelativePos) implements CustomBlockOutlineRenderer {
         @Override
-        public boolean render(BlockOutlineRenderState blockOutlineRenderState,
-                MultiBufferSource.BufferSource bufferSource,
+        public boolean render(BlockOutlineRenderState renderState,
+                SubmitNodeCollector collector,
                 PoseStack poseStack,
-                boolean translucentPass,
                 LevelRenderState levelRenderState) {
             // Render without depth test to also have a preview for parts inside blocks.
-            renderPart(poseStack, bufferSource, cameraRelativePos, part, placement.side(), PREVIEW_LINE_WIDTH, false,
-                    true, true);
-            renderPart(poseStack, bufferSource, cameraRelativePos, part, placement.side(), PREVIEW_LINE_WIDTH, false,
-                    true, false);
+            renderPart(poseStack, collector, cameraRelativePos, part, placement.side(), PREVIEW_LINE_WIDTH, false,
+                    true, true, renderState.isTranslucent());
+            renderPart(poseStack, collector, cameraRelativePos, part, placement.side(), PREVIEW_LINE_WIDTH, false,
+                    true, false, renderState.isTranslucent());
             return false;
         }
     }
@@ -140,29 +146,29 @@ public class RenderBlockOutlineHook {
             boolean renderAnchor,
             Vec3 cameraRelativePos) implements CustomBlockOutlineRenderer {
         @Override
-        public boolean render(BlockOutlineRenderState blockOutlineRenderState,
-                MultiBufferSource.BufferSource bufferSource,
+        public boolean render(BlockOutlineRenderState renderState,
+                SubmitNodeCollector collector,
                 PoseStack poseStack,
-                boolean b,
                 LevelRenderState levelRenderState) {
             // Use same rendering inside blocks as part preview.
-            showFacadePlacementPreview(poseStack, cameraRelativePos, bufferSource, true);
-            showFacadePlacementPreview(poseStack, cameraRelativePos, bufferSource, false);
+            showFacadePlacementPreview(poseStack, cameraRelativePos, collector, true, renderState.isTranslucent());
+            showFacadePlacementPreview(poseStack, cameraRelativePos, collector, false, renderState.isTranslucent());
             return false;
         }
 
         private void showFacadePlacementPreview(PoseStack poseStack,
                 Vec3 cameraRelativePos,
-                MultiBufferSource buffers,
-                boolean insideBlock) {
+                SubmitNodeCollector collector,
+                boolean insideBlock,
+                boolean afterTerrain) {
             if (renderAnchor) {
                 var cableAnchor = AEParts.CABLE_ANCHOR.get().createPart();
-                renderPart(poseStack, buffers, cameraRelativePos, cableAnchor, side, PREVIEW_LINE_WIDTH, false, true,
-                        insideBlock);
+                renderPart(poseStack, collector, cameraRelativePos, cableAnchor, side, PREVIEW_LINE_WIDTH, false, true,
+                        insideBlock, afterTerrain);
             }
 
-            renderFacade(poseStack, buffers, cameraRelativePos, facade, side, PREVIEW_LINE_WIDTH, false, true,
-                    insideBlock);
+            renderFacade(poseStack, collector, cameraRelativePos, facade, side, PREVIEW_LINE_WIDTH, false, true,
+                    insideBlock, afterTerrain);
         }
     }
 
@@ -171,11 +177,11 @@ public class RenderBlockOutlineHook {
             boolean highContrast,
             float lineWidth) implements CustomBlockOutlineRenderer {
         @Override
-        public boolean render(BlockOutlineRenderState blockOutlineRenderState,
-                MultiBufferSource.BufferSource bufferSource, PoseStack poseStack, boolean b,
+        public boolean render(BlockOutlineRenderState renderState,
+                SubmitNodeCollector collector, PoseStack poseStack,
                 LevelRenderState levelRenderState) {
-            renderFacade(poseStack, bufferSource, cameraRelativePos, facade, side, lineWidth, highContrast, false,
-                    false);
+            renderFacade(poseStack, collector, cameraRelativePos, facade, side, lineWidth, highContrast, false,
+                    false, renderState.isTranslucent());
 
             return true;
         }
@@ -186,87 +192,105 @@ public class RenderBlockOutlineHook {
             boolean highContrast,
             float lineWidth) implements CustomBlockOutlineRenderer {
         @Override
-        public boolean render(BlockOutlineRenderState blockOutlineRenderState,
-                MultiBufferSource.BufferSource bufferSource, PoseStack poseStack, boolean b,
+        public boolean render(BlockOutlineRenderState renderState,
+                SubmitNodeCollector collector, PoseStack poseStack,
                 LevelRenderState levelRenderState) {
-            renderPart(poseStack, bufferSource, cameraRelativePos, part, side, lineWidth, highContrast, false, false);
+            renderPart(poseStack, collector, cameraRelativePos, part, side, lineWidth, highContrast, false, false,
+                    renderState.isTranslucent());
             return true;
         }
     }
 
     private static void renderPart(PoseStack poseStack,
-            MultiBufferSource buffers,
+            SubmitNodeCollector collector,
             Vec3 cameraRelativePos,
             IPart part,
             Direction side,
             float lineWidth,
             boolean highContrast,
             boolean preview,
-            boolean insideBlock) {
+            boolean insideBlock,
+            boolean afterTerrain) {
         var boxes = new ArrayList<AABB>();
         var helper = new BusCollisionHelper(boxes, side, true);
         part.getBoxes(helper);
-        renderBoxes(poseStack, buffers, cameraRelativePos, boxes, lineWidth, highContrast, preview, insideBlock);
+        renderBoxes(poseStack, collector, cameraRelativePos, boxes, lineWidth, highContrast, preview, insideBlock,
+                afterTerrain);
     }
 
     private static void renderFacade(PoseStack poseStack,
-            MultiBufferSource buffers,
+            SubmitNodeCollector collector,
             Vec3 cameraRelativePos,
             IFacadePart facade,
             Direction side,
             float lineWidth,
             boolean highContrast,
             boolean preview,
-            boolean insideBlock) {
+            boolean insideBlock,
+            boolean afterTerrain) {
         var boxes = new ArrayList<AABB>();
         var helper = new BusCollisionHelper(boxes, side, true);
         facade.getBoxes(helper, false);
-        renderBoxes(poseStack, buffers, cameraRelativePos, boxes, lineWidth, highContrast, preview, insideBlock);
+        renderBoxes(poseStack, collector, cameraRelativePos, boxes, lineWidth, highContrast, preview, insideBlock,
+                afterTerrain);
     }
 
     private static void renderBoxes(PoseStack poseStack,
-            MultiBufferSource buffers,
+            SubmitNodeCollector collector,
             Vec3 cameraRelativePos,
             List<AABB> boxes,
             float lineWidth,
             boolean highContrast,
             boolean preview,
-            boolean insideBlock) {
+            boolean insideBlock,
+            boolean afterTerrain) {
         if (preview) {
-            RenderType renderType = insideBlock ? AERenderTypes.LINES_BEHIND_BLOCK : RenderTypes.lines();
+            RenderType renderType = insideBlock ? AERenderTypes.LINES_BEHIND_BLOCK : RenderTypes.linesTranslucent();
             int color = ARGB.white(insideBlock ? 0.2f : 0.6f);
-            renderBoxes(poseStack, buffers, cameraRelativePos, boxes, renderType, color, lineWidth);
+            renderBoxes(poseStack, collector, cameraRelativePos, boxes, renderType, color, lineWidth, afterTerrain);
         } else {
             if (highContrast) {
-                renderBoxes(poseStack, buffers, cameraRelativePos, boxes, RenderTypes.secondaryBlockOutline(),
-                        CommonColors.BLACK, HIGH_CONTRAST_SECONDARY_LINE_WIDTH);
+                renderBoxes(poseStack, collector, cameraRelativePos, boxes, RenderTypes.secondaryBlockOutline(),
+                        CommonColors.BLACK, HIGH_CONTRAST_SECONDARY_LINE_WIDTH, afterTerrain);
             }
+            // 26.3 split the old blended RenderPipelines.LINES into LINES (ColorTargetState.DEFAULT,
+            // i.e. NO blending) and LINES_TRANSLUCENT / LINES_DEPTH_BIAS (BlendFunction.TRANSLUCENT). All the
+            // outline colours here carry an alpha < 255, so keeping RenderTypes.lines() would silently render
+            // them fully opaque. Vanilla's own LevelRenderer#submitBlockOutline made exactly this switch:
+            // linesDepthBias() for the high-contrast outline, linesTranslucent() otherwise.
             int color = highContrast ? CommonColors.HIGH_CONTRAST_DIAMOND : ARGB.black(0.4f);
-            renderBoxes(poseStack, buffers, cameraRelativePos, boxes, RenderTypes.lines(), color, lineWidth);
+            RenderType renderType = highContrast ? RenderTypes.linesDepthBias() : RenderTypes.linesTranslucent();
+            renderBoxes(poseStack, collector, cameraRelativePos, boxes, renderType, color, lineWidth, afterTerrain);
         }
     }
 
     private static void renderBoxes(PoseStack poseStack,
-            MultiBufferSource buffers,
+            SubmitNodeCollector collector,
             Vec3 cameraRelativePos,
             List<AABB> boxes,
             RenderType renderType,
             int color,
-            float lineWidth) {
-        var buffer = buffers.getBuffer(renderType);
+            float lineWidth,
+            boolean afterTerrain) {
+        // ShapeRenderer#renderShape(poseStack, buffer, shape, x, y, z, color, lineWidth) is gone.
+        // Its replacement, SubmitNodeCollector#submitShapeOutline, has no x/y/z offset, so the camera-relative
+        // offset that used to be passed per call now has to be baked into the pose - exactly like vanilla's
+        // LevelRenderer#submitBlockOutline does before calling submitHitOutline.
+        poseStack.pushPose();
+        poseStack.translate(cameraRelativePos.x, cameraRelativePos.y, cameraRelativePos.z);
 
         for (var box : boxes) {
             var shape = Shapes.create(box);
 
-            ShapeRenderer.renderShape(
+            collector.submitShapeOutline(
                     poseStack,
-                    buffer,
                     shape,
-                    cameraRelativePos.x,
-                    cameraRelativePos.y,
-                    cameraRelativePos.z,
+                    renderType,
                     color,
-                    lineWidth);
+                    lineWidth,
+                    afterTerrain);
         }
+
+        poseStack.popPose();
     }
 }

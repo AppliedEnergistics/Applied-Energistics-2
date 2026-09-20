@@ -11,8 +11,8 @@ import org.joml.Quaternionf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.gui.render.pip.PictureInPictureRenderer;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Sheets;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.client.renderer.block.FluidRenderer;
 import net.minecraft.client.renderer.state.gui.pip.PictureInPictureRenderState;
@@ -24,8 +24,10 @@ import net.neoforged.neoforge.client.model.pipeline.VertexConsumerWrapper;
 public class FluidBlockPictureInPictureRenderer
         extends PictureInPictureRenderer<FluidBlockPictureInPictureRenderer.State> {
 
-    public FluidBlockPictureInPictureRenderer(MultiBufferSource.BufferSource bufferSource) {
-        super(bufferSource);
+    // PictureInPictureRenderer no longer takes a MultiBufferSource.BufferSource (MultiBufferSource
+    // is gone) and NeoForge's RegisterPictureInPictureRenderersEvent registers a Supplier, so the renderer
+    // needs a no-arg constructor.
+    public FluidBlockPictureInPictureRenderer() {
     }
 
     @Override
@@ -33,29 +35,45 @@ public class FluidBlockPictureInPictureRenderer
         return State.class;
     }
 
+    /*
+     * renderToTexture gained the SubmitNodeCollector and no longer draws anything itself - it only submits nodes, which
+     * PictureInPictureRenderer#prepare then prepares into a frame and executes in its own render pass afterwards.
+     * Setting up the level lighting here is still correct (vanilla's own GuiBannerResultRenderer / GuiEntityRenderer do
+     * exactly the same) because Lighting#setupFor installs a persistent uniform buffer that stays bound for the rest of
+     * prepare().
+     */
     @Override
-    protected void renderToTexture(State renderState, PoseStack poseStack) {
+    protected void renderToTexture(State renderState, PoseStack poseStack, SubmitNodeCollector submitNodeCollector) {
         var minecraft = Minecraft.getInstance();
         var fluidModelSet = minecraft.getModelManager().getFluidStateModelSet();
 
-        minecraft.gameRenderer.getLighting().setupFor(Lighting.Entry.LEVEL);
+        // GameRenderer#getLighting() -> GameRenderer#lighting()
+        minecraft.gameRenderer.lighting().setupFor(Lighting.Entry.LEVEL);
 
         var fluidState = renderState.fluid.defaultFluidState();
 
         poseStack.pushPose();
         setupOrthographicProjection(poseStack);
 
+        // There is no buffer source to pull a VertexConsumer from any more. FluidRenderer#tesselate
+        // asks its Output for exactly one buffer - the one for the fluid model's own ChunkSectionLayer (see
+        // FluidRenderer line ~95) - so the render type can be resolved up front from the model and the whole
+        // tesselation moved inside a single submitCustomGeometry callback, which is where the VertexConsumer
+        // now comes from.
+        // Sheets.cutoutBlockSheet()/translucentBlockSheet() were renamed to
+        // cutoutBlockItemSheet()/translucentBlockItemSheet().
+        var layer = fluidModelSet.get(fluidState).layer();
+        var renderType = layer.translucent() ? Sheets.translucentBlockItemSheet() : Sheets.cutoutBlockItemSheet();
+
         var fluidRenderer = new FluidRenderer(fluidModelSet);
-        fluidRenderer.tesselate(
-                BlockAndTintGetter.EMPTY,
-                BlockPos.ZERO,
-                layer -> {
-                    // TODO 26.1: Unclear if this is still needed
-                    var buffer = bufferSource.getBuffer(
-                            layer.translucent() ? Sheets.translucentBlockSheet() : Sheets.cutoutBlockSheet());
-                    return new LiquidVertexConsumer(buffer, poseStack.last());
-                },
-                fluidState.createLegacyBlock(), fluidState);
+        submitNodeCollector.submitCustomGeometry(poseStack, renderType, (pose, buffer) -> {
+            var wrapped = new LiquidVertexConsumer(buffer, pose);
+            fluidRenderer.tesselate(
+                    BlockAndTintGetter.EMPTY,
+                    BlockPos.ZERO,
+                    ignoredLayer -> wrapped,
+                    fluidState.createLegacyBlock(), fluidState);
+        });
 
         poseStack.popPose();
     }
@@ -89,14 +107,15 @@ public class FluidBlockPictureInPictureRenderer
         float rotation = 45;
 
         poseStack.scale(1, 1, -1);
-        poseStack.mulPose(new Quaternionf().rotationY(Mth.DEG_TO_RAD * -180));
+        // PoseStack#mulPose(Quaternionf) was renamed to PoseStack#rotate(Quaternionfc).
+        poseStack.rotate(new Quaternionf().rotationY(Mth.DEG_TO_RAD * -180));
 
         Quaternionf flip = new Quaternionf().rotationZ(Mth.DEG_TO_RAD * 180);
         flip.mul(new Quaternionf().rotationX(Mth.DEG_TO_RAD * angle));
 
         Quaternionf rotate = new Quaternionf().rotationY(Mth.DEG_TO_RAD * rotation);
-        poseStack.mulPose(flip);
-        poseStack.mulPose(rotate);
+        poseStack.rotate(flip);
+        poseStack.rotate(rotate);
 
         // Move into the center of the block for the transforms
         poseStack.translate(-0.5f, -0.5f, -0.5f);

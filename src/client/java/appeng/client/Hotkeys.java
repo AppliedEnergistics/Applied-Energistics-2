@@ -3,8 +3,9 @@ package appeng.client;
 import java.util.HashMap;
 import java.util.function.Consumer;
 
+import com.mojang.blaze3d.platform.InputConstants;
+
 import org.jetbrains.annotations.Nullable;
-import org.lwjgl.glfw.GLFW;
 
 import net.minecraft.client.KeyMapping;
 
@@ -26,7 +27,9 @@ public class Hotkeys {
         if (finalized) {
             throw new IllegalStateException("Hotkey registration already finalized!");
         }
-        return new Hotkey(id, new KeyMapping("key.ae2." + id, GLFW.GLFW_KEY_UNKNOWN, CATEGORY));
+        // GLFW is gone (input moved to SDL3). The "unbound" key is InputConstants.UNKNOWN,
+        // which is KEYBOARD scancode 0 (the old GLFW_KEY_UNKNOWN was -1).
+        return new Hotkey(id, new KeyMapping("key.ae2." + id, InputConstants.UNKNOWN.getValue(), CATEGORY));
     }
 
     private static void registerHotkey(Hotkey hotkey) {

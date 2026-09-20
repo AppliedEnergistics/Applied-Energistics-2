@@ -91,8 +91,10 @@ public class MeteoriteStructure extends Structure {
         final float meteoriteRadius = random.nextFloat() * 6.0f + 2;
         final int yOffset = (int) Math.ceil(meteoriteRadius) + 1;
 
-        var t2 = generator.getBiomeSource().getBiomesWithin(centerX, generator.getSeaLevel(), centerZ, 0,
-                context.randomState().sampler());
+        // BiomeSource#getBiomesWithin(x, y, z, radius, Climate.Sampler) and RandomState#sampler()
+        // are gone; Structure.GenerationContext now exposes a BiomeResolver that already has the sampler
+        // bound (see OceanMonumentStructure).
+        var t2 = context.biomeResolver().getBiomesWithin(centerX, generator.getSeaLevel(), centerZ, 0);
         var spawnBiome = t2.stream().findFirst().orElseThrow();
 
         final boolean isOcean = spawnBiome.is(ConventionTags.METEORITE_OCEAN);
