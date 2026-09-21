@@ -10,8 +10,13 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
+import com.mojang.blaze3d.platform.InputConstants;
+
+import org.lwjgl.glfw.GLFW;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.input.InputQuirks;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.crafting.CraftingRecipe;
@@ -83,7 +88,7 @@ public class UseCraftingRecipeTransfer<T extends CraftingTermMenu>
         }
 
         // Thank you RS for pioneering this amazing feature! :)
-        boolean craftMissing = Minecraft.getInstance().hasControlDown();
+        boolean craftMissing = isCraftMissingModifierDown();
         var inputSlots = display.getSlotViews(RecipeIngredientRole.INPUT);
         // Find missing ingredient
         var slotToIngredientMap = getGuiSlotToIngredientMap(recipe);
@@ -111,6 +116,24 @@ public class UseCraftingRecipeTransfer<T extends CraftingTermMenu>
 
         // No error
         return null;
+    }
+
+    /**
+     * Whether the modifier that queues missing ingredients for autocrafting is held.
+     *
+     * <p>
+     * On macOS this deliberately reads the command key rather than the control key. Minecraft rewrites a
+     * control+left-click into a right-click there (see MouseHandler#simulateRightClick), and the recipe transfer button
+     * only accepts left-clicks, so a control+click can never reach this handler on that platform.
+     */
+    private static boolean isCraftMissingModifierDown() {
+        var minecraft = Minecraft.getInstance();
+        if (!InputQuirks.REPLACE_CTRL_KEY_WITH_CMD_KEY) {
+            return minecraft.hasControlDown();
+        }
+        var window = minecraft.getWindow();
+        return InputConstants.isKeyDown(window, GLFW.GLFW_KEY_LEFT_SUPER)
+                || InputConstants.isKeyDown(window, GLFW.GLFW_KEY_RIGHT_SUPER);
     }
 
     private static Map<Integer, Ingredient> getGuiSlotToIngredientMap(Recipe<?> recipe) {
