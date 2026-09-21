@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.input.InputQuirks;
 import net.minecraft.network.chat.Component;
 
 import appeng.core.localization.ItemModText;
@@ -27,7 +28,12 @@ public class TransferHelper {
             if (craftMissing) {
                 tooltip.add(ItemModText.WILL_CRAFT.text().withStyle(ChatFormatting.BLUE));
             } else {
-                tooltip.add(ItemModText.CTRL_CLICK_TO_CRAFT.text().withStyle(ChatFormatting.BLUE));
+                // macOS Minecraft treats the control key as the command key for shortcuts, so the hint has to
+                // name whichever key this platform actually listens for.
+                var hint = InputQuirks.REPLACE_CTRL_KEY_WITH_CMD_KEY
+                        ? ItemModText.CMD_CLICK_TO_CRAFT
+                        : ItemModText.CTRL_CLICK_TO_CRAFT;
+                tooltip.add(hint.text().withStyle(ChatFormatting.BLUE));
             }
         }
         if (missingSlots.anyMissing()) {
