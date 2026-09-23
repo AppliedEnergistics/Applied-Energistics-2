@@ -31,7 +31,7 @@ public class TransferHelper {
                 // macOS Minecraft treats the control key as the command key for shortcuts, so the hint has to
                 // name whichever key this platform actually listens for.
                 var hint = InputQuirks.REPLACE_CTRL_KEY_WITH_CMD_KEY
-                        ? ItemModText.CMD_CLICK_TO_CRAFT
+                        ? ItemModText.COMMAND_CLICK_TO_CRAFT
                         : ItemModText.CTRL_CLICK_TO_CRAFT;
                 tooltip.add(hint.text().withStyle(ChatFormatting.BLUE));
             }
