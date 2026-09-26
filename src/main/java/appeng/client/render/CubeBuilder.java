@@ -18,21 +18,19 @@
 
 package appeng.client.render;
 
-import java.util.Arrays;
-import java.util.EnumMap;
-import java.util.EnumSet;
-import java.util.function.Consumer;
-
 import com.mojang.math.Quadrant;
-
-import org.joml.Vector4f;
-
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.core.Direction;
 import net.neoforged.neoforge.client.model.quad.MutableQuad;
 import net.neoforged.neoforge.client.model.quad.UVTransform;
+import org.joml.Vector4f;
+
+import java.util.Arrays;
+import java.util.EnumMap;
+import java.util.EnumSet;
+import java.util.function.Consumer;
 
 /**
  * Builds the quads for a cube.
@@ -184,7 +182,7 @@ public class CubeBuilder {
     }
 
     public void setTextures(Material.Baked up, Material.Baked down, Material.Baked north,
-            Material.Baked south, Material.Baked east, Material.Baked west) {
+                            Material.Baked south, Material.Baked east, Material.Baked west) {
         this.textures.put(Direction.UP, up.sprite());
         this.textures.put(Direction.DOWN, down.sprite());
         this.textures.put(Direction.NORTH, north.sprite());
@@ -194,7 +192,7 @@ public class CubeBuilder {
     }
 
     public void setTextures(TextureAtlasSprite up, TextureAtlasSprite down, TextureAtlasSprite north,
-            TextureAtlasSprite south, TextureAtlasSprite east, TextureAtlasSprite west) {
+                            TextureAtlasSprite south, TextureAtlasSprite east, TextureAtlasSprite west) {
         this.textures.put(Direction.UP, up);
         this.textures.put(Direction.DOWN, down);
         this.textures.put(Direction.NORTH, north);
@@ -236,5 +234,18 @@ public class CubeBuilder {
 
     public void setUvRotation(Direction facing, Quadrant rotation) {
         this.uvRotations[facing.ordinal()] = rotation;
+    }
+
+    /**
+     * @deprecated Use {@link #setUvRotation(Direction, Quadrant)} instead.
+     */
+    @Deprecated
+    public void setUvRotation(Direction facing, int rotation) {
+        this.uvRotations[facing.ordinal()] = switch (rotation) {
+            case 1 -> Quadrant.R90;
+            case 2 -> Quadrant.R180;
+            case 3 -> Quadrant.R270;
+            default -> Quadrant.R0;
+        };
     }
 }
