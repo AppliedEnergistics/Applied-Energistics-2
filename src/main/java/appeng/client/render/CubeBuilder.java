@@ -18,11 +18,12 @@
 
 package appeng.client.render;
 
+import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.function.Consumer;
 
-import com.google.common.base.Preconditions;
+import com.mojang.math.Quadrant;
 
 import org.joml.Vector4f;
 
@@ -31,6 +32,7 @@ import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.core.Direction;
 import net.neoforged.neoforge.client.model.quad.MutableQuad;
+import net.neoforged.neoforge.client.model.quad.UVTransform;
 
 /**
  * Builds the quads for a cube.
@@ -45,7 +47,7 @@ public class CubeBuilder {
 
     private final EnumMap<Direction, Vector4f> customUv = new EnumMap<>(Direction.class);
 
-    private final byte[] uvRotations = new byte[Direction.values().length];
+    private final Quadrant[] uvRotations = new Quadrant[Direction.values().length];
 
     private final boolean[] flipU = new boolean[Direction.values().length];
 
@@ -59,6 +61,7 @@ public class CubeBuilder {
 
     public CubeBuilder(Consumer<BakedQuad> output) {
         this.output = output;
+        Arrays.fill(uvRotations, Quadrant.R0);
     }
 
     public void addCube(float x1, float y1, float z1, float x2, float y2, float z2) {
@@ -100,27 +103,13 @@ public class CubeBuilder {
         quad.reset();
         quad.setSprite(new Material.Baked(texture, false));
 
-        var uv = new UvVector();
-
-        // The user might have set specific UV coordinates for this face
-        var customUv = this.customUv.get(face);
-        if (customUv != null) {
-            uv.u1 = texture.getU(customUv.x());
-            uv.v1 = texture.getV(customUv.y());
-            uv.u2 = texture.getU(customUv.z());
-            uv.v2 = texture.getV(customUv.w());
-        } else {
-            uv = this.getStandardUv(face, texture, x1, y1, z1, x2, y2, z2);
-        }
-
         quad.setColor(color);
         quad.setNormal(0, face.getStepX(), face.getStepY(), face.getStepZ());
         quad.setNormal(1, face.getStepX(), face.getStepY(), face.getStepZ());
         quad.setNormal(2, face.getStepX(), face.getStepY(), face.getStepZ());
         quad.setNormal(3, face.getStepX(), face.getStepY(), face.getStepZ());
 
-        setFaceUV(face, quad, uv);
-
+        // Positions must be set first, since standard UVs are baked from them
         switch (face) {
             case DOWN -> quad.setCubeFaceFromSpriteCoords(face, x1, z1, x2, z2, y1);
             case UP -> quad.setCubeFaceFromSpriteCoords(face, x1, 1 - z2, x2, 1 - z1, 1 - y2);
@@ -128,6 +117,21 @@ public class CubeBuilder {
             case SOUTH -> quad.setCubeFaceFromSpriteCoords(face, x1, y1, x2, y2, 1 - z2);
             case WEST -> quad.setCubeFaceFromSpriteCoords(face, z1, y1, z2, y2, x1);
             case EAST -> quad.setCubeFaceFromSpriteCoords(face, 1 - z2, y1, 1 - z1, y2, 1 - x2);
+        }
+
+        // The user might have set specific UV coordinates for this face
+        var customUv = this.customUv.get(face);
+        if (customUv != null) {
+            var uv = new UvVector();
+            uv.u1 = texture.getU(customUv.x());
+            uv.v1 = texture.getV(customUv.y());
+            uv.u2 = texture.getU(customUv.z());
+            uv.v2 = texture.getV(customUv.w());
+            setFaceUV(face, quad, uv);
+        } else {
+            // Rotation and flips apply to the whole texture, not just the region sampled by a partial face
+            var transform = UVTransform.of(uvRotations[face.ordinal()], flipU[face.ordinal()], flipV[face.ordinal()]);
+            quad.bakeUvsFromPosition(transform);
         }
 
         if (emissiveMaterial) {
@@ -138,7 +142,7 @@ public class CubeBuilder {
     }
 
     private void setFaceUV(Direction face, MutableQuad quad, UvVector uv) {
-        var rotation = uvRotations[face.ordinal()];
+        var rotation = uvRotations[face.ordinal()].shift;
 
         if (flipU[face.ordinal()]) {
             var tmp = uv.u1;
@@ -165,40 +169,6 @@ public class CubeBuilder {
                 quad.setUv((3 + 4 - rotation) % 4, uv.u2, uv.v2);
             }
         }
-    }
-
-    private UvVector getStandardUv(Direction face, TextureAtlasSprite texture, float x1, float y1, float z1, float x2,
-            float y2, float z2) {
-        UvVector uv = new UvVector();
-
-        if (face.getAxis() != Direction.Axis.Y) {
-            uv.v1 = texture.getV(1 - y1);
-            uv.v2 = texture.getV(1 - y2);
-        } else {
-            uv.v1 = texture.getV(z1);
-            uv.v2 = texture.getV(z2);
-        }
-
-        switch (face) {
-            case DOWN, UP, SOUTH -> {
-                uv.u1 = texture.getU(x1);
-                uv.u2 = texture.getU(x2);
-            }
-            case NORTH -> {
-                uv.u1 = texture.getU(1 - x2);
-                uv.u2 = texture.getU(1 - x1);
-            }
-            case WEST -> {
-                uv.u1 = texture.getU(z1);
-                uv.u2 = texture.getU(z2);
-            }
-            case EAST -> {
-                uv.u1 = texture.getU(1 - z2);
-                uv.u2 = texture.getU(1 - z1);
-            }
-        }
-
-        return uv;
     }
 
     public void setTexture(TextureAtlasSprite texture) {
@@ -264,8 +234,20 @@ public class CubeBuilder {
         this.customUv.put(facing, new Vector4f(u1, v1, u2, v2));
     }
 
+    public void setUvRotation(Direction facing, Quadrant rotation) {
+        this.uvRotations[facing.ordinal()] = rotation;
+    }
+
+    /**
+     * @deprecated Use {@link #setUvRotation(Direction, Quadrant)} instead.
+     */
+    @Deprecated
     public void setUvRotation(Direction facing, int rotation) {
-        Preconditions.checkArgument(rotation >= 0 && rotation <= 3, "rotation");
-        this.uvRotations[facing.ordinal()] = (byte) rotation;
+        this.uvRotations[facing.ordinal()] = switch (rotation) {
+            case 1 -> Quadrant.R90;
+            case 2 -> Quadrant.R180;
+            case 3 -> Quadrant.R270;
+            default -> Quadrant.R0;
+        };
     }
 }
