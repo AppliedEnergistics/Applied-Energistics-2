@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import com.google.common.collect.ImmutableMap;
+import com.mojang.math.Quadrant;
 import com.mojang.serialization.MapCodec;
 
 import net.minecraft.client.renderer.block.BlockAndTintGetter;
@@ -97,10 +98,10 @@ public class SpatialPylonModel implements DynamicBlockStateModel {
             } else if (displayAxis == Direction.Axis.X) {
                 ori = Direction.EAST;
 
-                builder.setUvRotation(Direction.NORTH, 1);
-                builder.setUvRotation(Direction.SOUTH, 1);
-                builder.setUvRotation(Direction.UP, 3);
-                builder.setUvRotation(Direction.DOWN, 3);
+                builder.setUvRotation(Direction.NORTH, Quadrant.R90);
+                builder.setUvRotation(Direction.SOUTH, Quadrant.R90);
+                builder.setUvRotation(Direction.UP, Quadrant.R270);
+                builder.setUvRotation(Direction.DOWN, Quadrant.R270);
 
                 if (axisPos == SpatialPylonBlockEntity.AxisPosition.START) {
                     builder.setFlipV(Direction.UP, true);
@@ -112,8 +113,8 @@ public class SpatialPylonModel implements DynamicBlockStateModel {
             } else if (displayAxis == Direction.Axis.Z) {
                 ori = Direction.NORTH;
 
-                builder.setUvRotation(Direction.WEST, 1);
-                builder.setUvRotation(Direction.EAST, 1);
+                builder.setUvRotation(Direction.WEST, Quadrant.R90);
+                builder.setUvRotation(Direction.EAST, Quadrant.R90);
 
                 if (axisPos == SpatialPylonBlockEntity.AxisPosition.START) {
                     builder.setFlipV(Direction.UP, true);
