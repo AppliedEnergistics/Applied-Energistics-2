@@ -351,7 +351,7 @@ public class CachedPlane {
     }
 
     private void attemptRecovery(int x, int y, int z, BlockEntityMoveRecord moveRecord, Column c) {
-        var pos = new BlockPos(x, y, z);
+        var pos = new BlockPos(x + this.x_offset, y + this.y_offset, z + this.z_offset);
         var type = moveRecord.blockEntity().getType();
         AELog.debug("Trying to recover BE %s @ %s", BuiltInRegistries.BLOCK_ENTITY_TYPE.getKey(type), pos);
 
@@ -362,7 +362,7 @@ public class CachedPlane {
             // We need to restore the block state too before re-setting the entity
             this.level.setBlock(pos, blockState, 3);
             c.c.addAndRegisterBlockEntity(recoveredEntity);
-            this.level.sendBlockUpdated(pos, this.level.getBlockState(pos), this.level.getBlockState(pos), z);
+            this.level.sendBlockUpdated(pos, this.level.getBlockState(pos), this.level.getBlockState(pos), 3);
         } else {
             AELog.warn("Failed to recover BE %s @ %s", BuiltInRegistries.BLOCK_ENTITY_TYPE.getKey(type), pos);
         }

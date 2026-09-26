@@ -70,8 +70,8 @@ public abstract class AbstractTableRenderer<T> {
 
     public final void render(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, List<T> entries,
             int scrollOffset) {
-        mouseX -= screen.getGuiLeft();
-        mouseY -= screen.getGuiTop();
+        int mouseXRelative = mouseX - screen.getGuiLeft();
+        int mouseYRelative = mouseY - screen.getGuiTop();
 
         final int textColor = screen.getStyle().getColor(PaletteColor.DEFAULT_TEXT_COLOR).toARGB();
         List<Component> tooltipLines = null;
@@ -129,8 +129,8 @@ public abstract class AbstractTableRenderer<T> {
                     guiGraphics.fill(cellX, cellY, cellX + CELL_WIDTH, cellY + CELL_HEIGHT, overlay);
                 }
 
-                if (mouseX >= cellX && mouseX <= cellX + CELL_WIDTH
-                        && mouseY >= cellY && mouseY <= cellY + CELL_HEIGHT) {
+                if (mouseXRelative >= cellX && mouseXRelative <= cellX + CELL_WIDTH
+                        && mouseYRelative >= cellY && mouseYRelative <= cellY + CELL_HEIGHT) {
                     tooltipLines = getEntryTooltip(entry);
                     hovered = new StackWithBounds(
                             new GenericStack(entryStack, 0),

@@ -149,9 +149,9 @@ public final class TransformLogic {
                 var recipe = holder.value();
                 if (!(recipe.circumstance.isFluid(fluid)))
                     continue;
-                for (var ingredient : recipe.ingredients) {
-                    holderSets.add(ingredient.getValues());
-                    break; // only process first ingredient (they're all required anyway)
+                if (!collectFirstNonCustomIngredient(recipe, holderSets)) {
+                    LOG.warn("Fluid transform recipe {} does not work since it doesn't have a single simple ingredient",
+                            holder.id());
                 }
             }
             if (holderSets.size() == 1) {
@@ -169,9 +169,9 @@ public final class TransformLogic {
                 var recipe = holder.value();
                 if (!recipe.circumstance.isFluid())
                     continue;
-                for (var ingredient : recipe.ingredients) {
-                    holderSets.add(ingredient.getValues());
-                    break; // only process first ingredient (they're all required anyway)
+                if (!collectFirstNonCustomIngredient(recipe, holderSets)) {
+                    LOG.warn("Fluid transform recipe {} does not work since it doesn't have a single simple ingredient",
+                            holder.id());
                 }
             }
             if (holderSets.size() == 1) {
@@ -233,5 +233,17 @@ public final class TransformLogic {
     }
 
     private TransformLogic() {
+    }
+
+    private static boolean collectFirstNonCustomIngredient(TransformRecipe recipe, List<HolderSet<Item>> holderSets) {
+        boolean hadAnyWorkingIngredient = false;
+        for (var ingredient : recipe.ingredients) {
+            if (!ingredient.isCustom()) {
+                holderSets.add(ingredient.getValues());
+                hadAnyWorkingIngredient = true;
+                break; // only process first ingredient (they're all required anyway)
+            }
+        }
+        return hadAnyWorkingIngredient;
     }
 }

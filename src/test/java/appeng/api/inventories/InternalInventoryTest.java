@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -29,6 +30,8 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.testframework.junit.EphemeralTestServerProvider;
 
 import appeng.util.BootstrapMinecraft;
@@ -629,6 +632,59 @@ class InternalInventoryTest {
             }
         }
 
+    }
+
+    /**
+     * {@link InternalInventoryResourceHandler} is the fallback resource handler used by {@link BaseInternalInventory}
+     * subclasses that don't provide their own. Constructed directly here since it's package-private.
+     */
+    @Nested
+    class IndexedExtractResourceHandler {
+        @Test
+        void testRejectsMismatchedResource() {
+            var inv = new AppEngInternalInventory(3);
+            inv.setItemDirect(0, new ItemStack(Items.DIAMOND, 5));
+            var handler = new InternalInventoryResourceHandler(inv);
+
+            try (var tx = Transaction.open(null)) {
+                // Slot 0 holds diamonds, not emeralds - extracting emeralds from it must not succeed.
+                var extracted = handler.extract(0, ItemResource.of(Items.EMERALD), 2, tx);
+                assertEquals(0, extracted);
+                tx.commit();
+            }
+
+            assertEquals(Items.DIAMOND, inv.getStackInSlot(0).getItem());
+            assertEquals(5, inv.getStackInSlot(0).getCount());
+        }
+
+        @Test
+        void testRejectsResourceFromEmptySlot() {
+            var inv = new AppEngInternalInventory(3);
+            var handler = new InternalInventoryResourceHandler(inv);
+
+            try (var tx = Transaction.open(null)) {
+                var extracted = handler.extract(0, ItemResource.of(Items.DIAMOND), 1, tx);
+                assertEquals(0, extracted);
+                tx.commit();
+            }
+
+            assertTrue(inv.getStackInSlot(0).isEmpty());
+        }
+
+        @Test
+        void testAllowsMatchingResource() {
+            var inv = new AppEngInternalInventory(3);
+            inv.setItemDirect(0, new ItemStack(Items.DIAMOND, 5));
+            var handler = new InternalInventoryResourceHandler(inv);
+
+            try (var tx = Transaction.open(null)) {
+                var extracted = handler.extract(0, ItemResource.of(Items.DIAMOND), 2, tx);
+                assertEquals(2, extracted);
+                tx.commit();
+            }
+
+            assertEquals(3, inv.getStackInSlot(0).getCount());
+        }
     }
 
     private static List<String> reportFilledSlots(InternalInventory inv) {

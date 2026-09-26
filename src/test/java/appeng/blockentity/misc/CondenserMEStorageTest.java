@@ -5,11 +5,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.Map;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.testframework.junit.EphemeralTestServerProvider;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.CondenserOutput;
@@ -24,10 +29,14 @@ import appeng.me.helpers.BaseActionSource;
 import appeng.util.BootstrapMinecraft;
 
 @BootstrapMinecraft
+@ExtendWith(EphemeralTestServerProvider.class)
 class CondenserMEStorageTest {
     CondenserBlockEntity be = new CondenserBlockEntity(AEBlockEntities.CONDENSER.get(), BlockPos.ZERO,
             AEBlocks.CONDENSER.block().defaultBlockState());
     MEStorage inv = be.getMEStorage();
+
+    CondenserMEStorageTest(MinecraftServer server) {
+    }
 
     @Test
     void testSingularityProductionAndPriority() {
@@ -99,5 +108,36 @@ class CondenserMEStorageTest {
         assertThat(be.getStoredPower()).isZero();
 
         assertThat(inv.insert(matterBall, 1, Actionable.MODULATE, new BaseActionSource())).isZero();
+    }
+
+    /**
+     * Same scenario as {@link #testRejectionWhenOutputFull}, but going through the item transfer/Storage capability
+     * exposed to external neighbors (hoppers, pipes, other mods), i.e. {@code getExternalInv().toResourceHandler()}.
+     * This must reject the input rather than silently voiding it into power that can never be turned into output.
+     */
+    @Test
+    void testResourceHandlerRejectsInputWhenOutputFull() {
+        var matterBall = AEItemKey.of(AEItems.MATTER_BALL.stack());
+        var requiredPower = 256;
+        CondenserOutput.MATTER_BALLS.requiredPower = requiredPower;
+
+        be.getConfigManager().putSetting(Settings.CONDENSER_OUTPUT, CondenserOutput.MATTER_BALLS);
+        be.getInternalInventory().setItemDirect(2, AEItems.CELL_COMPONENT_1K.stack());
+
+        // Fill up the output slot completely
+        for (var i = 0; i < 64; i++) {
+            inv.insert(matterBall, requiredPower, Actionable.MODULATE, new BaseActionSource());
+        }
+        assertThat(inv.getAvailableStacks().get(matterBall)).isEqualTo(64);
+        assertThat(be.getStoredPower()).isZero();
+
+        // The void input slot must now refuse items instead of destroying them for nothing
+        var externalHandler = be.getExternalInv().toResourceHandler();
+        try (var tx = Transaction.open(null)) {
+            var inserted = externalHandler.insert(0, ItemResource.of(Items.DIAMOND), 1, tx);
+            assertThat(inserted).isZero();
+            tx.commit();
+        }
+        assertThat(be.getStoredPower()).isZero();
     }
 }

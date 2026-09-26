@@ -34,8 +34,14 @@ public class MathExpressionParser {
                         // NaN or infinity
                         return Optional.empty();
                     }
+                    var suffix = readSuffix(expression, position.getIndex());
+                    if (suffix.isPresent()) {
+                        decimal = decimal.multiply(suffix.get().multiplier());
+                        i = suffix.get().nextIndex();
+                    } else {
+                        i = position.getIndex();
+                    }
                     output.add(decimal);
-                    i = position.getIndex();
                     wasNumberOrRightBracket = true;
                     continue;
                 }
@@ -65,6 +71,13 @@ public class MathExpressionParser {
                         }
                     }
                     wasNumberOrRightBracket = true;
+                    var suffix = readSuffix(expression, i + 1);
+                    if (suffix.isPresent()) {
+                        output.add(suffix.get().multiplier());
+                        output.add('*');
+                        i = suffix.get().nextIndex();
+                        continue;
+                    }
                 }
                 case '+', '-', '*', '/', '^' -> {
                     while (!operatorStack.isEmpty()) {
@@ -175,6 +188,42 @@ public class MathExpressionParser {
 
     private static boolean precedenceCheck(char first, char second) {
         return getPrecedence(first) <= getPrecedence(second);
+    }
+
+    private static Optional<UnitSuffix> readSuffix(String expression, int offset) {
+        if (offset >= expression.length()) {
+            return Optional.empty();
+        }
+
+        char prefix = Character.toLowerCase(expression.charAt(offset));
+        var decimalMultiplier = switch (prefix) {
+            case 'k' -> 1_000L;
+            case 'm' -> 1_000_000L;
+            case 'g' -> 1_000_000_000L;
+            case 't' -> 1_000_000_000_000L;
+            default -> 0;
+        };
+        if (decimalMultiplier == 0) {
+            return Optional.empty();
+        }
+
+        int nextIndex = offset + 1;
+        long multiplier = decimalMultiplier;
+        if (nextIndex < expression.length() && Character.toLowerCase(expression.charAt(nextIndex)) == 'i') {
+            multiplier = switch (prefix) {
+                case 'k' -> 1L << 10;
+                case 'm' -> 1L << 20;
+                case 'g' -> 1L << 30;
+                case 't' -> 1L << 40;
+                default -> throw new IllegalStateException("Unexpected suffix: " + prefix);
+            };
+            nextIndex++;
+        }
+
+        return Optional.of(new UnitSuffix(BigDecimal.valueOf(multiplier), nextIndex));
+    }
+
+    private record UnitSuffix(BigDecimal multiplier, int nextIndex) {
     }
 
 }
