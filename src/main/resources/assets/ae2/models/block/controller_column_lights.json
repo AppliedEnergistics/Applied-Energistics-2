@@ -6,41 +6,42 @@
   "render_type": "cutout",
   "elements": [
     {
+      "from": [0, 0, 0],
+      "to": [16, 16, 16],
+      "shade": false,
+      "light_emission": 15,
       "faces": {
         "down": {
           "texture": "#lights",
           "uv": [0, 0, 16, 16],
-          "neoforge_data": { "block_light": 15, "sky_light": 15 }
+          "neoforge_data": { "light_emission": 15 }
         },
         "east": {
           "texture": "#lights",
           "uv": [0, 0, 16, 16],
-          "neoforge_data": { "block_light": 15, "sky_light": 15 }
+          "neoforge_data": { "light_emission": 15 }
         },
         "north": {
           "texture": "#lights",
           "uv": [0, 0, 16, 16],
-          "neoforge_data": { "block_light": 15, "sky_light": 15 }
+          "neoforge_data": { "light_emission": 15 }
         },
         "south": {
           "texture": "#lights",
           "uv": [0, 0, 16, 16],
-          "neoforge_data": { "block_light": 15, "sky_light": 15 }
+          "neoforge_data": { "light_emission": 15 }
         },
         "up": {
           "texture": "#lights",
           "uv": [0, 0, 16, 16],
-          "neoforge_data": { "block_light": 15, "sky_light": 15 }
+          "neoforge_data": { "light_emission": 15 }
         },
         "west": {
           "texture": "#lights",
           "uv": [0, 0, 16, 16],
-          "neoforge_data": { "block_light": 15, "sky_light": 15 }
+          "neoforge_data": { "light_emission": 15 }
         }
-      },
-      "from": [0, 0, 0],
-      "shade": false,
-      "to": [16, 16, 16]
+      }
     },
     {
       "faces": {
