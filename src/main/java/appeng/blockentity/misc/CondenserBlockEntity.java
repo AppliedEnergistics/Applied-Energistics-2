@@ -21,7 +21,6 @@ package appeng.blockentity.misc;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -104,29 +103,30 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
     }
 
     public void addPower(double rawPower) {
-        if (this.setStoredPower(Mth.clamp(this.getStoredPower() + rawPower, 0.0, this.getStorage()))) {
-            fillOutput();
-        }
+        this.setStoredPower(this.getStoredPower() + rawPower);
+        this.setStoredPower(Math.max(0.0, Math.min(this.getStorage(), this.getStoredPower())));
+        fillOutput();
     }
 
     private void fillOutput() {
         var requiredPower = this.getRequiredPower();
-        if (requiredPower > 0 && !getOutput().isEmpty()) {
-            var power = this.getStoredPower();
-            int outputCountProduced = (int) (power / requiredPower);
-            if (outputCountProduced > 0) {
-                var output = this.getOutput();
-                output.setCount(outputCountProduced);
-                var remaining = this.outputSlot.insertItem(0, output, true).getCount();
-                outputCountProduced -= remaining;
+        var output = this.getOutput();
+        if (requiredPower <= 0 || output.isEmpty()) {
+            return;
+        }
 
-                if (outputCountProduced > 0) {
-                    this.setStoredPower(power - requiredPower * outputCountProduced);
-                    output.setCount(outputCountProduced);
-                    this.outputSlot.insertItem(0, output, false);
-                    this.setChanged();
-                }
-            }
+        // Produce as many items as the stored power allows and the output slot can hold in one go
+        var power = this.getStoredPower();
+        var amount = (int) Math.min(power / requiredPower, output.getMaxStackSize());
+        if (amount <= 0) {
+            return;
+        }
+        output.setCount(amount);
+        amount -= this.outputSlot.insertItem(0, output, true).getCount();
+        if (amount > 0) {
+            this.setStoredPower(power - requiredPower * amount);
+            output.setCount(amount);
+            this.outputSlot.insertItem(0, output, false);
         }
     }
 
@@ -171,15 +171,13 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
         return this.storedPower;
     }
 
-    private boolean setStoredPower(double storedPower) {
-        if (this.storedPower != storedPower) {
-            this.storedPower = storedPower;
-            if (this.level != null) {
-                level.blockEntityChanged(this.getBlockPos());
-            }
-            return true;
+    private void setStoredPower(double storedPower) {
+        this.storedPower = storedPower;
+        // Stored power is not observable from the outside, so only mark the chunk as unsaved instead of using
+        // setChanged(), which would also trigger neighbor updates.
+        if (this.level != null) {
+            this.level.blockEntityChanged(this.getBlockPos());
         }
-        return false;
     }
 
     public InternalInventory getExternalInv() {
