@@ -87,6 +87,7 @@ public final class TestPlots {
         PLOT_CLASSES.addAll(List.of(
                 TestPlots.class,
                 AutoCraftingTestPlots.class,
+                CraftingTerminalTestPlots.class,
                 InscriberTestPlots.class,
                 P2PTestPlots.class,
                 ItemP2PTestPlots.class,
