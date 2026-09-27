@@ -47,7 +47,7 @@ public abstract class ResourceHandlerP2PTunnelPart<P extends ResourceHandlerP2PT
             }
 
             final int amountPerOutput = amount / outputTunnels;
-            int overflow = amountPerOutput == 0 ? amount : amount % amountPerOutput;
+            int overflow = amount % outputTunnels;
 
             for (var target : outputs) {
                 try (CapabilityGuard capabilityGuard = target.getAdjacentCapability()) {
