@@ -165,7 +165,7 @@ public abstract class ExternalStorageFacade implements MEStorage {
                         // Try again in case the handler only allows extracting the resource in its entirety (i.e.
                         // cauldrons)
                         if (extracted == 0) {
-                            extracted = handler.extract(i, stack, 1, tx);
+                            extracted = handler.extract(i, stack, (int) Math.min(amount, Integer.MAX_VALUE), tx);
                         }
                         if (extracted == 0) {
                             continue; // Skip unextractable slots
