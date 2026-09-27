@@ -11,6 +11,8 @@ import com.google.common.primitives.Ints;
 
 import org.jetbrains.annotations.Nullable;
 
+import io.netty.handler.codec.DecoderException;
+
 import net.minecraft.core.Holder;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.registries.Registries;
@@ -85,7 +87,12 @@ public record FillCraftingGridFromRecipePacket(
             recipeId = stream.readResourceKey(Registries.RECIPE);
         }
 
-        var ingredientTemplates = NonNullList.withSize(stream.readInt(), ItemStack.EMPTY);
+        // The client always sends a 3x3 grid, don't let it make us allocate anything larger
+        var templateCount = stream.readInt();
+        if (templateCount != 9) {
+            throw new DecoderException("Expected 9 ingredient templates, got " + templateCount);
+        }
+        var ingredientTemplates = NonNullList.withSize(templateCount, ItemStack.EMPTY);
         for (int i = 0; i < ingredientTemplates.size(); i++) {
             ingredientTemplates.set(i, ItemStack.OPTIONAL_STREAM_CODEC.decode(stream));
         }
