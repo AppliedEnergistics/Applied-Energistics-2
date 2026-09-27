@@ -102,6 +102,15 @@ public class CraftingStatusMenu extends CraftingCPUMenu implements ISubMenu {
     }
 
     @Override
+    public void toggleScheduling() {
+        super.toggleScheduling();
+        if (isServerSide()) {
+            // Refresh the CPU list on the next tick so the suspended state shows up immediately
+            lastUpdate = 20;
+        }
+    }
+
+    @Override
     public void broadcastChanges() {
         IGrid network = this.getGrid();
         if (isServerSide() && network != null) {
