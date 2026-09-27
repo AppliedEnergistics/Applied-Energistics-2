@@ -104,24 +104,25 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
     }
 
     public void addPower(double rawPower) {
-        this.setStoredPower(Mth.clamp(this.getStoredPower() + rawPower, 0.0, this.getStorage()));
-        fillOutput();
+        if (this.setStoredPower(Mth.clamp(this.getStoredPower() + rawPower, 0.0, this.getStorage()))) {
+            fillOutput();
+        }
     }
 
     private void fillOutput() {
         var requiredPower = this.getRequiredPower();
         if (requiredPower > 0 && !getOutput().isEmpty()) {
             var power = this.getStoredPower();
-            int amount = (int) (power / requiredPower);
-            if (amount > 0) {
+            int outputCountProduced = (int) (power / requiredPower);
+            if (outputCountProduced > 0) {
                 var output = this.getOutput();
-                output.setCount(amount);
+                output.setCount(outputCountProduced);
                 var remaining = this.outputSlot.insertItem(0, output, true).getCount();
-                amount -= remaining;
+                outputCountProduced -= remaining;
 
-                if (amount > 0) {
-                    this.setStoredPower(power - requiredPower * amount);
-                    output.setCount(amount - remaining);
+                if (outputCountProduced > 0) {
+                    this.setStoredPower(power - requiredPower * outputCountProduced);
+                    output.setCount(outputCountProduced);
                     this.outputSlot.insertItem(0, output, false);
                     this.setChanged();
                 }
@@ -131,13 +132,6 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
 
     boolean canAddOutput() {
         return this.outputSlot.insertItem(0, getOutput(), true).isEmpty();
-    }
-
-    /**
-     * make sure you validate with canAddOutput prior to this.
-     */
-    private void addOutput() {
-        this.outputSlot.insertItem(0, getOutput(), false);
     }
 
     InternalInventory getOutputSlot() {
@@ -177,13 +171,15 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
         return this.storedPower;
     }
 
-    private void setStoredPower(double storedPower) {
+    private boolean setStoredPower(double storedPower) {
         if (this.storedPower != storedPower) {
             this.storedPower = storedPower;
             if (this.level != null) {
                 level.blockEntityChanged(this.getBlockPos());
             }
+            return true;
         }
+        return false;
     }
 
     public InternalInventory getExternalInv() {
