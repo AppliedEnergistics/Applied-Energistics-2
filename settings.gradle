@@ -78,10 +78,6 @@ dependencyResolutionManagement {
                 includeModule('org.appliedenergistics', 'guideme')
             }
         }
-        maven {
-            name = "Modrinth"
-            url = "https://api.modrinth.com/maven"
-        }
         mavenCentral()
     }
 }
