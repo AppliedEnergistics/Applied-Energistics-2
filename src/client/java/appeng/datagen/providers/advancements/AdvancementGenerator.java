@@ -85,7 +85,7 @@ public class AdvancementGenerator implements AdvancementSubProvider {
         var charger = Advancement.Builder.advancement()
                 .display(
                         AEBlocks.CHARGER,
-                        localization.component("achievement.ae2.Charger", "It's Chargin' Time !"),
+                        localization.component("achievement.ae2.Charger", "It's Chargin' Time!"),
                         localization.component("achievement.ae2.Charger.desc", "Craft a Charger"),
                         null /* background */,
                         AdvancementType.TASK,

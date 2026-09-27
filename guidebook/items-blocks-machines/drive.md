@@ -19,7 +19,7 @@ item_ids:
 The Drive is the [device](../ae2-mechanics/devices.md) you plug your [storage cells](storage_cells.md) into in order to use them for
 [network storage](../ae2-mechanics/import-export-storage.md). It has 10 slots which each accept a cell.
 
-If for some reason you want to, you can push and pull the cells from its inventory with any item logistics like hoppers or ae2 busses.
+You can push and pull the cells from its inventory using any item logistics like hoppers or AE2 buses.
 
 It can be rotated with a <ItemLink id="certus_quartz_wrench" />.
 
@@ -39,7 +39,7 @@ The cells in the drive have an LED on them which shows their status:
 
 Priorities can be set by clicking the wrench in the top-right of the GUI.
 Items entering the network will start at the highest priority storage as
-their first destination. In the case of two storages or cells have the same priority,
+their first destination. In the case of two storages or cells having the same priority,
 if one already contains the item, they will prefer that storage over any
 other. Any [partitioned](cell_workbench.md) cells will be treated as already containing the item
 when in the same priority group as other storages. Items being removed from storage will

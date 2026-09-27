@@ -235,6 +235,11 @@ public class CraftingCpuLogic {
                     task.getValue().value--;
                     if (task.getValue().value <= 0) {
                         it.remove();
+
+                        if (pushedPatterns == maxPatterns) {
+                            break taskLoop;
+                        }
+
                         continue taskLoop;
                     }
 

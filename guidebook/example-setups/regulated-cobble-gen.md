@@ -11,11 +11,11 @@ Automation of a cobblestone generator is simple, just face an <ItemLink id="anni
 manual cobblestone generator. However, doing this will eventually jam your network full of cobblestone, so some regulation
 is desired.
 
-Due to how annihilation planes work (they act like <ItemLink id="import_bus" />ses), we cannot simply put a <ItemLink id="level_emitter" />
+Due to how annihilation planes work (they act like <ItemLink id="import_bus" />es), we cannot simply put a <ItemLink id="level_emitter" />
 facing an <ItemLink id="export_bus" /> with a <ItemLink id="redstone_card" /> (since you cannot go directly import to export
 with no storage in between). We have to be a bit more roundabout.
 
-<ItemLink id="toggle_bus" />ses allow you to connect and disconnect parts of your network with redstone signals, but they cause
+<ItemLink id="toggle_bus" />es allow you to connect and disconnect parts of your network with redstone signals, but they cause
 the network to reboot whenever they do this. There is a simple workaround: put the toggle bus on a [subnetwork](../ae2-mechanics/subnetworks.md)
 such that it only reboots the subnet.
 
