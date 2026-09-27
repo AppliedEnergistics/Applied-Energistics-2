@@ -311,12 +311,6 @@ public class PatternEncodingTermMenu extends MEStorageMenu {
         }
     }
 
-    @Override
-    public void setFilter(int slotIndex, ItemStack item) {
-        super.setFilter(slotIndex, item);
-        this.refillBlank();
-    }
-
     /**
      * Refills the blank pattern slot if it is empty by pulling one from the grid storage
      */
