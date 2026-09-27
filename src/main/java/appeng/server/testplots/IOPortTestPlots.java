@@ -31,9 +31,6 @@ public class IOPortTestPlots {
                         var ioPort = helper.getBlockEntity(o, IOPortBlockEntity.class);
                         helper.check(countItem(ioPort, AEItems.ITEM_CELL_1K.asItem()) == 1,
                                 "cell should have been inserted into the IO port");
-                    })
-                    .thenExecute(() -> {
-                        var ioPort = helper.getBlockEntity(o, IOPortBlockEntity.class);
                         helper.check(countItem(ioPort, Items.COBBLESTONE) == 0,
                                 "cobblestone should not have been inserted into the IO port");
                         var hopper = helper.getBlockEntity(o.above(), HopperBlockEntity.class);
