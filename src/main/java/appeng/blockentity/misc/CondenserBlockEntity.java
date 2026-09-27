@@ -26,6 +26,7 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.resource.Resource;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
@@ -230,6 +231,22 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
         @Override
         public ItemStack extractItem(int slot, int amount, boolean simulate) {
             return ItemStack.EMPTY;
+        }
+
+        @Override
+        protected ResourceHandler<ItemResource> createResourceHandler() {
+            // Mirrors insertItem/isItemValid above: don't void items (i.e. convert them to power) while the
+            // output slot can't accept the configured output item, otherwise items pushed in through the
+            // Storage/Transfer capability would be destroyed for nothing.
+            return new CondenseResourceHandler<>(ItemResource.EMPTY, 1, Integer.MAX_VALUE) {
+                @Override
+                public int insert(ItemResource resource, int amount, TransactionContext transaction) {
+                    if (!canAddOutput()) {
+                        return 0;
+                    }
+                    return super.insert(resource, amount, transaction);
+                }
+            };
         }
     }
 
