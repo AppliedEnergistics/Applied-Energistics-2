@@ -110,25 +110,28 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
 
     private void fillOutput() {
         var requiredPower = this.getRequiredPower();
-        while (requiredPower <= this.getStoredPower() && !getOutput().isEmpty() && requiredPower > 0) {
-            if (this.canAddOutput()) {
-                this.setStoredPower(this.getStoredPower() - requiredPower);
-                this.addOutput();
-            } else {
-                break;
-            }
+        var output = this.getOutput();
+        if (requiredPower <= 0 || output.isEmpty()) {
+            return;
+        }
+
+        // Produce as many items as the stored power allows and the output slot can hold in one go
+        var power = this.getStoredPower();
+        var amount = (int) Math.min(power / requiredPower, output.getMaxStackSize());
+        if (amount <= 0) {
+            return;
+        }
+        output.setCount(amount);
+        amount -= this.outputSlot.insertItem(0, output, true).getCount();
+        if (amount > 0) {
+            this.setStoredPower(power - requiredPower * amount);
+            output.setCount(amount);
+            this.outputSlot.insertItem(0, output, false);
         }
     }
 
     boolean canAddOutput() {
         return this.outputSlot.insertItem(0, getOutput(), true).isEmpty();
-    }
-
-    /**
-     * make sure you validate with canAddOutput prior to this.
-     */
-    private void addOutput() {
-        this.outputSlot.insertItem(0, getOutput(), false);
     }
 
     InternalInventory getOutputSlot() {
@@ -170,7 +173,11 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
 
     private void setStoredPower(double storedPower) {
         this.storedPower = storedPower;
-        this.setChanged();
+        // Stored power is not observable from the outside, so only mark the chunk as unsaved instead of using
+        // setChanged(), which would also trigger neighbor updates.
+        if (this.level != null) {
+            this.level.blockEntityChanged(this.getBlockPos());
+        }
     }
 
     public InternalInventory getExternalInv() {
