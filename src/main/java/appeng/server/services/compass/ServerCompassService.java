@@ -60,7 +60,6 @@ public final class ServerCompassService {
     // chunk positions and range, if malicious.
     private static final LoadingCache<Query, Optional<BlockPos>> CLOSEST_METEORITE_CACHE = CacheBuilder.newBuilder()
             .maximumSize(100)
-            .weakKeys()
             .expireAfterWrite(5, TimeUnit.SECONDS)
             .build(new CacheLoader<>() {
                 @Override
