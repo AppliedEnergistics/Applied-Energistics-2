@@ -1,7 +1,5 @@
 package appeng.client.integrations.itemlists;
 
-import java.util.Objects;
-
 import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -15,34 +13,20 @@ import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.gui.render.pip.PictureInPictureRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Sheets;
-import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.client.renderer.block.FluidRenderer;
+import net.minecraft.client.renderer.block.MovingBlockRenderState;
 import net.minecraft.client.renderer.state.gui.pip.PictureInPictureRenderState;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.Mth;
-import net.minecraft.world.level.CardinalLighting;
-import net.minecraft.world.level.ColorResolver;
-import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biomes;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.lighting.LevelLightEngine;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraft.world.level.material.FluidState;
-import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.client.model.pipeline.VertexConsumerWrapper;
 
 public class FluidBlockPictureInPictureRenderer
         extends PictureInPictureRenderer<FluidBlockPictureInPictureRenderer.State> {
-    private final FluidBlockAndTintGetter fluidBlockAndTintGetter;
-
     public FluidBlockPictureInPictureRenderer(MultiBufferSource.BufferSource bufferSource) {
         super(bufferSource);
-        fluidBlockAndTintGetter = new FluidBlockAndTintGetter(Biomes.PLAINS);
     }
 
     @Override
@@ -63,8 +47,14 @@ public class FluidBlockPictureInPictureRenderer
         setupOrthographicProjection(poseStack);
 
         var fluidRenderer = new FluidRenderer(fluidModelSet);
+        // We reuse the MovingBlockRenderState here to get a programmatic BlockAndTintGetter to fake out the biome
+        // If we didn't, it'd not actually color water appropriately.
+        var blockAndTintGetter = new MovingBlockRenderState();
+        blockAndTintGetter.blockState = fluidState.createLegacyBlock();
+        var level = Minecraft.getInstance().level;
+        blockAndTintGetter.biome = level.registryAccess().lookupOrThrow(Registries.BIOME).getOrThrow(Biomes.PLAINS);
         fluidRenderer.tesselate(
-                fluidBlockAndTintGetter,
+                blockAndTintGetter,
                 BlockPos.ZERO,
                 layer -> {
                     // TODO 26.1: Unclear if this is still needed
@@ -138,47 +128,4 @@ public class FluidBlockPictureInPictureRenderer
             return parent.addVertex(pose, x, y, z);
         }
     }
-
-    private static class FluidBlockAndTintGetter implements BlockAndTintGetter {
-        private final Holder<Biome> biome;
-
-        public FluidBlockAndTintGetter(ResourceKey<Biome> biomeKey) {
-            var level = Minecraft.getInstance().level;
-            Objects.requireNonNull(level, "level");
-            this.biome = level.registryAccess().lookupOrThrow(Registries.BIOME).getOrThrow(biomeKey);
-        }
-
-        public CardinalLighting cardinalLighting() {
-            return CardinalLighting.DEFAULT;
-        }
-
-        public LevelLightEngine getLightEngine() {
-            return LevelLightEngine.EMPTY;
-        }
-
-        public int getBlockTint(BlockPos pos, ColorResolver color) {
-            return color.getColor(this.biome.value(), pos.getX(), pos.getZ());
-        }
-
-        public @org.jspecify.annotations.Nullable BlockEntity getBlockEntity(BlockPos pos) {
-            return null;
-        }
-
-        public BlockState getBlockState(BlockPos pos) {
-            return Blocks.AIR.defaultBlockState();
-        }
-
-        public FluidState getFluidState(BlockPos pos) {
-            return Fluids.EMPTY.defaultFluidState();
-        }
-
-        public int getHeight() {
-            return 0;
-        }
-
-        public int getMinY() {
-            return 0;
-        }
-    }
-
 }
