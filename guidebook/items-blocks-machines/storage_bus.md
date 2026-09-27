@@ -16,28 +16,28 @@ item_ids:
 <ImportStructure src="../assets/blocks/storage_bus.snbt" />
 </GameScene>
 
-Ever wanted to *keep* your chest monster instead of replacing it with something sensible? We present the Storage Bus!
+Ever wanted to *keep* your chest monster instead of replacing it with something sensible? We present the storage bus!
 
 The storage bus turns the inventory it's touching into [network storage](../ae2-mechanics/import-export-storage.md).
 It does this by allowing the network to see the contents of that inventory, and by pushing to and pulling from that
-inventory in order to fulfill [devices](../ae2-mechanics/devices.md) pushing to and pulling from network storage.
+inventory in order to fulfill the needs of [devices](../ae2-mechanics/devices.md) that push to and pull from network storage.
 
 Due to AE2's philosophy of emergent mechanics through interaction of the functions of the [devices](../ae2-mechanics/devices.md), you don't
 necessarily *have* to use a storage bus for *storage*. By using [subnetworks](../ae2-mechanics/subnetworks.md)
-to make a storage bus (or handful of storage busses) the *only* storage on a network, you can use it as a source or destination
-for item transfer. (see ["pipe subnet"](../example-setups/pipe-subnet.md))
+to make a storage bus (or handful of storage buses) the *only* storage on a network, you can use it as a source or destination
+for item transfer. For examples, see ["pipe subnet"](../example-setups/pipe-subnet.md).
 
-IMPORTANT NOTE: Big optimized inventories like drawers are fine, but big *un*optimized inventories with many slots, like
-colossal chests, are terrible for performance when used with storage busses.
+IMPORTANT NOTE: Big optimized inventories like drawers are fine, but big *unoptimized* inventories with many slots, like
+colossal chests, are terrible for performance when used with storage buses.
 
 They are [cable subparts](../ae2-mechanics/cable-subparts.md).
 
 ## Filtering
 
-By default the bus will store everything. Items inserted into its filter slots will act as a whitelist, only
+By default, the bus will store everything. Items inserted into its filter slots will act as a whitelist, only
 allowing those specific items to be stored.
 
-Items and fluids can be dragged into the slots from JEI/REI even if you don't actually have any of that item.
+Items and fluids can be dragged into the slots from JEI/REI, even if you don't actually have any of that item.
 
 Right-click with a fluid container (like a bucket or fluid tank) to set that fluid as a filter instead of the bucket or tank item.
 
@@ -55,10 +55,10 @@ from network storage, higher priority storages will be filled and lower priority
 ## Settings
 
 *   The bus can be partitioned (filtered) to what is currently in the adjacent inventory
-*   The network can be disallowed or allowed to see items in the adjacent inventory that the bus cannot extract
-    (for example, a storage bus cannot extract items from the middle input slot of an <ItemLink id="inscriber" />)
+*   The network can be disallowed or allowed to see items in the adjacent inventory that the bus cannot extract.
+    For example, a storage bus cannot extract items from the middle input slot of an <ItemLink id="inscriber" />.
 *   The bus can filter on both insertion and extraction or just insertion
-*   The bus can be bi-directional, insert-only, or extract-only
+*   The bus can be bidirectional, insert-only, or extract-only
 
 ## Upgrades
 
@@ -67,7 +67,7 @@ The storage bus supports the following [upgrades](upgrade_cards.md):
 *   <ItemLink id="capacity_card" /> increases the amount of filter slots
 *   <ItemLink id="fuzzy_card" /> lets the bus filter by damage level and/or ignore item NBT
 *   <ItemLink id="inverter_card" /> switches the filter from a whitelist to a blacklist
-*   <ItemLink id="void_card" /> voids items inserted if the attached inventory is full, useful for stopping farms from backing up. Be careful to partition this!
+*   <ItemLink id="void_card" /> voids items inserted if the attached inventory is full. Useful for preventing farms from backing up. Be careful to partition the storage bus!
 
 ## Recipe
 

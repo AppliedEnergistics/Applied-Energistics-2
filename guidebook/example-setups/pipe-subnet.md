@@ -22,7 +22,7 @@ There are generally two different methods of achieving this:
   </BoxAnnotation>
 
 <BoxAnnotation color="#dddddd" min="1 0 0" max="1.3 1 1">
-        (2) Storage Bus: Can be filtered. This (and other storage busses you want to be a destination)
+        (2) Storage Bus: Can be filtered. This (and other storage buses you want to be a destination)
         must be the only storage on the network.
   </BoxAnnotation>
 
@@ -41,7 +41,7 @@ The <ItemLink id="import_bus" /> (1) on the source inventory imports the items o
 Since the only storage on the network is the <ItemLink id="storage_bus" /> (2) (which is why this is a subnet and not on your main network), the items or fluid
 are placed in the destination inventory, thus being transferred. Energy is provided through a <ItemLink id="quartz_fiber" />.
 Both the import bus and storage bus can be filtered, but the setup will transfer everything it can access if no filters are applied.
-This setup also works with multiple import busses and multiple storage busses.
+This setup also works with multiple import buses and multiple storage buses.
 
 ## Storage Bus -> Export Bus
 
@@ -49,7 +49,7 @@ This setup also works with multiple import busses and multiple storage busses.
   <ImportStructure src="../assets/assemblies/storage_export_pipe.snbt" />
 
 <BoxAnnotation color="#dddddd" min="3.7 0 0" max="4 1 1">
-        (1) Storage Bus: Can be filtered. This (and other storage busses you want to be a source)
+        (1) Storage Bus: Can be filtered. This (and other storage buses you want to be a source)
         must be the only storage on the network.
   </BoxAnnotation>
 
@@ -71,8 +71,8 @@ This setup also works with multiple import busses and multiple storage busses.
 The <ItemLink id="export_bus" /> on the destination inventory attempts to pull items in its filter from [network storage](../ae2-mechanics/import-export-storage.md).
 Since the only storage on the network is the <ItemLink id="storage_bus" /> (which is why this is a subnet and not on your main network), the items or fluid
 are pulled from the source inventory, thus being transferred. Energy is provided through a <ItemLink id="quartz_fiber" />.
-Because export busses must be filtered to function, this setup only operates if you filter the export bus.
-This setup also works with multiple storage busses and multiple export busses.
+Because export buses must be filtered to function, this setup only operates if you filter the export bus.
+This setup also works with multiple storage buses and multiple export buses.
 
 ## A Setup That Does Not Work (Import Bus -> Export Bus)
 
@@ -116,7 +116,7 @@ You can both push in the ingredients and pull out the result, by combining the 2
   </BoxAnnotation>
 
 <BoxAnnotation color="#dddddd" min="2 1 1" max="3 1.3 2">
-        (2) Storage Bus: Can be filtered. This (and other storage busses you want to push and pull items)
+        (2) Storage Bus: Can be filtered. This (and other storage buses you want to push and pull items)
         must be the only storage on the network.
   </BoxAnnotation>
 
@@ -141,12 +141,12 @@ You can both push in the ingredients and pull out the result, by combining the 2
 
 ## Interfaces
 
-It turns out there are [devices](../ae2-mechanics/devices.md) besides import busses and export busses that push items into
+It turns out there are [devices](../ae2-mechanics/devices.md) besides import buses and export buses that push items into
 and pull items out of [network storage](../ae2-mechanics/import-export-storage.md)!
 Of relevance here is the <ItemLink id="interface" />. If an item is inserted that the interface is not set to stock, the interface will
 push it to network storage, which we can exploit similarly to the import bus -> storage bus pipe. Setting an interface to
 stock some item will pull it from network storage, similar to the storage bus -> export bus pipe. Interfaces can be set to
-stock some things and not stock others, allowing you to remotely push and pull through storage busses, if you for some reason want to do that.
+stock some things and not stock others, allowing you to remotely push and pull through storage buses, if you for some reason want to do that.
 
 <GameScene zoom="6" background="transparent">
 <ImportStructure src="../assets/assemblies/interface_pipes.snbt" />
@@ -201,7 +201,7 @@ connection.
   </BoxAnnotation>
 
 <BoxAnnotation color="#dddddd" min="1 0 0" max="1.3 1 4">
-        Storage Busses
+        Storage Buses
   </BoxAnnotation>
 
 <BoxAnnotation color="#dddddd" min="0 0 0" max="1 1 4">

@@ -14,12 +14,12 @@ automatically. This requires either [Spatial IO](../ae2-mechanics/spatial-io.md)
 However, AE2 can place and break blocks, so it might just
 be possible to make your farm *replace the budding certus for you*. (You will have to periodically insert some
 <ItemLink id="flawed_budding_quartz" /> into the input barrel and extract <ItemLink id="quartz_block" /> from the spent
-buddng certus barrel)
+budding certus barrel)
 
 To do this fully automatically, see [Advanced Certus Farm](advanced-certus-farm.md).
 
 This farm is a bit more complex than the [simple certus farm](simple-certus-farm.md), because it is actually
-3 separate setups crammmed together.
+3 separate setups crammed together.
 
 See [Certus Growth](../ae2-mechanics/certus-growth.md) for estimated speeds.
 
@@ -127,9 +127,9 @@ It works similarly to the cluster breaker.
 
 1. The <ItemLink id="annihilation_plane" /> attempts to break what is in front of it, but can only break <ItemLink id="quartz_block" />
    because the only storage on the subnet is the <ItemLink id="storage_bus" />, filtered to <ItemLink id="quartz_block" />.
-   The plane needs to have silk touch, so the budding block won't degrade upon being broken, and thus the plane won't break it prematurely.
+   The plane needs to have Silk Touch, so the budding block won't degrade upon being broken, and thus the plane won't break it prematurely.
 2. The <ItemLink id="storage_bus" /> stores the certus quartz block in the spent
-   buddng certus barrel, you will have to manually throw it in water with <ItemLink id="charged_certus_quartz_crystal" /> to refresh it.
+   budding certus barrel, you will have to manually throw it in water with <ItemLink id="charged_certus_quartz_crystal" /> to refresh it.
 
 ### Budding Block Placer
 

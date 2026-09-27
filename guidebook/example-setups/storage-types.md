@@ -20,7 +20,7 @@ or the cells from the MEGA addon.
 
 The priorities are set up so that when items are dumped into the main network, it first tries to store them in the specialized
 bulk or local storage, and if that can't be done (due to filters and partitions), it then puts the items in general storage.
-This means that items WILL NOT ACTIVELY MOVE from one storage ot the other, but will "migrate" as they enter and leave the network.
+This means that items WILL NOT ACTIVELY MOVE from one storage to the other, but will "migrate" as they enter and leave the network.
 To actively move items, use an <ItemLink id="io_port" />.
 
 <GameScene zoom="3" interactive={true}>
@@ -29,17 +29,17 @@ To actively move items, use an <ItemLink id="io_port" />.
     <BoxAnnotation color="#33dd33" min="11 0 1" max="12 1.3 2" thickness="0.05">
         Bulk Storage. In this case a filtered storage bus on a large capacity storage like a drawer. This storage bus is filtered to
         coal. It has a high priority so whenever coal enters the network, it goes to this storage bus, and whenever coal is 
-        pulled from the network, it is pulled from *evere except here*, so coal "migrates" to this drawer.
+        pulled from the network, it is pulled from *everywhere except here*, so coal "migrates" to this drawer.
 
         IMPORTANT NOTE: Big optimized inventories like drawers are fine for this, but big *un*optimized inventories with many slots, like
-        colossal chests, are terrible for performance when used with storage busses.
+        colossal chests, are terrible for performance when used with storage buses.
     </BoxAnnotation>
 
     <BoxAnnotation color="#33dd33" min="11 0 3" max="12 1 4" thickness="0.05">
         Bulk Storage. In this case a partitioned 256k cell in a drive with high priority. This cell is partitioned to
         cobblestone and iron. It has an Equal Distribution Card, so it won't be completely filled with cobblestone, leaving
         no space for iron. The drive has a high priority so whenever cobble or iron enters the network, it goes to this storage bus,
-        and whenever cobble or iron is pulled from the network, it is pulled from *evere except here*, so cobble and iron "migrate" to this cell.
+        and whenever cobble or iron is pulled from the network, it is pulled from *everywhere except here*, so cobble and iron "migrate" to this cell.
     </BoxAnnotation>
 
     <BoxAnnotation color="#33dddd" min="11 0 5" max="12 1 6" thickness="0.05">
@@ -51,7 +51,7 @@ To actively move items, use an <ItemLink id="io_port" />.
 
     <BoxAnnotation color="#88ff88" min="11 0 8" max="12 1 9" thickness="0.05">
         This IO Port plays an important role in keeping the network organized. Because storage priority does not *actively*
-        move items, cells used in General Gtorage should be periodically "shuffled" through an IO port to move items that have a
+        move items, cells used in General Storage should be periodically "shuffled" through an IO port to move items that have a
         place in specialized storage into that specialized storage. This "defragments" the storage, making sure things aren't
         being stored in multiple places.
     </BoxAnnotation>
@@ -63,7 +63,7 @@ To actively move items, use an <ItemLink id="io_port" />.
     </BoxAnnotation>
 
     <BoxAnnotation color="#dd3333" min="14 1 10" max="15 2.3 11" thickness="0.05">
-        Local Storage at a mob farm. This storage bus - interface setup allows the main network to acces this subnet's storage.
+        Local Storage at a mob farm. This storage bus - interface setup allows the main network to access this subnet's storage.
         The storage bus is given a high priority and filtered to the things stored in the cells on the subnet.
 
         IMPORTANT: Due to the trash can setup on the subnet, make sure to filter this storage bus or it will start trashing
