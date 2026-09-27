@@ -24,7 +24,7 @@
 package appeng.api.networking.spatial;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.Level;
+import net.minecraft.server.level.ServerLevel;
 
 import appeng.api.networking.IGridService;
 
@@ -44,7 +44,7 @@ public interface ISpatialService extends IGridService {
     /**
      * @return The level that the spatial region is in.
      */
-    Level getLevel();
+    ServerLevel getLevel();
 
     /**
      * @return the minimum anchor point for the spatial region.

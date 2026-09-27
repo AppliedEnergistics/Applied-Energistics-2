@@ -140,4 +140,39 @@ class CondenserMEStorageTest {
         }
         assertThat(be.getStoredPower()).isZero();
     }
+
+    /**
+     * If only part of the producible output fits into the output slot, only the power for that part is consumed.
+     */
+    @Test
+    void testPartialOutputWhenSlotAlmostFull() {
+        var requiredPower = 256;
+        CondenserOutput.MATTER_BALLS.requiredPower = requiredPower;
+
+        be.getConfigManager().putSetting(Settings.CONDENSER_OUTPUT, CondenserOutput.MATTER_BALLS);
+        be.getInternalInventory().setItemDirect(2, AEItems.CELL_COMPONENT_1K.stack());
+        be.getOutputSlot().setItemDirect(0, AEItems.MATTER_BALL.stack(63));
+
+        be.addPower(requiredPower * 2);
+
+        assertThat(be.getOutputSlot().getStackInSlot(0).getCount()).isEqualTo(64);
+        assertThat(be.getStoredPower()).isEqualTo(requiredPower);
+    }
+
+    /**
+     * If the stored power is enough for more than a full stack, a full stack is produced and the rest is kept.
+     */
+    @Test
+    void testOutputCappedAtStackSize() {
+        var requiredPower = 256;
+        CondenserOutput.MATTER_BALLS.requiredPower = requiredPower;
+
+        be.getConfigManager().putSetting(Settings.CONDENSER_OUTPUT, CondenserOutput.MATTER_BALLS);
+        be.getInternalInventory().setItemDirect(2, AEItems.CELL_COMPONENT_16K.stack());
+
+        be.addPower(requiredPower * 100);
+
+        assertThat(be.getOutputSlot().getStackInSlot(0).getCount()).isEqualTo(64);
+        assertThat(be.getStoredPower()).isEqualTo(requiredPower * 36);
+    }
 }

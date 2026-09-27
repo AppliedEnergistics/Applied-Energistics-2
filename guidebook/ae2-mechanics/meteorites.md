@@ -18,7 +18,7 @@ of various types and a <ItemLink id="mysterious_cube" /> in the center.
 
 ## Finding Meteorites
 
-Meteorites are fairly common and leave massive holes in the ground, so you may have already found a few. if not, a
-<ItemLink id="meteorite_compass" /> will point toward the nearest mysterious cube.
+Meteorites are fairly common and leave massive holes in the ground, so you may have already found a few. If not, a
+<ItemLink id="meteorite_compass" /> will point toward the nearest Mysterious Cube.
 
 ![Meteorite Crater](../assets/assemblies/meteorite-crater.png)

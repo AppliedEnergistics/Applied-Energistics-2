@@ -21,7 +21,6 @@ package appeng.blockentity.spatial;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -140,7 +139,7 @@ public class SpatialIOPortBlockEntity extends AENetworkedInvBlockEntity {
     }
 
     private void transition() {
-        if (!(this.level instanceof ServerLevel serverLevel)) {
+        if (isClientSide()) {
             return;
         }
 
@@ -169,7 +168,7 @@ public class SpatialIOPortBlockEntity extends AENetworkedInvBlockEntity {
                 if (!evt.isTransitionPrevented()) {
                     int playerId = node.getOwningPlayerId();
 
-                    boolean success = sc.doSpatialTransition(cell, serverLevel, spc.getMin(), spc.getMax(),
+                    boolean success = sc.doSpatialTransition(cell, spc.getLevel(), spc.getMin(), spc.getMax(),
                             playerId);
                     if (success) {
                         energy.extractAEPower(req, Actionable.MODULATE, PowerMultiplier.CONFIG);

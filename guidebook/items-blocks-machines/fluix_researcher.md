@@ -19,8 +19,8 @@ The Fluix Researcher is a villager profession. The corresponding job site is the
 
 ## Trades
 
-Trades follow the vanilla structure, unlocking a random selection of 2 trades per level (unless that level has only 1 possible
-trade)
+Trades follow the vanilla structure, unlocking a random selection of 2 trades per level
+(unless that level has only 1 possible trade).
 
 | Level      | Item Wanted                                       | Item Given                                      |
 |------------|---------------------------------------------------|-------------------------------------------------|

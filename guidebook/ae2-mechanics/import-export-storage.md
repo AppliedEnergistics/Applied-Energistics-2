@@ -14,18 +14,18 @@ is connected to. Most AE2 [devices](../ae2-mechanics/devices.md) interact with i
 
 For example,
 
-*   <ItemLink id="import_bus" />ses push things into network storage
-*   <ItemLink id="export_bus" />ses pull things from network storage
+*   <ItemLink id="import_bus" />es push things into network storage
+*   <ItemLink id="export_bus" />es pull things from network storage
 *   <ItemLink id="interface" />s both pull from and push to network storage
 *   [Terminals](../items-blocks-machines/terminals.md) both push to and pull from network storage when you insert or take items, or to refill the crafting slots
-*   <ItemLink id="storage_bus" />ses don't really push to or pull from storage, they push to or pull from the connected inventory
+*   <ItemLink id="storage_bus" />es don't really push to or pull from storage, they push to or pull from the connected inventory
     in order to use it as network storage (so really other devices push to or pull from *them*)
 
 <GameScene zoom="4" interactive={true}>
   <ImportStructure src="../assets/assemblies/import_export_storage.snbt" />
 
   <BoxAnnotation color="#dddddd" min="8 1 1" max="9 1.3 2">
-        Import Busses import things from inventories they're pointing at into network storage
+        Import Buses import things from inventories they're pointing at into network storage
   </BoxAnnotation>
 
   <BoxAnnotation color="#dddddd" min="8 2 1" max="9 3 1.3">
@@ -46,11 +46,11 @@ For example,
   </BoxAnnotation>
 
   <BoxAnnotation color="#dddddd" min="3 1 1" max="4 1.3 2">
-        Storage Busses use the inventory they're pointing at as network storage
+        Storage Buses use the inventory they're pointing at as network storage
   </BoxAnnotation>
 
   <BoxAnnotation color="#dddddd" min="1 1 1" max="2 1.3 2">
-        Export Busses export things from network storage into inventories they're pointing at
+        Export Buses export things from network storage into inventories they're pointing at
   </BoxAnnotation>
 
   <BoxAnnotation color="#dddddd" min="1 2 1" max="2 3 1.3">
@@ -74,7 +74,7 @@ Priorities can be set by clicking the wrench in the top-right of some GUIs.
 Items entering the network will start at the highest priority storage, as
 their first destination, in the case of two storages have the same priority,
 if one already contains the item, they will prefer that storage over any
-other. Any Whitelisted cells will be treated as already containing the item
+other. Any whitelisted cells will be treated as already containing the item
 when in the same priority group as other storages. Items being removed from storage will
 be removed from the storage with the lowest priority. This priority system means as items are inserted and removed
 from network storage, higher priority storages will be filled and lower priority storages will be emptied.
