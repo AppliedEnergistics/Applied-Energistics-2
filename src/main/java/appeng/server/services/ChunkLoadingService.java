@@ -66,8 +66,11 @@ public class ChunkLoadingService implements LoadingValidationCallback {
             // Add all persisted chunks to the list of handled ones by each anchor.
             // Or remove all in case the anchor no longer exists.
             if (blockEntity instanceof SpatialAnchorBlockEntity anchor) {
-                for (Long chunk : chunks.ticking()) {
-                    anchor.registerChunk(new ChunkPos(chunk));
+                for (Long chunk : chunks.normal()) {
+                    anchor.registerChunk(ChunkPos.unpack(chunk));
+                }
+                for (Long chunk : chunks.naturalSpawning()) {
+                    anchor.registerChunk(ChunkPos.unpack(chunk));
                 }
             } else {
                 ticketHelper.removeAllTickets(blockPos);
@@ -77,7 +80,7 @@ public class ChunkLoadingService implements LoadingValidationCallback {
 
     public boolean forceChunk(ServerLevel level, BlockPos owner, ChunkPos position) {
         if (running) {
-            return controller.forceChunk(level, owner, position.x, position.z, true, true);
+            return controller.forceChunk(level, owner, position.x(), position.z(), true, true);
         }
 
         return false;
@@ -85,7 +88,7 @@ public class ChunkLoadingService implements LoadingValidationCallback {
 
     public boolean releaseChunk(ServerLevel level, BlockPos owner, ChunkPos position) {
         if (running) {
-            return controller.forceChunk(level, owner, position.x, position.z, false, true);
+            return controller.forceChunk(level, owner, position.x(), position.z(), false, true);
         }
 
         return false;

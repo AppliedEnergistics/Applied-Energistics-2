@@ -22,11 +22,11 @@ import java.util.List;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 
 import appeng.api.inventories.InternalInventory;
@@ -36,20 +36,14 @@ import appeng.api.networking.IGridNodeListener;
 import appeng.api.networking.IManagedGridNode;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartItem;
-import appeng.api.parts.IPartModel;
 import appeng.api.util.AECableType;
 import appeng.api.util.IConfigManager;
-import appeng.core.AppEng;
 import appeng.helpers.InterfaceLogic;
 import appeng.helpers.InterfaceLogicHost;
-import appeng.items.parts.PartModels;
 import appeng.menu.locator.MenuLocators;
 import appeng.parts.AEBasePart;
-import appeng.parts.PartModel;
 
 public class InterfacePart extends AEBasePart implements InterfaceLogicHost {
-
-    public static final ResourceLocation MODEL_BASE = AppEng.makeId("part/interface_base");
 
     private static final IGridNodeListener<InterfacePart> NODE_LISTENER = new NodeListener<>() {
         @Override
@@ -58,18 +52,6 @@ public class InterfacePart extends AEBasePart implements InterfaceLogicHost {
             nodeOwner.getInterfaceLogic().gridChanged();
         }
     };
-
-    @PartModels
-    public static final PartModel MODELS_OFF = new PartModel(MODEL_BASE,
-            AppEng.makeId("part/interface_off"));
-
-    @PartModels
-    public static final PartModel MODELS_ON = new PartModel(MODEL_BASE,
-            AppEng.makeId("part/interface_on"));
-
-    @PartModels
-    public static final PartModel MODELS_HAS_CHANNEL = new PartModel(MODEL_BASE,
-            AppEng.makeId("part/interface_has_channel"));
 
     private final InterfaceLogic logic = createLogic();
 
@@ -106,15 +88,15 @@ public class InterfacePart extends AEBasePart implements InterfaceLogicHost {
     }
 
     @Override
-    public void readFromNBT(CompoundTag data, HolderLookup.Provider registries) {
-        super.readFromNBT(data, registries);
-        this.logic.readFromNBT(data, registries);
+    public void readFromNBT(ValueInput input) {
+        super.readFromNBT(input);
+        this.logic.readFromNBT(input);
     }
 
     @Override
-    public void writeToNBT(CompoundTag data, HolderLookup.Provider registries) {
-        super.writeToNBT(data, registries);
-        this.logic.writeToNBT(data, registries);
+    public void writeToNBT(ValueOutput data) {
+        super.writeToNBT(data);
+        this.logic.writeToNBT(data);
     }
 
     @Override
@@ -141,7 +123,7 @@ public class InterfacePart extends AEBasePart implements InterfaceLogicHost {
 
     @Override
     public boolean onUseWithoutItem(Player p, Vec3 pos) {
-        if (!p.getCommandSenderWorld().isClientSide()) {
+        if (!p.level().isClientSide()) {
             openMenu(p, MenuLocators.forPart(this));
         }
         return true;
@@ -162,20 +144,9 @@ public class InterfacePart extends AEBasePart implements InterfaceLogicHost {
         this.logic.setPriority(newValue);
     }
 
-    @Override
-    public IPartModel getStaticModels() {
-        if (this.isActive() && this.isPowered()) {
-            return MODELS_HAS_CHANNEL;
-        } else if (this.isPowered()) {
-            return MODELS_ON;
-        } else {
-            return MODELS_OFF;
-        }
-    }
-
     @Nullable
     @Override
-    public InternalInventory getSubInventory(ResourceLocation id) {
+    public InternalInventory getSubInventory(Identifier id) {
         if (id.equals(UPGRADES)) {
             return logic.getUpgrades();
         }

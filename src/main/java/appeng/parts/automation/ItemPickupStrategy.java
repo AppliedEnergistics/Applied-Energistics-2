@@ -10,7 +10,7 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
@@ -40,7 +40,7 @@ import appeng.util.Platform;
 
 public class ItemPickupStrategy implements PickupStrategy {
 
-    public static final ResourceLocation TAG_BLACKLIST = AppEng.makeId(
+    public static final Identifier TAG_BLACKLIST = AppEng.makeId(
             "blacklisted/annihilation_plane");
 
     private static final TagKey<Block> BLOCK_BLACKLIST = TagKey.create(Registries.BLOCK, TAG_BLACKLIST);
@@ -255,15 +255,15 @@ public class ItemPickupStrategy implements PickupStrategy {
         }
 
         if (enchantments != null) {
-            var enchantmentRegistry = level.registryAccess().registryOrThrow(Registries.ENCHANTMENT);
+            var enchantmentRegistry = level.registryAccess().lookupOrThrow(Registries.ENCHANTMENT);
 
             var efficiencyFactor = 1f;
-            var efficiencyLevel = enchantments.getLevel(enchantmentRegistry.getHolderOrThrow(Enchantments.EFFICIENCY));
+            var efficiencyLevel = enchantments.getLevel(enchantmentRegistry.getOrThrow(Enchantments.EFFICIENCY));
             if (efficiencyLevel > 0) {
                 // Reduce total energy usage incurred by other enchantments by 15% per Efficiency level.
                 efficiencyFactor *= Math.pow(0.85, efficiencyLevel);
             }
-            var unbreakingLevel = enchantments.getLevel(enchantmentRegistry.getHolderOrThrow(Enchantments.UNBREAKING));
+            var unbreakingLevel = enchantments.getLevel(enchantmentRegistry.getOrThrow(Enchantments.UNBREAKING));
             if (unbreakingLevel > 0) {
                 // Give plane only a (100 / (level + 1))% chance to use energy.
                 // This is similar to vanilla Unbreaking behaviour for tools.

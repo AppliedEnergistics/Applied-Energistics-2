@@ -2,18 +2,10 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "a": {
-      "tag": "c:gems/diamond"
-    },
-    "b": {
-      "tag": "c:ingots/iron"
-    },
-    "c": {
-      "tag": "c:dusts/redstone"
-    },
-    "d": {
-      "item": "ae2:calculation_processor"
-    }
+    "a": "#c:gems/diamond",
+    "b": "#c:ingots/iron",
+    "c": "#c:dusts/redstone",
+    "d": "ae2:calculation_processor"
   },
   "pattern": [
     "ab ",

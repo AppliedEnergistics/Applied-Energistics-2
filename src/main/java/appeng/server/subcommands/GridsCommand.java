@@ -41,7 +41,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.chunk.storage.ChunkSerializer;
+import net.minecraft.world.level.chunk.storage.SerializableChunkData;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 import appeng.api.networking.GridHelper;
@@ -210,13 +210,16 @@ public class GridsCommand implements ISubCommand {
             for (var entry : chunksByLevel.entrySet()) {
                 var level = entry.getKey();
                 var chunks = entry.getValue();
-                var baseName = sanitizeName(level.dimension().location().toString());
+                var baseName = sanitizeName(level.dimension().identifier().toString());
                 for (var chunk : chunks) {
-                    var serializedChunk = ChunkSerializer.write(level, level.getChunk(chunk.x, chunk.z));
-                    zipOut.putNextEntry(new ZipEntry("chunks/" + baseName + "_" + chunk.x + "_" + chunk.z + ".nbt"));
+                    var serializedChunk = SerializableChunkData.copyOf(level, level.getChunk(chunk.x(), chunk.z()))
+                            .write();
+                    zipOut.putNextEntry(
+                            new ZipEntry("chunks/" + baseName + "_" + chunk.x() + "_" + chunk.z() + ".nbt"));
                     NbtIo.writeCompressed(serializedChunk, CloseShieldOutputStream.wrap(zipOut));
 
-                    zipOut.putNextEntry(new ZipEntry("chunks/" + baseName + "_" + chunk.x + "_" + chunk.z + ".snbt"));
+                    zipOut.putNextEntry(
+                            new ZipEntry("chunks/" + baseName + "_" + chunk.x() + "_" + chunk.z() + ".snbt"));
                     zipOut.write(NbtUtils.structureToSnbt(serializedChunk).getBytes(StandardCharsets.UTF_8));
                 }
             }

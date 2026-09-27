@@ -1,6 +1,8 @@
 {
-  "credit": "Made with Blockbench",
   "parent": "ae2:item/part_base",
+  "textures": {
+    "particle": "#base"
+  },
   "elements": [
     {
       "name": "Base",

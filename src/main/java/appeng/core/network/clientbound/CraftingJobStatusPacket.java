@@ -5,14 +5,8 @@ import java.util.UUID;
 
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.world.entity.player.Player;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 import appeng.api.stacks.AEKey;
-import appeng.client.gui.me.common.PendingCraftingJobs;
-import appeng.client.gui.me.common.PinnedKeys;
-import appeng.core.AEConfig;
 import appeng.core.network.ClientboundPacket;
 import appeng.core.network.CustomAppEngPayload;
 
@@ -55,18 +49,6 @@ public record CraftingJobStatusPacket(
         AEKey.writeKey(data, what);
         data.writeLong(requestedAmount);
         data.writeLong(remainingAmount);
-    }
-
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    public void handleOnClient(Player player) {
-        if (status == Status.STARTED) {
-            if (AEConfig.instance().isPinAutoCraftedItems()) {
-                PinnedKeys.pinKey(what, PinnedKeys.PinReason.CRAFTING);
-            }
-        }
-
-        PendingCraftingJobs.jobStatus(jobId, what, requestedAmount, remainingAmount, status);
     }
 
     public enum Status {

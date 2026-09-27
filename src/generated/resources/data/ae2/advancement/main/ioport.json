@@ -17,7 +17,6 @@
       "translate": "achievement.ae2.IOPort.desc"
     },
     "icon": {
-      "count": 1,
       "id": "ae2:io_port"
     },
     "title": {

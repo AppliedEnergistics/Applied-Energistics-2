@@ -9,8 +9,6 @@
     }
   ],
   "type": "ae2:matter_cannon",
-  "ammo": {
-    "tag": "c:nuggets/cerium"
-  },
+  "ammo": "#c:nuggets/cerium",
   "weight": 140.116
 }

@@ -24,19 +24,18 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.inventory.TransientCraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 import appeng.api.config.Actionable;
@@ -60,14 +59,13 @@ import appeng.api.upgrades.IUpgradeableObject;
 import appeng.api.upgrades.UpgradeInventories;
 import appeng.api.util.AECableType;
 import appeng.blockentity.grid.AENetworkedInvBlockEntity;
-import appeng.client.render.crafting.AssemblerAnimationStatus;
 import appeng.core.AELog;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEItems;
 import appeng.core.localization.GuiText;
 import appeng.core.localization.Tooltips;
-import appeng.core.network.clientbound.AssemblerAnimationPacket;
+import appeng.core.network.clientbound.MolecularAssemblerAnimationPacket;
 import appeng.crafting.CraftingEvent;
 import appeng.menu.AutoCraftingMenu;
 import appeng.util.inv.AppEngInternalInventory;
@@ -81,7 +79,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkedInvBlockEntity
     /**
      * Identifies the sub-inventory used by molecular assemblers to store the input items for the crafting process.
      */
-    public static final ResourceLocation INV_MAIN = AppEng.makeId("molecular_assembler");
+    public static final Identifier INV_MAIN = AppEng.makeId("molecular_assembler");
 
     private final CraftingContainer craftingInv;
     private final AppEngInternalInventory gridInv = new AppEngInternalInventory(this, 9 + 1, 1);
@@ -98,8 +96,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkedInvBlockEntity
     private boolean forcePlan = false;
     private boolean reboot = true;
 
-    @OnlyIn(Dist.CLIENT)
-    private AssemblerAnimationStatus animationStatus;
+    private MolecularAssemblerAnimationStatus animationStatus;
 
     public MolecularAssemblerBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState blockState) {
         super(blockEntityType, pos, blockState);
@@ -123,7 +120,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkedInvBlockEntity
         if (hasCustomName()) {
             name = getCustomName();
         } else {
-            name = AEBlocks.MOLECULAR_ASSEMBLER.asItem().getDescription();
+            name = AEBlocks.MOLECULAR_ASSEMBLER.asItem().getDefaultInstance().getItemName();
         }
         var icon = AEItemKey.of(AEBlocks.MOLECULAR_ASSEMBLER);
 
@@ -135,7 +132,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkedInvBlockEntity
         } else {
             tooltip = List.of(
                     GuiText.CompatibleUpgrade.text(
-                            Tooltips.of(AEItems.SPEED_CARD.asItem().getDescription()),
+                            Tooltips.of(AEItems.SPEED_CARD.asItem().getDefaultInstance().getItemName()),
                             Tooltips.ofUnformattedNumber(accelerationCards)));
         }
 
@@ -228,43 +225,42 @@ public class MolecularAssemblerBlockEntity extends AENetworkedInvBlockEntity
     }
 
     @Override
-    public void saveAdditional(CompoundTag data, HolderLookup.Provider registries) {
-        super.saveAdditional(data, registries);
+    public void saveAdditional(ValueOutput data) {
+        super.saveAdditional(data);
         if (this.forcePlan) {
             // If the plan is null it means the pattern previously loaded from NBT hasn't been decoded yet
             var pattern = myPlan != null ? myPlan.getDefinition().toStack() : myPattern;
             if (!pattern.isEmpty()) {
-                data.put("myPlan", pattern.save(registries));
+                data.store("myPlan", ItemStack.OPTIONAL_CODEC, pattern);
                 data.putInt("pushDirection", this.pushDirection.ordinal());
             }
         }
 
-        this.upgrades.writeToNBT(data, "upgrades", registries);
+        this.upgrades.writeToNBT(data, "upgrades");
     }
 
     @Override
-    public void loadTag(CompoundTag data, HolderLookup.Provider registries) {
-        super.loadTag(data, registries);
+    public void loadTag(ValueInput data) {
+        super.loadTag(data);
 
-        // Reset current state back to defaults
-        this.forcePlan = false;
-        this.myPattern = ItemStack.EMPTY;
         this.myPlan = null;
-
-        if (data.contains("myPlan")) {
-            var pattern = ItemStack.parseOptional(registries, data.getCompound("myPlan"));
-            if (!pattern.isEmpty()) {
-                this.forcePlan = true;
-                this.myPattern = pattern;
-                this.pushDirection = Direction.values()[data.getInt("pushDirection")];
-            }
+        this.myPattern = data.read("myPlan", ItemStack.OPTIONAL_CODEC).orElse(ItemStack.EMPTY);
+        if (!this.myPattern.isEmpty()) {
+            this.forcePlan = true;
+            this.pushDirection = Direction.values()[data.getIntOr("pushDirection", 0)];
+        } else {
+            this.forcePlan = false;
         }
 
-        this.upgrades.readFromNBT(data, "upgrades", registries);
+        this.upgrades.readFromNBT(data, "upgrades");
         this.recalculatePlan();
     }
 
     private void recalculatePlan() {
+        if (!(getLevel() instanceof ServerLevel level)) {
+            return;
+        }
+
         this.reboot = true;
 
         if (this.forcePlan) {
@@ -274,7 +270,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkedInvBlockEntity
             if (getLevel() != null && myPlan == null) {
                 if (!myPattern.isEmpty()) {
                     if (PatternDetailsHelper.decodePattern(myPattern,
-                            getLevel()) instanceof IMolecularAssemblerSupportedPattern supportedPlan) {
+                            level) instanceof IMolecularAssemblerSupportedPattern supportedPlan) {
                         this.myPlan = supportedPlan;
                     }
                 }
@@ -300,7 +296,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkedInvBlockEntity
             if (ItemStack.isSameItemSameComponents(is, this.myPattern)) {
                 reset = false;
             } else if (PatternDetailsHelper.decodePattern(is,
-                    getLevel()) instanceof IMolecularAssemblerSupportedPattern supportedPattern) {
+                    level) instanceof IMolecularAssemblerSupportedPattern supportedPattern) {
                 reset = false;
                 this.progress = 0;
                 this.myPattern = is;
@@ -325,7 +321,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkedInvBlockEntity
     }
 
     @Override
-    public InternalInventory getSubInventory(ResourceLocation id) {
+    public InternalInventory getSubInventory(Identifier id) {
         if (id.equals(ISegmentedInventory.UPGRADES)) {
             return this.upgrades;
         } else if (id.equals(INV_MAIN)) {
@@ -469,7 +465,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkedInvBlockEntity
                     PacketDistributor.sendToPlayersNear(node.getLevel(), null, worldPosition.getX(),
                             worldPosition.getY(),
                             worldPosition.getZ(), 32,
-                            new AssemblerAnimationPacket(this.worldPosition, (byte) speed, item));
+                            new MolecularAssemblerAnimationPacket(this.worldPosition, (byte) speed, item));
                 }
 
                 this.saveChanges();
@@ -572,14 +568,14 @@ public class MolecularAssemblerBlockEntity extends AENetworkedInvBlockEntity
         return this.isPowered;
     }
 
-    @OnlyIn(Dist.CLIENT)
-    public void setAnimationStatus(@Nullable AssemblerAnimationStatus status) {
+    // Only used on client
+    public void setAnimationStatus(@Nullable MolecularAssemblerAnimationStatus status) {
         this.animationStatus = status;
     }
 
-    @OnlyIn(Dist.CLIENT)
+    // Only used on client
     @Nullable
-    public AssemblerAnimationStatus getAnimationStatus() {
+    public MolecularAssemblerAnimationStatus getAnimationStatus() {
         return this.animationStatus;
     }
 
@@ -590,16 +586,7 @@ public class MolecularAssemblerBlockEntity extends AENetworkedInvBlockEntity
 
     @Nullable
     public IMolecularAssemblerSupportedPattern getCurrentPattern() {
-        if (isClientSide()) {
-            var patternItem = patternInv.getStackInSlot(0);
-            var pattern = PatternDetailsHelper.decodePattern(patternItem, level);
-            if (pattern instanceof IMolecularAssemblerSupportedPattern supportedPattern) {
-                return supportedPattern;
-            }
-            return null;
-        } else {
-            return myPlan;
-        }
+        return myPlan;
     }
 
     private class CraftingGridFilter implements IAEItemFilter {

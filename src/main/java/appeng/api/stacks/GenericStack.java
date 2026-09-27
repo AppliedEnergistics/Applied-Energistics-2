@@ -9,6 +9,7 @@ import com.mojang.serialization.DataResult;
 import com.mojang.serialization.Dynamic;
 import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.Lifecycle;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import org.jetbrains.annotations.ApiStatus;
@@ -16,14 +17,17 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.CustomData;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 
 import appeng.api.ids.AEComponents;
 import appeng.core.definitions.AEItems;
@@ -39,9 +43,11 @@ public record GenericStack(AEKey what, long amount) {
 
     private static final Logger LOG = LoggerFactory.getLogger(GenericStack.class);
 
-    public static final Codec<GenericStack> CODEC = RecordCodecBuilder.create(builder -> builder.group(
+    public static final MapCodec<GenericStack> MAP_CODEC = RecordCodecBuilder.mapCodec(builder -> builder.group(
             AEKey.MAP_CODEC.forGetter(GenericStack::what),
             Codec.LONG.fieldOf(AMOUNT_FIELD).forGetter(GenericStack::amount)).apply(builder, GenericStack::new));
+
+    public static final Codec<GenericStack> CODEC = MAP_CODEC.codec();
 
     public static final StreamCodec<RegistryFriendlyByteBuf, GenericStack> STREAM_CODEC = StreamCodec.ofMember(
             GenericStack::writeBuffer,
@@ -93,7 +99,7 @@ public record GenericStack(AEKey what, long amount) {
             if (input.what() instanceof AEItemKey itemKey && itemKey.is(AEItems.MISSING_CONTENT)) {
                 var originalData = itemKey.get(AEComponents.MISSING_CONTENT_ITEMSTACK_DATA);
                 if (originalData != null) {
-                    return DataResult.success(Dynamic.convert(NbtOps.INSTANCE, ops, originalData.getUnsafe()),
+                    return DataResult.success(Dynamic.convert(NbtOps.INSTANCE, ops, originalData.copyTag()),
                             t.lifecycle());
                 }
             }
@@ -138,24 +144,17 @@ public record GenericStack(AEKey what, long amount) {
     }
 
     @Nullable
-    public static GenericStack readTag(HolderLookup.Provider registries, CompoundTag tag) {
-        if (tag.isEmpty()) {
+    public static GenericStack readTag(ValueInput input) {
+        if (input.getString(AEKey.TYPE_FIELD).isEmpty()) {
             return null;
         }
-        var ops = registries.createSerializationContext(NbtOps.INSTANCE);
-        return GenericStack.CODEC.decode(ops, tag)
-                .ifError(err -> LOG.error("Failed to decode GenericStack from {}: {}", tag, err.message()))
-                .getPartialOrThrow()
-                .getFirst();
+        return input.read(MAP_CODEC).orElse(null);
     }
 
-    public static CompoundTag writeTag(HolderLookup.Provider registries, @Nullable GenericStack stack) {
-        if (stack == null) {
-            return new CompoundTag();
+    public static void writeTag(ValueOutput output, @Nullable GenericStack stack) {
+        if (stack != null) {
+            output.store(MAP_CODEC, stack);
         }
-
-        var ops = registries.createSerializationContext(NbtOps.INSTANCE);
-        return (CompoundTag) GenericStack.CODEC.encodeStart(ops, stack).getOrThrow();
     }
 
     /**
@@ -186,6 +185,30 @@ public record GenericStack(AEKey what, long amount) {
             return null;
         }
         return new GenericStack(key, stack.getAmount());
+    }
+
+    /**
+     * Converts a given item resource and amount into a generic stack. If the resource is empty, null is returned.
+     */
+    @Nullable
+    public static GenericStack from(ItemResource resource, long amount) {
+        var key = AEItemKey.of(resource);
+        if (key == null) {
+            return null;
+        }
+        return new GenericStack(key, amount);
+    }
+
+    /**
+     * Converts a given fluid resource and amount into a generic stack. If the resource is empty, null is returned.
+     */
+    @Nullable
+    public static GenericStack from(FluidResource resource, long amount) {
+        var key = AEFluidKey.of(resource);
+        if (key == null) {
+            return null;
+        }
+        return new GenericStack(key, amount);
     }
 
     public static long getStackSizeOrZero(@Nullable GenericStack stack) {

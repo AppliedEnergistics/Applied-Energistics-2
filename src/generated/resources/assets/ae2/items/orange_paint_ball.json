@@ -1,0 +1,12 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "ae2:item/paint_ball",
+    "tints": [
+      {
+        "type": "minecraft:constant",
+        "value": -1269188
+      }
+    ]
+  }
+}

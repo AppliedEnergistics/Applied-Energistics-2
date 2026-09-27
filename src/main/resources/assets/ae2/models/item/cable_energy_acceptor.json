@@ -4,7 +4,8 @@
   "textures": {
     "sides": "ae2:part/monitor_sides",
     "back": "ae2:part/monitor_back",
-    "front": "ae2:part/energy_acceptor"
+    "front": "ae2:part/energy_acceptor",
+    "particle": "ae2:part/energy_acceptor"
   },
   "elements": [
     {

@@ -25,15 +25,20 @@ import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.ItemContainerContents;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.transfer.IndexModifier;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.TransferPreconditions;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.SnapshotJournal;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
 import appeng.api.inventories.BaseInternalInventory;
+import appeng.core.definitions.AEItems;
 import appeng.util.inv.filter.IAEItemFilter;
 
 public class AppEngInternalInventory extends BaseInternalInventory {
@@ -43,6 +48,7 @@ public class AppEngInternalInventory extends BaseInternalInventory {
     private final int[] maxStack;
     private IAEItemFilter filter;
     private boolean notifyingChanges = false;
+    private boolean inTransactionalCode;
 
     public AppEngInternalInventory(InternalInventoryHost host, int size, int maxStack, IAEItemFilter filter) {
         this.setHost(host);
@@ -85,7 +91,9 @@ public class AppEngInternalInventory extends BaseInternalInventory {
     }
 
     private void notifyContentsChanged(int slot) {
-        onContentsChanged(slot);
+        if (!inTransactionalCode) {
+            onContentsChanged(slot);
+        }
     }
 
     @Override
@@ -107,7 +115,6 @@ public class AppEngInternalInventory extends BaseInternalInventory {
         if (stack.getCount() <= toExtract) {
             if (!simulate) {
                 setItemDirect(slot, ItemStack.EMPTY);
-                notifyContentsChanged(slot);
                 return stack;
             } else {
                 return stack.copy();
@@ -160,34 +167,23 @@ public class AppEngInternalInventory extends BaseInternalInventory {
         contents.copyInto(stacks);
     }
 
-    public void writeToNBT(CompoundTag data, String name, HolderLookup.Provider registries) {
-        if (isEmpty()) {
-            data.remove(name);
-            return;
-        }
-
-        var items = new ListTag();
+    public void writeToNBT(ValueOutput output, String name) {
+        var list = output.childrenList(name);
         for (int i = 0; i < stacks.size(); i++) {
             var stack = stacks.get(i);
             if (!stack.isEmpty()) {
-                CompoundTag itemTag = new CompoundTag();
-                itemTag.putInt("Slot", i);
-                items.add(stack.save(registries, itemTag));
+                var entry = list.addChild();
+                entry.store(ItemStack.MAP_CODEC, stack);
+                entry.putInt("Slot", i);
             }
         }
-        data.put(name, items);
     }
 
-    public void readFromNBT(CompoundTag data, String name, HolderLookup.Provider registries) {
-        if (data.contains(name, Tag.TAG_LIST)) {
-            var tagList = data.getList(name, Tag.TAG_COMPOUND);
-            for (var itemTag : tagList) {
-                var itemCompound = (CompoundTag) itemTag;
-                int slot = itemCompound.getInt("Slot");
-
-                if (slot >= 0 && slot < stacks.size()) {
-                    stacks.set(slot, ItemStack.parseOptional(registries, itemCompound));
-                }
+    public void readFromNBT(ValueInput input, String name) {
+        for (var entry : input.childrenListOrEmpty(name)) {
+            int slot = entry.getIntOr("Slot", 0);
+            if (slot >= 0 && slot < stacks.size()) {
+                stacks.set(slot, entry.read(ItemStack.MAP_CODEC).orElse(ItemStack.EMPTY));
             }
         }
     }
@@ -212,5 +208,201 @@ public class AppEngInternalInventory extends BaseInternalInventory {
     @Override
     public int size() {
         return stacks.size();
+    }
+
+    @Override
+    protected ResourceHandler<ItemResource> createResourceHandler() {
+        return new AppEngInternalInventoryResourceHandler();
+    }
+
+    private class AppEngInternalInventoryResourceHandler
+            extends SnapshotJournal<AppEngInternalInventoryResourceHandler.Snapshot>
+            implements ResourceHandler<ItemResource>, IndexModifier<ItemResource> {
+        @Nullable
+        private Snapshot lastReleasedSnapshot;
+
+        @Override
+        public void set(int index, ItemResource resource, int amount) {
+            setItemDirect(index, resource.toStack(amount));
+        }
+
+        @Override
+        public int insert(ItemResource resource, int maxAmount, TransactionContext transaction) {
+            TransferPreconditions.checkNonEmptyNonNegative(resource, maxAmount);
+
+            var stack = resource.toStack(maxAmount);
+
+            updateSnapshots(transaction);
+
+            var prevInTransactionalCode = inTransactionalCode;
+            inTransactionalCode = true;
+            try {
+                var overflow = addItems(stack);
+                return maxAmount - overflow.getCount();
+            } finally {
+                inTransactionalCode = prevInTransactionalCode;
+            }
+        }
+
+        @Override
+        public int extract(ItemResource resource, int maxAmount, TransactionContext transaction) {
+            TransferPreconditions.checkNonEmptyNonNegative(resource, maxAmount);
+
+            // Do not allow extraction of wrapped fluid stacks because they're an internal detail
+            if (resource.getItem() == AEItems.WRAPPED_GENERIC_STACK.asItem()) {
+                return 0;
+            }
+
+            updateSnapshots(transaction);
+
+            var prevInTransactionalCode = inTransactionalCode;
+            inTransactionalCode = true;
+            try {
+                ItemStack extracted = removeItems(maxAmount, resource.toStack(), null);
+
+                return extracted.getCount();
+            } finally {
+                inTransactionalCode = prevInTransactionalCode;
+            }
+        }
+
+        @Override
+        public int insert(int index, ItemResource resource, int maxAmount, TransactionContext transaction) {
+            TransferPreconditions.checkNonEmptyNonNegative(resource, maxAmount);
+
+            var stack = resource.toStack(maxAmount);
+
+            // Cheaply check via simulation whether anything would actually be inserted before paying for an
+            // O(size) snapshot of the whole inventory.
+            if (insertItem(index, stack, true).getCount() == maxAmount) {
+                return 0;
+            }
+
+            updateSnapshots(transaction);
+
+            var prevInTransactionalCode = inTransactionalCode;
+            inTransactionalCode = true;
+            try {
+                var overflow = insertItem(index, stack, false).getCount();
+                return maxAmount - overflow;
+            } finally {
+                inTransactionalCode = prevInTransactionalCode;
+            }
+        }
+
+        @Override
+        public int extract(int index, ItemResource resource, int maxAmount, TransactionContext transaction) {
+            TransferPreconditions.checkNonEmptyNonNegative(resource, maxAmount);
+
+            // Do not allow extraction of wrapped fluid stacks because they're an internal detail
+            if (resource.getItem() == AEItems.WRAPPED_GENERIC_STACK.asItem()) {
+                return 0;
+            }
+
+            // The resource must actually match what's stored at this index, otherwise callers relying on the
+            // ResourceHandler contract (e.g. generic item movers) could extract a completely different item than
+            // the one they asked for.
+            if (!resource.matches(getStackInSlot(index))) {
+                return 0;
+            }
+
+            updateSnapshots(transaction);
+
+            var prevInTransactionalCode = inTransactionalCode;
+            inTransactionalCode = true;
+            try {
+                return extractItem(index, maxAmount, false).getCount();
+            } finally {
+                inTransactionalCode = prevInTransactionalCode;
+            }
+        }
+
+        @Override
+        public int size() {
+            return AppEngInternalInventory.this.size();
+        }
+
+        @Override
+        public boolean isValid(int index, ItemResource resource) {
+            return AppEngInternalInventory.this.isItemValid(index, resource.toStack());
+        }
+
+        @Override
+        public ItemResource getResource(int index) {
+            return ItemResource.of(AppEngInternalInventory.this.getStackInSlot(index));
+        }
+
+        @Override
+        public long getAmountAsLong(int index) {
+            return AppEngInternalInventory.this.getStackInSlot(index).getCount();
+        }
+
+        @Override
+        public long getCapacityAsLong(int index, ItemResource resource) {
+            if (!resource.isEmpty() && !isValid(index, resource)) {
+                return 0;
+            }
+            return AppEngInternalInventory.this.getSlotLimit(index);
+        }
+
+        @Override
+        protected Snapshot createSnapshot() {
+            Snapshot snapshot;
+            if (this.lastReleasedSnapshot != null && this.lastReleasedSnapshot.items.length == size()) {
+                snapshot = this.lastReleasedSnapshot;
+                this.lastReleasedSnapshot = null;
+            } else {
+                snapshot = new Snapshot();
+            }
+
+            for (int i = 0; i < size(); i++) {
+                var stack = stacks.get(i);
+                snapshot.items[i] = stack;
+                snapshot.counts[i] = stack.getCount();
+            }
+            return snapshot;
+        }
+
+        @Override
+        protected void revertToSnapshot(Snapshot snapshot) {
+            var items = snapshot.items;
+            var counts = snapshot.counts;
+            for (int i = 0; i < items.length; i++) {
+                var stack = items[i];
+                // Restore the previous count as well, the inventory might mutate the stack count for extract/insert
+                // We do not restore NBT since the Storage API does not give access to the original NBT and the
+                // inventory
+                // doesn't mutate it itself
+                if (stack.getCount() != counts[i]) {
+                    stack.setCount(counts[i]);
+                }
+                stacks.set(i, stack);
+            }
+        }
+
+        @Override
+        protected void releaseSnapshot(Snapshot snapshot) {
+            this.lastReleasedSnapshot = snapshot;
+        }
+
+        public class Snapshot {
+            final ItemStack[] items;
+            final int[] counts;
+
+            public Snapshot() {
+                this.items = new ItemStack[size()];
+                this.counts = new int[size()];
+            }
+        }
+
+        @Override
+        public void onRootCommit(Snapshot original) {
+            for (int i = 0; i < original.items.length; i++) {
+                var current = stacks.get(i);
+                if (current != original.items[i] || current.getCount() != original.counts[i]) {
+                    notifyContentsChanged(i);
+                }
+            }
+        }
     }
 }

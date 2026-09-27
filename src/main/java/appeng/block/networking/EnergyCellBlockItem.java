@@ -18,14 +18,12 @@
 
 package appeng.block.networking;
 
-import java.util.List;
+import java.util.function.Consumer;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.block.Block;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
@@ -41,12 +39,11 @@ public class EnergyCellBlockItem extends AEBaseBlockItem implements IAEItemPower
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
-    public void addCheckedInformation(ItemStack stack, TooltipContext context, List<Component> lines,
-            TooltipFlag advancedTooltips) {
+    public void addCheckedInformation(ItemStack stack, TooltipContext context, Consumer<Component> lines,
+            TooltipFlag tooltipFlags) {
         var storedEnergy = getAECurrentPower(stack);
         var maxEnergy = getAEMaxPower(stack);
-        lines.add(Tooltips.energyStorageComponent(storedEnergy, maxEnergy));
+        lines.accept(Tooltips.energyStorageComponent(storedEnergy, maxEnergy));
     }
 
     @Override

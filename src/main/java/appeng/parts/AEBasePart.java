@@ -34,11 +34,10 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.chat.ComponentSerialization;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.Nameable;
 import net.minecraft.world.entity.player.Player;
@@ -46,7 +45,10 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.model.data.ModelData;
 
 import it.unimi.dsi.fastutil.objects.Reference2IntMap;
 
@@ -71,6 +73,7 @@ import appeng.api.util.AEColor;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEParts;
 import appeng.items.tools.MemoryCardItem;
+import appeng.parts.automation.PartModelData;
 import appeng.util.IDebugExportable;
 import appeng.util.InteractionUtil;
 import appeng.util.JsonStreamUtil;
@@ -125,7 +128,7 @@ public abstract class AEBasePart
         return this.host;
     }
 
-    protected AEColor getColor() {
+    public AEColor getColor() {
         if (this.host == null) {
             return AEColor.TRANSPARENT;
         }
@@ -151,7 +154,7 @@ public abstract class AEBasePart
 
     @Override
     public Component getName() {
-        return Objects.requireNonNullElse(this.customName, partItem.asItem().getDescription());
+        return Objects.requireNonNullElse(this.customName, partItem.asItem().getDefaultInstance().getItemName());
     }
 
     @Override
@@ -190,28 +193,19 @@ public abstract class AEBasePart
     }
 
     @Override
-    public void readFromNBT(CompoundTag data, HolderLookup.Provider registries) {
-        this.mainNode.loadFromNBT(data);
+    public void readFromNBT(ValueInput input) {
+        this.mainNode.deserialize(input);
 
-        if (data.contains("customName")) {
-            try {
-                this.customName = Component.Serializer.fromJson(data.getString("customName"), registries);
-            } catch (Exception ignored) {
-            }
-        }
+        this.customName = input.read("customName", ComponentSerialization.CODEC).orElse(null);
 
-        if (data.contains("visual", Tag.TAG_COMPOUND)) {
-            readVisualStateFromNBT(data.getCompound("visual"));
-        }
+        input.child("visual").ifPresent(this::readVisualStateFromNBT);
     }
 
     @Override
-    public void writeToNBT(CompoundTag data, HolderLookup.Provider registries) {
-        this.mainNode.saveToNBT(data);
+    public void writeToNBT(ValueOutput data) {
+        this.mainNode.serialize(data);
 
-        if (this.customName != null) {
-            data.putString("customName", Component.Serializer.toJson(this.customName, registries));
-        }
+        data.storeNullable("customName", ComponentSerialization.CODEC, customName);
     }
 
     @MustBeInvokedByOverriders
@@ -249,24 +243,24 @@ public abstract class AEBasePart
      * Used to store the state that is synchronized to clients for the visual appearance of this part as NBT. This is
      * only used to store this state for tools such as Create Ponders in Structure NBT. Actual synchronization uses
      * {@link IPart#writeToStream(RegistryFriendlyByteBuf)} and {@link IPart#readFromStream(RegistryFriendlyByteBuf)}.
-     * Any data that is saved to the NBT tag in {@link IPart#writeToNBT(CompoundTag, HolderLookup.Provider)} already
-     * does not need to be saved here again.
+     * Any data that is saved to the NBT tag in {@link IPart#writeToNBT(ValueOutput)} already does not need to be saved
+     * here again.
      */
     @MustBeInvokedByOverriders
     @Override
-    public void writeVisualStateToNBT(CompoundTag data) {
-        data.putBoolean("powered", this.isPowered());
-        data.putBoolean("missingChannel", this.isMissingChannel());
+    public void writeVisualStateToNBT(ValueOutput output) {
+        output.putBoolean("powered", this.isPowered());
+        output.putBoolean("missingChannel", this.isMissingChannel());
     }
 
     /**
-     * Loads data saved by {@link #writeVisualStateToNBT(CompoundTag)}.
+     * Loads data saved by {@link IPart#writeVisualStateToNBT(ValueOutput)}.
      */
     @MustBeInvokedByOverriders
     @Override
-    public void readVisualStateFromNBT(CompoundTag data) {
-        this.clientSidePowered = data.getBoolean("powered");
-        this.clientSideMissingChannel = data.getBoolean("missingChannel");
+    public void readVisualStateFromNBT(ValueInput input) {
+        this.clientSidePowered = input.getBooleanOr("powered", false);
+        this.clientSideMissingChannel = input.getBooleanOr("missingChannel", false);
     }
 
     @Override
@@ -326,7 +320,8 @@ public abstract class AEBasePart
 
         if (mode == SettingsFrom.MEMORY_CARD) {
             MemoryCardItem.exportGenericSettings(this, builder);
-            builder.set(AEComponents.EXPORTED_SETTINGS_SOURCE, getPartItem().asItem().getDescription());
+            builder.set(AEComponents.EXPORTED_SETTINGS_SOURCE,
+                    getPartItem().asItem().getDefaultInstance().getItemName());
         }
     }
 
@@ -354,7 +349,7 @@ public abstract class AEBasePart
             partItem = AEBlocks.PATTERN_PROVIDER.asItem();
         }
 
-        var name = partItem.getDescription();
+        var name = partItem.getDefaultInstance().getItemName();
 
         if (InteractionUtil.isInAlternateUseMode(player)) {
             var settings = exportSettings(SettingsFrom.MEMORY_CARD);
@@ -399,7 +394,7 @@ public abstract class AEBasePart
     @Nullable
     @Override
     @MustBeInvokedByOverriders
-    public InternalInventory getSubInventory(ResourceLocation id) {
+    public InternalInventory getSubInventory(Identifier id) {
         return null;
     }
 
@@ -481,6 +476,21 @@ public abstract class AEBasePart
      */
     protected boolean shouldSendMissingChannelStateToClient() {
         return true;
+    }
+
+    @Nullable
+    @Override
+    public void collectModelData(ModelData.Builder builder) {
+        PartModelData.StatusIndicatorState state;
+        if (isActive() && isPowered()) {
+            state = PartModelData.StatusIndicatorState.ACTIVE;
+        } else if (isPowered()) {
+            state = PartModelData.StatusIndicatorState.POWERED;
+        } else {
+            state = PartModelData.StatusIndicatorState.UNPOWERED;
+        }
+
+        builder.with(PartModelData.STATUS_INDICATOR, state);
     }
 
     @Override

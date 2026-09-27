@@ -3,7 +3,7 @@
   "texture_size": [32, 32],
   "textures": {
     "0": "ae2:block/wireless_access_point",
-    "particle": "ae2:block/wireless_access_point"
+    "particle": "#0"
   },
   "render_type": "cutout",
   "elements": [

@@ -64,9 +64,9 @@ Here's how you can do it with just 1 channel:
 ## How It Works
 
 1. The <ItemLink id="pattern_provider" /> pushes the ingredients into the <ItemLink id="interface" />.
-   (Actually, as an optimization, it pushes directly through the storage busses as if they were extensions of the provider's faces. The items never actually enter the interface.)
+   (Actually, as an optimization, it pushes directly through the storage buses as if they are extensions of the provider's faces. The items never actually enter the interface.)
 2. The interface is set to store nothing, so it tries to push the ingredients into [network storage](../ae2-mechanics/import-export-storage.md).
-3. The only storage on the green subnet is the <ItemLink id="storage_bus" />ses. The bus filtered to coal places the coal in the furnace's fuel slot through the side face.
+3. The only storage on the green subnet is the <ItemLink id="storage_bus" />es. The bus filtered to coal places the coal in the furnace's fuel slot through the side face.
     The bus filtered to NOT coal places the items to be smelted in the top slot, through the top face.
-4. The furnace does its furnacey thing
-5. The hopper pulls the results out the furnace's bottom, and places them in the provider's return slots, returning them to the main network.
+4. The furnace does its furnace-y thing
+5. The hopper pulls the results from the furnace's bottom face and places them in the provider's return slots, returning them to the main network.

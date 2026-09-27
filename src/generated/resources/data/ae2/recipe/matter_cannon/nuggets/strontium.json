@@ -9,8 +9,6 @@
     }
   ],
   "type": "ae2:matter_cannon",
-  "ammo": {
-    "tag": "c:nuggets/strontium"
-  },
+  "ammo": "#c:nuggets/strontium",
   "weight": 87.62
 }

@@ -4,7 +4,7 @@ import java.util.function.BiConsumer;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.ItemContainerContents;
@@ -36,7 +36,7 @@ public class WirelessCraftingTerminalMenuHost<T extends WirelessCraftingTerminal
 
     @Nullable
     @Override
-    public InternalInventory getSubInventory(ResourceLocation id) {
+    public InternalInventory getSubInventory(Identifier id) {
         if (id.equals(CraftingTerminalPart.INV_CRAFTING)) {
             return craftingGrid;
         } else {

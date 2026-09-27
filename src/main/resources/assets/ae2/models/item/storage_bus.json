@@ -4,7 +4,8 @@
   "textures": {
     "sides": "ae2:part/storage_bus_sides",
     "back": "ae2:part/storage_bus_back",
-    "front": "ae2:part/storage_bus"
+    "front": "ae2:part/storage_bus",
+    "particle": "#front"
   },
   "elements": [
     {

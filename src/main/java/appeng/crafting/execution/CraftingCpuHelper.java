@@ -25,6 +25,7 @@ import com.google.common.collect.Iterables;
 
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
 
@@ -75,7 +76,7 @@ public class CraftingCpuHelper {
     public static CompoundTag generateLinkData(UUID craftId, boolean standalone, boolean req) {
         final CompoundTag tag = new CompoundTag();
 
-        tag.putUUID("craftId", craftId);
+        tag.store("craftId", UUIDUtil.CODEC, craftId);
         tag.putBoolean("canceled", false);
         tag.putBoolean("done", false);
         tag.putBoolean("standalone", standalone);

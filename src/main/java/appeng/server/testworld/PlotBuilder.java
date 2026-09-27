@@ -357,7 +357,7 @@ public interface PlotBuilder {
         return new DriveBuilder(cells);
     }
 
-    Test test(Consumer<PlotTestHelper> assertion);
+    void test(Consumer<PlotTestHelper> assertion);
 
     default void fencedEntity(BlockPos pos, EntityType<?> entity) {
         fencedEntity(pos, entity, e -> {

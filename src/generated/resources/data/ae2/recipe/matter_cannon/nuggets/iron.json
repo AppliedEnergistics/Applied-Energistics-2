@@ -9,8 +9,6 @@
     }
   ],
   "type": "ae2:matter_cannon",
-  "ammo": {
-    "tag": "c:nuggets/iron"
-  },
+  "ammo": "#c:nuggets/iron",
   "weight": 55.845
 }

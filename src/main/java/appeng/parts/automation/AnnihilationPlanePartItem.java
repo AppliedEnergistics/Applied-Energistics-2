@@ -1,6 +1,6 @@
 package appeng.parts.automation;
 
-import java.util.List;
+import java.util.function.Consumer;
 
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
@@ -8,6 +8,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
+import net.minecraft.world.item.enchantment.Enchantable;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
 
@@ -20,34 +22,22 @@ import appeng.items.parts.PartItem;
  */
 public class AnnihilationPlanePartItem extends PartItem<AnnihilationPlanePart> {
     public AnnihilationPlanePartItem(Properties properties) {
-        super(properties, AnnihilationPlanePart.class, AnnihilationPlanePart::new);
+        super(properties.component(DataComponents.ENCHANTABLE, new Enchantable(10))
+                .component(DataComponents.ENCHANTMENTS, ItemEnchantments.EMPTY), AnnihilationPlanePart.class,
+                AnnihilationPlanePart::new);
     }
 
     @Override
-    public boolean isEnchantable(ItemStack stack) {
-        return true;
-    }
-
-    @Override
-    public int getEnchantmentValue() {
-        return 10;
-    }
-
-    @Override
-    public boolean isBookEnchantable(ItemStack stack, ItemStack book) {
-        return true;
-    }
-
-    @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> lines,
+    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay tooltipDisplay,
+            Consumer<Component> lines,
             TooltipFlag isAdvanced) {
-        super.appendHoverText(stack, context, lines, isAdvanced);
+        super.appendHoverText(stack, context, tooltipDisplay, lines, isAdvanced);
 
         var enchantments = stack.getOrDefault(DataComponents.ENCHANTMENTS, ItemEnchantments.EMPTY);
         if (enchantments.isEmpty()) {
-            lines.add(Tooltips.of(GuiText.CanBeEnchanted));
+            lines.accept(Tooltips.of(GuiText.CanBeEnchanted));
         } else {
-            lines.add(Tooltips.of(GuiText.IncreasedEnergyUseFromEnchants));
+            lines.accept(Tooltips.of(GuiText.IncreasedEnergyUseFromEnchants));
         }
     }
 

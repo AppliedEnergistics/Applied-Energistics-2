@@ -24,14 +24,14 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.FullnessMode;
@@ -70,6 +70,7 @@ import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.CombinedInternalInventory;
 import appeng.util.inv.FilteredInternalInventory;
 import appeng.util.inv.filter.AEItemFilters;
+import appeng.util.inv.filter.IAEItemFilter;
 
 public class IOPortBlockEntity extends AENetworkedInvBlockEntity
         implements IUpgradeableObject, IConfigurableObject, IGridTickable {
@@ -84,7 +85,7 @@ public class IOPortBlockEntity extends AENetworkedInvBlockEntity
             this.outputCells);
 
     private final InternalInventory inputCellsExt = new FilteredInternalInventory(this.inputCells,
-            AEItemFilters.INSERT_ONLY);
+            new StorageCellInsertOnlyFilter());
     private final InternalInventory outputCellsExt = new FilteredInternalInventory(this.outputCells,
             AEItemFilters.EXTRACT_ONLY);
 
@@ -111,21 +112,19 @@ public class IOPortBlockEntity extends AENetworkedInvBlockEntity
     }
 
     @Override
-    public void saveAdditional(CompoundTag data, HolderLookup.Provider registries) {
-        super.saveAdditional(data, registries);
-        this.manager.writeToNBT(data, registries);
-        this.upgrades.writeToNBT(data, "upgrades", registries);
+    public void saveAdditional(ValueOutput data) {
+        super.saveAdditional(data);
+        this.manager.writeToNBT(data);
+        this.upgrades.writeToNBT(data, "upgrades");
         data.putInt("lastRedstoneState", this.lastRedstoneState.ordinal());
     }
 
     @Override
-    public void loadTag(CompoundTag data, HolderLookup.Provider registries) {
-        super.loadTag(data, registries);
-        this.manager.readFromNBT(data, registries);
-        this.upgrades.readFromNBT(data, "upgrades", registries);
-        if (data.contains("lastRedstoneState")) {
-            this.lastRedstoneState = YesNo.values()[data.getInt("lastRedstoneState")];
-        }
+    public void loadTag(ValueInput data) {
+        super.loadTag(data);
+        this.manager.readFromNBT(data);
+        this.upgrades.readFromNBT(data, "upgrades");
+        this.lastRedstoneState = YesNo.values()[data.getIntOr("lastRedstoneState", YesNo.UNDECIDED.ordinal())];
     }
 
     @Override
@@ -189,7 +188,7 @@ public class IOPortBlockEntity extends AENetworkedInvBlockEntity
     }
 
     public boolean isActive() {
-        if (level != null && !level.isClientSide) {
+        if (level != null && !level.isClientSide()) {
             return this.getMainNode().isOnline();
         } else {
             return this.isActive;
@@ -215,7 +214,7 @@ public class IOPortBlockEntity extends AENetworkedInvBlockEntity
 
     @Nullable
     @Override
-    public InternalInventory getSubInventory(ResourceLocation id) {
+    public InternalInventory getSubInventory(Identifier id) {
         if (id.equals(ISegmentedInventory.UPGRADES)) {
             return this.upgrades;
         } else if (id.equals(ISegmentedInventory.CELLS)) {
@@ -404,5 +403,17 @@ public class IOPortBlockEntity extends AENetworkedInvBlockEntity
     public void clearContent() {
         super.clearContent();
         upgrades.clear();
+    }
+
+    private static class StorageCellInsertOnlyFilter implements IAEItemFilter {
+        @Override
+        public boolean allowExtract(InternalInventory inv, int slot, int amount) {
+            return false;
+        }
+
+        @Override
+        public boolean allowInsert(InternalInventory inv, int slot, ItemStack stack) {
+            return !stack.isEmpty() && StorageCells.isCellHandled(stack);
+        }
     }
 }

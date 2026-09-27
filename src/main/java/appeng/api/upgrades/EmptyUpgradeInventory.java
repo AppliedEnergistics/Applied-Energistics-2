@@ -21,13 +21,14 @@ package appeng.api.upgrades;
 import java.util.Collections;
 import java.util.Iterator;
 
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
-import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.items.wrapper.EmptyItemHandler;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.transfer.EmptyResourceHandler;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 
 final class EmptyUpgradeInventory implements IUpgradeInventory {
     public static final EmptyUpgradeInventory INSTANCE = new EmptyUpgradeInventory();
@@ -58,8 +59,8 @@ final class EmptyUpgradeInventory implements IUpgradeInventory {
     }
 
     @Override
-    public IItemHandler toItemHandler() {
-        return EmptyItemHandler.INSTANCE;
+    public ResourceHandler<ItemResource> toResourceHandler() {
+        return EmptyResourceHandler.instance();
     }
 
     @Override
@@ -92,10 +93,10 @@ final class EmptyUpgradeInventory implements IUpgradeInventory {
     }
 
     @Override
-    public void readFromNBT(CompoundTag data, String subtag, HolderLookup.Provider registries) {
+    public void readFromNBT(ValueInput input, String subtag) {
     }
 
     @Override
-    public void writeToNBT(CompoundTag data, String subtag, HolderLookup.Provider registries) {
+    public void writeToNBT(ValueOutput output, String subtag) {
     }
 }

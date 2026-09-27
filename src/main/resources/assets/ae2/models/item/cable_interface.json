@@ -4,7 +4,8 @@
   "textures": {
     "sides": "ae2:part/interface_sides",
     "back": "ae2:part/interface_back",
-    "front": "ae2:part/interface"
+    "front": "ae2:part/interface",
+    "particle": "ae2:part/interface"
   },
   "elements": [
     {

@@ -18,15 +18,12 @@
 
 package appeng.parts.p2p;
 
-import java.util.List;
-
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.Direction;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.IGridNodeListener;
@@ -34,20 +31,9 @@ import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.parts.IPartItem;
-import appeng.api.parts.IPartModel;
-import appeng.core.AppEng;
 import appeng.core.settings.TickRates;
-import appeng.items.parts.PartModels;
 
 public class LightP2PTunnelPart extends P2PTunnelPart<LightP2PTunnelPart> implements IGridTickable {
-
-    private static final P2PModels MODELS = new P2PModels(AppEng.makeId("part/p2p/p2p_tunnel_light"));
-
-    @PartModels
-    public static List<IPartModel> getModels() {
-        return MODELS.getModels();
-    }
-
     private int lastValue = 0;
     private int opacity = -1;
 
@@ -107,8 +93,8 @@ public class LightP2PTunnelPart extends P2PTunnelPart<LightP2PTunnelPart> implem
     }
 
     @Override
-    public void onNeighborChanged(BlockGetter level, BlockPos pos, BlockPos neighbor) {
-        if (this.isOutput() && pos.relative(this.getSide()).equals(neighbor)) {
+    public void onUpdateShape(Direction side) {
+        if (this.isOutput() && side.equals(getSide())) {
             this.opacity = -1;
             this.getHost().markForUpdate();
         } else {
@@ -142,14 +128,14 @@ public class LightP2PTunnelPart extends P2PTunnelPart<LightP2PTunnelPart> implem
     }
 
     @Override
-    public void readFromNBT(CompoundTag tag, HolderLookup.Provider registries) {
-        super.readFromNBT(tag, registries);
-        this.lastValue = tag.getInt("lastValue");
+    public void readFromNBT(ValueInput tag) {
+        super.readFromNBT(tag);
+        this.lastValue = tag.getIntOr("lastValue", 0);
     }
 
     @Override
-    public void writeToNBT(CompoundTag tag, HolderLookup.Provider registries) {
-        super.writeToNBT(tag, registries);
+    public void writeToNBT(ValueOutput tag) {
+        super.writeToNBT(tag);
         tag.putInt("lastValue", this.lastValue);
     }
 
@@ -180,11 +166,6 @@ public class LightP2PTunnelPart extends P2PTunnelPart<LightP2PTunnelPart> implem
     @Override
     public TickRateModulation tickingRequest(IGridNode node, int ticksSinceLastCall) {
         return this.doWork() ? TickRateModulation.URGENT : TickRateModulation.SLOWER;
-    }
-
-    @Override
-    public IPartModel getStaticModels() {
-        return MODELS.getModel(this.isPowered(), this.isActive());
     }
 
 }

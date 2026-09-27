@@ -9,8 +9,6 @@
     }
   ],
   "type": "ae2:matter_cannon",
-  "ammo": {
-    "tag": "c:nuggets/xenon"
-  },
+  "ammo": "#c:nuggets/xenon",
   "weight": 131.293
 }

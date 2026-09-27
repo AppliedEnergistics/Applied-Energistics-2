@@ -42,9 +42,9 @@ config="ae2.mixins.json"
     side="BOTH"
 
 [[dependencies.ae2]]
-    modId="theoneprobe"
+    modId="jei"
     type="OPTIONAL"
-    versionRange="${top_version_range}"
+    versionRange="[${jei_version},)"
     ordering="AFTER"
     side="BOTH"
 

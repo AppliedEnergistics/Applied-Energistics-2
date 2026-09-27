@@ -20,7 +20,7 @@ package appeng.debug;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
@@ -33,17 +33,17 @@ import appeng.core.AEConfig;
 
 public class ItemGenBlock extends AEBaseEntityBlock<ItemGenBlockEntity> {
 
-    public ItemGenBlock() {
-        super(metalProps());
+    public ItemGenBlock(Properties p) {
+        super(metalProps(p));
     }
 
     @Override
-    protected ItemInteractionResult useItemOn(ItemStack heldItem, BlockState state, Level level, BlockPos pos,
+    protected InteractionResult useItemOn(ItemStack heldItem, BlockState state, Level level, BlockPos pos,
             Player player, InteractionHand hand, BlockHitResult hit) {
         if (!heldItem.isEmpty() && level.getBlockEntity(pos) instanceof ItemGenBlockEntity itemGen) {
             itemGen.setItem(heldItem.getItem());
 
-            return ItemInteractionResult.sidedSuccess(level.isClientSide);
+            return InteractionResult.SUCCESS;
         }
 
         return super.useItemOn(heldItem, state, level, pos, player, hand, hit);

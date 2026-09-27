@@ -23,12 +23,13 @@ import java.util.function.Supplier;
 
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 
 import appeng.api.inventories.InternalInventory;
 
 /**
- * Wraps another {@link IItemHandler} in such a way that the underlying item handler is queried from a supplier, which
+ * Wraps another {@link InternalInventory} in such a way that the underlying inventory is queried from a supplier, which
  * allows it to be changed at any time.
  */
 public class SupplierInternalInventory<T extends InternalInventory> implements InternalInventory {
@@ -48,8 +49,8 @@ public class SupplierInternalInventory<T extends InternalInventory> implements I
     }
 
     @Override
-    public IItemHandler toItemHandler() {
-        return getDelegate().toItemHandler();
+    public ResourceHandler<ItemResource> toResourceHandler() {
+        return getDelegate().toResourceHandler();
     }
 
     @Override

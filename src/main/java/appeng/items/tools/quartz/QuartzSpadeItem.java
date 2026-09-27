@@ -19,9 +19,10 @@
 package appeng.items.tools.quartz;
 
 import net.minecraft.world.item.ShovelItem;
+import net.minecraft.world.item.ToolMaterial;
 
 public class QuartzSpadeItem extends ShovelItem {
-    public QuartzSpadeItem(Properties props, QuartzToolType type) {
-        super(type.getToolTier(), props.attributes(createAttributes(type.getToolTier(), 1.5F, -3.0F)));
+    public QuartzSpadeItem(Properties props) {
+        super(ToolMaterial.IRON, 1.5F, -3.0F, props);
     }
 }

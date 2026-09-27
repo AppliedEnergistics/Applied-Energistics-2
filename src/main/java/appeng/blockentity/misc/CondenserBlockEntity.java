@@ -19,14 +19,16 @@
 package appeng.blockentity.misc;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.IFluidTank;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.resource.Resource;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
 import appeng.api.config.CondenserOutput;
 import appeng.api.config.Settings;
@@ -34,11 +36,13 @@ import appeng.api.implementations.items.IStorageComponent;
 import appeng.api.inventories.BaseInternalInventory;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.stacks.AEFluidKey;
+import appeng.api.stacks.AEKeyType;
 import appeng.api.storage.MEStorage;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 import appeng.blockentity.AEBaseInvBlockEntity;
 import appeng.core.definitions.AEItems;
+import appeng.util.InsertionOnlyResourceHandlerWithJournal;
 import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.CombinedInternalInventory;
 import appeng.util.inv.FilteredInternalInventory;
@@ -58,7 +62,10 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
     private final AppEngInternalInventory outputSlot = new AppEngInternalInventory(this, 1);
     private final AppEngInternalInventory storageSlot = new AppEngInternalInventory(this, 1);
     private final InternalInventory inputSlot = new CondenseItemHandler();
-    private final IFluidHandler fluidHandler = new FluidHandler();
+    private final ResourceHandler<FluidResource> fluidHandler = new CondenseResourceHandler<>(
+            FluidResource.EMPTY,
+            1.0 / AEKeyType.fluids().getAmountPerOperation(),
+            AEFluidKey.AMOUNT_BUCKET);
 
     /**
      * This is used to expose a fake ME subnetwork that is only composed of this condenser. The purpose of this is to
@@ -79,17 +86,17 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
     }
 
     @Override
-    public void saveAdditional(CompoundTag data, HolderLookup.Provider registries) {
-        super.saveAdditional(data, registries);
-        this.cm.writeToNBT(data, registries);
+    public void saveAdditional(ValueOutput data) {
+        super.saveAdditional(data);
+        this.cm.writeToNBT(data);
         data.putDouble("storedPower", this.getStoredPower());
     }
 
     @Override
-    public void loadTag(CompoundTag data, HolderLookup.Provider registries) {
-        super.loadTag(data, registries);
-        this.cm.readFromNBT(data, registries);
-        this.setStoredPower(data.getDouble("storedPower"));
+    public void loadTag(ValueInput data) {
+        super.loadTag(data);
+        this.cm.readFromNBT(data);
+        this.setStoredPower(data.getDoubleOr("storedPower", 0.0));
     }
 
     public double getStorage() {
@@ -110,25 +117,28 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
 
     private void fillOutput() {
         var requiredPower = this.getRequiredPower();
-        while (requiredPower <= this.getStoredPower() && !getOutput().isEmpty() && requiredPower > 0) {
-            if (this.canAddOutput()) {
-                this.setStoredPower(this.getStoredPower() - requiredPower);
-                this.addOutput();
-            } else {
-                break;
-            }
+        var output = this.getOutput();
+        if (requiredPower <= 0 || output.isEmpty()) {
+            return;
+        }
+
+        // Produce as many items as the stored power allows and the output slot can hold in one go
+        var power = this.getStoredPower();
+        var amount = (int) Math.min(power / requiredPower, output.getMaxStackSize());
+        if (amount <= 0) {
+            return;
+        }
+        output.setCount(amount);
+        amount -= this.outputSlot.insertItem(0, output, true).getCount();
+        if (amount > 0) {
+            this.setStoredPower(power - requiredPower * amount);
+            output.setCount(amount);
+            this.outputSlot.insertItem(0, output, false);
         }
     }
 
     boolean canAddOutput() {
         return this.outputSlot.insertItem(0, getOutput(), true).isEmpty();
-    }
-
-    /**
-     * make sure you validate with canAddOutput prior to this.
-     */
-    private void addOutput() {
-        this.outputSlot.insertItem(0, getOutput(), false);
     }
 
     InternalInventory getOutputSlot() {
@@ -170,14 +180,18 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
 
     private void setStoredPower(double storedPower) {
         this.storedPower = storedPower;
-        this.setChanged();
+        // Stored power is not observable from the outside, so only mark the chunk as unsaved instead of using
+        // setChanged(), which would also trigger neighbor updates.
+        if (this.level != null) {
+            this.level.blockEntityChanged(this.getBlockPos());
+        }
     }
 
     public InternalInventory getExternalInv() {
         return externalInv;
     }
 
-    public IFluidHandler getFluidHandler() {
+    public ResourceHandler<FluidResource> getFluidHandler() {
         return fluidHandler;
     }
 
@@ -225,77 +239,49 @@ public class CondenserBlockEntity extends AEBaseInvBlockEntity implements IConfi
         public ItemStack extractItem(int slot, int amount, boolean simulate) {
             return ItemStack.EMPTY;
         }
+
+        @Override
+        protected ResourceHandler<ItemResource> createResourceHandler() {
+            // Mirrors insertItem/isItemValid above: don't void items (i.e. convert them to power) while the
+            // output slot can't accept the configured output item, otherwise items pushed in through the
+            // Storage/Transfer capability would be destroyed for nothing.
+            return new CondenseResourceHandler<>(ItemResource.EMPTY, 1, Integer.MAX_VALUE) {
+                @Override
+                public int insert(ItemResource resource, int amount, TransactionContext transaction) {
+                    if (!canAddOutput()) {
+                        return 0;
+                    }
+                    return super.insert(resource, amount, transaction);
+                }
+            };
+        }
     }
 
-    /**
-     * A fluid handler that exposes a 1 bucket tank that can only be filled, and - when filled - will add power to this
-     * condenser.
-     */
-    private class FluidHandler implements IFluidTank, IFluidHandler {
+    private class CondenseResourceHandler<T extends Resource>
+            extends InsertionOnlyResourceHandlerWithJournal<T, Double> {
+        private final double energyFactor;
+        private final int maxAmountPerOperation;
 
-        @Override
-        public FluidStack getFluid() {
-            return FluidStack.EMPTY;
+        public CondenseResourceHandler(T emptyResource, double energyFactor, int maxAmountPerOperation) {
+            super(emptyResource);
+            this.energyFactor = energyFactor;
+            this.maxAmountPerOperation = maxAmountPerOperation;
+            this.pendingSideEffect = 0D;
         }
 
         @Override
-        public int getFluidAmount() {
-            return 0;
-        }
-
-        @Override
-        public int getCapacity() {
-            return AEFluidKey.AMOUNT_BUCKET;
-        }
-
-        @Override
-        public boolean isFluidValid(FluidStack stack) {
-            return !stack.isEmpty();
-        }
-
-        @Override
-        public int fill(FluidStack resource, FluidAction action) {
-            int amount = resource.isEmpty() ? 0 : Math.min(resource.getAmount(), AEFluidKey.AMOUNT_BUCKET);
-
-            if (action == FluidAction.EXECUTE) {
-                var what = AEFluidKey.of(resource);
-                if (what != null) {
-                    var transferFactor = (double) what.getAmountPerOperation();
-                    CondenserBlockEntity.this.addPower(amount / transferFactor);
-                }
-            }
-
+        public int insert(T resource, int maxAmount, TransactionContext transaction) {
+            // Clamp the amount per operation
+            var amount = Math.min(maxAmountPerOperation, maxAmount);
+            updateSnapshots(transaction);
+            pendingSideEffect += amount * energyFactor;
             return amount;
         }
 
         @Override
-        public FluidStack drain(int maxDrain, FluidAction action) {
-            return FluidStack.EMPTY;
-        }
-
-        @Override
-        public FluidStack drain(FluidStack resource, FluidAction action) {
-            return FluidStack.EMPTY;
-        }
-
-        @Override
-        public int getTanks() {
-            return 1;
-        }
-
-        @Override
-        public FluidStack getFluidInTank(int tank) {
-            return FluidStack.EMPTY;
-        }
-
-        @Override
-        public int getTankCapacity(int tank) {
-            return tank == 0 ? getCapacity() : 0;
-        }
-
-        @Override
-        public boolean isFluidValid(int tank, FluidStack stack) {
-            return tank == 0 && isFluidValid(stack);
+        protected void onRootCommit(Double originalState) {
+            CondenserBlockEntity.this.addPower(pendingSideEffect);
+            pendingSideEffect = 0.0;
         }
     }
 }

@@ -9,8 +9,6 @@
     }
   ],
   "type": "ae2:matter_cannon",
-  "ammo": {
-    "tag": "c:nuggets/meatraw"
-  },
+  "ammo": "#c:nuggets/meatraw",
   "weight": 32.0
 }

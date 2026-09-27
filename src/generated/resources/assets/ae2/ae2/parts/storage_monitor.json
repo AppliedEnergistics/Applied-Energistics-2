@@ -1,0 +1,24 @@
+{
+  "model": {
+    "type": "ae2:composite",
+    "models": [
+      {
+        "type": "ae2:model",
+        "model": "ae2:part/display_base"
+      },
+      {
+        "type": "ae2:lockable_monitor",
+        "powered_locked_model": "ae2:part/storage_monitor_locked_on",
+        "powered_unlocked_model": "ae2:part/storage_monitor_on",
+        "unpowered_locked_model": "ae2:part/storage_monitor_locked_off",
+        "unpowered_unlocked_model": "ae2:part/storage_monitor_off"
+      },
+      {
+        "type": "ae2:status_indicator",
+        "active": "ae2:part/display_status_has_channel",
+        "powered": "ae2:part/display_status_on",
+        "unpowered": "ae2:part/display_status_off"
+      }
+    ]
+  }
+}

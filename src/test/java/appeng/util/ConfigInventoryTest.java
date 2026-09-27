@@ -9,8 +9,11 @@ import org.junit.jupiter.api.Test;
 
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.level.storage.TagValueInput;
+import net.minecraft.world.level.storage.TagValueOutput;
 
 import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.AEItemKey;
@@ -39,7 +42,10 @@ public class ConfigInventoryTest {
             var mixedInv = new GenericStackInv(null, 2);
             mixedInv.setStack(0, ONE_STICK);
             mixedInv.setStack(1, new GenericStack(AEFluidKey.of(Fluids.WATER), 1));
-            inv.readFromTag(mixedInv.writeToTag(registryAccess), registryAccess);
+            var output = TagValueOutput.createWithoutContext(ProblemReporter.DISCARDING);
+            mixedInv.writeToTag(output.childrenList("x"));
+            var input = TagValueInput.create(ProblemReporter.DISCARDING, RegistryAccess.EMPTY, output.buildResult());
+            inv.readFromTag(input.childrenListOrEmpty("x"));
         }
 
         @Test

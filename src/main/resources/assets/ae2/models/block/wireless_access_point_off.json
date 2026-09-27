@@ -2,7 +2,8 @@
   "credit": "Made with Blockbench",
   "texture_size": [32, 32],
   "textures": {
-    "torch": "ae2:block/wireless_access_point"
+    "torch": "ae2:block/wireless_access_point",
+    "particle": "#torch"
   },
   "render_type": "cutout",
   "elements": [

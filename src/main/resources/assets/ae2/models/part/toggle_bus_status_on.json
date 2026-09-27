@@ -1,6 +1,7 @@
 {
   "textures": {
-    "indicator": "ae2:part/monitor_sides_status_on"
+    "indicator": "ae2:part/monitor_sides_status_on",
+    "particle": "ae2:block/transparent"
   },
   "elements": [
     {

@@ -38,15 +38,16 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.ClickEvent;
-import net.minecraft.network.chat.ClickEvent.Action;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.chat.contents.objects.PlayerSprite;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.ResolvableProfile;
 
 import appeng.api.features.IPlayerRegistry;
 import appeng.core.definitions.AEItems;
@@ -151,7 +152,7 @@ public class SpatialStorageCommand implements ISubCommand {
             throw NO_LAST_TRANSITION.create();
         }
 
-        String command = getTeleportCommand(lastTransition.getWorldId(), lastTransition.getMin().offset(0, 1, 0));
+        String command = getTeleportCommand(lastTransition.worldId(), lastTransition.min().offset(0, 1, 0));
         runCommandFor(source, command);
     }
 
@@ -173,16 +174,11 @@ public class SpatialStorageCommand implements ISubCommand {
                 ServerPlayer player = server.getPlayerList().getPlayer(profileId);
                 if (player != null) {
                     sendKeyValuePair(source, PlayerMessages.Owner.text(),
-                            PlayerMessages.PlayerConnected.text(player.getGameProfile().getName()));
+                            PlayerMessages.PlayerConnected.text(player.getGameProfile().name()));
                 } else {
-                    var cachedProfile = server.getProfileCache().get(profileId);
-                    if (cachedProfile.isPresent()) {
-                        sendKeyValuePair(source, PlayerMessages.Owner.text(),
-                                PlayerMessages.PlayerDisconnected.text(cachedProfile.get().getName()));
-                    } else {
-                        sendKeyValuePair(source, PlayerMessages.Owner.text(),
-                                PlayerMessages.MinecraftProfile.text(profileId));
-                    }
+                    sendKeyValuePair(source, PlayerMessages.Owner.text(),
+                            PlayerMessages.PlayerDisconnected.text(Component
+                                    .object(new PlayerSprite(ResolvableProfile.createUnresolved(profileId), true))));
                 }
             }
         } else {
@@ -192,7 +188,7 @@ public class SpatialStorageCommand implements ISubCommand {
         sendKeyValuePair(source, PlayerMessages.Size.text(), formatBlockPos(plot.getSize(), "x"));
 
         // Show the plot's origin and make it clickable to teleport directly to it
-        String teleportToPlotCommand = getTeleportCommand(SpatialStorageDimensionIds.WORLD_ID.location(),
+        String teleportToPlotCommand = getTeleportCommand(SpatialStorageDimensionIds.WORLD_ID.identifier(),
                 plot.getOrigin());
         sendKeyValuePair(source, PlayerMessages.Origin.text(), Component.literal(formatBlockPos(plot.getOrigin(), ","))
                 .withStyle(makeCommandLink(teleportToPlotCommand, PlayerMessages.ClickToTeleport.text())));
@@ -207,14 +203,14 @@ public class SpatialStorageCommand implements ISubCommand {
                     () -> PlayerMessages.LastTransition.text().withStyle(ChatFormatting.UNDERLINE, ChatFormatting.BOLD),
                     true);
 
-            String sourceWorldId = lastTransition.getWorldId().toString();
+            String sourceWorldId = lastTransition.worldId().toString();
             MutableComponent sourceLink = PlayerMessages.SourceLink.text(sourceWorldId,
-                    formatBlockPos(lastTransition.getMin(), ","), formatBlockPos(lastTransition.getMax(), ","));
-            String tpCommand = getTeleportCommand(lastTransition.getWorldId(), lastTransition.getMin().offset(0, 1, 0));
+                    formatBlockPos(lastTransition.min(), ","), formatBlockPos(lastTransition.max(), ","));
+            String tpCommand = getTeleportCommand(lastTransition.worldId(), lastTransition.min().offset(0, 1, 0));
             sourceLink.withStyle(makeCommandLink(tpCommand, PlayerMessages.ClickToTeleport.text()));
 
             sendKeyValuePair(source, PlayerMessages.Source.text(), sourceLink);
-            sendKeyValuePair(source, PlayerMessages.When.text(), lastTransition.getTimestamp().toString());
+            sendKeyValuePair(source, PlayerMessages.When.text(), lastTransition.timestamp().toString());
         } else {
             source.sendSuccess(() -> PlayerMessages.LastTransitionUnknown.text(), true);
         }
@@ -224,7 +220,7 @@ public class SpatialStorageCommand implements ISubCommand {
     private static void teleportToPlot(CommandSourceStack source, int plotId) throws CommandSyntaxException {
         SpatialStoragePlot plot = getPlot(plotId);
 
-        String teleportCommand = getTeleportCommand(SpatialStorageDimensionIds.WORLD_ID.location(),
+        String teleportCommand = getTeleportCommand(SpatialStorageDimensionIds.WORLD_ID.identifier(),
                 plot.getOrigin());
 
         runCommandFor(source, teleportCommand);
@@ -281,7 +277,7 @@ public class SpatialStorageCommand implements ISubCommand {
         plots.sort(Comparator.comparing((SpatialStoragePlot plot) -> {
             TransitionInfo lastTransition = plot.getLastTransition();
             if (lastTransition != null) {
-                return lastTransition.getTimestamp();
+                return lastTransition.timestamp();
             } else {
                 return Instant.MIN;
             }
@@ -312,8 +308,8 @@ public class SpatialStorageCommand implements ISubCommand {
 
     private static UnaryOperator<Style> makeCommandLink(String command, MutableComponent tooltip) {
         return style -> style.applyFormat(ChatFormatting.UNDERLINE)
-                .withClickEvent(new ClickEvent(Action.RUN_COMMAND, command))
-                .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, tooltip));
+                .withClickEvent(new ClickEvent.RunCommand(command))
+                .withHoverEvent(new HoverEvent.ShowText(tooltip));
 
     }
 
@@ -322,7 +318,7 @@ public class SpatialStorageCommand implements ISubCommand {
         commandManager.performPrefixedCommand(source, command);
     }
 
-    private static String getTeleportCommand(ResourceLocation worldId, BlockPos pos) {
+    private static String getTeleportCommand(Identifier worldId, BlockPos pos) {
         return "/execute in " + worldId + " run tp @s " + pos.getX() + " " + (pos.getY() + 1) + " " + pos.getZ();
     }
 

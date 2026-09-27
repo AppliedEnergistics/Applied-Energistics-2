@@ -28,14 +28,12 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 import appeng.api.parts.SelectedPart;
 import appeng.api.util.AEColor;
-import appeng.client.render.cablebus.CableBusRenderState;
+import appeng.block.networking.CableBusRenderState;
 
 public interface ICableBusContainer {
 
@@ -53,7 +51,9 @@ public interface ICableBusContainer {
 
     void onNeighborChanged(BlockGetter level, BlockPos pos, BlockPos neighbor);
 
-    void onUpdateShape(LevelAccessor level, BlockPos pos, Direction side);
+    void onRedstoneLevelMayHaveChanged();
+
+    void onUpdateShape(LevelReader level, BlockPos pos, Direction side);
 
     boolean isEmpty();
 
@@ -63,7 +63,6 @@ public interface ICableBusContainer {
 
     boolean isLadder(LivingEntity entity);
 
-    @OnlyIn(Dist.CLIENT)
     void animateTick(Level level, BlockPos pos, RandomSource r);
 
     int getLightValue();

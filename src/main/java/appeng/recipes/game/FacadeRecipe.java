@@ -18,13 +18,14 @@
 
 package appeng.recipes.game;
 
-import net.minecraft.core.HolderLookup;
+import com.mojang.serialization.MapCodec;
+
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.SimpleCraftingRecipeSerializer;
 import net.minecraft.world.level.Level;
 
 import appeng.core.definitions.AEItems;
@@ -33,14 +34,25 @@ import appeng.core.definitions.ItemDefinition;
 import appeng.items.parts.FacadeItem;
 
 public final class FacadeRecipe extends CustomRecipe {
-    public static RecipeSerializer<FacadeRecipe> SERIALIZER = new SimpleCraftingRecipeSerializer<>(
-            (category) -> new FacadeRecipe(category, AEItems.FACADE.get()));
+    public static final MapCodec<FacadeRecipe> CODEC = MapCodec.unit(() -> new FacadeRecipe(AEItems.FACADE.get()));
+
+    public static final StreamCodec<RegistryFriendlyByteBuf, FacadeRecipe> STREAM_CODEC = new StreamCodec<>() {
+        @Override
+        public FacadeRecipe decode(RegistryFriendlyByteBuf input) {
+            return new FacadeRecipe(AEItems.FACADE.get());
+        }
+
+        @Override
+        public void encode(RegistryFriendlyByteBuf output, FacadeRecipe value) {
+        }
+    };
+
+    public static RecipeSerializer<FacadeRecipe> SERIALIZER = new RecipeSerializer<>(CODEC, STREAM_CODEC);
 
     private final ItemDefinition<?> anchor = AEParts.CABLE_ANCHOR;
     private final FacadeItem facade;
 
-    public FacadeRecipe(CraftingBookCategory category, FacadeItem facade) {
-        super(category);
+    public FacadeRecipe(FacadeItem facade) {
         this.facade = facade;
     }
 
@@ -66,13 +78,8 @@ public final class FacadeRecipe extends CustomRecipe {
     }
 
     @Override
-    public ItemStack assemble(CraftingInput inv, HolderLookup.Provider registryAccess) {
+    public ItemStack assemble(CraftingInput inv) {
         return this.getOutput(inv, true);
-    }
-
-    @Override
-    public boolean canCraftInDimensions(int width, int height) {
-        return width >= 3 && height >= 3;
     }
 
     @Override

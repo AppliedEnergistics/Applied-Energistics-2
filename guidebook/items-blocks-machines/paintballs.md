@@ -97,7 +97,7 @@ wool, terracotta, glass, and concrete. They can also be used in a <ItemLink id="
 </Row>
 
 They act identically to regular paintballs but the splotches emit light when shot out of a <ItemLink id="matter_cannon" />.
-Useful as a sort of flaregun I guess.
+Useful as a sort of flare gun, I guess.
 
 ## Recipes
 

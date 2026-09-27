@@ -96,7 +96,7 @@ public class PortableCellMenuHost<T extends AbstractPortableCell> extends ItemMe
         } else {
             var statusText = getLinkStatus().statusDescription();
             if (isClientSide() && statusText != null && !mode.isSimulate()) {
-                player.displayClientMessage(statusText, false);
+                player.sendSystemMessage(statusText);
             }
             return 0;
         }

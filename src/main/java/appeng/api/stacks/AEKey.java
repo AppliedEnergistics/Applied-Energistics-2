@@ -16,22 +16,22 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.ids.AEComponents;
-import appeng.core.AELog;
 import appeng.core.definitions.AEItems;
 
 /**
@@ -79,9 +79,9 @@ public abstract class AEKey {
                     if (AEItems.MISSING_CONTENT.is(input)) {
                         var originalData = input.get(AEComponents.MISSING_CONTENT_AEKEY_DATA);
                         if (originalData != null) {
-                            var originalDataMap = originalData.getUnsafe();
-                            for (var key : originalDataMap.getAllKeys()) {
-                                t.add(key, NbtOps.INSTANCE.convertTo(ops, originalDataMap.get(key)));
+                            var originalDataMap = originalData.copyTag();
+                            for (var entry : originalDataMap.entrySet()) {
+                                t.add(entry.getKey(), NbtOps.INSTANCE.convertTo(ops, entry.getValue()));
                             }
                         }
                     }
@@ -132,7 +132,7 @@ public abstract class AEKey {
         var id = buffer.readVarInt();
         var type = AEKeyType.fromRawId(id);
         if (type == null) {
-            AELog.error("Received unknown key space id %d", id);
+            LOG.error("Received unknown key type id {}", id);
             return null;
         }
         return type.readFromPacket(buffer);
@@ -145,25 +145,21 @@ public abstract class AEKey {
     private volatile Component cachedDisplayName;
 
     @Nullable
-    public static AEKey fromTagGeneric(HolderLookup.Provider registries, CompoundTag tag) {
-        var ops = registries.createSerializationContext(NbtOps.INSTANCE);
+    public static AEKey fromTagGeneric(ValueInput input) {
         try {
-            return CODEC.decode(ops, tag).getOrThrow().getFirst();
+            return input.read(MAP_CODEC).orElseThrow();
         } catch (Exception e) {
-            LOG.warn("Cannot deserialize generic key from {}: {}", tag, e);
+            LOG.warn("Cannot deserialize generic key from {}: {}", input, e);
             return null;
         }
     }
 
     /**
-     * Same as {@link #toTag(HolderLookup.Provider)}, but includes type information so that
-     * {@link #fromTagGeneric(HolderLookup.Provider, CompoundTag)} can restore this particular type of key withot
-     * knowing the actual type beforehand.
+     * Same as {@link #toTag(ValueOutput)}, but includes type information so that {@link #fromTagGeneric(ValueInput)}
+     * can restore this particular type of key withot knowing the actual type beforehand.
      */
-    public final CompoundTag toTagGeneric(HolderLookup.Provider registries) {
-        var ops = registries.createSerializationContext(NbtOps.INSTANCE);
-        return (CompoundTag) CODEC.encodeStart(ops, this)
-                .getOrThrow();
+    public final void toTagGeneric(ValueOutput output) {
+        output.store(MAP_CODEC, this);
     }
 
     /**
@@ -216,7 +212,7 @@ public abstract class AEKey {
      * Serialized keys MUST NOT contain keys that start with <code>#</code>, because this prefix can be used to add
      * additional data into the same tag as the key.
      */
-    public abstract CompoundTag toTag(HolderLookup.Provider registries);
+    public abstract void toTag(ValueOutput output);
 
     public abstract Object getPrimaryKey();
 
@@ -284,7 +280,7 @@ public abstract class AEKey {
     /**
      * @return The ID of the resource identified by this key.
      */
-    public abstract ResourceLocation getId();
+    public abstract Identifier getId();
 
     public abstract void writeToPacket(RegistryFriendlyByteBuf data);
 
@@ -305,6 +301,9 @@ public abstract class AEKey {
         return getType().supportsFuzzyRangeSearch();
     }
 
+    /**
+     * Display name of the resource identified by this key.
+     */
     public final Component getDisplayName() {
         var ret = cachedDisplayName;
 

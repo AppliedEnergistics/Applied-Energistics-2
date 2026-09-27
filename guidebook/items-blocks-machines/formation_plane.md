@@ -18,7 +18,7 @@ item_ids:
 
 The Formation Plane places blocks and drops items. It works similarly to an insert-only <ItemLink id="storage_bus" />,
 placing/dropping when things are "stored" in it by [devices](../ae2-mechanics/devices.md) inserting into [network storage](../ae2-mechanics/import-export-storage.md),
-like <ItemLink id="import_bus" />ses and <ItemLink id="interface" />s.
+like <ItemLink id="import_bus" />es and <ItemLink id="interface" />s.
 
 <GameScene zoom="8" interactive={true}>
   <ImportStructure src="../assets/assemblies/formation_plane_demonstration.snbt" />
@@ -37,8 +37,8 @@ Notice that these are similar to the import bus -> storage bus and interface -> 
   <IsometricCamera yaw="195" pitch="30" />
 </GameScene>
 
-This [device](../ae2-mechanics/devices.md) makes use of the mechanics used by storage busses in things like [pipe subnets](../example-setups/pipe-subnet.md),
-and can replace storage busses in those setups if you want to drop items/place blocks instead of transport items.
+This [device](../ae2-mechanics/devices.md) makes use of the mechanics used by storage buses in things like [pipe subnets](../example-setups/pipe-subnet.md),
+and it can replace storage buses in those setups if you want to drop items/place blocks instead of transport items.
 
 They are [cable subparts](../ae2-mechanics/cable-subparts.md).
 
@@ -46,7 +46,7 @@ They are [cable subparts](../ae2-mechanics/cable-subparts.md).
 
 ## Filtering
 
-By default the plane will place/drop anything. Items inserted into its filter slots will act as a whitelist, only
+By default, the plane will place/drop anything. Items inserted into its filter slots will act as a whitelist, only
 allowing those specific items to be placed.
 
 Items and fluids can be dragged into the slots from JEI/REI even if you don't actually have any of that item.

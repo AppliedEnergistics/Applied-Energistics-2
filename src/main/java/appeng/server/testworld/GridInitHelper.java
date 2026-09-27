@@ -20,7 +20,7 @@ final class GridInitHelper {
     static void doAfterGridInit(ServerLevel level, List<BlockPos> positions, boolean waitForActive,
             BiConsumer<IGrid, IGridNode> consumer) {
         Runnable delayedAction = new Runnable() {
-            private int attempts = 120;
+            private int attempts = 240;
 
             @Override
             public void run() {

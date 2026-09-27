@@ -40,6 +40,8 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
+import net.minecraft.util.ProblemReporter;
+import net.minecraft.world.level.storage.TagValueOutput;
 
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
@@ -324,7 +326,8 @@ public class StorageService implements IStorageService, IGridServiceProvider {
         for (var entry : cachedAvailableStacks) {
             writer.beginObject();
             writer.name("key");
-            var serializedKey = entry.getKey().toTagGeneric(registries);
+            var serializedKey = new CompoundTag();
+            entry.getKey().toTagGeneric(TagValueOutput.createWithContext(ProblemReporter.DISCARDING, registries));
             var jsonKey = Dynamic.convert(NbtOps.INSTANCE, JsonOps.INSTANCE, serializedKey);
             GSON.toJson(jsonKey, writer);
             writer.name("amount");

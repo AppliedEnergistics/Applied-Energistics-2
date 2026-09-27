@@ -27,8 +27,8 @@ import appeng.api.orientation.OrientationStrategies;
 import appeng.blockentity.crafting.CraftingMonitorBlockEntity;
 
 public class CraftingMonitorBlock extends AbstractCraftingUnitBlock<CraftingMonitorBlockEntity> {
-    public CraftingMonitorBlock(ICraftingUnitType type) {
-        super(metalProps(), type);
+    public CraftingMonitorBlock(Properties p, ICraftingUnitType type) {
+        super(metalProps(p), type);
     }
 
     @Override

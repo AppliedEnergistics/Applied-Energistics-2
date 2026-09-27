@@ -23,7 +23,7 @@ import appeng.blockentity.networking.CreativeEnergyCellBlockEntity;
 
 public class CreativeEnergyCellBlock extends AEBaseEntityBlock<CreativeEnergyCellBlockEntity> {
 
-    public CreativeEnergyCellBlock() {
-        super(glassProps());
+    public CreativeEnergyCellBlock(Properties p) {
+        super(glassProps(p));
     }
 }

@@ -3,7 +3,7 @@ package appeng.server.testworld;
 import java.util.List;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Block;
@@ -19,7 +19,7 @@ import appeng.server.testplots.SpawnExtraGridTestTools;
  * {@link SpawnExtraGridTestTools} to allow the chest to be populated.
  */
 public record SpawnExtraGridTestToolsChest(BlockPos chestPos, BlockPos gridPos,
-        ResourceLocation plotId) implements BuildAction {
+        Identifier plotId) implements BuildAction {
     @Override
     public BoundingBox getBoundingBox() {
         return new BoundingBox(chestPos);

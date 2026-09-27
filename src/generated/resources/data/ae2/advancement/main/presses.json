@@ -47,7 +47,6 @@
       "translate": "achievement.ae2.Presses.desc"
     },
     "icon": {
-      "count": 1,
       "id": "ae2:logic_processor_press"
     },
     "title": {

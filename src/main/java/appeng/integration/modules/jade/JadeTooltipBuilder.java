@@ -1,7 +1,7 @@
 package appeng.integration.modules.jade;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import snownee.jade.api.ITooltip;
 
@@ -20,7 +20,7 @@ class JadeTooltipBuilder implements TooltipBuilder {
     }
 
     @Override
-    public void addLine(Component line, ResourceLocation id) {
+    public void addLine(Component line, Identifier id) {
         tooltip.add(line, id);
     }
 }

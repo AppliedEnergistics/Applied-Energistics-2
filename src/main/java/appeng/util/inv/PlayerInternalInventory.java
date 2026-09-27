@@ -20,6 +20,9 @@ package appeng.util.inv;
 
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.item.PlayerInventoryWrapper;
 
 import appeng.api.inventories.InternalInventory;
 
@@ -49,5 +52,10 @@ public class PlayerInternalInventory implements InternalInventory {
         if (!stack.isEmpty()) {
             inventory.getItem(slotIndex).setPopTime(5);
         }
+    }
+
+    @Override
+    public ResourceHandler<ItemResource> toResourceHandler() {
+        return PlayerInventoryWrapper.of(inventory);
     }
 }

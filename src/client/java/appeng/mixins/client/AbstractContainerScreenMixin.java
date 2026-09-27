@@ -1,0 +1,28 @@
+package appeng.mixins.client;
+
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.ModifyVariable;
+
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+
+import appeng.menu.slot.AppEngSlot;
+
+/**
+ * Ensure we render {@link AppEngSlot#getDisplayStack()} instead of {@link AppEngSlot#getItem()}.
+ */
+@Mixin(AbstractContainerScreen.class)
+public class AbstractContainerScreenMixin {
+    @ModifyVariable(method = "extractSlot", index = 7, at = @At(value = "STORE", ordinal = 0))
+    protected ItemStack ae2_changeStackForDisplay(ItemStack stack, GuiGraphicsExtractor guiGraphics, Slot slot,
+            int mouseX,
+            int mouseY) {
+        if (slot instanceof AppEngSlot aeSlot) {
+            return aeSlot.getDisplayStack();
+        }
+        return stack;
+    }
+}

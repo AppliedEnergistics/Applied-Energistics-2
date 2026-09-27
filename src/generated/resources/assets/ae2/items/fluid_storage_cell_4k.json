@@ -1,0 +1,15 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "ae2:item/fluid_storage_cell_4k",
+    "tints": [
+      {
+        "type": "minecraft:constant",
+        "value": -1
+      },
+      {
+        "type": "ae2:storage_cell_state"
+      }
+    ]
+  }
+}

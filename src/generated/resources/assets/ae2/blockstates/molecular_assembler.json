@@ -1,0 +1,17 @@
+{
+  "multipart": [
+    {
+      "apply": {
+        "model": "ae2:block/molecular_assembler"
+      }
+    },
+    {
+      "apply": {
+        "model": "ae2:block/molecular_assembler_lights"
+      },
+      "when": {
+        "powered": "true"
+      }
+    }
+  ]
+}

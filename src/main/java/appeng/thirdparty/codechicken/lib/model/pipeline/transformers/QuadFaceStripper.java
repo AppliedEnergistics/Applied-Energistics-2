@@ -22,16 +22,14 @@ import static net.minecraft.core.Direction.AxisDirection.POSITIVE;
 
 import net.minecraft.core.Direction;
 import net.minecraft.world.phys.AABB;
-
-import appeng.thirdparty.fabric.MutableQuadView;
-import appeng.thirdparty.fabric.RenderContext;
+import net.neoforged.neoforge.client.model.quad.MutableQuad;
 
 /**
  * This transformer strips quads that are on faces. Simply set the bounds for the faces, and the strip mask.
  *
  * @author covers1624
  */
-public class QuadFaceStripper implements RenderContext.QuadTransform {
+public class QuadFaceStripper implements QuadTransform {
 
     private AABB bounds;
     private int mask;
@@ -65,37 +63,37 @@ public class QuadFaceStripper implements RenderContext.QuadTransform {
     }
 
     @Override
-    public boolean transform(MutableQuadView quad) {
+    public boolean transform(MutableQuad quad) {
         if (this.mask == 0) {
             return true;// No mask, nothing changes.
         }
         // If the bit for this quad is set, then check if we should strip.
-        Direction face = quad.nominalFace();
+        Direction face = quad.direction();
         if ((this.mask & 1 << face.ordinal()) != 0) {
             Direction.AxisDirection dir = face.getAxisDirection();
             switch (face.getAxis()) {
                 case X: {
                     float bound = (float) (dir == POSITIVE ? this.bounds.maxX : this.bounds.minX);
-                    float x1 = quad.posByIndex(0, 0);
-                    float x2 = quad.posByIndex(1, 0);
-                    float x3 = quad.posByIndex(2, 0);
-                    float x4 = quad.posByIndex(3, 0);
+                    float x1 = quad.positionComponent(0, 0);
+                    float x2 = quad.positionComponent(1, 0);
+                    float x3 = quad.positionComponent(2, 0);
+                    float x4 = quad.positionComponent(3, 0);
                     return x1 != x2 || x2 != x3 || x3 != x4 || x4 != bound;
                 }
                 case Y: {
                     float bound = (float) (dir == POSITIVE ? this.bounds.maxY : this.bounds.minY);
-                    float y1 = quad.posByIndex(0, 1);
-                    float y2 = quad.posByIndex(1, 1);
-                    float y3 = quad.posByIndex(2, 1);
-                    float y4 = quad.posByIndex(3, 1);
+                    float y1 = quad.positionComponent(0, 1);
+                    float y2 = quad.positionComponent(1, 1);
+                    float y3 = quad.positionComponent(2, 1);
+                    float y4 = quad.positionComponent(3, 1);
                     return y1 != y2 || y2 != y3 || y3 != y4 || y4 != bound;
                 }
                 case Z: {
                     float bound = (float) (dir == POSITIVE ? this.bounds.maxZ : this.bounds.minZ);
-                    float z1 = quad.posByIndex(0, 2);
-                    float z2 = quad.posByIndex(1, 2);
-                    float z3 = quad.posByIndex(2, 2);
-                    float z4 = quad.posByIndex(3, 2);
+                    float z1 = quad.positionComponent(0, 2);
+                    float z2 = quad.positionComponent(1, 2);
+                    float z3 = quad.positionComponent(2, 2);
+                    float z4 = quad.positionComponent(3, 2);
                     return z1 != z2 || z2 != z3 || z3 != z4 || z4 != bound;
                 }
             }

@@ -22,7 +22,7 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.ChunkPos;
-import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 
@@ -34,20 +34,20 @@ import appeng.server.services.compass.ServerCompassService;
  */
 public final class CompassManager {
     public static final CompassManager INSTANCE = new CompassManager();
-    private static final int REFRESH_CACHE_AFTER = 30000;
-    private static final int EXPIRE_CACHE_AFTER = 60000;
+    private static final int REFRESH_CACHE_AFTER = 5000;
+    private static final int EXPIRE_CACHE_AFTER = 10000;
     private final Long2ObjectOpenHashMap<CachedResult> requests = new Long2ObjectOpenHashMap<>();
 
     private CompassManager() {
     }
 
     public void postResult(ChunkPos requestedPos, @Nullable BlockPos closestMeteorite) {
-        this.requests.put(requestedPos.toLong(), new CachedResult(closestMeteorite, System.currentTimeMillis()));
+        this.requests.put(requestedPos.pack(), new CachedResult(closestMeteorite, System.currentTimeMillis()));
     }
 
     @Nullable
     public BlockPos getClosestMeteorite(BlockPos pos, boolean prefetch) {
-        return getClosestMeteorite(new ChunkPos(pos), prefetch);
+        return getClosestMeteorite(ChunkPos.containing(pos), prefetch);
     }
 
     @Nullable
@@ -67,7 +67,7 @@ public final class CompassManager {
         BlockPos result = null;
         boolean request;
 
-        var cached = this.requests.get(chunkPos.toLong());
+        var cached = this.requests.get(chunkPos.pack());
         if (cached != null) {
             result = cached.closestMeteoritePos();
             var age = now - cached.received();
@@ -82,8 +82,8 @@ public final class CompassManager {
         }
 
         if (request) {
-            this.requests.put(chunkPos.toLong(), new CachedResult(result, now));
-            PacketDistributor.sendToServer(new RequestClosestMeteoritePacket(chunkPos));
+            this.requests.put(chunkPos.pack(), new CachedResult(result, now));
+            ClientPacketDistributor.sendToServer(new RequestClosestMeteoritePacket(chunkPos));
         }
 
         // Prefetch meteor positions from the server for adjacent blocks, so they are
@@ -92,7 +92,7 @@ public final class CompassManager {
             for (int i = 0; i < 3; i++) {
                 for (int j = 0; j < 3; j++) {
                     if (i != 0 || j != 0) {
-                        getClosestMeteorite(new ChunkPos(chunkPos.x + i, chunkPos.z + j), false);
+                        getClosestMeteorite(new ChunkPos(chunkPos.x() + i, chunkPos.z() + j), false);
                     }
                 }
             }

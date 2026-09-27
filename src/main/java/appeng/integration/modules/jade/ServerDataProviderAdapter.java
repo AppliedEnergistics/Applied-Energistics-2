@@ -1,7 +1,7 @@
 package appeng.integration.modules.jade;
 
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import snownee.jade.api.BlockAccessor;
 import snownee.jade.api.IServerDataProvider;
@@ -9,12 +9,12 @@ import snownee.jade.api.IServerDataProvider;
 import appeng.api.integrations.igtooltip.providers.ServerDataProvider;
 
 class ServerDataProviderAdapter<T> implements IServerDataProvider<BlockAccessor> {
-    private final ResourceLocation id;
+    private final Identifier id;
     private final ServerDataProvider<? super T> provider;
 
     private final Class<T> objectClass;
 
-    public ServerDataProviderAdapter(ResourceLocation id, ServerDataProvider<? super T> provider,
+    public ServerDataProviderAdapter(Identifier id, ServerDataProvider<? super T> provider,
             Class<T> objectClass) {
         this.id = id;
         this.provider = provider;
@@ -22,7 +22,7 @@ class ServerDataProviderAdapter<T> implements IServerDataProvider<BlockAccessor>
     }
 
     @Override
-    public ResourceLocation getUid() {
+    public Identifier getUid() {
         return id;
     }
 

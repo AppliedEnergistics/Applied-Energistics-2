@@ -22,14 +22,11 @@ import java.util.Set;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 
 import appeng.api.config.FuzzyMode;
@@ -43,39 +40,23 @@ import appeng.api.networking.ticking.IGridTickable;
 import appeng.api.networking.ticking.TickRateModulation;
 import appeng.api.networking.ticking.TickingRequest;
 import appeng.api.parts.IPartItem;
-import appeng.api.parts.IPartModel;
 import appeng.api.stacks.AEKeyType;
 import appeng.api.storage.ISubMenuHost;
 import appeng.api.util.AECableType;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigManagerBuilder;
-import appeng.core.AppEng;
 import appeng.core.definitions.AEItems;
 import appeng.core.settings.TickRates;
 import appeng.helpers.IConfigInvHost;
-import appeng.items.parts.PartModels;
 import appeng.me.helpers.MachineSource;
 import appeng.menu.ISubMenu;
 import appeng.menu.MenuOpener;
 import appeng.menu.locator.MenuLocators;
-import appeng.parts.PartModel;
 import appeng.util.ConfigInventory;
 import appeng.util.Platform;
 import appeng.util.prioritylist.IPartitionList;
 
 public abstract class IOBusPart extends UpgradeablePart implements IGridTickable, IConfigInvHost, ISubMenuHost {
-
-    public static final ResourceLocation MODEL_BASE = AppEng.makeId("part/import_bus_base");
-    @PartModels
-    public static final IPartModel MODELS_OFF = new PartModel(MODEL_BASE,
-            AppEng.makeId("part/import_bus_off"));
-    @PartModels
-    public static final IPartModel MODELS_ON = new PartModel(MODEL_BASE,
-            AppEng.makeId("part/import_bus_on"));
-    @PartModels
-    public static final IPartModel MODELS_HAS_CHANNEL = new PartModel(MODEL_BASE,
-            AppEng.makeId("part/import_bus_has_channel"));
-
     private final ConfigInventory config;
     // Filter derived from the config
     @Nullable
@@ -135,18 +116,18 @@ public abstract class IOBusPart extends UpgradeablePart implements IGridTickable
     }
 
     @Override
-    public void readFromNBT(CompoundTag extra, HolderLookup.Provider registries) {
-        super.readFromNBT(extra, registries);
-        config.readFromChildTag(extra, "config", registries);
+    public void readFromNBT(ValueInput extra) {
+        super.readFromNBT(extra);
+        config.readFromChildTag(extra, "config");
         // Ensure the filter is rebuilt
         filter = null;
-        pendingPulse = isInPulseMode() && extra.getBoolean("pendingPulse");
+        pendingPulse = isInPulseMode() && extra.getBooleanOr("pendingPulse", false);
     }
 
     @Override
-    public void writeToNBT(CompoundTag extra, HolderLookup.Provider registries) {
-        super.writeToNBT(extra, registries);
-        config.writeToChildTag(extra, "config", registries);
+    public void writeToNBT(ValueOutput extra) {
+        super.writeToNBT(extra);
+        config.writeToChildTag(extra, "config");
         if (isInPulseMode() && pendingPulse) {
             extra.putBoolean("pendingPulse", true);
         }
@@ -170,7 +151,7 @@ public abstract class IOBusPart extends UpgradeablePart implements IGridTickable
     }
 
     @Override
-    public void onNeighborChanged(BlockGetter level, BlockPos pos, BlockPos neighbor) {
+    public void onRedstoneLevelMayHaveChanged() {
         if (isInPulseMode()) {
             var hostIsPowered = this.getHost().hasRedstone();
             if (this.lastRedstone != hostIsPowered) {

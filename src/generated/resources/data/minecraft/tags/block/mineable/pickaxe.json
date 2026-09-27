@@ -38,7 +38,7 @@
     "ae2:spatial_io_port",
     "ae2:controller",
     "ae2:drive",
-    "ae2:chest",
+    "ae2:me_chest",
     "ae2:interface",
     "ae2:cell_workbench",
     "ae2:io_port",

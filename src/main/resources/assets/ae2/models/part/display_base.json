@@ -4,8 +4,9 @@
     "sidesStatus": "ae2:part/monitor_sides_status",
     "back": "ae2:part/monitor_back",
     "front": "ae2:part/monitor_front",
-    "particle": "ae2:part/monitor_back"
+    "particle": "#front"
   },
+  "render_type": "minecraft:cutout",
   "elements": [
     {
       "from": [2, 2, 0],

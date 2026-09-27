@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "#": {
-      "item": "ae2:smooth_sky_stone_block"
-    }
+    "#": "ae2:smooth_sky_stone_block"
   },
   "pattern": [
     "#  ",

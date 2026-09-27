@@ -2,12 +2,12 @@
 navigation:
   parent: items-blocks-machines/items-blocks-machines-index.md
   title: ME Chest
-  icon: chest
+  icon: me_chest
   position: 210
 categories:
 - devices
 item_ids:
-- ae2:chest
+- ae2:me_chest
 ---
 
 # The ME Chest
@@ -61,13 +61,13 @@ The cells in the chest have an LED on them which shows their status:
 
 Priorities can be set by clicking the wrench in the top-right of the cell slot GUI.
 Items entering the network will start at the highest priority storage as
-their first destination. In the case of two storages or cells have the same priority,
-if one already contains the item, they will prefer that storage over any
+their first destination. In the case of two storages or cells having the same priority,
+if one already contains that type of item, the item will prefer that storage over any
 other. Any [partitioned](cell_workbench.md) cells will be treated as already containing the item
 when in the same priority group as other storages. Items being removed from storage will
-be removed from the storage with the lowest priority. This priority system means as items are inserted and removed
-from network storage, higher priority storages will be filled and lower priority storages will be emptied.
+be removed from the storage with the lowest priority. This priority system means that as items are inserted and removed
+from network storage, higher priority storages will be filled, and lower priority storages will be emptied.
 
 ## Recipe
 
-<RecipeFor id="chest" />
+<RecipeFor id="me_chest" />

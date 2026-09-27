@@ -2,21 +2,11 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "a": {
-      "item": "ae2:quartz_glass"
-    },
-    "b": {
-      "tag": "c:dusts/glowstone"
-    },
-    "c": {
-      "tag": "ae2:all_certus_quartz"
-    },
-    "d": {
-      "tag": "c:ingots/iron"
-    },
-    "e": {
-      "tag": "c:ingots/copper"
-    }
+    "a": "ae2:quartz_glass",
+    "b": "#c:dusts/glowstone",
+    "c": "#ae2:all_certus_quartz",
+    "d": "#c:ingots/iron",
+    "e": "#c:ingots/copper"
   },
   "pattern": [
     "aba",

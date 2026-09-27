@@ -36,10 +36,10 @@ public class ProjectDefaultsPlugin implements Plugin<Project> {
         String tag = System.getenv("TAG");
 
         if (tag != null && !tag.isEmpty()) {
-            if (!tag.startsWith("neoforge/v")) {
-                throw new IllegalArgumentException("Tags for the neoforge version should start with neoforge/: " + tag);
+            if (!tag.startsWith("v")) {
+                throw new IllegalArgumentException("Tags for release versions must start with v: " + tag);
             }
-            return tag.substring("neoforge/v".length());
+            return tag.substring("v".length());
         } else {
             // Use Gradle's Provider API for configuration cache support
             var versionProvider = project.getProviders()
@@ -56,7 +56,7 @@ public class ProjectDefaultsPlugin implements Plugin<Project> {
                                     .getDefaultBranches()
                                     .addAll(
                                             "main",
-                                            "neoforge/" + project.getProperties().get("minecraft_version")
+                                            project.getProviders().gradleProperty("minecraft_version").get()
                                     );
                         });
                     });

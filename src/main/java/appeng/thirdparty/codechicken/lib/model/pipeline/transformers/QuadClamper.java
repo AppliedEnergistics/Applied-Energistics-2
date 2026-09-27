@@ -22,9 +22,7 @@ import org.joml.Vector3f;
 
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.AABB;
-
-import appeng.thirdparty.fabric.MutableQuadView;
-import appeng.thirdparty.fabric.RenderContext;
+import net.neoforged.neoforge.client.model.quad.MutableQuad;
 
 /**
  * This transformer simply clamps the vertices inside the provided box. You probably want to Re-Interpolate the UV's,
@@ -32,7 +30,7 @@ import appeng.thirdparty.fabric.RenderContext;
  *
  * @author covers1624
  */
-public class QuadClamper implements RenderContext.QuadTransform {
+public class QuadClamper implements QuadTransform {
 
     private final AABB clampBounds;
 
@@ -43,21 +41,21 @@ public class QuadClamper implements RenderContext.QuadTransform {
     }
 
     @Override
-    public boolean transform(MutableQuadView quad) {
-        int s = quad.nominalFace().ordinal() >> 1;
+    public boolean transform(MutableQuad quad) {
+        int s = quad.direction().ordinal() >> 1;
 
         clamp(quad, this.clampBounds);
 
         // Check if the quad would be invisible and cull it.
-        float x1 = quad.posByIndex(0, dx(s));
-        float x2 = quad.posByIndex(1, dx(s));
-        float x3 = quad.posByIndex(2, dx(s));
-        float x4 = quad.posByIndex(3, dx(s));
+        float x1 = quad.positionComponent(0, dx(s));
+        float x2 = quad.positionComponent(1, dx(s));
+        float x3 = quad.positionComponent(2, dx(s));
+        float x4 = quad.positionComponent(3, dx(s));
 
-        float y1 = quad.posByIndex(0, dy(s));
-        float y2 = quad.posByIndex(1, dy(s));
-        float y3 = quad.posByIndex(2, dy(s));
-        float y4 = quad.posByIndex(3, dy(s));
+        float y1 = quad.positionComponent(0, dy(s));
+        float y2 = quad.positionComponent(1, dy(s));
+        float y3 = quad.positionComponent(2, dy(s));
+        float y4 = quad.positionComponent(3, dy(s));
 
         // These comparisons are safe as we are comparing clamped values.
         boolean flag1 = x1 == x2 && x2 == x3 && x3 == x4;
@@ -65,13 +63,13 @@ public class QuadClamper implements RenderContext.QuadTransform {
         return !flag1 && !flag2;
     }
 
-    private void clamp(MutableQuadView quad, AABB bb) {
+    private void clamp(MutableQuad quad, AABB bb) {
         for (int i = 0; i < 4; i++) {
-            quad.copyPos(i, pos);
+            quad.copyPosition(i, pos);
             pos.set((float) Mth.clamp(pos.x(), bb.minX, bb.maxX),
                     (float) Mth.clamp(pos.y(), bb.minY, bb.maxY),
                     (float) Mth.clamp(pos.z(), bb.minZ, bb.maxZ));
-            quad.pos(i, pos);
+            quad.setPosition(i, pos);
         }
     }
 

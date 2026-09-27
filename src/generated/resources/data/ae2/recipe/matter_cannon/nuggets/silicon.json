@@ -9,8 +9,6 @@
     }
   ],
   "type": "ae2:matter_cannon",
-  "ammo": {
-    "tag": "c:nuggets/silicon"
-  },
+  "ammo": "#c:nuggets/silicon",
   "weight": 28.0855
 }

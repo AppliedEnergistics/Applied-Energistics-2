@@ -20,13 +20,13 @@ package appeng.blockentity.spatial;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
@@ -60,17 +60,16 @@ public class SpatialIOPortBlockEntity extends AENetworkedInvBlockEntity {
     }
 
     @Override
-    public void saveAdditional(CompoundTag data, HolderLookup.Provider registries) {
-        super.saveAdditional(data, registries);
+    public void saveAdditional(ValueOutput data) {
+        super.saveAdditional(data);
         data.putInt("lastRedstoneState", this.lastRedstoneState.ordinal());
     }
 
     @Override
-    public void loadTag(CompoundTag data, HolderLookup.Provider registries) {
-        super.loadTag(data, registries);
-        if (data.contains("lastRedstoneState")) {
-            this.lastRedstoneState = YesNo.values()[data.getInt("lastRedstoneState")];
-        }
+    public void loadTag(ValueInput data) {
+        super.loadTag(data);
+        int lastRedstoneState = data.getIntOr("lastRedstoneState", YesNo.UNDECIDED.ordinal());
+        this.lastRedstoneState = YesNo.values()[lastRedstoneState];
     }
 
     @Override
@@ -109,7 +108,7 @@ public class SpatialIOPortBlockEntity extends AENetworkedInvBlockEntity {
     }
 
     public boolean isActive() {
-        if (level != null && !level.isClientSide) {
+        if (level != null && !level.isClientSide()) {
             return this.getMainNode().isOnline();
         } else {
             return this.isActive;

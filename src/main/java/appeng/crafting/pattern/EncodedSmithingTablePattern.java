@@ -3,11 +3,13 @@ package appeng.crafting.pattern;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Recipe;
 
 import appeng.core.definitions.AEItems;
 
@@ -17,7 +19,7 @@ public record EncodedSmithingTablePattern(
         ItemStack addition,
         ItemStack resultItem,
         boolean canSubstitute,
-        ResourceLocation recipeId) {
+        ResourceKey<Recipe<?>> recipeId) {
 
     public static final Codec<EncodedSmithingTablePattern> CODEC = RecordCodecBuilder.create(builder -> builder.group(
             ItemStack.CODEC.fieldOf("template").forGetter(EncodedSmithingTablePattern::template),
@@ -25,7 +27,7 @@ public record EncodedSmithingTablePattern(
             ItemStack.CODEC.fieldOf("addition").forGetter(EncodedSmithingTablePattern::addition),
             ItemStack.CODEC.fieldOf("resultItem").forGetter(EncodedSmithingTablePattern::resultItem),
             Codec.BOOL.fieldOf("canSubstitute").forGetter(EncodedSmithingTablePattern::canSubstitute),
-            ResourceLocation.CODEC.fieldOf("recipeId").forGetter(EncodedSmithingTablePattern::recipeId))
+            ResourceKey.codec(Registries.RECIPE).fieldOf("recipeId").forGetter(EncodedSmithingTablePattern::recipeId))
             .apply(builder, EncodedSmithingTablePattern::new));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, EncodedSmithingTablePattern> STREAM_CODEC = StreamCodec
@@ -40,7 +42,7 @@ public record EncodedSmithingTablePattern(
                     EncodedSmithingTablePattern::resultItem,
                     ByteBufCodecs.BOOL,
                     EncodedSmithingTablePattern::canSubstitute,
-                    ResourceLocation.STREAM_CODEC,
+                    ResourceKey.streamCodec(Registries.RECIPE),
                     EncodedSmithingTablePattern::recipeId,
                     EncodedSmithingTablePattern::new);
 

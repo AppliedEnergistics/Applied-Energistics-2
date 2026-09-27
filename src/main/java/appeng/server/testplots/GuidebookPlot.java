@@ -23,7 +23,7 @@ public final class GuidebookPlot {
     private GuidebookPlot() {
     }
 
-    @TestPlot("guidebook_structure_workarea")
+    @TestPlot(value = "guidebook_structure_workarea", gameTest = false)
     public static void guidebookStructureWorkArea(PlotBuilder plot) {
         plot.block("[0,15] -1 [0,15]", Blocks.BLACK_CONCRETE);
         plot.block("-1 -1 [0,15]", Blocks.BLUE_TERRACOTTA);

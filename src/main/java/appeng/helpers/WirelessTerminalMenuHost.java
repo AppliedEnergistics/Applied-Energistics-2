@@ -261,7 +261,7 @@ public class WirelessTerminalMenuHost<T extends WirelessTerminalItem> extends It
         } else {
             var statusText = getLinkStatus().statusDescription();
             if (statusText != null && !mode.isSimulate()) {
-                player.displayClientMessage(statusText, false);
+                player.sendSystemMessage(statusText);
             }
             return 0;
         }

@@ -3,6 +3,7 @@
     "fiber": "ae2:part/quartz_fiber",
     "particle": "ae2:part/quartz_fiber"
   },
+  "render_type": "minecraft:cutout",
   "elements": [
     {
       "from": [6, 6, 0],

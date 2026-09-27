@@ -9,8 +9,6 @@
     }
   ],
   "type": "ae2:matter_cannon",
-  "ammo": {
-    "tag": "c:nuggets/iridium"
-  },
+  "ammo": "#c:nuggets/iridium",
   "weight": 192.217
 }

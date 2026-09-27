@@ -31,11 +31,13 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.common.util.ValueIOSerializable;
 
 import appeng.api.networking.pathing.IPathingService;
 import appeng.api.stacks.AEItemKey;
@@ -44,7 +46,7 @@ import appeng.api.util.AEColor;
 /**
  * This interface is intended for the host that created this node. It is used to configure the node's properties.
  */
-public interface IManagedGridNode {
+public interface IManagedGridNode extends ValueIOSerializable {
 
     /**
      * By destroying your node, you destroy any connections, and its existence in the grid, use in invalidate, or
@@ -69,7 +71,8 @@ public interface IManagedGridNode {
      *
      * @param nodeData to be loaded data
      */
-    void loadFromNBT(CompoundTag nodeData);
+    @Override
+    void deserialize(ValueInput nodeData);
 
     /**
      * this should be called for each node you maintain, you can save all your nodes to the same tag with different
@@ -77,7 +80,8 @@ public interface IManagedGridNode {
      *
      * @param nodeData to be saved data
      */
-    void saveToNBT(CompoundTag nodeData);
+    @Override
+    void serialize(ValueOutput nodeData);
 
     /**
      * Call the given function on the grid this node is connected to. Will do nothing if the grid node isn't initialized

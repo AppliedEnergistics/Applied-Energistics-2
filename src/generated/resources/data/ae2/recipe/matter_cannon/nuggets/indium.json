@@ -9,8 +9,6 @@
     }
   ],
   "type": "ae2:matter_cannon",
-  "ammo": {
-    "tag": "c:nuggets/indium"
-  },
+  "ammo": "#c:nuggets/indium",
   "weight": 114.818
 }

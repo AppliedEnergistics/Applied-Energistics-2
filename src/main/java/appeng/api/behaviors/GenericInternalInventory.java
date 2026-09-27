@@ -3,6 +3,8 @@ package appeng.api.behaviors;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
+
 import appeng.api.config.Actionable;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.AEKeyType;
@@ -90,4 +92,9 @@ public interface GenericInternalInventory {
      * Send a change notification manually, for example because the automatic notification was suppressed.
      */
     void onChange();
+
+    /**
+     * Call this to save the inventories state in the transaction right before modifying it.
+     */
+    void updateSnapshots(TransactionContext transaction);
 }

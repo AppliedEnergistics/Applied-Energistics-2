@@ -1,6 +1,6 @@
 package appeng.server.testplots;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.bus.api.Event;
 
 import appeng.api.inventories.InternalInventory;
@@ -11,17 +11,17 @@ import appeng.api.networking.IGrid;
  */
 @TestPlotClass
 public class SpawnExtraGridTestTools extends Event {
-    private final ResourceLocation plotId;
+    private final Identifier plotId;
     private final InternalInventory inventory;
     private final IGrid grid;
 
-    public SpawnExtraGridTestTools(ResourceLocation plotId, InternalInventory inventory, IGrid grid) {
+    public SpawnExtraGridTestTools(Identifier plotId, InternalInventory inventory, IGrid grid) {
         this.plotId = plotId;
         this.inventory = inventory;
         this.grid = grid;
     }
 
-    public ResourceLocation getPlotId() {
+    public Identifier getPlotId() {
         return plotId;
     }
 

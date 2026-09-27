@@ -2,8 +2,10 @@
   "textures": {
     "lightsBright": "ae2:part/pattern_encoding_terminal_bright",
     "lightsMedium": "ae2:part/pattern_encoding_terminal_medium",
-    "lightsDark": "ae2:part/pattern_encoding_terminal_dark"
+    "lightsDark": "ae2:part/pattern_encoding_terminal_dark",
+    "particle": "#lightsMedium"
   },
+  "render_type": "minecraft:cutout",
   "elements": [
     {
       "from": [2, 2, 0],

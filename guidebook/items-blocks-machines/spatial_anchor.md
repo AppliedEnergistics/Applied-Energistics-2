@@ -14,16 +14,17 @@ item_ids:
 
 <BlockImage id="spatial_anchor" p:powered="true" scale="8"/>
 
-An AE2 network needs to be chunkloaded for any of its [devices](../ae2-mechanics/devices.md) to be able to function, and if only some of it is loaded,
-it may not function correctly. The Spatial Anchor solves this problem. It forceloads the chunks that its network occupies.
+An AE2 network needs to be chunkloaded for any of its [devices](../ae2-mechanics/devices.md) to be able to function,
+and if only some of the network is loaded, it may not function correctly.
+The Spatial Anchor solves this problem. It force-loads the chunks that its network occupies.
 A single cable extending across a chunk border is enough to load that new chunk.
 
 It will propagate its "loading" across [quantum bridges](quantum_bridge.md), but not cross-dimensionally, so if you
-have a quantum bridge to the nether, you need a spatial anchor on the network in your base and on the network in the nether.
+have a quantum bridge to the Nether, you need a spatial anchor on the network in your base and on the network in the Nether.
 
-By default it will also enable random ticks in its loaded chunks, this can be turned off in the ae2 config.
+By default, it will also enable random ticks in its loaded chunks, but this can be turned off in the AE2 config.
 
-It can be rotated with a <ItemLink id="certus_quartz_wrench" /> if for some reason you want to do that.
+It can be rotated with a <ItemLink id="certus_quartz_wrench" />, if you want to do that for some reason.
 
 ## Settings
 

@@ -6,6 +6,7 @@
     "indicator": "ae2:part/monitor_sides_status_off",
     "particle": "ae2:part/transition_plane_back"
   },
+  "render_type": "minecraft:cutout",
   "elements": [
     {
       "from": [5, 5, 1],

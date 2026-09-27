@@ -18,8 +18,12 @@
 
 package appeng.items.tools.powered.powersink;
 
-import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.energy.IEnergyStorage;
+import net.minecraft.world.item.Item;
+import net.neoforged.neoforge.transfer.TransferPreconditions;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.energy.EnergyHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerUnit;
@@ -28,49 +32,77 @@ import appeng.api.implementations.items.IAEItemPowerStorage;
 /**
  * The capability provider to expose chargable items to other mods.
  */
-public class PoweredItemCapabilities implements IEnergyStorage {
-
-    private final ItemStack is;
-
+public class PoweredItemCapabilities implements EnergyHandler {
+    private final ItemAccess itemAccess;
+    private final Item validItem;
     private final IAEItemPowerStorage item;
 
-    public PoweredItemCapabilities(ItemStack is, IAEItemPowerStorage item) {
-        this.is = is;
+    public PoweredItemCapabilities(ItemAccess itemAccess, Item validItem, IAEItemPowerStorage item) {
+        this.itemAccess = itemAccess;
+        this.validItem = validItem;
         this.item = item;
     }
 
-    @Override
-    public int receiveEnergy(int maxReceive, boolean simulate) {
-        final double convertedOffer = PowerUnit.FE.convertTo(PowerUnit.AE, maxReceive);
-        final double overflow = this.item.injectAEPower(this.is, convertedOffer,
-                simulate ? Actionable.SIMULATE : Actionable.MODULATE);
-
-        return maxReceive - (int) PowerUnit.AE.convertTo(PowerUnit.FE, overflow);
+    private int getAmountFrom(ItemResource currentItem) {
+        if (!currentItem.is(validItem)) {
+            return 0;
+        }
+        return (int) PowerUnit.AE.convertTo(PowerUnit.FE, item.getAECurrentPower(currentItem.toStack()));
     }
 
     @Override
-    public int extractEnergy(int maxExtract, boolean simulate) {
+    public long getAmountAsLong() {
+        var currentItem = itemAccess.getResource();
+        return getAmountFrom(currentItem);
+    }
+
+    @Override
+    public long getCapacityAsLong() {
+        var currentItem = itemAccess.getResource();
+        if (!currentItem.is(validItem)) {
+            return 0;
+        }
+        return (int) PowerUnit.AE.convertTo(PowerUnit.FE, item.getAEMaxPower(currentItem.toStack()));
+    }
+
+    @Override
+    public int insert(int amount, TransactionContext transaction) {
+        TransferPreconditions.checkNonNegative(amount);
+
+        int accessAmount = itemAccess.getAmount();
+        if (accessAmount == 0) {
+            return 0;
+        }
+        int amountPerItem = amount / accessAmount;
+        if (amountPerItem == 0) {
+            return 0;
+        }
+
+        ItemResource accessResource = itemAccess.getResource();
+        if (!accessResource.is(validItem)) {
+            return 0;
+        }
+
+        // We'll essentially perform the insertion into a copy of the stack, then convert back to the resource
+        var amountAE = PowerUnit.FE.convertTo(PowerUnit.AE, amount);
+        var mutableStack = accessResource.toStack();
+        double overflowAE = item.injectAEPower(mutableStack, amountAE, Actionable.MODULATE);
+        var insertedPerItem = (int) PowerUnit.AE.convertTo(PowerUnit.FE, amountAE - overflowAE);
+
+        insertedPerItem = Math.min(amountPerItem, insertedPerItem);
+        if (insertedPerItem > 0) {
+            var filledResource = ItemResource.of(mutableStack);
+
+            if (!filledResource.isEmpty()) {
+                return insertedPerItem * itemAccess.exchange(filledResource, accessAmount, transaction);
+            }
+        }
+
         return 0;
     }
 
     @Override
-    public int getEnergyStored() {
-        return (int) PowerUnit.AE.convertTo(PowerUnit.FE, this.item.getAECurrentPower(this.is));
+    public int extract(int amount, TransactionContext transaction) {
+        return 0;
     }
-
-    @Override
-    public int getMaxEnergyStored() {
-        return (int) PowerUnit.AE.convertTo(PowerUnit.FE, this.item.getAEMaxPower(this.is));
-    }
-
-    @Override
-    public boolean canExtract() {
-        return false;
-    }
-
-    @Override
-    public boolean canReceive() {
-        return true;
-    }
-
 }

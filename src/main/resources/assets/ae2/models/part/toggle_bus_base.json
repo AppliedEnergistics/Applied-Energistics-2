@@ -5,6 +5,7 @@
     "bus": "ae2:part/toggle_bus",
     "sides": "ae2:part/monitor_sides_status"
   },
+  "render_type": "minecraft:cutout",
   "elements": [
     {
       "from": [6, 6, 0],

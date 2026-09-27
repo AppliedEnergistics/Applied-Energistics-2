@@ -18,6 +18,8 @@
 
 package appeng.block.storage;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -26,6 +28,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.redstone.Orientation;
 import net.minecraft.world.phys.BlockHitResult;
 
 import appeng.api.orientation.IOrientationStrategy;
@@ -40,16 +43,15 @@ public class IOPortBlock extends AEBaseEntityBlock<IOPortBlockEntity> {
 
     public final static BooleanProperty POWERED = BooleanProperty.create("powered");
 
-    public IOPortBlock() {
-        super(metalProps());
+    public IOPortBlock(Properties p) {
+        super(metalProps(p));
         this.registerDefaultState(this.defaultBlockState().setValue(POWERED, false));
     }
 
-    @SuppressWarnings("deprecation")
     @Override
-    public void neighborChanged(BlockState state, Level level, BlockPos pos, Block blockIn, BlockPos fromPos,
-            boolean isMoving) {
-        final IOPortBlockEntity te = this.getBlockEntity(level, pos);
+    protected void neighborChanged(BlockState state, Level level, BlockPos pos, Block neighborBlock,
+            @Nullable Orientation orientation, boolean movedByPiston) {
+        var te = this.getBlockEntity(level, pos);
         if (te != null) {
             te.updateRedstoneState();
         }
@@ -78,7 +80,7 @@ public class IOPortBlock extends AEBaseEntityBlock<IOPortBlockEntity> {
             if (!level.isClientSide()) {
                 MenuOpener.open(IOPortMenu.TYPE, player, MenuLocators.forBlockEntity(be));
             }
-            return InteractionResult.sidedSuccess(level.isClientSide());
+            return InteractionResult.SUCCESS;
         }
 
         return super.useWithoutItem(state, level, pos, player, hitResult);

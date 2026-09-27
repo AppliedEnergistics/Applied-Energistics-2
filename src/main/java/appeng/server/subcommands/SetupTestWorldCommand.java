@@ -4,6 +4,7 @@ import static net.minecraft.commands.Commands.literal;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Set;
 
 import com.google.common.base.Stopwatch;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
@@ -11,20 +12,21 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.entity.EntityTypeTest;
+import net.minecraft.world.level.gamerules.GameRules;
 import net.minecraft.world.level.levelgen.FlatLevelSource;
 import net.neoforged.neoforge.common.NeoForge;
 
-import appeng.core.AELog;
 import appeng.core.definitions.AEItems;
 import appeng.core.localization.PlayerMessages;
 import appeng.items.tools.powered.ColorApplicatorItem;
@@ -38,11 +40,13 @@ import appeng.server.testworld.TestWorldGenerator;
  * setting up a testing world for AE2.
  */
 public class SetupTestWorldCommand implements ISubCommand {
+    private static final Logger LOG = LoggerFactory.getLogger(SetupTestWorldCommand.class);
+
     @Override
     public void addArguments(LiteralArgumentBuilder<CommandSourceStack> builder) {
-        for (var plotId : TestPlots.getPlotIds()) {
-            builder.then(literal(plotId.toString()).executes(ctx -> {
-                setupTestWorld(ctx.getSource().getServer(), ctx.getSource(), plotId);
+        for (var plot : TestPlots.getPlots()) {
+            builder.then(literal(plot.toString()).executes(ctx -> {
+                setupTestWorld(ctx.getSource().getServer(), ctx.getSource(), plot.id());
                 return 1;
             }));
         }
@@ -53,7 +57,7 @@ public class SetupTestWorldCommand implements ISubCommand {
         setupTestWorld(srv, sender, null);
     }
 
-    private void setupTestWorld(MinecraftServer srv, CommandSourceStack sender, @Nullable ResourceLocation plotId) {
+    private void setupTestWorld(MinecraftServer srv, CommandSourceStack sender, @Nullable Identifier plotId) {
         var sw = Stopwatch.createStarted();
         try {
             var player = sender.getPlayerOrException();
@@ -62,7 +66,7 @@ public class SetupTestWorldCommand implements ISubCommand {
                 return;
             }
 
-            var level = player.serverLevel();
+            var level = player.level();
             if (!isSuperflatWorld(level)) {
                 sender.sendFailure(PlayerMessages.TestWorldNotInSuperflat.text());
                 return;
@@ -74,8 +78,8 @@ public class SetupTestWorldCommand implements ISubCommand {
             // Pick the top layer of the superflat world, or default to 60
             var origin = player.blockPosition();
             // Ensure the origin is 3 blocks above the lower build limit
-            if (origin.getY() - 3 < level.getMinBuildHeight()) {
-                origin = origin.atY(level.getMinBuildHeight() + 3);
+            if (origin.getY() - 3 < level.getMinY()) {
+                origin = origin.atY(level.getMinY() + 3);
             }
             var generator = new TestWorldGenerator(level, player, origin, plotId);
             generator.generate();
@@ -88,12 +92,13 @@ public class SetupTestWorldCommand implements ISubCommand {
             // Only teleport the player if they're not within the bounds already
             if (!generator.isWithinBounds(player.blockPosition())) {
                 var goodStartPos = generator.getSuitableStartPos();
-                player.teleportTo(level, goodStartPos.getX(), goodStartPos.getY(), goodStartPos.getZ(), 0, 0);
+                player.teleportTo(level, goodStartPos.getX(), goodStartPos.getY(), goodStartPos.getZ(), Set.of(), 0, 0,
+                        true);
             }
 
             sender.sendSuccess(() -> PlayerMessages.TestWorldSetupComplete.text(sw.toString()), true);
         } catch (RuntimeException | CommandSyntaxException e) {
-            AELog.error(e);
+            LOG.error("Failed to setup testworld", e);
             sender.sendFailure(PlayerMessages.TestWorldSetupFailed.text(e.toString()));
         }
     }
@@ -130,17 +135,20 @@ public class SetupTestWorldCommand implements ISubCommand {
     }
 
     private static void makeAlwaysDaytime(MinecraftServer srv) {
-        srv.getGameRules().getRule(GameRules.RULE_DAYLIGHT).set(false, srv);
-        srv.overworld().setDayTime(1000);
+        srv.getGameRules().set(GameRules.ADVANCE_TIME, false, srv);
+        var clock = srv.overworld().dimensionType().defaultClock();
+        if (clock.isPresent()) {
+            srv.clockManager().setTotalTicks(clock.get(), 1000);
+        }
     }
 
     private static void disableWeather(MinecraftServer srv) {
-        srv.getGameRules().getRule(GameRules.RULE_WEATHER_CYCLE).set(false, srv);
-        srv.overworld().setWeatherParameters(9999, 0, false, false);
+        srv.getGameRules().set(GameRules.ADVANCE_WEATHER, false, srv);
+        srv.overworld().resetWeatherCycle();
     }
 
     private static void disableMobSpawning(MinecraftServer srv) {
-        srv.getGameRules().getRule(GameRules.RULE_DOMOBSPAWNING).set(false, srv);
+        srv.getGameRules().set(GameRules.SPAWN_MOBS, false, srv);
     }
 
     private static boolean isSuperflatWorld(ServerLevel level) {

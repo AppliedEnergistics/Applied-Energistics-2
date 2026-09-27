@@ -10,7 +10,7 @@ navigation:
 ## What Does "Network" Mean?
 
 A "Network" is a group of [devices](../ae2-mechanics/devices.md) linked by blocks that can pass [channels](../ae2-mechanics/channels.md),
-like [cables](../items-blocks-machines/cables.md) or fullblock machines and [devices](../ae2-mechanics/devices.md). 
+like [cables](../items-blocks-machines/cables.md) or full-block machines and [devices](../ae2-mechanics/devices.md). 
 (<ItemLink id="charger" />, <ItemLink id="interface" />, <ItemLink id="drive" />, etc.)
 Technically a single cable is a network, actually.
 
@@ -102,18 +102,18 @@ all of which serve a specific purpose in the setup.
   <ImportStructure src="../assets/assemblies/ore_fortuner.snbt" />
 
   <BoxAnnotation color="#915dcd" min="0 0 2" max="3 1 3">
-        Network 1, acts like a pipe subnet, restricts what the import bus has access to so it "stores" the ore blocks through the
+        Network 1: Acts like a pipe subnet. Restricts what the import bus has access to so it "stores" the ore blocks through the
         formation planes.
   </BoxAnnotation>
 
   <BoxAnnotation color="#5CA7CD" min="0 0 0" max="3 1 1">
-        Network 2, Acts like another pipe subnet, restricts what the annihilation planes have access to so they store
-        the fortuned ore chunks in the barrel and not in your main network. Also means they don't use up any channels on the
+        Network 2: Acts like another pipe subnet. Restricts what the annihilation planes have access to, so they store
+        the mined ore chunks in the barrel and not in your main network. Also means they don't use up any channels on the
         main network.
   </BoxAnnotation>
 
   <BoxAnnotation color="#82CD5C" min="2 0 1" max="4 1 2">
-        Network 3, The main network with all your storage and crafting on it. Just here to supply power, really, and specifically
+        Network 3: The main network with all your storage and crafting on it. Just here to supply power, really, and specifically
         *not* connected to the 2 subnets.
   </BoxAnnotation>
 
@@ -124,21 +124,21 @@ all of which serve a specific purpose in the setup.
 
 One variant of [P2P Tunnel](../items-blocks-machines/p2p_tunnels.md) moves [Channels](channels.md) instead of items or fluids
 or redstone signal, and this confuses people for some reason. The network the tunnel is mounted to has nothing to do with the
-network the tunnel is carrying. they *can* be the same network, but they don't have to be, and usually aren't.
+network the tunnel is carrying. They *can* be the same network, but they don't have to be, and they usually aren't.
 
 <GameScene zoom="6" background="transparent">
   <ImportStructure src="../assets/assemblies/p2p_channels_network_connection.snbt" />
 
   <BoxAnnotation color="#915dcd" min="0 0 0" max="1.98 2 1">
-        Network 1, the network being carried (usually your main network)
+        Network 1: The network being carried (usually your main network)
   </BoxAnnotation>
 
   <BoxAnnotation color="#5CA7CD" min="2.02 0 0" max="3.98 1 1">
-        Network 2, The network running the ME P2P tunnels (usually *not* your main network)
+        Network 2: The network running the ME P2P tunnels (usually *not* your main network)
   </BoxAnnotation>
 
   <BoxAnnotation color="#915dcd" min="4.02 0 0" max="6 1 1">
-        Network 1, the network being carried (usually your main network)
+        Network 1: The network being carried (usually your main network)
   </BoxAnnotation>
 
   <IsometricCamera yaw="195" pitch="30" />
@@ -146,7 +146,7 @@ network the tunnel is carrying. they *can* be the same network, but they don't h
 
 ## Less Intuitive Connections
 
-In this case, this is just 1 network, because the <ItemLink id="pattern_provider" />, being a fullblock device, acts like
+In this case, this is just 1 network, because the <ItemLink id="pattern_provider" />, being a full-block device, acts like
 a cable, and the <ItemLink id="inscriber" /> does similar. Thus, the network connection passes through
 the provider and inscriber.
 
@@ -191,7 +191,7 @@ not pass channels through one side.
 </Row>
 
 Other parts that do not provide directional network connections are most [subpart](../ae2-mechanics/cable-subparts.md)
-[devices](../ae2-mechanics/devices.md) like <ItemLink id="import_bus" />ses, <ItemLink id="storage_bus" />ses, and
+[devices](../ae2-mechanics/devices.md) like <ItemLink id="import_bus" />es, <ItemLink id="storage_bus" />es, and
 <ItemLink id="cable_interface" />s.
 
 <GameScene zoom="6" background="transparent">

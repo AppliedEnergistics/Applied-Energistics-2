@@ -2,7 +2,6 @@ package appeng.integration.modules.igtooltip.blocks;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
@@ -23,8 +22,8 @@ public final class GridNodeStateDataProvider implements BodyProvider<BlockEntity
     @Override
     public void buildTooltip(BlockEntity object, TooltipContext context, TooltipBuilder tooltip) {
         var tag = context.serverData();
-        if (tag.contains(TAG_STATE, Tag.TAG_BYTE)) {
-            var state = GridNodeState.values()[tag.getByte(TAG_STATE)];
+        if (tag.contains(TAG_STATE)) {
+            var state = GridNodeState.values()[tag.getByteOr(TAG_STATE, (byte) 0)];
             tooltip.addLine(state.textComponent().withStyle(ChatFormatting.GRAY));
         }
     }

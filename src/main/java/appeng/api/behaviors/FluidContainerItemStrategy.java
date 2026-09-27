@@ -8,6 +8,11 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.ResourceHandlerUtil;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 
 import appeng.api.config.Actionable;
 import appeng.api.stacks.AEFluidKey;
@@ -15,62 +20,44 @@ import appeng.api.stacks.GenericStack;
 import appeng.util.GenericContainerHelper;
 import appeng.util.fluid.FluidSoundHelper;
 
-class FluidContainerItemStrategy
-        implements ContainerItemStrategy<AEFluidKey, FluidContainerItemStrategy.Context> {
+class FluidContainerItemStrategy implements ContainerItemStrategy<AEFluidKey, ResourceHandler<FluidResource>> {
     @Override
     public @Nullable GenericStack getContainedStack(ItemStack stack) {
         return GenericContainerHelper.getContainedFluidStack(stack);
     }
 
     @Override
-    public @Nullable Context findCarriedContext(Player player, AbstractContainerMenu menu) {
-        if (menu.getCarried().getCapability(Capabilities.FluidHandler.ITEM) != null) {
-            return new CarriedContext(player, menu);
-        }
-        return null;
+    public @Nullable ResourceHandler<FluidResource> findCarriedContext(Player player, AbstractContainerMenu menu) {
+        var itemAccess = ItemAccess.forPlayerCursor(player, menu);
+        return itemAccess.getCapability(Capabilities.Fluid.ITEM);
     }
 
     @Override
-    public @Nullable Context findPlayerSlotContext(Player player, int slot) {
-        if (player.getInventory().getItem(slot).getCapability(Capabilities.FluidHandler.ITEM) != null) {
-            return new PlayerInvContext(player, slot);
-        }
-
-        return null;
+    public @Nullable ResourceHandler<FluidResource> findPlayerSlotContext(Player player, int slot) {
+        var itemAccess = ItemAccess.forPlayerSlot(player, slot);
+        return itemAccess.getCapability(Capabilities.Fluid.ITEM);
     }
 
     @Override
-    public long extract(Context context, AEFluidKey what, long amount, Actionable mode) {
-        var stack = context.getStack();
-        var copy = stack.copyWithCount(1);
-        var fluidHandler = copy.getCapability(Capabilities.FluidHandler.ITEM);
-        if (fluidHandler == null) {
-            return 0;
+    public long extract(ResourceHandler<FluidResource> context, AEFluidKey what, long amount, Actionable mode) {
+        try (var tx = Transaction.open(null)) {
+            var extracted = context.extract(what.toResource(), Ints.saturatedCast(amount), tx);
+            if (mode == Actionable.MODULATE) {
+                tx.commit();
+            }
+            return extracted;
         }
-
-        int extracted = fluidHandler.drain(what.toStack(Ints.saturatedCast(amount)), mode.getFluidAction()).getAmount();
-        if (mode == Actionable.MODULATE) {
-            stack.shrink(1);
-            context.addOverflow(fluidHandler.getContainer());
-        }
-        return extracted;
     }
 
     @Override
-    public long insert(Context context, AEFluidKey what, long amount, Actionable mode) {
-        var stack = context.getStack();
-        var copy = stack.copyWithCount(1);
-        var fluidHandler = copy.getCapability(Capabilities.FluidHandler.ITEM);
-        if (fluidHandler == null) {
-            return 0;
+    public long insert(ResourceHandler<FluidResource> context, AEFluidKey what, long amount, Actionable mode) {
+        try (var tx = Transaction.open(null)) {
+            var inserted = context.insert(what.toResource(), Ints.saturatedCast(amount), tx);
+            if (mode == Actionable.MODULATE) {
+                tx.commit();
+            }
+            return inserted;
         }
-
-        int filled = fluidHandler.fill(what.toStack(Ints.saturatedCast(amount)), mode.getFluidAction());
-        if (mode == Actionable.MODULATE) {
-            stack.shrink(1);
-            context.addOverflow(fluidHandler.getContainer());
-        }
-        return filled;
     }
 
     @Override
@@ -84,51 +71,13 @@ class FluidContainerItemStrategy
     }
 
     @Override
-    public @Nullable GenericStack getExtractableContent(Context context) {
-        return getContainedStack(context.getStack());
-    }
-
-    interface Context {
-        ItemStack getStack();
-
-        void setStack(ItemStack stack);
-
-        void addOverflow(ItemStack stack);
-    }
-
-    private record CarriedContext(Player player, AbstractContainerMenu menu) implements Context {
-        @Override
-        public ItemStack getStack() {
-            return menu.getCarried();
-        }
-
-        @Override
-        public void setStack(ItemStack stack) {
-            menu.setCarried(stack);
-        }
-
-        public void addOverflow(ItemStack stack) {
-            if (menu.getCarried().isEmpty()) {
-                menu.setCarried(stack);
-            } else {
-                player.getInventory().placeItemBackInInventory(stack);
+    public @Nullable GenericStack getExtractableContent(ResourceHandler<FluidResource> context) {
+        try (var tx = Transaction.open(null)) {
+            var stack = ResourceHandlerUtil.extractFirst(context, r -> true, Integer.MAX_VALUE, tx);
+            if (stack != null) {
+                return new GenericStack(AEFluidKey.of(stack.resource()), stack.amount());
             }
         }
-    }
-
-    private record PlayerInvContext(Player player, int slot) implements Context {
-        @Override
-        public ItemStack getStack() {
-            return player.getInventory().getItem(slot);
-        }
-
-        @Override
-        public void setStack(ItemStack stack) {
-            player.getInventory().setItem(slot, stack);
-        }
-
-        public void addOverflow(ItemStack stack) {
-            player.getInventory().placeItemBackInInventory(stack);
-        }
+        return null;
     }
 }

@@ -9,8 +9,6 @@
     }
   ],
   "type": "ae2:matter_cannon",
-  "ammo": {
-    "tag": "c:nuggets/magnesium"
-  },
+  "ammo": "#c:nuggets/magnesium",
   "weight": 24.305
 }

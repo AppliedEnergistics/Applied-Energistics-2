@@ -36,12 +36,13 @@ body:
     attributes:
       label: Additional details
       description: |
-        In case you want to optionally provide further informations, which will not fit anywhere else.
+        In case you want to optionally provide further information, which will not fit anywhere else.
   - type: dropdown
     id: minecraft
     attributes:
       label: Which minecraft version are you using?
       options:
+        - "26.1"
         - "1.21"
         - "1.20"
         - "1.19"

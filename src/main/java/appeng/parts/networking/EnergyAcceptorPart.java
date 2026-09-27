@@ -18,7 +18,7 @@
 
 package appeng.parts.networking;
 
-import net.neoforged.neoforge.energy.IEnergyStorage;
+import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
@@ -26,20 +26,13 @@ import appeng.api.config.PowerMultiplier;
 import appeng.api.config.PowerUnit;
 import appeng.api.parts.IPartCollisionHelper;
 import appeng.api.parts.IPartItem;
-import appeng.api.parts.IPartModel;
 import appeng.api.util.AECableType;
 import appeng.blockentity.powersink.IExternalPowerSink;
-import appeng.core.AppEng;
 import appeng.helpers.ForgeEnergyAdapter;
-import appeng.items.parts.PartModels;
 import appeng.parts.AEBasePart;
-import appeng.parts.PartModel;
 
 public class EnergyAcceptorPart extends AEBasePart implements IExternalPowerSink {
-
-    @PartModels
-    private static final IPartModel MODELS = new PartModel(AppEng.makeId("part/energy_acceptor"));
-    private ForgeEnergyAdapter forgeEnergyAdapter;
+    private EnergyHandler forgeEnergyAdapter;
 
     public EnergyAcceptorPart(IPartItem<?> partItem) {
         super(partItem);
@@ -47,7 +40,7 @@ public class EnergyAcceptorPart extends AEBasePart implements IExternalPowerSink
         this.forgeEnergyAdapter = new ForgeEnergyAdapter(this);
     }
 
-    public IEnergyStorage getEnergyStorage() {
+    public EnergyHandler getEnergyStorage() {
         return forgeEnergyAdapter;
     }
 
@@ -60,11 +53,6 @@ public class EnergyAcceptorPart extends AEBasePart implements IExternalPowerSink
     @Override
     public float getCableConnectionLength(AECableType cable) {
         return 2;
-    }
-
-    @Override
-    public IPartModel getStaticModels() {
-        return MODELS;
     }
 
     @Override

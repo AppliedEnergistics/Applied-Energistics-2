@@ -45,7 +45,7 @@ public final class P2PTunnelAttunementInternal {
     public static AttunementInfo getAttunementInfo(ItemLike tunnelType) {
         var tunnelItem = tunnelType.asItem();
 
-        Set<ItemCapability<?, Void>> caps = new HashSet<>();
+        Set<ItemCapability<?, ?>> caps = new HashSet<>();
 
         for (var entry : P2PTunnelAttunement.apiAttunements) {
             if (entry.tunnelType() == tunnelItem) {
@@ -65,7 +65,7 @@ public final class P2PTunnelAttunementInternal {
         return P2PTunnelAttunement.tagTunnels;
     }
 
-    public record AttunementInfo(Set<ItemCapability<?, Void>> apis) {
+    public record AttunementInfo(Set<ItemCapability<?, ?>> apis) {
     }
 
     public record Resultant(Component description, Item tunnelType, Predicate<ItemStack> stackPredicate) {

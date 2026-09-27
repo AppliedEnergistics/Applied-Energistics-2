@@ -8,6 +8,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
@@ -18,9 +19,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.FluidState;
 
-import appeng.client.EffectType;
 import appeng.core.AEConfig;
-import appeng.core.AppEng;
+import appeng.core.particles.ParticleTypes;
 import appeng.recipes.transform.TransformCircumstance;
 import appeng.recipes.transform.TransformLogic;
 
@@ -39,9 +39,9 @@ public abstract class ItemEntityMixin extends Entity {
     private int ae2_transformTime = 0;
     private int ae2_delay = 0;
 
-    @Inject(at = @At("HEAD"), method = "hurt", cancellable = true)
-    void handleExplosion(DamageSource src, float dmg, CallbackInfoReturnable<Boolean> ci) {
-        if (!level().isClientSide && src.is(DamageTypeTags.IS_EXPLOSION) && !isRemoved()) {
+    @Inject(at = @At("HEAD"), method = "hurtServer", cancellable = true)
+    void handleExplosion(ServerLevel level, DamageSource src, float dmg, CallbackInfoReturnable<Boolean> ci) {
+        if (src.is(DamageTypeTags.IS_EXPLOSION) && !isRemoved()) {
             var self = (ItemEntity) (Object) this;
             // Just a hashmap lookup - short-circuit to not cause perf issues by iterating entities / recipes
             // unnecessarily.
@@ -68,14 +68,15 @@ public abstract class ItemEntityMixin extends Entity {
         final int i = Mth.floor((this.getBoundingBox().minY + this.getBoundingBox().maxY) / 2.0D);
         final int k = Mth.floor(this.getZ());
 
-        FluidState state = this.level().getFluidState(new BlockPos(j, i, k));
+        FluidState state = level().getFluidState(new BlockPos(j, i, k));
         boolean isValidFluid = !state.isEmpty() && TransformLogic.canTransformInFluid(self, state);
 
         if (level().isClientSide()) {
             if (isValidFluid && this.ae2_delay++ > 30 && AEConfig.instance().isEnableEffects()) {
                 // Client side we only render some cool animations.
-                AppEng.instance().spawnEffect(EffectType.Lightning, this.level(), this.getX(), this.getY(), this.getZ(),
-                        null);
+                level().addParticle(ParticleTypes.LIGHTNING, false, true, getX(), getY() + 0.3f, getZ(), 0.0f,
+                        0.0f,
+                        0.0f);
                 this.ae2_delay = 0;
             }
         } else {

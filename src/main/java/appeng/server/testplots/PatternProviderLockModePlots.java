@@ -1,12 +1,15 @@
 package appeng.server.testplots;
 
 import java.util.List;
+import java.util.function.Supplier;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.LockCraftingMode;
@@ -33,8 +36,8 @@ import appeng.server.testworld.SavedBlockEntity;
 public final class PatternProviderLockModePlots {
     private static final BlockPos LEVER_POS = BlockPos.ZERO.east();
     private static final BlockPos BUTTON_POS = BlockPos.ZERO.west();
-    private static final GenericStack ONE_PLANK = new GenericStack(AEItemKey.of(Blocks.OAK_PLANKS), 1);
-    private static final GenericStack TWO_PLANK = new GenericStack(AEItemKey.of(Blocks.OAK_PLANKS), 2);
+    private static final Supplier<GenericStack> ONE_PLANK = () -> new GenericStack(AEItemKey.of(Blocks.OAK_PLANKS), 1);
+    private static final Supplier<GenericStack> TWO_PLANK = () -> new GenericStack(AEItemKey.of(Blocks.OAK_PLANKS), 2);
 
     private PatternProviderLockModePlots() {
     }
@@ -292,8 +295,7 @@ public final class PatternProviderLockModePlots {
                         helper.assertEquals(BlockPos.ZERO, LockCraftingMode.LOCK_UNTIL_RESULT,
                                 pp.getCraftingLockedReason());
                         // And the result it is waiting for should be the primary output of the pattern
-                        var expectedResult = TWO_PLANK;
-                        helper.assertEquals(BlockPos.ZERO, expectedResult, pp.getUnlockStack());
+                        helper.assertEquals(BlockPos.ZERO, TWO_PLANK.get(), pp.getUnlockStack());
                     })
                     .thenExecuteAfter(1, () -> {
                         // Return one plank to the pattern provider (simulate)
@@ -301,7 +303,7 @@ public final class PatternProviderLockModePlots {
                         // Simulation should not have changed the state
                         helper.assertEquals(BlockPos.ZERO, LockCraftingMode.LOCK_UNTIL_RESULT,
                                 pp.getCraftingLockedReason());
-                        helper.assertEquals(BlockPos.ZERO, TWO_PLANK, pp.getUnlockStack());
+                        helper.assertEquals(BlockPos.ZERO, TWO_PLANK.get(), pp.getUnlockStack());
 
                         // Now insert 1 for real
                         pp.getReturnInv().insert(AEItemKey.of(Items.OAK_PLANKS), 1, Actionable.MODULATE, null);
@@ -312,13 +314,13 @@ public final class PatternProviderLockModePlots {
                                 "Items should not be returned to the network immediately");
                         helper.assertEquals(BlockPos.ZERO, LockCraftingMode.LOCK_UNTIL_RESULT,
                                 pp.getCraftingLockedReason());
-                        helper.assertEquals(BlockPos.ZERO, TWO_PLANK, pp.getUnlockStack());
+                        helper.assertEquals(BlockPos.ZERO, TWO_PLANK.get(), pp.getUnlockStack());
                     })
                     .thenExecuteAfter(1, () -> {
                         // Now, one tick later, it should have reset
                         helper.assertEquals(BlockPos.ZERO, LockCraftingMode.LOCK_UNTIL_RESULT,
                                 pp.getCraftingLockedReason());
-                        helper.assertEquals(BlockPos.ZERO, ONE_PLANK, pp.getUnlockStack());
+                        helper.assertEquals(BlockPos.ZERO, ONE_PLANK.get(), pp.getUnlockStack());
                     })
                     .thenExecute(() -> {
                         // Now insert another one for real
@@ -335,7 +337,7 @@ public final class PatternProviderLockModePlots {
                         // Right back to being locked
                         helper.assertEquals(BlockPos.ZERO, LockCraftingMode.LOCK_UNTIL_RESULT,
                                 pp.getCraftingLockedReason());
-                        helper.assertEquals(BlockPos.ZERO, TWO_PLANK, pp.getUnlockStack());
+                        helper.assertEquals(BlockPos.ZERO, TWO_PLANK.get(), pp.getUnlockStack());
                     })
                     .thenExecuteAfter(1, () -> {
                         // Two pushes should have succeeded
@@ -430,7 +432,7 @@ public final class PatternProviderLockModePlots {
                         helper.check(pushPattern(host), "push pattern should succeed");
                         helper.assertEquals(BlockPos.ZERO, LockCraftingMode.LOCK_UNTIL_RESULT,
                                 pp.getCraftingLockedReason());
-                        helper.assertEquals(BlockPos.ZERO, TWO_PLANK, pp.getUnlockStack());
+                        helper.assertEquals(BlockPos.ZERO, TWO_PLANK.get(), pp.getUnlockStack());
 
                         // Save the block entity and remove it
                         savedBe.save(BlockPos.ZERO);
@@ -449,7 +451,7 @@ public final class PatternProviderLockModePlots {
                         // Now check that the lock-state is still the same
                         helper.assertEquals(BlockPos.ZERO, LockCraftingMode.LOCK_UNTIL_RESULT,
                                 newPp.getCraftingLockedReason());
-                        helper.assertEquals(BlockPos.ZERO, TWO_PLANK, pp.getUnlockStack());
+                        helper.assertEquals(BlockPos.ZERO, TWO_PLANK.get(), pp.getUnlockStack());
                         helper.check(!pushPattern(newHost), "push pattern should fail");
                     })
                     .thenSucceed();
@@ -457,7 +459,10 @@ public final class PatternProviderLockModePlots {
     }
 
     private static boolean pushPattern(PatternProviderLogicHost host) {
-        var details = createPatternDetails(host);
+        if (!(host.getBlockEntity().getLevel() instanceof ServerLevel level)) {
+            return false;
+        }
+        var details = createPatternDetails(level);
         var inputs = new KeyCounter[1];
         inputs[0] = new KeyCounter();
         inputs[0].add(AEItemKey.of(Blocks.OAK_LOG), 1);
@@ -466,7 +471,7 @@ public final class PatternProviderLockModePlots {
     }
 
     private static PatternProviderLogicHost getHost(PlotTestHelper plotTestHelper) {
-        var be = plotTestHelper.getBlockEntity(BlockPos.ZERO);
+        var be = plotTestHelper.getBlockEntity(BlockPos.ZERO, BlockEntity.class);
         if (be instanceof PatternProviderBlockEntity host) {
             return host;
         }
@@ -502,12 +507,10 @@ public final class PatternProviderLockModePlots {
     private static ItemStack createPattern() {
         return PatternDetailsHelper.encodeProcessingPattern(
                 List.of(new GenericStack(AEItemKey.of(Blocks.OAK_LOG), 1)),
-                List.of(TWO_PLANK));
+                List.of(TWO_PLANK.get()));
     }
 
-    private static IPatternDetails createPatternDetails(PatternProviderLogicHost host) {
-        return PatternDetailsHelper.decodePattern(
-                createPattern(),
-                host.getBlockEntity().getLevel());
+    private static IPatternDetails createPatternDetails(ServerLevel level) {
+        return PatternDetailsHelper.decodePattern(createPattern(), level);
     }
 }

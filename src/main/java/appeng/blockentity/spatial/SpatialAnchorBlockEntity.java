@@ -28,14 +28,14 @@ import com.google.common.collect.Multiset;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.common.world.chunk.ForcedChunkManager;
 
 import appeng.api.config.Setting;
@@ -56,13 +56,13 @@ import appeng.api.util.DimensionalBlockPos;
 import appeng.api.util.IConfigManager;
 import appeng.api.util.IConfigurableObject;
 import appeng.blockentity.grid.AENetworkedBlockEntity;
-import appeng.client.render.overlay.IOverlayDataSource;
-import appeng.client.render.overlay.OverlayManager;
+import appeng.core.areaoverlay.AreaOverlayManager;
+import appeng.core.areaoverlay.IAreaOverlayDataSource;
 import appeng.me.service.StatisticsService;
 import appeng.server.services.ChunkLoadingService;
 
 public class SpatialAnchorBlockEntity extends AENetworkedBlockEntity
-        implements IGridTickable, IConfigurableObject, IOverlayDataSource {
+        implements IGridTickable, IConfigurableObject, IAreaOverlayDataSource {
 
     static {
         GridHelper.addNodeOwnerEventHandler(GridChunkAdded.class, SpatialAnchorBlockEntity.class,
@@ -96,15 +96,15 @@ public class SpatialAnchorBlockEntity extends AENetworkedBlockEntity
     }
 
     @Override
-    public void saveAdditional(CompoundTag data, HolderLookup.Provider registries) {
-        super.saveAdditional(data, registries);
-        this.manager.writeToNBT(data, registries);
+    public void saveAdditional(ValueOutput data) {
+        super.saveAdditional(data);
+        this.manager.writeToNBT(data);
     }
 
     @Override
-    public void loadTag(CompoundTag data, HolderLookup.Provider registries) {
-        super.loadTag(data, registries);
-        this.manager.readFromNBT(data, registries);
+    public void loadTag(ValueInput data) {
+        super.loadTag(data);
+        this.manager.readFromNBT(data);
     }
 
     @Override
@@ -113,7 +113,7 @@ public class SpatialAnchorBlockEntity extends AENetworkedBlockEntity
         data.writeBoolean(this.isActive());
         data.writeBoolean(displayOverlay);
         if (this.displayOverlay) {
-            data.writeLongArray(chunks.stream().mapToLong(ChunkPos::toLong).toArray());
+            data.writeLongArray(chunks.stream().mapToLong(ChunkPos::pack).toArray());
         }
     }
 
@@ -131,13 +131,13 @@ public class SpatialAnchorBlockEntity extends AENetworkedBlockEntity
 
         // Cleanup old data and remove it from the overlay manager as safeguard
         this.chunks.clear();
-        OverlayManager.getInstance().removeHandlers(this);
+        AreaOverlayManager.getInstance().removeArea(this);
 
         if (this.displayOverlay) {
-            this.chunks.addAll(Arrays.stream(data.readLongArray(null)).mapToObj(ChunkPos::new)
+            this.chunks.addAll(Arrays.stream(data.readLongArray()).mapToObj(ChunkPos::unpack)
                     .collect(Collectors.toSet()));
             // Register it again to render the overlay
-            OverlayManager.getInstance().showArea(this);
+            AreaOverlayManager.getInstance().showArea(this);
         }
 
         return ret;
@@ -203,7 +203,7 @@ public class SpatialAnchorBlockEntity extends AENetworkedBlockEntity
     public void setRemoved() {
         super.setRemoved();
         if (isClientSide()) {
-            OverlayManager.getInstance().removeHandlers(this);
+            AreaOverlayManager.getInstance().removeArea(this);
         } else {
             this.releaseAll();
         }
@@ -270,7 +270,7 @@ public class SpatialAnchorBlockEntity extends AENetworkedBlockEntity
     }
 
     public boolean isActive() {
-        if (level != null && !level.isClientSide) {
+        if (level != null && !level.isClientSide()) {
             return this.getMainNode().isOnline();
         } else {
             return this.isActive;
@@ -378,9 +378,9 @@ public class SpatialAnchorBlockEntity extends AENetworkedBlockEntity
 
         // Temporarily load an area after a spatial transfer until the network is constructed and cleanup is performed.
         int d = SPATIAL_TRANSFER_TEMPORARY_CHUNK_RANGE;
-        ChunkPos center = new ChunkPos(this.getBlockPos());
-        for (int x = center.x - d; x <= center.x + d; x++) {
-            for (int z = center.z - d; z <= center.z + d; z++) {
+        ChunkPos center = ChunkPos.containing(this.getBlockPos());
+        for (int x = center.x() - d; x <= center.x() + d; x++) {
+            for (int z = center.z() - d; z <= center.z() + d; z++) {
                 this.force(new ChunkPos(x, z));
             }
         }

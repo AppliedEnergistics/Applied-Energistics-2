@@ -25,7 +25,7 @@ package appeng.api.networking.crafting;
 
 import java.util.UUID;
 
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.storage.ValueOutput;
 
 public interface ICraftingLink {
 
@@ -54,7 +54,7 @@ public interface ICraftingLink {
      *
      * @param tag to be written data
      */
-    void writeToNBT(CompoundTag tag);
+    void writeToNBT(ValueOutput tag);
 
     /**
      * @return the crafting ID for this link.

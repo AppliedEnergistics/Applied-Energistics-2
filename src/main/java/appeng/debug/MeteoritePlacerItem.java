@@ -25,7 +25,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
@@ -37,6 +36,7 @@ import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 
 import appeng.core.AEConfig;
+import appeng.core.AppEng;
 import appeng.items.AEBaseItem;
 import appeng.util.InteractionUtil;
 import appeng.util.Platform;
@@ -54,16 +54,16 @@ public class MeteoritePlacerItem extends AEBaseItem {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+    public InteractionResult use(Level level, Player player, InteractionHand hand) {
         if (level.isClientSide()) {
-            return InteractionResultHolder.pass(player.getItemInHand(hand));
+            return InteractionResult.PASS;
         }
 
         if (InteractionUtil.isInAlternateUseMode(player)) {
             final ItemStack itemStack = player.getItemInHand(hand);
             CustomData.update(DataComponents.CUSTOM_DATA, itemStack, tag -> {
                 if (tag.contains(MODE_TAG)) {
-                    final byte mode = tag.getByte("mode");
+                    final byte mode = tag.getByteOr("mode", (byte) 0);
                     tag.putByte(MODE_TAG, (byte) ((mode + 1) % CraterType.values().length));
                 } else {
                     tag.putByte(MODE_TAG, (byte) CraterType.NORMAL.ordinal());
@@ -72,9 +72,9 @@ public class MeteoritePlacerItem extends AEBaseItem {
 
             var craterType = getCraterType(itemStack);
 
-            player.sendSystemMessage(Component.literal(craterType.name()));
+            AppEng.instance().sendSystemMessage(player, Component.literal(craterType.name()));
 
-            return InteractionResultHolder.success(itemStack);
+            return InteractionResult.SUCCESS;
         }
 
         return super.use(level, player, hand);
@@ -83,7 +83,7 @@ public class MeteoritePlacerItem extends AEBaseItem {
     private CraterType getCraterType(ItemStack stack) {
         var customData = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY);
         var tag = customData.copyTag();
-        return CraterType.values()[tag.getByte(MODE_TAG)];
+        return CraterType.values()[tag.getByteOr(MODE_TAG, (byte) 0)];
     }
 
     @Override
@@ -110,7 +110,7 @@ public class MeteoritePlacerItem extends AEBaseItem {
                 pureCrater);
 
         if (spawned == null) {
-            player.sendSystemMessage(Component.literal("Un-suitable Location."));
+            AppEng.instance().sendSystemMessage(player, Component.literal("Un-suitable Location."));
             return InteractionResult.FAIL;
         }
 
@@ -121,19 +121,19 @@ public class MeteoritePlacerItem extends AEBaseItem {
         BoundingBox boundingBox = new BoundingBox(pos.getX() - range, pos.getY() - 10, pos.getZ() - range,
                 pos.getX() + range, pos.getY() + 10, pos.getZ() + range);
 
-        MeteoritePlacer.place(level, spawned, boundingBox, level.random);
+        MeteoritePlacer.place(level, spawned, boundingBox, level.getRandom());
 
         player.sendSystemMessage(Component.literal("Spawned at y=" + spawned.getPos().getY() + " range=" + range));
 
         // The placer will not send chunks to the player since it's used as part
         // of world-gen normally, so we'll have to do it ourselves. Since this
         // is a debug tool, we'll not care about being terribly efficient here
-        ChunkPos.rangeClosed(new ChunkPos(spawned.getPos()), 1).forEach(cp -> {
-            LevelChunk c = level.getChunk(cp.x, cp.z);
+        ChunkPos.rangeClosed(ChunkPos.containing(spawned.getPos()), 1).forEach(cp -> {
+            LevelChunk c = level.getChunk(cp.x(), cp.z());
             player.connection.send(Platform.getFullChunkPacket(c));
         });
 
-        return InteractionResult.sidedSuccess(level.isClientSide());
+        return InteractionResult.SUCCESS;
     }
 
     @Override

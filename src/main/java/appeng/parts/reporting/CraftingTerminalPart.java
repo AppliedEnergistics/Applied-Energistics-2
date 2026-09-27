@@ -20,20 +20,17 @@ package appeng.parts.reporting;
 
 import java.util.List;
 
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 import appeng.api.inventories.InternalInventory;
 import appeng.api.parts.IPartItem;
-import appeng.api.parts.IPartModel;
 import appeng.core.AppEng;
-import appeng.items.parts.PartModels;
 import appeng.menu.me.items.CraftingTermMenu;
-import appeng.parts.PartModel;
 import appeng.util.inv.AppEngInternalInventory;
 
 public class CraftingTerminalPart extends AbstractTerminalPart {
@@ -41,16 +38,7 @@ public class CraftingTerminalPart extends AbstractTerminalPart {
     /**
      * A sub-inventory that contains crafting ingredients used in the crafting grid.
      */
-    public static final ResourceLocation INV_CRAFTING = AppEng.makeId("crafting_terminal_crafting");
-
-    @PartModels
-    public static final ResourceLocation MODEL_OFF = AppEng.makeId("part/crafting_terminal_off");
-    @PartModels
-    public static final ResourceLocation MODEL_ON = AppEng.makeId("part/crafting_terminal_on");
-
-    public static final IPartModel MODELS_OFF = new PartModel(MODEL_BASE, MODEL_OFF, MODEL_STATUS_OFF);
-    public static final IPartModel MODELS_ON = new PartModel(MODEL_BASE, MODEL_ON, MODEL_STATUS_ON);
-    public static final IPartModel MODELS_HAS_CHANNEL = new PartModel(MODEL_BASE, MODEL_ON, MODEL_STATUS_HAS_CHANNEL);
+    public static final Identifier INV_CRAFTING = AppEng.makeId("crafting_terminal_crafting");
 
     private final AppEngInternalInventory craftingGrid = new AppEngInternalInventory(this, 9);
 
@@ -75,15 +63,15 @@ public class CraftingTerminalPart extends AbstractTerminalPart {
     }
 
     @Override
-    public void readFromNBT(CompoundTag data, HolderLookup.Provider registries) {
-        super.readFromNBT(data, registries);
-        this.craftingGrid.readFromNBT(data, "craftingGrid", registries);
+    public void readFromNBT(ValueInput input) {
+        super.readFromNBT(input);
+        this.craftingGrid.readFromNBT(input, "craftingGrid");
     }
 
     @Override
-    public void writeToNBT(CompoundTag data, HolderLookup.Provider registries) {
-        super.writeToNBT(data, registries);
-        this.craftingGrid.writeToNBT(data, "craftingGrid", registries);
+    public void writeToNBT(ValueOutput output) {
+        super.writeToNBT(output);
+        this.craftingGrid.writeToNBT(output, "craftingGrid");
     }
 
     @Override
@@ -92,17 +80,12 @@ public class CraftingTerminalPart extends AbstractTerminalPart {
     }
 
     @Override
-    public InternalInventory getSubInventory(ResourceLocation id) {
+    public InternalInventory getSubInventory(Identifier id) {
         if (id.equals(INV_CRAFTING)) {
             return craftingGrid;
         } else {
             return super.getSubInventory(id);
         }
-    }
-
-    @Override
-    public IPartModel getStaticModels() {
-        return this.selectModel(MODELS_OFF, MODELS_ON, MODELS_HAS_CHANNEL);
     }
 
 }

@@ -43,8 +43,8 @@ public class CrystalResonanceGeneratorTestPlots {
                 .thenWaitUntil(helper::checkAllInitialized)
                 .thenExecute(() -> {
                     // one of the two CRGs should be marked as suppressed
-                    var crg1 = (CrystalResonanceGeneratorBlockEntity) helper.getBlockEntity(origin.above());
-                    var crg2 = (CrystalResonanceGeneratorBlockEntity) helper.getBlockEntity(origin.east().east());
+                    var crg1 = helper.getBlockEntity(origin.above(), CrystalResonanceGeneratorBlockEntity.class);
+                    var crg2 = helper.getBlockEntity(origin.east().east(), CrystalResonanceGeneratorBlockEntity.class);
 
                     if (crg1.isSuppressed() && crg2.isSuppressed()) {
                         helper.check(false, "not both should be suppressed", helper.relativePos(crg1.getBlockPos()));
@@ -82,7 +82,7 @@ public class CrystalResonanceGeneratorTestPlots {
                 helper.startSequence()
                         .thenWaitUntil(helper::checkAllInitialized)
                         .thenExecute(() -> {
-                            cell = (EnergyCellBlockEntity) helper.getBlockEntity(origin);
+                            cell = helper.getBlockEntity(origin, EnergyCellBlockEntity.class);
                             lastPower = cell.getAECurrentPower();
                         })
                         .thenExecuteAfter(1, () -> {

@@ -22,11 +22,11 @@ import java.util.List;
 
 import org.jetbrains.annotations.MustBeInvokedByOverriders;
 
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 
 import appeng.api.config.Settings;
@@ -115,24 +115,24 @@ public abstract class AbstractTerminalPart extends AbstractDisplayPart
     }
 
     @Override
-    public void readFromNBT(CompoundTag data, HolderLookup.Provider registries) {
-        super.readFromNBT(data, registries);
-        this.cm.readFromNBT(data, registries);
-        this.keyTypeSelection.readFromNBT(data, registries);
-        this.viewCell.readFromNBT(data, "viewCell", registries);
+    public void readFromNBT(ValueInput input) {
+        super.readFromNBT(input);
+        this.cm.readFromNBT(input);
+        this.keyTypeSelection.readFromNBT(input);
+        this.viewCell.readFromNBT(input, "viewCell");
     }
 
     @Override
-    public void writeToNBT(CompoundTag data, HolderLookup.Provider registries) {
-        super.writeToNBT(data, registries);
-        this.cm.writeToNBT(data, registries);
-        this.keyTypeSelection.writeToNBT(data);
-        this.viewCell.writeToNBT(data, "viewCell", registries);
+    public void writeToNBT(ValueOutput output) {
+        super.writeToNBT(output);
+        this.cm.writeToNBT(output);
+        this.keyTypeSelection.writeToNBT(output);
+        this.viewCell.writeToNBT(output, "viewCell");
     }
 
     @Override
     public boolean onUseWithoutItem(Player player, Vec3 pos) {
-        if (!super.onUseWithoutItem(player, pos) && !player.level().isClientSide) {
+        if (!super.onUseWithoutItem(player, pos) && !player.level().isClientSide()) {
             MenuOpener.open(getMenuType(player), player, MenuLocators.forPart(this));
         }
         return true;

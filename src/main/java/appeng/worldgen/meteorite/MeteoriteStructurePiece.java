@@ -49,7 +49,7 @@ public class MeteoriteStructurePiece extends StructurePiece {
         // meteors spawned at about y64 are 9x9 chunks large at most.
         int range = 4 * 16;
 
-        ChunkPos chunkPos = new ChunkPos(origin);
+        ChunkPos chunkPos = ChunkPos.containing(origin);
 
         return new BoundingBox(chunkPos.getMinBlockX() - range, origin.getY(),
                 chunkPos.getMinBlockZ() - range, chunkPos.getMaxBlockX() + range, origin.getY(),
@@ -59,12 +59,12 @@ public class MeteoriteStructurePiece extends StructurePiece {
     public MeteoriteStructurePiece(CompoundTag tag) {
         super(TYPE, tag);
 
-        BlockPos center = BlockPos.of(tag.getLong(Constants.TAG_POS));
-        float coreRadius = tag.getFloat(Constants.TAG_RADIUS);
-        CraterType craterType = CraterType.values()[tag.getByte(Constants.TAG_CRATER)];
-        FalloutMode fallout = FalloutMode.values()[tag.getByte(Constants.TAG_FALLOUT)];
-        boolean pureCrater = tag.getBoolean(Constants.TAG_PURE);
-        boolean craterLake = tag.getBoolean(Constants.TAG_LAKE);
+        BlockPos center = BlockPos.of(tag.getLongOr(Constants.TAG_POS, 0));
+        float coreRadius = tag.getFloatOr(Constants.TAG_RADIUS, 0.f);
+        CraterType craterType = CraterType.values()[tag.getByteOr(Constants.TAG_CRATER, (byte) 0)];
+        FalloutMode fallout = FalloutMode.values()[tag.getByteOr(Constants.TAG_FALLOUT, (byte) 0)];
+        boolean pureCrater = tag.getBooleanOr(Constants.TAG_PURE, false);
+        boolean craterLake = tag.getBooleanOr(Constants.TAG_LAKE, false);
 
         this.settings = new PlacedMeteoriteSettings(center, coreRadius, craterType, fallout, pureCrater, craterLake);
     }
@@ -92,6 +92,6 @@ public class MeteoriteStructurePiece extends StructurePiece {
             RandomSource rand, BoundingBox bounds, ChunkPos chunkPos, BlockPos blockPos) {
         MeteoritePlacer.place(level, settings, bounds, rand);
 
-        ServerCompassService.updateArea(level.getLevel(), level.getChunk(chunkPos.x, chunkPos.z));
+        ServerCompassService.updateArea(level.getLevel(), level.getChunk(chunkPos.x(), chunkPos.z()));
     }
 }

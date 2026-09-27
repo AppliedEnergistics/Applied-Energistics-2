@@ -22,7 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.inventory.MenuType;
 
 import appeng.menu.implementations.CellWorkbenchMenu;
@@ -42,7 +42,7 @@ import appeng.menu.implementations.PriorityMenu;
 import appeng.menu.implementations.QNBMenu;
 import appeng.menu.implementations.QuartzKnifeMenu;
 import appeng.menu.implementations.SetStockAmountMenu;
-import appeng.menu.implementations.SkyChestMenu;
+import appeng.menu.implementations.SkyStonechestMenu;
 import appeng.menu.implementations.SpatialAnchorMenu;
 import appeng.menu.implementations.SpatialIOPortMenu;
 import appeng.menu.implementations.StorageBusMenu;
@@ -62,7 +62,7 @@ import appeng.menu.me.networktool.NetworkStatusMenu;
 import appeng.menu.me.networktool.NetworkToolMenu;
 
 public final class InitMenuTypes {
-    private static final Map<ResourceLocation, MenuType<?>> REGISTRATION_QUEUE = new HashMap<>();
+    private static final Map<Identifier, MenuType<?>> REGISTRATION_QUEUE = new HashMap<>();
 
     private InitMenuTypes() {
     }
@@ -101,7 +101,7 @@ public final class InitMenuTypes {
                 QNBMenu.TYPE,
                 QuartzKnifeMenu.TYPE,
                 SetStockAmountMenu.TYPE,
-                SkyChestMenu.TYPE,
+                SkyStonechestMenu.TYPE,
                 SpatialAnchorMenu.TYPE,
                 SpatialIOPortMenu.TYPE,
                 StorageBusMenu.TYPE,
@@ -126,7 +126,7 @@ public final class InitMenuTypes {
         }
     }
 
-    public static void queueRegistration(ResourceLocation id, MenuType<?> menuType) {
+    public static void queueRegistration(Identifier id, MenuType<?> menuType) {
         if (REGISTRATION_QUEUE.put(id, menuType) != null) {
             throw new IllegalStateException("Duplicate menu id: " + id);
         }

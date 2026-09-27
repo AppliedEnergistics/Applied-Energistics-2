@@ -20,7 +20,7 @@ package appeng.core.localization;
 
 public enum PlayerMessages implements LocalizationEnum {
     AmmoDepleted("Ammo Depleted."),
-    ChestCannotReadStorageCell("ME Chest cannot read storage cell."),
+    ChestCannotReadStorageCell("ME Chest cannot read the storage cell."),
     ChannelModeSet("Channel mode set to %s. Updated %d grids."),
     ChannelModeCurrent("Current channel mode: %s"),
     ClickToShowDetails("Click to show details"),
@@ -30,7 +30,7 @@ public enum PlayerMessages implements LocalizationEnum {
     DeviceNotLinked("Device is not linked."),
     LinkedNetworkNotFound("Linked network cannot be found"),
     DeviceNotPowered("Device is low on power."),
-    MissingBlankPatterns("Not enough blank pattern to restore patterns (missing %d)."),
+    MissingBlankPatterns("Not enough Blank Pattern to restore patterns (missing %d)."),
     MissingUpgrades("Not enough %s to restore upgrades (missing %d)."),
     InvalidMachine("Could not load configuration from an incompatible device."),
     InvalidMachinePartiallyRestored("Partially loaded configuration: %s."),
@@ -67,7 +67,7 @@ public enum PlayerMessages implements LocalizationEnum {
     TestWorldNotInSuperflat("A test world can only be set up in a Superflat world!"),
     TestWorldSetupComplete("Test world setup completed in %s"),
     TestWorldSetupFailed("Setting up the test world failed: %s"),
-    CompassTestSection("Section [y=%d-%d] %d: %b"),
+    CompassTestSection("Section [y=%s-%s] %s: %s"),
     isNowLocked("Monitor is now Locked."),
     isNowUnlocked("Monitor is now Unlocked."),
     OnlyEmptyCellsCanBeDisassembled("Only empty storage cells can be disassembled."),

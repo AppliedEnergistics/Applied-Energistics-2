@@ -30,8 +30,8 @@ import appeng.block.AEBaseEntityBlock;
 import appeng.core.AEConfig;
 
 public class PhantomNodeBlock extends AEBaseEntityBlock<PhantomNodeBlockEntity> {
-    public PhantomNodeBlock() {
-        super(metalProps());
+    public PhantomNodeBlock(Properties p) {
+        super(metalProps(p));
     }
 
     @Override

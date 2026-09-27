@@ -1,0 +1,12 @@
+{
+  "gives": {
+    "id": "minecraft:emerald"
+  },
+  "max_uses": 8.0,
+  "reputation_discount": 0.05,
+  "wants": {
+    "count": 5.0,
+    "id": "ae2:matter_ball"
+  },
+  "xp": 12.0
+}

@@ -32,11 +32,12 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 import appeng.api.features.IPlayerRegistry;
 import appeng.api.networking.GridFlags;
@@ -57,7 +58,7 @@ public class ManagedGridNode implements IManagedGridNode {
         private final T logicalHost;
         private final IGridNodeListener<T> listener;
         public ClassToInstanceMap<IGridNodeService> services;
-        private CompoundTag data = null;
+        private ValueInput data = null;
 
         // The following values are used until the node is constructed, and then are applied to the node
         private AEColor gridColor = AEColor.TRANSPARENT;
@@ -177,7 +178,7 @@ public class ManagedGridNode implements IManagedGridNode {
     }
 
     @Override
-    public void loadFromNBT(CompoundTag tag) {
+    public void deserialize(ValueInput tag) {
         if (node == null) {
             getInitData().data = tag;
         } else {
@@ -186,9 +187,9 @@ public class ManagedGridNode implements IManagedGridNode {
     }
 
     @Override
-    public void saveToNBT(CompoundTag tag) {
+    public void serialize(ValueOutput output) {
         if (this.node != null) {
-            this.node.saveToNBT(this.tagName, tag);
+            this.node.saveToNBT(this.tagName, output);
         }
     }
 

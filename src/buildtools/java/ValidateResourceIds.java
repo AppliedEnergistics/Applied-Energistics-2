@@ -1,5 +1,5 @@
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.io.IOException;
 import java.nio.file.*;
@@ -20,7 +20,7 @@ public class ValidateResourceIds {
                 public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
                     var f = path.relativize(file).toString().replace('\\', '/');
 
-                    if (!ResourceLocation.isValidPath(f)) {
+                    if (!Identifier.isValidPath(f)) {
                         invalidPaths.add(f);
                     }
                     return FileVisitResult.CONTINUE;

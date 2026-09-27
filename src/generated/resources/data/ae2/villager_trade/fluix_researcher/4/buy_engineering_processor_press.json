@@ -1,0 +1,12 @@
+{
+  "gives": {
+    "id": "ae2:engineering_processor_press"
+  },
+  "max_uses": 1.0,
+  "reputation_discount": 0.05,
+  "wants": {
+    "count": 10.0,
+    "id": "minecraft:emerald"
+  },
+  "xp": 20.0
+}

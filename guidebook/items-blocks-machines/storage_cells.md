@@ -55,11 +55,11 @@ item_ids:
 </Column>
 
 Storage Cells are one of the primary methods of storage in Applied Energistics. They go in <ItemLink id="drive" />s
-or <ItemLink id="chest" />s.
+or <ItemLink id="me_chest" />s.
 
 See [Bytes and Types](../ae2-mechanics/bytes-and-types.md) for an explanation of their capacities in bytes and types.
 
-Storage components can be removed from the housing if the cell is empty by shift-right clicking with the cell in your hand.
+Cells can be disassembled back into a storage component and housing: First empty the cell, then shift-right-click with the cell in your hand.
 
 <Row>
     <Recipe id="upgrade/item_storage_cell_1k_to_4k" />
@@ -82,7 +82,7 @@ The [upfront cost of types](../ae2-mechanics/bytes-and-types.md) is such that a 
 
 ## Partitioning
 
-Cells can be filtered to only accept certain items, similar to how <ItemLink id="storage_bus" />ses can be filtered. This is
+Cells can be filtered to only accept certain items, similar to how <ItemLink id="storage_bus" />es can be filtered. This is
 done in a <ItemLink id="cell_workbench" />.
 
 Items can be dragged into the slots from JEI/REI even if you don't actually have any of that item.
@@ -163,7 +163,7 @@ Item storage cells can hold up to 63 distinct types of items, and are available 
 
 ## Portable Item Storage
 
-These act as a tiny <ItemLink id="chest" /> in your pocket, or like a form of backpack. They can be charged in a <ItemLink id="charger" />
+These act as a tiny <ItemLink id="me_chest" /> in your pocket, or like a form of backpack. They can be charged in a <ItemLink id="charger" />
 
 Unlike standard storage cells, these actually *reduce* in type capacity as their byte capacity increases, and have half the
 total byte capacity.
@@ -208,7 +208,7 @@ Fluid storage cells can hold up to 5 distinct types of fluids, and are available
 
 ## Portable Fluid Storage
 
-These act as a tiny <ItemLink id="chest" /> in your pocket, or like a form of backpack. They can be charged in a <ItemLink id="charger" />
+These act as a tiny <ItemLink id="me_chest" /> in your pocket, or like a form of backpack. They can be charged in a <ItemLink id="charger" />
 
 Unlike standard storage cells, these actually *reduce* in type capacity as their byte capacity increases, and have half the
 total byte capacity.

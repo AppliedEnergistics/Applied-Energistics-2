@@ -1,7 +1,6 @@
 package appeng.integration.modules.igtooltip.blocks;
 
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
@@ -27,9 +26,9 @@ public final class PowerStorageDataProvider implements BodyProvider<BlockEntity>
     @Override
     public void buildTooltip(BlockEntity object, TooltipContext context, TooltipBuilder tooltip) {
         var tag = context.serverData();
-        if (tag.contains(TAG_MAX_POWER, Tag.TAG_DOUBLE)) {
-            var currentPower = tag.getDouble(TAG_CURRENT_POWER);
-            var maxPower = tag.getDouble(TAG_MAX_POWER);
+        if (tag.contains(TAG_MAX_POWER)) {
+            var currentPower = tag.getDoubleOr(TAG_CURRENT_POWER, 0.0);
+            var maxPower = tag.getDoubleOr(TAG_MAX_POWER, 0.0);
 
             var formatCurrentPower = Platform.formatPower(currentPower, false);
             var formatMaxPower = Platform.formatPower(maxPower, false);

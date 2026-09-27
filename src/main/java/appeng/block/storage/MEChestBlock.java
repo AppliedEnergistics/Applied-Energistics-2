@@ -39,8 +39,8 @@ public class MEChestBlock extends AEBaseEntityBlock<MEChestBlockEntity> {
 
     public final static BooleanProperty LIGHTS_ON = BooleanProperty.create("lights_on");
 
-    public MEChestBlock() {
-        super(metalProps());
+    public MEChestBlock(Properties p) {
+        super(metalProps(p));
         this.registerDefaultState(this.defaultBlockState().setValue(LIGHTS_ON, false));
     }
 
@@ -73,14 +73,14 @@ public class MEChestBlock extends AEBaseEntityBlock<MEChestBlockEntity> {
             if (!level.isClientSide()) {
                 if (hitResult.getDirection() == be.getTop()) {
                     if (!be.openGui(player)) {
-                        player.displayClientMessage(PlayerMessages.ChestCannotReadStorageCell.text(), true);
+                        player.sendOverlayMessage(PlayerMessages.ChestCannotReadStorageCell.text());
                     }
                 } else {
                     be.openCellInventoryMenu(player);
                 }
             }
 
-            return InteractionResult.sidedSuccess(level.isClientSide());
+            return InteractionResult.SUCCESS;
         }
 
         return super.useWithoutItem(state, level, pos, player, hitResult);

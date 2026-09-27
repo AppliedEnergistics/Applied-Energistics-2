@@ -28,7 +28,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ServerboundContainerClosePacket;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.Nameable;
@@ -51,7 +51,7 @@ import appeng.menu.locator.MenuLocators;
 public final class MenuTypeBuilder<M extends AEBaseMenu, I> {
 
     @Nullable
-    private ResourceLocation id;
+    private Identifier id;
 
     private final Class<I> hostInterface;
 
@@ -132,13 +132,7 @@ public final class MenuTypeBuilder<M extends AEBaseMenu, I> {
         return menu;
     }
 
-    private boolean open(Player player, MenuHostLocator locator, boolean fromSubMenu) {
-        if (!(player instanceof ServerPlayer)) {
-            // Cannot open menus on the client or for non-players
-            // FIXME logging?
-            return false;
-        }
-
+    private boolean open(ServerPlayer player, MenuHostLocator locator, boolean fromSubMenu) {
         var accessInterface = locator.locate(player, hostInterface);
 
         if (accessInterface == null) {
@@ -173,6 +167,7 @@ public final class MenuTypeBuilder<M extends AEBaseMenu, I> {
         player.openMenu(new AppEngMenuProvider(), buffer -> {
             MenuLocators.writeToPacket(buffer, locator);
             buffer.writeBoolean(fromSubMenu);
+
             if (initialDataSerializer != null) {
                 initialDataSerializer.serializeInitialData(accessInterface, buffer);
             }
@@ -188,7 +183,7 @@ public final class MenuTypeBuilder<M extends AEBaseMenu, I> {
     /**
      * Creates a menu type that uses this helper as a factory and network deserializer.
      */
-    public MenuType<M> buildUnregistered(ResourceLocation id) {
+    public MenuType<M> buildUnregistered(Identifier id) {
         Preconditions.checkState(menuType == null, "build was already called");
         Preconditions.checkState(this.id == null, "id should not be set");
 
@@ -202,7 +197,7 @@ public final class MenuTypeBuilder<M extends AEBaseMenu, I> {
      * Creates a menu type that uses this helper as a factory and network deserializer, and queues it for registration
      * with Vanilla.
      */
-    public MenuType<M> build(ResourceLocation id) {
+    public MenuType<M> build(Identifier id) {
         var menuType = buildUnregistered(id);
         InitMenuTypes.queueRegistration(this.id, menuType);
         return menuType;

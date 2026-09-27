@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "formed=false": {
+      "model": "ae2:block/quantum_link"
+    },
+    "formed=true": {
+      "type": "ae2:qnb_formed"
+    }
+  }
+}

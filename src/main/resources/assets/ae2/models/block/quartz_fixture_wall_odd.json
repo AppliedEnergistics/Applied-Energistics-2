@@ -2,7 +2,8 @@
   "credit": "Made with Blockbench",
   "ambientocclusion": false,
   "textures": {
-    "particle": "ae2:block/quartz_fixture",
+    "particle": "#quartz",
+    "missing": "#quartz",
     "quartz": "ae2:block/quartz_fixture"
   },
   "render_type": "cutout",

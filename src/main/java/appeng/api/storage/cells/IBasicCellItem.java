@@ -23,8 +23,8 @@
 
 package appeng.api.storage.cells;
 
-import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 import com.google.common.base.Preconditions;
 
@@ -116,7 +116,7 @@ public interface IBasicCellItem extends ICellWorkbenchItem {
     /**
      * Convenient helper to append useful tooltip information.
      */
-    default void addCellInformationToTooltip(ItemStack is, List<Component> lines) {
+    default void addCellInformationToTooltip(ItemStack is, Consumer<Component> lines) {
         Preconditions.checkArgument(is.getItem() == this);
         BasicCellHandler.INSTANCE.addCellInformationToTooltip(is, lines);
     }

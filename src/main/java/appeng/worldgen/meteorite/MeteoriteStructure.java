@@ -26,28 +26,25 @@ import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.LegacyRandomSource;
 import net.minecraft.world.level.levelgen.WorldgenRandom;
 import net.minecraft.world.level.levelgen.structure.Structure;
-import net.minecraft.world.level.levelgen.structure.Structure.GenerationContext;
-import net.minecraft.world.level.levelgen.structure.Structure.GenerationStub;
-import net.minecraft.world.level.levelgen.structure.Structure.StructureSettings;
 import net.minecraft.world.level.levelgen.structure.StructureSet;
 import net.minecraft.world.level.levelgen.structure.StructureType;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePiecesBuilder;
 
 import appeng.core.AppEng;
-import appeng.datagen.providers.tags.ConventionTags;
+import appeng.core.ConventionTags;
 import appeng.worldgen.meteorite.fallout.FalloutMode;
 
 public class MeteoriteStructure extends Structure {
 
-    public static final ResourceLocation ID = AppEng.makeId("meteorite");
+    public static final Identifier ID = AppEng.makeId("meteorite");
     public static final ResourceKey<StructureSet> STRUCTURE_SET_KEY = ResourceKey
             .create(Registries.STRUCTURE_SET, ID);
 
@@ -73,7 +70,7 @@ public class MeteoriteStructure extends Structure {
     @Override
     public Optional<GenerationStub> findGenerationPoint(GenerationContext context) {
         var worldgenRandom = new WorldgenRandom(new LegacyRandomSource(0L));
-        worldgenRandom.setLargeFeatureSeed(context.seed(), context.chunkPos().x, context.chunkPos().z);
+        worldgenRandom.setLargeFeatureSeed(context.seed(), context.chunkPos().x(), context.chunkPos().z());
         if (!worldgenRandom.nextBoolean()) {
             return Optional.empty();
         }
@@ -124,11 +121,12 @@ public class MeteoriteStructure extends Structure {
 
         // If we seemingly don't have enough space to spawn (as can happen in flat chunks generators)
         // we snugly generate it on bedrock.
-        centerY = Math.max(heightAccessor.getMinBuildHeight() + yOffset, centerY);
+        centerY = Math.max(heightAccessor.getMinY() + yOffset, centerY);
 
         BlockPos actualPos = new BlockPos(centerX, centerY, centerZ);
         boolean craterLake = locateWaterAroundTheCrater(actualPos, meteoriteRadius, context);
-        CraterType craterType = determineCraterType(actualPos, spawnBiome, random);
+        CraterType craterType = determineCraterType(actualPos, spawnBiome, random,
+                context.chunkGenerator().getSeaLevel());
         boolean pureCrater = random.nextFloat() > .9f;
 
         var fallout = FalloutMode.fromBiome(spawnBiome);
@@ -175,7 +173,8 @@ public class MeteoriteStructure extends Structure {
         return false;
     }
 
-    private static CraterType determineCraterType(BlockPos pos, Holder<Biome> biomeHolder, WorldgenRandom random) {
+    private static CraterType determineCraterType(BlockPos pos, Holder<Biome> biomeHolder, WorldgenRandom random,
+            int seaLevel) {
         // The temperature thresholds below are taken from older Vanilla code
         // (temperature categories)
         var biome = biomeHolder.value();
@@ -194,7 +193,7 @@ public class MeteoriteStructure extends Structure {
             return CraterType.NORMAL;
         }
 
-        boolean canSnow = biome.coldEnoughToSnow(pos);
+        boolean canSnow = biome.coldEnoughToSnow(pos, seaLevel);
 
         // Warm biomes, higher chance for lava
         if (temp >= 1) {

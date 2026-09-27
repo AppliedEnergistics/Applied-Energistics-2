@@ -2,7 +2,8 @@
   "credit": "Made with Blockbench",
   "parent": "ae2:item/part_base",
   "textures": {
-    "channels": "ae2:part/cable/dense_smart/0"
+    "channels": "ae2:part/cable/dense_smart/0",
+    "particle": "#base"
   },
   "elements": [
     {

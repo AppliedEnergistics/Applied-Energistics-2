@@ -1,8 +1,0 @@
-{
-  "__comment": "This block is rendered via TESR, so this is only used for the particle texture.",
-  "variants": {
-    "": {
-      "model": "ae2:block/smooth_sky_stone_block"
-    }
-  }
-}

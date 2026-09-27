@@ -27,9 +27,8 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 import appeng.api.config.Setting;
 import appeng.api.util.IConfigManager;
@@ -85,30 +84,28 @@ public final class ConfigManager implements IConfigManager {
     /**
      * save all settings using config manager.
      *
-     * @param tagCompound to be written to compound
-     * @param registries
+     * @param output to be written to compound
      */
     @Override
-    public void writeToNBT(CompoundTag tagCompound, HolderLookup.Provider registries) {
+    public void writeToNBT(ValueOutput output) {
         for (var entry : this.settings.entrySet()) {
-            tagCompound.putString(entry.getKey().getName(), this.settings.get(entry.getKey()).toString());
+            output.putString(entry.getKey().getName(), this.settings.get(entry.getKey()).toString());
         }
     }
 
     /**
      * read all settings using config manager.
      *
-     * @param tagCompound to be read from compound
-     * @param registries
+     * @param input to be read from compound
      */
     @Override
-    public boolean readFromNBT(CompoundTag tagCompound, HolderLookup.Provider registries) {
+    public boolean readFromNBT(ValueInput input) {
         boolean anythingRead = false;
         for (var setting : this.settings.keySet()) {
-            if (tagCompound.contains(setting.getName(), Tag.TAG_STRING)) {
-                String value = tagCompound.getString(setting.getName());
+            var value = input.getString(setting.getName());
+            if (value.isPresent()) {
                 try {
-                    setting.setFromString(this, value);
+                    setting.setFromString(this, value.get());
                     anythingRead = true;
                 } catch (IllegalArgumentException e) {
                     LOG.warn("Failed to load setting {} from value '{}': {}", setting, value, e.getMessage());

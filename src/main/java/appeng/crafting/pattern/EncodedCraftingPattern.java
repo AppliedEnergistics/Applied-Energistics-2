@@ -5,11 +5,13 @@ import java.util.List;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Recipe;
 
 import appeng.core.definitions.AEItems;
 import appeng.util.AECodecs;
@@ -17,15 +19,21 @@ import appeng.util.AECodecs;
 public record EncodedCraftingPattern(
         List<ItemStack> inputs,
         ItemStack result,
-        ResourceLocation recipeId,
+        ResourceKey<Recipe<?>> recipeId,
         boolean canSubstitute,
         boolean canSubstituteFluids) {
+
+    public EncodedCraftingPattern {
+        if (result.isEmpty()) {
+            throw new IllegalArgumentException("Cannot create an encoded crafting pattern with no output");
+        }
+    }
 
     public static final Codec<EncodedCraftingPattern> CODEC = RecordCodecBuilder.create(builder -> builder.group(
             AECodecs.FAULT_TOLERANT_OPTIONAL_ITEMSTACK_CODEC.listOf().fieldOf("inputs")
                     .forGetter(EncodedCraftingPattern::inputs),
             AECodecs.FAULT_TOLERANT_ITEMSTACK_CODEC.fieldOf("result").forGetter(EncodedCraftingPattern::result),
-            ResourceLocation.CODEC.fieldOf("recipeId").forGetter(EncodedCraftingPattern::recipeId),
+            ResourceKey.codec(Registries.RECIPE).fieldOf("recipeId").forGetter(EncodedCraftingPattern::recipeId),
             Codec.BOOL.fieldOf("canSubstitute").forGetter(EncodedCraftingPattern::canSubstitute),
             Codec.BOOL.fieldOf("canSubstituteFluids").forGetter(EncodedCraftingPattern::canSubstituteFluids))
             .apply(builder, EncodedCraftingPattern::new));
@@ -36,7 +44,7 @@ public record EncodedCraftingPattern(
                     EncodedCraftingPattern::inputs,
                     ItemStack.STREAM_CODEC,
                     EncodedCraftingPattern::result,
-                    ResourceLocation.STREAM_CODEC,
+                    ResourceKey.streamCodec(Registries.RECIPE),
                     EncodedCraftingPattern::recipeId,
                     ByteBufCodecs.BOOL,
                     EncodedCraftingPattern::canSubstitute,

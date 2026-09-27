@@ -6,6 +6,7 @@ import com.google.common.primitives.Ints;
 
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
@@ -19,6 +20,7 @@ import appeng.menu.AEBaseMenu;
 import appeng.menu.ISubMenu;
 import appeng.menu.MenuOpener;
 import appeng.menu.SlotSemantics;
+import appeng.menu.guisync.ClientActionKey;
 import appeng.menu.guisync.GuiSync;
 import appeng.menu.locator.MenuHostLocator;
 import appeng.menu.slot.InaccessibleSlot;
@@ -35,7 +37,7 @@ public class SetStockAmountMenu extends AEBaseMenu implements ISubMenu {
             .create(SetStockAmountMenu::new, InterfaceLogicHost.class)
             .build("set_stock_amount");
 
-    public static final String ACTION_SET_STOCK_AMOUNT = "setStockAmount";
+    public static final ClientActionKey<Integer> ACTION_SET_STOCK_AMOUNT = new ClientActionKey<>("setStockAmount");
 
     /**
      * This slot is used to synchronize a visual representation of what is to be stocked to the client.
@@ -59,7 +61,7 @@ public class SetStockAmountMenu extends AEBaseMenu implements ISubMenu {
 
     public SetStockAmountMenu(int id, Inventory ip, InterfaceLogicHost host) {
         super(TYPE, id, ip, host);
-        registerClientAction(ACTION_SET_STOCK_AMOUNT, Integer.class, this::confirm);
+        registerClientAction(ACTION_SET_STOCK_AMOUNT, ByteBufCodecs.INT, this::confirm);
         this.host = host;
         this.stockedItem = new InaccessibleSlot(new AppEngInternalInventory(1), 0);
         this.addSlot(this.stockedItem, SlotSemantics.MACHINE_OUTPUT);

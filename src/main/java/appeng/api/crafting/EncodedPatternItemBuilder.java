@@ -11,7 +11,6 @@ import appeng.crafting.pattern.EncodedPatternItem;
 public final class EncodedPatternItemBuilder<T extends IPatternDetails> {
     private final EncodedPatternDecoder<? extends T> decoder;
     private @Nullable InvalidPatternTooltipStrategy invalidPatternDescription;
-    private Item.Properties properties = new Item.Properties().stacksTo(1);
 
     EncodedPatternItemBuilder(EncodedPatternDecoder<? extends T> decoder) {
         this.decoder = Objects.requireNonNull(decoder, "decoder");
@@ -27,14 +26,6 @@ public final class EncodedPatternItemBuilder<T extends IPatternDetails> {
     }
 
     /**
-     * Overrides the item properties of the generated item. The default properties simply make them unstackable.
-     */
-    public EncodedPatternItemBuilder<T> itemProperties(Item.Properties properties) {
-        this.properties = properties;
-        return this;
-    }
-
-    /**
      * Builds the pattern item and returns it. Register this item within your mod, and ensure:
      *
      * <ul>
@@ -42,9 +33,9 @@ public final class EncodedPatternItemBuilder<T extends IPatternDetails> {
      * <li>>You need to provide an item name translation.</li>
      * </ul>
      */
-    public Item build() {
+    public Item build(Item.Properties p) {
         return new EncodedPatternItem<>(
-                properties,
+                p.stacksTo(1),
                 decoder,
                 invalidPatternDescription);
     }

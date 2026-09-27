@@ -36,6 +36,9 @@ import com.google.common.base.Stopwatch;
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Multimap;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.minecraft.CrashReport;
 import net.minecraft.ReportedException;
 import net.minecraft.network.chat.Component;
@@ -61,6 +64,7 @@ import appeng.util.ILevelRunnable;
 import appeng.util.Platform;
 
 public class TickHandler {
+    private static final Logger LOG = LoggerFactory.getLogger(TickHandler.class);
 
     /**
      * Time limit for process queues with respect to the 50ms of a minecraft tick.
@@ -196,7 +200,7 @@ public class TickHandler {
         var chunk = ev.getChunk();
 
         if (!level.isClientSide()) {
-            this.blockEntities.removeChunk(level, chunk.getPos().toLong());
+            this.blockEntities.removeChunk(level, chunk.getPos().pack());
         }
     }
 
@@ -318,7 +322,7 @@ public class TickHandler {
     }
 
     public void registerCraftingSimulation(Level level, CraftingCalculation craftingCalculation) {
-        Preconditions.checkArgument(!level.isClientSide, "Trying to register a crafting job for a client-level");
+        Preconditions.checkArgument(!level.isClientSide(), "Trying to register a crafting job for a client-level");
 
         synchronized (this.craftingJobs) {
             this.craftingJobs.put(level, craftingCalculation);
@@ -371,7 +375,7 @@ public class TickHandler {
                 var chunkQueue = levelQueue.remove(packedChunkPos);
                 if (chunkQueue == null) {
                     AELog.warn("Chunk %s was unloaded while we were readying block entities",
-                            new ChunkPos(packedChunkPos));
+                            ChunkPos.unpack(packedChunkPos));
                     continue; // This should never happen, chunk unloaded under our noses
                 }
 
@@ -385,7 +389,7 @@ public class TickHandler {
                             CrashReport crashReport = CrashReport.forThrowable(t, "Readying AE2 block entity");
 
                             var category = crashReport.addCategory("Block entity being readied");
-                            category.setDetail("World", () -> level.dimension().location().toString());
+                            category.setDetail("World", () -> level.dimension().identifier().toString());
                             info.blockEntity().fillCrashReportCategory(category);
 
                             throw new ReportedException(crashReport);
@@ -423,7 +427,7 @@ public class TickHandler {
                     break;
                 }
             } catch (Exception e) {
-                AELog.warn(e);
+                LOG.warn("Uncaught exception when running delay action", e);
             }
         }
 

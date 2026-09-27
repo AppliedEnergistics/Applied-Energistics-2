@@ -97,7 +97,7 @@ public class ItemMenuHost<T extends Item> implements IUpgradeableObject {
      * @return True if this host is on the client-side.
      */
     public boolean isClientSide() {
-        return player.level().isClientSide;
+        return player.level().isClientSide();
     }
 
     /**

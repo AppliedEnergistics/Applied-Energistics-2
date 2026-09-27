@@ -2,12 +2,20 @@ package appeng.me.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.function.Consumer;
+
 import org.assertj.core.data.Offset;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.ProblemReporter;
+import net.minecraft.world.level.storage.TagValueInput;
+import net.minecraft.world.level.storage.TagValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 import appeng.api.config.Actionable;
 import appeng.me.AbstractGridNodeTest;
@@ -50,8 +58,7 @@ class EnergyServiceTest extends AbstractGridNodeTest {
         energyService.injectPower(40, Actionable.MODULATE);
 
         // Save Node 2 and make it leave the grid
-        var savedNodeData = new CompoundTag();
-        mgn2.saveToNBT(savedNodeData);
+        var savedNodeData = toTag(mgn2::serialize);
         mgn2.destroy();
 
         // Half the storage should have left
@@ -76,10 +83,9 @@ class EnergyServiceTest extends AbstractGridNodeTest {
         energyService.injectPower(40, Actionable.MODULATE);
 
         // Save Node 2 and reload it immediately using the same data
-        var savedNodeData = new CompoundTag();
-        mgn2.saveToNBT(savedNodeData);
+        var savedNodeData = toTag(mgn2::serialize);
 
-        mgn2.loadFromNBT(savedNodeData);
+        fromTag(savedNodeData, mgn2::deserialize);
         // We do need to reconnect the node manually here, since
         // we're not using in-world connections
         GridConnection.create(mgn1.getNode(), mgn2.getNode(), null);
@@ -98,10 +104,21 @@ class EnergyServiceTest extends AbstractGridNodeTest {
     private ManagedGridNode createAndInitNode(@Nullable CompoundTag tag) {
         var mgn = new ManagedGridNode(owner, listener);
         if (tag != null) {
-            mgn.loadFromNBT(tag);
+            fromTag(tag, mgn::deserialize);
         }
         mgn.create(level, null);
         return mgn;
+    }
+
+    private CompoundTag toTag(Consumer<ValueOutput> serializer) {
+        var output = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, RegistryAccess.EMPTY);
+        serializer.accept(output);
+        return output.buildResult();
+    }
+
+    private void fromTag(CompoundTag tag, Consumer<ValueInput> deserializer) {
+        var input = TagValueInput.create(ProblemReporter.DISCARDING, RegistryAccess.EMPTY, tag);
+        deserializer.accept(input);
     }
 
 }

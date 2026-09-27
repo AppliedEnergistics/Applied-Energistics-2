@@ -32,17 +32,15 @@ import com.mojang.serialization.MapCodec;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.level.storage.ValueInput;
 
 import appeng.api.storage.AEKeyFilter;
 import appeng.core.AELog;
@@ -61,12 +59,12 @@ public abstract class AEKeyType {
     public static final StreamCodec<RegistryFriendlyByteBuf, AEKeyType> STREAM_CODEC = ByteBufCodecs
             .registry(AEKeyType.REGISTRY_KEY);
 
-    private final ResourceLocation id;
+    private final Identifier id;
     private final Class<? extends AEKey> keyClass;
     private final AEKeyFilter filter;
     private final Component description;
 
-    public AEKeyType(ResourceLocation id, Class<? extends AEKey> keyClass, Component description) {
+    public AEKeyType(Identifier id, Class<? extends AEKey> keyClass, Component description) {
         Preconditions.checkArgument(!keyClass.equals(AEKey.class), "Can't register a key type for AEKey itself");
         this.id = id;
         this.keyClass = keyClass;
@@ -107,7 +105,7 @@ public abstract class AEKeyType {
     /**
      * @return The unique ID of this storage channel.
      */
-    public final ResourceLocation getId() {
+    public final Identifier getId() {
         return id;
     }
 
@@ -152,12 +150,11 @@ public abstract class AEKeyType {
      * Attempts to load a key of this type from the given tag.
      */
     @Nullable
-    public AEKey loadKeyFromTag(HolderLookup.Provider registries, CompoundTag tag) {
-        var ops = registries.createSerializationContext(NbtOps.INSTANCE);
+    public AEKey loadKeyFromTag(ValueInput input) {
         try {
-            return codec().codec().decode(ops, tag).getOrThrow().getFirst();
+            return input.read(codec()).orElseThrow();
         } catch (Exception e) {
-            AELog.debug("Tried to load an invalid item key from NBT: %s", tag, e);
+            AELog.debug("Tried to load an invalid item key from NBT: %s", input, e);
             return null;
         }
     }
@@ -261,7 +258,7 @@ public abstract class AEKeyType {
      * Returns all tags that apply to keys of this type. Is an optional operation is keys of this type cannot have tags,
      * and {@link AEKey#isTagged(TagKey)} is not implemented for this key type.
      *
-     * @see Registry#getTagNames()
+     * @see Registry#listTagIds()
      */
     public Stream<TagKey<?>> getTagNames() {
         return Stream.empty();
