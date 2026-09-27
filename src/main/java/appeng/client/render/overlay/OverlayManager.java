@@ -49,7 +49,7 @@ public class OverlayManager {
 
     @SubscribeEvent
     public void renderWorldLastEvent(RenderLevelStageEvent event) {
-        if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_LEVEL) {
+        if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_SOLID_BLOCKS) {
             return;
         }
 
