@@ -13,17 +13,18 @@ import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.gui.render.pip.PictureInPictureRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Sheets;
-import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.client.renderer.block.FluidRenderer;
+import net.minecraft.client.renderer.block.MovingBlockRenderState;
 import net.minecraft.client.renderer.state.gui.pip.PictureInPictureRenderState;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.util.Mth;
+import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.client.model.pipeline.VertexConsumerWrapper;
 
 public class FluidBlockPictureInPictureRenderer
         extends PictureInPictureRenderer<FluidBlockPictureInPictureRenderer.State> {
-
     public FluidBlockPictureInPictureRenderer(MultiBufferSource.BufferSource bufferSource) {
         super(bufferSource);
     }
@@ -46,8 +47,14 @@ public class FluidBlockPictureInPictureRenderer
         setupOrthographicProjection(poseStack);
 
         var fluidRenderer = new FluidRenderer(fluidModelSet);
+        // We reuse the MovingBlockRenderState here to get a programmatic BlockAndTintGetter to fake out the biome
+        // If we didn't, it'd not actually color water appropriately.
+        var blockAndTintGetter = new MovingBlockRenderState();
+        blockAndTintGetter.blockState = fluidState.createLegacyBlock();
+        var level = Minecraft.getInstance().level;
+        blockAndTintGetter.biome = level.registryAccess().lookupOrThrow(Registries.BIOME).getOrThrow(Biomes.PLAINS);
         fluidRenderer.tesselate(
-                BlockAndTintGetter.EMPTY,
+                blockAndTintGetter,
                 BlockPos.ZERO,
                 layer -> {
                     // TODO 26.1: Unclear if this is still needed
@@ -118,8 +125,7 @@ public class FluidBlockPictureInPictureRenderer
 
         @Override
         public VertexConsumer addVertex(float x, float y, float z) {
-            // add missing UV1 for entity format which is used to replace TRANSLUCENT in non-chunk-section render
-            return parent.addVertex(pose, x, y, z).setUv1(0, 0);
+            return parent.addVertex(pose, x, y, z);
         }
     }
 }
