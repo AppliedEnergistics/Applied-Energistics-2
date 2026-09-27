@@ -1,6 +1,7 @@
 
 package appeng.core.network.serverbound;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -152,41 +153,31 @@ public record FillCraftingGridFromRecipePacket(
         var toAutoCraft = new LinkedHashMap<AEItemKey, IntList>();
         boolean touchedGridStorage = false;
 
+        // Take out all items that do not match the ingredient of their current slot. We hold on to them
+        // instead of returning them to storage right away, since they may match the ingredient of another slot.
+        // Returning them first and then extracting them again would fail, since the cached inventory we use to find
+        // the ingredients is only updated once per tick.
+        var displacedItems = new ArrayList<DisplacedItem>();
+        for (var x = 0; x < craftMatrix.size(); x++) {
+            var currentItem = craftMatrix.getStackInSlot(x);
+            if (!currentItem.isEmpty() && !ingredients.get(x).test(currentItem)) {
+                displacedItems.add(new DisplacedItem(x, currentItem.copy()));
+                craftMatrix.setItemDirect(x, ItemStack.EMPTY);
+            }
+        }
+
         // Handle each slot
         for (var x = 0; x < craftMatrix.size(); x++) {
             var currentItem = craftMatrix.getStackInSlot(x);
             var ingredient = ingredients.get(x);
 
-            // Move out items blocking the grid
-            if (!currentItem.isEmpty()) {
-                // Put away old item, if not correct
-                if (ingredient.test(currentItem)) {
-                    // Grid already has an item that matches the ingredient
-                    continue;
-                } else {
-                    var in = AEItemKey.of(currentItem);
-                    var inserted = StorageHelper.poweredInsert(energy, networkStorage, in, currentItem.getCount(),
-                            cct.getActionSource());
-                    if (inserted > 0) {
-                        touchedGridStorage = true;
-                    }
-                    if (inserted < currentItem.getCount()) {
-                        currentItem = currentItem.copy();
-                        currentItem.shrink((int) inserted);
-                    } else {
-                        currentItem = ItemStack.EMPTY;
-                    }
-
-                    // If more is remaining, try moving it to the player inventory
-                    player.getInventory().add(currentItem);
-
-                    craftMatrix.setItemDirect(x, currentItem.isEmpty() ? ItemStack.EMPTY : currentItem);
-                }
-            }
-
-            if (ingredient.isEmpty()) {
+            if (!currentItem.isEmpty() || ingredient.isEmpty()) {
+                // Grid already has an item that matches the ingredient, or the slot should stay empty
                 continue;
             }
+
+            // Prefer items that were previously in the grid, but in the wrong slot
+            currentItem = takeIngredientFromDisplacedItems(displacedItems, ingredient);
 
             // Try to find the best item for this slot. Sort by the amount available in the last tick,
             // then try to extract from most to least available item until 1 can be extracted.
@@ -219,6 +210,32 @@ public record FillCraftingGridFromRecipePacket(
             }
         }
 
+        // Put away the displaced items that were not used in any other slot
+        for (var displaced : displacedItems) {
+            var displacedItem = displaced.stack();
+            if (displacedItem.isEmpty()) {
+                continue;
+            }
+
+            var in = AEItemKey.of(displacedItem);
+            var inserted = StorageHelper.poweredInsert(energy, networkStorage, in, displacedItem.getCount(),
+                    cct.getActionSource());
+            if (inserted > 0) {
+                touchedGridStorage = true;
+                displacedItem.shrink((int) inserted);
+            }
+
+            // If more is remaining, try moving it to the player inventory
+            if (!displacedItem.isEmpty() && !player.getInventory().add(displacedItem)) {
+                // Leave it in the grid if its original slot is still free, drop it otherwise
+                if (craftMatrix.getStackInSlot(displaced.slot()).isEmpty()) {
+                    craftMatrix.setItemDirect(displaced.slot(), displacedItem);
+                } else {
+                    player.drop(displacedItem, false);
+                }
+            }
+        }
+
         menu.slotsChanged(craftMatrix.toContainer());
 
         if (!toAutoCraft.isEmpty()) {
@@ -233,6 +250,23 @@ public record FillCraftingGridFromRecipePacket(
                     .map(e -> new ICraftingGridMenu.AutoCraftEntry(e.getKey(), e.getValue())).toList();
             cct.startAutoCrafting(stacks);
         }
+    }
+
+    /**
+     * An item that was removed from the crafting grid because it didn't match the ingredient of its slot.
+     */
+    private record DisplacedItem(int slot, ItemStack stack) {
+    }
+
+    private static ItemStack takeIngredientFromDisplacedItems(List<DisplacedItem> displacedItems,
+            Ingredient ingredient) {
+        for (var displaced : displacedItems) {
+            var stack = displaced.stack();
+            if (!stack.isEmpty() && ingredient.test(stack)) {
+                return stack.split(1);
+            }
+        }
+        return ItemStack.EMPTY;
     }
 
     private ItemStack takeIngredientFromPlayer(ICraftingGridMenu cct, ServerPlayer player, Ingredient ingredient) {
