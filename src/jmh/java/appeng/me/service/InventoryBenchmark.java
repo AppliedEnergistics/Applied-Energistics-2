@@ -9,6 +9,7 @@ import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.infra.Blackhole;
 
 import net.minecraft.world.item.Items;
+import net.neoforged.testframework.junit.EphemeralTestServerProvider;
 
 import appeng.api.config.IncludeExclude;
 import appeng.api.stacks.AEItemKey;
@@ -17,9 +18,11 @@ import appeng.core.definitions.AEItems;
 import appeng.me.cells.BasicCellInventory;
 import appeng.me.storage.MEInventoryHandler;
 import appeng.me.storage.NetworkStorage;
-import appeng.util.BootstrapMinecraftExtension;
 import appeng.util.prioritylist.PrecisePriorityList;
 
+/**
+ * Runs inside the game, which is started in the forked benchmark JVMs by {@code appeng.benchmark.agent.ForkAgent}.
+ */
 @State(Scope.Thread)
 public class InventoryBenchmark {
 
@@ -30,9 +33,9 @@ public class InventoryBenchmark {
     private StorageService service;
 
     @Setup
-    public void setup() throws Exception {
-        new BootstrapMinecraftExtension().beforeAll(null);
-        InventoryGenerator generator = new InventoryGenerator(new Random(0L));
+    public void setup() {
+        var server = EphemeralTestServerProvider.grabServer();
+        InventoryGenerator generator = new InventoryGenerator(new Random(42L), server.registryAccess());
         // A single empty cell
         emptyCell = BasicCellInventory.createInventory(AEItems.ITEM_CELL_1K.stack(), this::onContainerUpdate);
         // A single full cell

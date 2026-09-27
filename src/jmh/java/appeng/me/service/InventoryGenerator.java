@@ -4,7 +4,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import net.minecraft.core.Holder;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
@@ -19,19 +22,26 @@ public class InventoryGenerator {
 
     private final Random random;
     private final List<Item> items;
-    private final List<Enchantment> enchantments;
+    private final List<Holder<Enchantment>> enchantments;
 
-    public InventoryGenerator(Random random) {
+    public InventoryGenerator(Random random, RegistryAccess registryAccess) {
         this.random = random;
-        items = BuiltInRegistries.ITEM.entrySet().stream().map(Map.Entry::getValue).toList();
-        enchantments = BuiltInRegistries.ENCHANTMENT.entrySet().stream().map(Map.Entry::getValue).toList();
+        // Sort by ID, since the registry's entry set is ordered by identity hash codes, which differ between JVMs
+        items = BuiltInRegistries.ITEM.entrySet().stream()
+                .sorted(Map.Entry.comparingByKey())
+                .map(Map.Entry::getValue)
+                .toList();
+        // Enchantments are data-driven and only available from a server's registries
+        enchantments = registryAccess.lookupOrThrow(Registries.ENCHANTMENT).listElements()
+                .<Holder<Enchantment>>map(holder -> holder)
+                .toList();
     }
 
     private Item randomItem() {
         return items.get(random.nextInt(items.size()));
     }
 
-    private Enchantment randomEnchantment() {
+    private Holder<Enchantment> randomEnchantment() {
         return enchantments.get(random.nextInt(enchantments.size()));
     }
 
@@ -64,7 +74,7 @@ public class InventoryGenerator {
         if (item.isDamageable(stack)) {
             inserted += fillDamaged(storage, scale, item);
         }
-        if (item.isEnchantable(stack)) {
+        if (stack.isEnchantable()) {
             inserted += fillEnchantable(storage, scale, item);
         }
         inserted += fillRegular(storage, scale, new ItemStack(item));
@@ -79,8 +89,8 @@ public class InventoryGenerator {
 
     public long fillEnchantable(MEStorage storage, long scale, Item item) {
         ItemStack stack = new ItemStack(item);
-        Enchantment enchantment = randomEnchantment();
-        stack.enchant(enchantment, 1 + random.nextInt(enchantment.getMaxLevel()));
+        Holder<Enchantment> enchantment = randomEnchantment();
+        stack.enchant(enchantment, 1 + random.nextInt(enchantment.value().getMaxLevel()));
         return fillRegular(storage, scale, stack);
     }
 

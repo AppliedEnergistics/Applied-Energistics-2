@@ -21,11 +21,11 @@ plugins {
     id 'maven-publish'
     id 'signing'
     id 'com.diffplug.spotless'
-    id 'me.champeau.jmh' version '0.7.3'
 }
 
 apply plugin: ProjectDefaultsPlugin
 apply plugin: CrowdinPlugin
+apply plugin: JmhPlugin
 
 base {
     archivesName = "appliedenergistics2"
@@ -59,8 +59,8 @@ sourceSets {
         }
     }
     test {
-        compileClasspath += client.output
-        runtimeClasspath += client.output
+        compileClasspath += sourceSets.client.output
+        runtimeClasspath += sourceSets.client.output
     }
     buildtools
 }
@@ -407,20 +407,85 @@ signing {
     }
 }
 
-jmh {
-    zip64 = true
-    warmupForks = 0
-    warmupIterations = 1
-    fork = 1
-    iterations = project.property("jmh.iterations").toInteger()
-    threads = 1
-    humanOutputFile = project.layout.buildDirectory.file("results/jmh/human.txt")
-    resultFormat = 'JSON'
-    profilers = ['async:output=flamegraph;dir=build/results/jmh']
-
-    jmhJar {
-        manifest {
-            attributes 'Multi-Release': 'true'
-        }
+/////////////
+// JMH benchmarks (see JmhPlugin)
+// The benchmarks (src/jmh) run in forked JVMs inside the game, and are loaded by FML as part of the ae2 mod, together
+// with JMH itself. The JMH host JVM runs outside the game. It passes its JVM arguments on to the forked JVMs, including
+// ForkAgent (src/jmhForkAgent), which starts the game there before running the benchmarks.
+sourceSets {
+    jmh {
+        compileClasspath += client.output
+        runtimeClasspath += client.output
     }
+    jmhForkAgent
+}
+
+configurations {
+    // JMH and its dependencies, which have to be loaded by the game class loader
+    jmhGameLibraries
+}
+
+dependencies {
+    // Provides a server for data-driven registries (EphemeralTestServerProvider)
+    jmhImplementation("net.neoforged:testframework:${project.neoforge_version}")
+    jmhImplementation(platform("org.junit:junit-bom:${project.junit_version}"))
+    jmhImplementation("org.junit.jupiter:junit-jupiter-api")
+
+    jmhGameLibraries("org.openjdk.jmh:jmh-core:${project.jmh_version}")
+}
+
+neoForge {
+    addModdingDependenciesTo sourceSets.jmh
+    addModdingDependenciesTo sourceSets.jmhForkAgent
+}
+
+def jmhForkAgentJar = tasks.register('jmhForkAgentJar', Jar) {
+    archiveClassifier = 'jmh-fork-agent'
+    destinationDirectory = layout.buildDirectory.dir('jmh')
+    from sourceSets.jmhForkAgent.output
+    manifest {
+        attributes 'Premain-Class': 'appeng.benchmark.agent.ForkAgent'
+    }
+}
+
+tasks.named('jmh', RunJmh) {
+    javaLauncher.set(javaToolchains.launcherFor(java.toolchain))
+
+    // Every run starts in a new, empty working directory, which the forked JVMs use as the game directory (see
+    // ForkAgent). Temporary files, such as the test server's world, are kept in there as well.
+    def runDir = temporaryDir
+    def runTmpDir = new File(runDir, 'tmp')
+    workingDir = runDir
+    systemProperty 'java.io.tmpdir', runTmpDir.absolutePath
+    doFirst {
+        runDir.deleteDir()
+        runTmpDir.mkdirs()
+    }
+
+    def resultsDir = layout.buildDirectory.dir('reports/jmh')
+    resultFile = resultsDir.map { it.file('results.json') }
+    humanOutputFile = resultsDir.map { it.file('human.txt') }
+    // Pass additional JMH arguments with -Pjmh.args, i.e. -Pjmh.args="fullCell -prof gc"
+
+    // JMH copies the JVM arguments of this JVM to the forked JVMs, which start FML with the same launch configuration
+    // as the unit tests
+    def prepareTestFiles = tasks.named('prepareNeoForgeTestFiles')
+    def vmArgsFile = prepareTestFiles.flatMap { it.vmArgsFile }
+    def programArgsFile = prepareTestFiles.flatMap { it.programArgsFile }
+    def forkAgentJar = jmhForkAgentJar.flatMap { it.archiveFile }
+    // JMH loads the benchmark classes through its own class loader, so it has to be loaded by the game class loader
+    // as well. The game class loader delegates to the application class loader only for classes it doesn't own.
+    def modFolders = files(sourceSets.main.output, sourceSets.client.output, sourceSets.jmh.output,
+            configurations.jmhGameLibraries)
+    inputs.file(vmArgsFile)
+    inputs.file(programArgsFile)
+    inputs.file(forkAgentJar)
+    jvmArgumentProviders.add({
+        [
+                "@${vmArgsFile.get().asFile.absolutePath}",
+                "-Dfml.junit.argsfile=${programArgsFile.get().asFile.absolutePath}",
+                "-Dfml.modFolders=" + modFolders.files.collect { "ae2%%${it.absolutePath}" }.join(File.pathSeparator),
+                "-javaagent:${forkAgentJar.get().asFile.absolutePath}",
+        ]*.toString()
+    } as CommandLineArgumentProvider)
 }
