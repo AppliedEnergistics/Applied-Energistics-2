@@ -97,6 +97,10 @@ class InternalInventoryResourceHandler extends SnapshotJournal<InternalInventory
             return 0;
         }
 
+        if (!resource.matches(inventory.getStackInSlot(index))) {
+            return 0;
+        }
+
         updateSnapshots(transaction);
 
         return inventory.extractItem(index, maxAmount, false).getCount();

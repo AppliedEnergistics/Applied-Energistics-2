@@ -23,6 +23,8 @@ import java.util.EnumSet;
 import java.util.Locale;
 import java.util.function.Consumer;
 
+import com.mojang.math.Quadrant;
+
 import net.minecraft.client.resources.model.ModelDebugName;
 import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.client.resources.model.sprite.Material;
@@ -574,23 +576,23 @@ class CableBuilder {
         // See https://github.com/AppliedEnergistics/Applied-Energistics-2/issues/6889
         switch (facing) {
             case DOWN, UP -> {
-                cubeBuilder.setUvRotation(Direction.EAST, 2);
+                cubeBuilder.setUvRotation(Direction.EAST, Quadrant.R180);
                 cubeBuilder.addCube(3, -0.01f, 3, 13, 16.01f, 13);
-                cubeBuilder.setUvRotation(Direction.EAST, 0);
+                cubeBuilder.setUvRotation(Direction.EAST, Quadrant.R0);
             }
             case EAST, WEST -> {
-                cubeBuilder.setUvRotation(Direction.SOUTH, 2);
-                cubeBuilder.setUvRotation(Direction.NORTH, 2);
+                cubeBuilder.setUvRotation(Direction.SOUTH, Quadrant.R180);
+                cubeBuilder.setUvRotation(Direction.NORTH, Quadrant.R180);
                 cubeBuilder.addCube(-0.01f, 3, 3, 16.01f, 13, 13);
-                cubeBuilder.setUvRotation(Direction.SOUTH, 0);
-                cubeBuilder.setUvRotation(Direction.NORTH, 0);
+                cubeBuilder.setUvRotation(Direction.SOUTH, Quadrant.R0);
+                cubeBuilder.setUvRotation(Direction.NORTH, Quadrant.R0);
             }
             case NORTH, SOUTH -> {
-                cubeBuilder.setUvRotation(Direction.EAST, 2);
-                cubeBuilder.setUvRotation(Direction.WEST, 2);
+                cubeBuilder.setUvRotation(Direction.EAST, Quadrant.R180);
+                cubeBuilder.setUvRotation(Direction.WEST, Quadrant.R180);
                 cubeBuilder.addCube(3, 3, -0.01f, 13, 13, 16.01f);
-                cubeBuilder.setUvRotation(Direction.EAST, 0);
-                cubeBuilder.setUvRotation(Direction.WEST, 0);
+                cubeBuilder.setUvRotation(Direction.EAST, Quadrant.R0);
+                cubeBuilder.setUvRotation(Direction.WEST, Quadrant.R0);
             }
         }
     }
@@ -615,23 +617,23 @@ class CableBuilder {
     private static void addStraightCoveredCableSizedCube(Direction facing, CubeBuilder cubeBuilder) {
         switch (facing) {
             case DOWN, UP -> {
-                cubeBuilder.setUvRotation(Direction.EAST, 2);
+                cubeBuilder.setUvRotation(Direction.EAST, Quadrant.R180);
                 cubeBuilder.addCube(5, 0, 5, 11, 16, 11);
-                cubeBuilder.setUvRotation(Direction.EAST, 0);
+                cubeBuilder.setUvRotation(Direction.EAST, Quadrant.R0);
             }
             case EAST, WEST -> {
-                cubeBuilder.setUvRotation(Direction.SOUTH, 2);
-                cubeBuilder.setUvRotation(Direction.NORTH, 2);
+                cubeBuilder.setUvRotation(Direction.SOUTH, Quadrant.R180);
+                cubeBuilder.setUvRotation(Direction.NORTH, Quadrant.R180);
                 cubeBuilder.addCube(0, 5, 5, 16, 11, 11);
-                cubeBuilder.setUvRotation(Direction.SOUTH, 0);
-                cubeBuilder.setUvRotation(Direction.NORTH, 0);
+                cubeBuilder.setUvRotation(Direction.SOUTH, Quadrant.R0);
+                cubeBuilder.setUvRotation(Direction.NORTH, Quadrant.R0);
             }
             case NORTH, SOUTH -> {
-                cubeBuilder.setUvRotation(Direction.EAST, 2);
-                cubeBuilder.setUvRotation(Direction.WEST, 2);
+                cubeBuilder.setUvRotation(Direction.EAST, Quadrant.R180);
+                cubeBuilder.setUvRotation(Direction.WEST, Quadrant.R180);
                 cubeBuilder.addCube(5, 5, 0, 11, 11, 16);
-                cubeBuilder.setUvRotation(Direction.EAST, 0);
-                cubeBuilder.setUvRotation(Direction.WEST, 0);
+                cubeBuilder.setUvRotation(Direction.EAST, Quadrant.R0);
+                cubeBuilder.setUvRotation(Direction.WEST, Quadrant.R0);
             }
         }
     }
