@@ -102,6 +102,15 @@ public class CraftingStatusMenu extends CraftingCPUMenu implements ISubMenu {
     }
 
     @Override
+    public void toggleScheduling() {
+        super.toggleScheduling();
+        if (isServerSide()) {
+            // Refresh the CPU list on the next tick so the suspended state shows up immediately
+            lastUpdate = 20;
+        }
+    }
+
+    @Override
     public void broadcastChanges() {
         IGrid network = this.getGrid();
         if (isServerSide() && network != null) {
@@ -162,7 +171,8 @@ public class CraftingStatusMenu extends CraftingCPUMenu implements ISubMenu {
                     cpu.getSelectionMode(),
                     status != null ? status.crafting() : null,
                     progress,
-                    status != null ? status.elapsedTimeNanos() : 0));
+                    status != null ? status.elapsedTimeNanos() : 0,
+                    status != null && status.suspended()));
         }
         entries.sort(CPU_COMPARATOR);
         return new CraftingCpuList(entries);
@@ -233,7 +243,8 @@ public class CraftingStatusMenu extends CraftingCPUMenu implements ISubMenu {
             CpuSelectionMode mode,
             GenericStack currentJob,
             float progress,
-            long elapsedTimeNanos) {
+            long elapsedTimeNanos,
+            boolean isSuspended) {
         public static CraftingCpuListEntry readFromPacket(RegistryFriendlyByteBuf data) {
             return new CraftingCpuListEntry(
                     data.readInt(),
@@ -243,7 +254,8 @@ public class CraftingStatusMenu extends CraftingCPUMenu implements ISubMenu {
                     data.readEnum(CpuSelectionMode.class),
                     GenericStack.readBuffer(data),
                     data.readFloat(),
-                    data.readVarLong());
+                    data.readVarLong(),
+                    data.readBoolean());
         }
 
         public void writeToPacket(RegistryFriendlyByteBuf data) {
@@ -258,6 +270,7 @@ public class CraftingStatusMenu extends CraftingCPUMenu implements ISubMenu {
             GenericStack.writeBuffer(currentJob, data);
             data.writeFloat(progress);
             data.writeVarLong(elapsedTimeNanos);
+            data.writeBoolean(isSuspended);
         }
     }
 }

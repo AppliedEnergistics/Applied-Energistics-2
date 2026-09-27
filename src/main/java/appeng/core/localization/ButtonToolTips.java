@@ -41,6 +41,7 @@ public enum ButtonToolTips implements LocalizationEnum {
     CpuStatusCraftedIn("Crafted %s in %s"),
     CpuStatusCrafting("Crafting %s"),
     CpuStatusStorage("%s Storage"),
+    CpuStatusSuspended("Suspended"),
     LockCraftingMode("Lock Crafting"),
     LockCraftingModeNone("Never"),
     LockCraftingWhileRedstoneHigh("With redstone signal"),
