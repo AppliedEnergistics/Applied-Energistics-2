@@ -27,7 +27,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.events.GridCraftingCpuChange;
 import appeng.blockentity.crafting.CraftingBlockEntity;
-import appeng.me.cluster.IAEMultiBlock;
 import appeng.me.cluster.MBCalculator;
 
 public class CraftingCPUCalculator extends MBCalculator<CraftingBlockEntity, CraftingCPUCluster> {
