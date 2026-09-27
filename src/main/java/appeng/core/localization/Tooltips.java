@@ -167,6 +167,10 @@ public final class Tooltips {
     }
 
     public record Amount(String digit, String unit) {
+        @Override
+        public String toString() {
+            return digit + unit;
+        }
     }
 
     public record MaxedAmount(String digit, String maxDigit, String unit) {
