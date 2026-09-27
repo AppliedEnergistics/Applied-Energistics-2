@@ -167,6 +167,10 @@ public final class Tooltips {
     }
 
     public record Amount(String digit, String unit) {
+        @Override
+        public String toString() {
+            return digit + unit;
+        }
     }
 
     public record MaxedAmount(String digit, String maxDigit, String unit) {
@@ -204,12 +208,14 @@ public final class Tooltips {
         return durationStr.withStyle(NUMBER_TEXT);
     }
 
-    public static final String[] units = new String[] { "k", "M", "G", "T", "P", "E" };
-    public static final long[] DECIMAL_NUMS = new long[] { 1000L, 1000_000L, 1000_000_000L, 1000_000_000_000L,
+    private static final String[] units = new String[] { "k", "M", "G", "T", "P", "E" };
+    private static final long[] DECIMAL_NUMS = new long[] { 1000L, 1000_000L, 1000_000_000L, 1000_000_000_000L,
             1000_000_000_000_000L,
             1000_000_000_000_000_000L };
-    public static final long[] BYTE_NUMS = new long[] { 1024L, 1024 * 1024L, 1024 * 1024 * 1024L,
-            1024 * 1024 * 1024 * 1024L };
+    private static final long[] BYTE_NUMS = new long[] { 1024L, 1024 * 1024L, 1024 * 1024 * 1024L,
+            1024 * 1024 * 1024 * 1024L,
+            1024L * 1024 * 1024 * 1024 * 1024,
+            1024L * 1024 * 1024 * 1024 * 1024 * 1024 };
 
     public static Component ofAmount(GenericStack stack) {
         return Component.literal(stack.what().formatAmount(stack.amount(), AmountFormat.FULL))
