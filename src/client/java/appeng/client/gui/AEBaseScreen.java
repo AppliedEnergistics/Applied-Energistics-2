@@ -41,7 +41,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.ComponentRenderUtils;
-import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.input.KeyEvent;
@@ -561,9 +560,10 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
     public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
         this.drag_click.clear();
 
-        // Pick-block bound to a mouse button
-        var pickBlockKey = InputConstants.Type.MOUSE.getOrCreate(event.button());
-        if (getMinecraft().options.keyPickItem.isActiveAndMatches(pickBlockKey)
+        // Handler for Pick Block mouse click in Survival mode
+        // (Key presses & Creative clicks all reach slotClicked handler as CLONE slot clicks)
+        var pickBlockButton = InputConstants.Type.MOUSE.getOrCreate(event.button());
+        if (getMinecraft().options.keyPickItem.isActiveAndMatches(pickBlockButton)
                 && handlePickBlock(this.getHoveredSlot(event.x(), event.y()))) {
             return true;
         }
@@ -608,18 +608,6 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
         }
 
         return super.mouseReleased(event);
-    }
-
-    @Override
-    public boolean keyPressed(KeyEvent event) {
-        // Pick Block bound to a keyboard key. Don't intercept while a text field is being typed into.
-        if (!(getFocused() instanceof EditBox)
-                && getMinecraft().options.keyPickItem.isActiveAndMatches(InputConstants.getKey(event))
-                && handlePickBlock(this.hoveredSlot)) {
-            return true;
-        }
-
-        return super.keyPressed(event);
     }
 
     /**
@@ -672,13 +660,17 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
         }
 
         if (clickType == ContainerInput.CLONE) {
-            // Vanilla dispatches a CLONE click when the Pick Block binding is pressed over a slot. The fake slot
-            // handling below would treat that as a pickup with an empty hand and clear the slot, so ignore it.
+            // Pick Block bound to a keyboard key, or to a mouse button in Creative
+            if (handlePickBlock(slot)) {
+                return;
+            }
+
+            // Cloning would empty a FakeSlot
             if (slot instanceof FakeSlot) {
                 return;
             }
 
-            // Wrapped stacks (fluids etc.) cannot be cloned into the player's hand
+            // Wrapped stacks (fluids, etc.) cannot be cloned into the player's hand
             if (slot != null && GenericStack.isWrapped(slot.getItem())) {
                 return;
             }
