@@ -451,10 +451,9 @@ def jmhForkAgentJar = tasks.register('jmhForkAgentJar', Jar) {
 tasks.named('jmh', RunJmh) {
     javaLauncher.set(javaToolchains.launcherFor(java.toolchain))
 
-    // The working directory (see RunJmh) is used by the forked JVMs as the game directory (see ForkAgent)
     def resultsDir = layout.buildDirectory.dir('reports/jmh')
-    resultFile = resultsDir.map { it.file('results.json') }
-    humanOutputFile = resultsDir.map { it.file('human.txt') }
+    jsonResultFile = resultsDir.map { it.file('results.json') }
+    textResultFile = resultsDir.map { it.file('results.txt') }
     // Pass additional JMH arguments with -Pjmh.args, i.e. -Pjmh.args="fullCell -prof gc"
 
     // JMH copies the JVM arguments of this JVM to the forked JVMs, which start FML with the same launch configuration

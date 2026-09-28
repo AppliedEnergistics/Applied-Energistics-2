@@ -22,8 +22,8 @@ import java.util.List;
 
 /**
  * Runs JMH benchmarks found on the classpath. The main class must accept the JMH command line options; it defaults to
- * the JMH command line runner. Results are written to {@link #getResultFile()} (JSON) and
- * {@link #getHumanOutputFile()}.
+ * the JMH command line runner. Results are written to {@link #getJsonResultFile()} (JSON) and
+ * {@link #getTextResultFile()} (text).
  * <p>
  * Every run starts with an empty task-specific temporary directory, which is used as the working directory and, via
  * {@code java.io.tmpdir}, for temporary files. JMH passes both on to its forked JVMs.
@@ -82,13 +82,13 @@ public abstract class RunJmh extends JavaExec {
      * Machine-readable benchmark results in JSON format.
      */
     @OutputFile
-    public abstract RegularFileProperty getResultFile();
+    public abstract RegularFileProperty getJsonResultFile();
 
     /**
      * Human-readable log of the benchmark run. JMH's console output is copied to this file.
      */
     @OutputFile
-    public abstract RegularFileProperty getHumanOutputFile();
+    public abstract RegularFileProperty getTextResultFile();
 
     @Inject
     protected abstract FileSystemOperations getFileSystemOperations();
@@ -123,7 +123,7 @@ public abstract class RunJmh extends JavaExec {
         args.add("-rf");
         args.add("json");
         args.add("-rff");
-        args.add(getResultFile().get().getAsFile().getAbsolutePath());
+        args.add(getJsonResultFile().get().getAsFile().getAbsolutePath());
         for (var profiler : getProfilers().get()) {
             args.add("-prof");
             args.add(profiler);
@@ -132,7 +132,7 @@ public abstract class RunJmh extends JavaExec {
         args(args);
 
         // JMH writes its output either to the console or to a file (-o), so copy the console output to the file instead
-        try (var fileOut = new FileOutputStream(getHumanOutputFile().get().getAsFile())) {
+        try (var fileOut = new FileOutputStream(getTextResultFile().get().getAsFile())) {
             setStandardOutput(new TeeOutputStream(System.out, fileOut));
             super.exec();
         } catch (IOException e) {
