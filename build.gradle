@@ -451,17 +451,7 @@ def jmhForkAgentJar = tasks.register('jmhForkAgentJar', Jar) {
 tasks.named('jmh', RunJmh) {
     javaLauncher.set(javaToolchains.launcherFor(java.toolchain))
 
-    // Every run starts in a new, empty working directory, which the forked JVMs use as the game directory (see
-    // ForkAgent). Temporary files, such as the test server's world, are kept in there as well.
-    def runDir = temporaryDir
-    def runTmpDir = new File(runDir, 'tmp')
-    workingDir = runDir
-    systemProperty 'java.io.tmpdir', runTmpDir.absolutePath
-    doFirst {
-        runDir.deleteDir()
-        runTmpDir.mkdirs()
-    }
-
+    // The working directory (see RunJmh) is used by the forked JVMs as the game directory (see ForkAgent)
     def resultsDir = layout.buildDirectory.dir('reports/jmh')
     resultFile = resultsDir.map { it.file('results.json') }
     humanOutputFile = resultsDir.map { it.file('human.txt') }

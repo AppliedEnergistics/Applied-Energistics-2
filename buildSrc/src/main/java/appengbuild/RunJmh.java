@@ -1,5 +1,6 @@
 package appengbuild;
 
+import org.gradle.api.file.FileSystemOperations;
 import org.gradle.api.file.RegularFileProperty;
 import org.gradle.api.provider.ListProperty;
 import org.gradle.api.provider.Property;
@@ -9,6 +10,8 @@ import org.gradle.api.tasks.OutputFile;
 import org.gradle.api.tasks.TaskAction;
 import org.gradle.work.DisableCachingByDefault;
 
+import javax.inject.Inject;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -21,12 +24,17 @@ import java.util.List;
  * Runs JMH benchmarks found on the classpath. The main class must accept the JMH command line options; it defaults to
  * the JMH command line runner. Results are written to {@link #getResultFile()} (JSON) and
  * {@link #getHumanOutputFile()}.
+ * <p>
+ * Every run starts with an empty task-specific temporary directory, which is used as the working directory and, via
+ * {@code java.io.tmpdir}, for temporary files. JMH passes both on to its forked JVMs.
  */
 @DisableCachingByDefault(because = "Benchmark results are not reproducible")
 public abstract class RunJmh extends JavaExec {
     public RunJmh() {
         getMainClass().set("org.openjdk.jmh.Main");
         getOutputs().upToDateWhen(task -> false);
+        setWorkingDir(getTemporaryDir());
+        systemProperty("java.io.tmpdir", getJavaTempDir().getAbsolutePath());
 
         getWarmupForks().convention(0);
         getWarmupIterations().convention(1);
@@ -82,9 +90,22 @@ public abstract class RunJmh extends JavaExec {
     @OutputFile
     public abstract RegularFileProperty getHumanOutputFile();
 
+    @Inject
+    protected abstract FileSystemOperations getFileSystemOperations();
+
+    private File getJavaTempDir() {
+        return new File(getTemporaryDir(), "tmp");
+    }
+
     @TaskAction
     @Override
     public void exec() {
+        // Start with a clean slate, without leftovers of the previous run (i.e. game directories)
+        getFileSystemOperations().delete(spec -> spec.delete(getTemporaryDir()));
+        if (!getJavaTempDir().mkdirs()) {
+            throw new UncheckedIOException(new IOException("Failed to create " + getJavaTempDir()));
+        }
+
         var args = new ArrayList<String>();
         // Fail the task if any benchmark throws, instead of just reporting it
         args.add("-foe");
