@@ -3,12 +3,14 @@ package appengbuild;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.plugins.JavaPlugin;
+import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.SourceSetContainer;
 
 /**
  * Sets up a {@code jmh} source set (src/jmh) for JMH benchmarks, which can access the main classes,
- * and a {@code jmh} task to run them.
+ * and a {@code jmh} task to run them. Its results are tagged with the checked out Git commit (abbreviated hash),
+ * suffixed with {@code -dirty} if the working tree has uncommitted changes, or {@code unknown} outside a Git repository.
  * <p>
  * The JMH version is taken from the {@code jmh_version} project property.
  */
@@ -39,10 +41,32 @@ public class JmhPlugin implements Plugin<Project> {
         dependencies.addProvider(jmh.getAnnotationProcessorConfigurationName(),
                 jmhVersion.map(v -> "org.openjdk.jmh:jmh-generator-annprocess:" + v));
 
+        var revision = getGitRevision(project);
         project.getTasks().register("jmh", RunJmh.class, task -> {
             task.setGroup("benchmark");
             task.setDescription("Runs the JMH benchmarks.");
             task.setClasspath(jmh.getRuntimeClasspath());
+            task.getRevision().convention(revision);
         });
+    }
+
+    private static Provider<String> getGitRevision(Project project) {
+        var rootDir = project.getRootDir();
+        var hash = project.getProviders().exec(spec -> {
+            spec.setWorkingDir(rootDir);
+            spec.commandLine("git", "rev-parse", "--short=9", "HEAD");
+            spec.setIgnoreExitValue(true);
+        });
+        // Untracked files count as changes as well, since they may be sources
+        var status = project.getProviders().exec(spec -> {
+            spec.setWorkingDir(rootDir);
+            spec.commandLine("git", "status", "--porcelain");
+            spec.setIgnoreExitValue(true);
+        });
+        return hash.getResult().zip(hash.getStandardOutput().getAsText(),
+                        (result, output) -> result.getExitValue() == 0 ? output.trim() : "unknown")
+                .zip(status.getStandardOutput().getAsText(),
+                        (revision, changes) -> revision.equals("unknown") || changes.isBlank() ? revision
+                                : revision + "-dirty");
     }
 }
