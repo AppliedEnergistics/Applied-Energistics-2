@@ -29,8 +29,8 @@ class VariantCounter implements Iterable<Object2LongMap.Entry<AEKey>> {
     enum CounterState {
         EMPTY, // zero types
         SINGLE, // one type
-        GENERIC, // 2+ stacks that do not have durability
-        FUZZY, // 2+ stacks that have durability
+        GENERIC, // 2+ stacks, none of which have durability
+        FUZZY, // 2+ stacks, at least one of which has durability
     }
 
     private CounterState state;
@@ -84,8 +84,18 @@ class VariantCounter implements Iterable<Object2LongMap.Entry<AEKey>> {
         switch (state) {
             case EMPTY -> addEmpty(key, amount);
             case SINGLE -> addSingle(key, amount);
-            case GENERIC -> genericRecords.addTo(key, amount);
+            case GENERIC -> addGeneric(key, amount);
             case FUZZY -> fuzzyRecords.addTo(key, amount);
+        }
+    }
+
+    // valid IFF state == CounterState.GENERIC
+    private void addGeneric(AEKey key, long amount) {
+        if (key.getFuzzySearchMaxValue() > 0) {
+            convertGenericToFuzzy();
+            fuzzyRecords.addTo(key, amount);
+        } else {
+            genericRecords.addTo(key, amount);
         }
     }
 
@@ -107,7 +117,8 @@ class VariantCounter implements Iterable<Object2LongMap.Entry<AEKey>> {
 
     // valid IFF state == CounterState.SINGLE && !this.key.equals(key)
     private void addSingleDistinct(AEKey key, long amount) {
-        if (this.key.getFuzzySearchMaxValue() <= 0) {
+        // Since durability is a component, variants of the same item may or may not have durability
+        if (this.key.getFuzzySearchMaxValue() <= 0 && key.getFuzzySearchMaxValue() <= 0) {
             genericRecords = new AEKey2LongMap.OpenHashMap();
             genericRecords.put(this.key, this.count);
             genericRecords.put(key, amount);
@@ -124,6 +135,14 @@ class VariantCounter implements Iterable<Object2LongMap.Entry<AEKey>> {
         }
     }
 
+    // valid IFF state == CounterState.GENERIC
+    private void convertGenericToFuzzy() {
+        fuzzyRecords = FuzzySearch.createMap2Long();
+        fuzzyRecords.putAll(genericRecords);
+        genericRecords = null;
+        state = CounterState.FUZZY;
+    }
+
     public long set(AEKey key, long amount) {
         if (dropZeros && amount == 0) {
             return remove(key);
@@ -131,9 +150,19 @@ class VariantCounter implements Iterable<Object2LongMap.Entry<AEKey>> {
             return switch (state) {
                 case EMPTY -> setEmpty(key, amount);
                 case SINGLE -> setSingle(key, amount);
-                case GENERIC -> genericRecords.put(key, amount);
+                case GENERIC -> setGeneric(key, amount);
                 case FUZZY -> fuzzyRecords.put(key, amount);
             };
+        }
+    }
+
+    // valid IFF state == CounterState.GENERIC
+    private long setGeneric(AEKey key, long amount) {
+        if (key.getFuzzySearchMaxValue() > 0) {
+            convertGenericToFuzzy();
+            return fuzzyRecords.put(key, amount);
+        } else {
+            return genericRecords.put(key, amount);
         }
     }
 
@@ -191,9 +220,11 @@ class VariantCounter implements Iterable<Object2LongMap.Entry<AEKey>> {
     public Collection<Object2LongMap.Entry<AEKey>> findFuzzy(AEKey filter, FuzzyMode fuzzy) {
         return switch (state) {
             case EMPTY -> Collections.emptyList();
-            case SINGLE ->
-                key.fuzzyEquals(filter, fuzzy) ? Collections.singletonList(singleton()) : Collections.emptyList();
-            case GENERIC -> genericRecords.object2LongEntrySet();
+            case SINGLE -> FuzzySearch.matches(key, filter, fuzzy) ? Collections.singletonList(singleton())
+                    : Collections.emptyList();
+            // None of the keys have durability
+            case GENERIC -> FuzzySearch.matchesUndamaged(filter, fuzzy) ? genericRecords.object2LongEntrySet()
+                    : Collections.emptyList();
             case FUZZY ->
                 FuzzySearch.findFuzzy((Object2LongSortedMap<AEKey>) fuzzyRecords, filter, fuzzy).object2LongEntrySet();
         };
@@ -268,7 +299,7 @@ class VariantCounter implements Iterable<Object2LongMap.Entry<AEKey>> {
         return switch (state) {
             case EMPTY -> Collections.emptyIterator();
             case SINGLE -> dropZeros && count == 0 ? Collections.emptyIterator()
-                    : Collections.singletonList(singleton()).iterator();
+                    : new SingleIterator();
             case GENERIC -> iterator(genericRecords);
             case FUZZY -> iterator(fuzzyRecords);
         };
@@ -399,6 +430,36 @@ class VariantCounter implements Iterable<Object2LongMap.Entry<AEKey>> {
             if (entry == 0) {
                 it.remove();
             }
+        }
+    }
+
+    // valid IFF state == CounterState.SINGLE
+    private class SingleIterator implements Iterator<Object2LongMap.Entry<AEKey>> {
+        private final AEKey key = VariantCounter.this.key;
+        private boolean consumed;
+        private boolean removed;
+
+        @Override
+        public boolean hasNext() {
+            return !consumed;
+        }
+
+        @Override
+        public Object2LongMap.Entry<AEKey> next() {
+            if (consumed) {
+                throw new NoSuchElementException();
+            }
+            consumed = true;
+            return singleton();
+        }
+
+        @Override
+        public void remove() {
+            if (!consumed || removed) {
+                throw new IllegalStateException();
+            }
+            removed = true;
+            VariantCounter.this.remove(key);
         }
     }
 

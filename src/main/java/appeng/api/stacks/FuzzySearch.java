@@ -4,15 +4,21 @@ import java.util.Comparator;
 import java.util.SortedMap;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Preconditions;
-
-import net.minecraft.world.item.ItemStack;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectAVLTreeMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectSortedMap;
 
 import appeng.api.config.FuzzyMode;
 
+/**
+ * Implements fuzzy search over keys based on their relative damage ({@link AEKey#getFuzzySearchValue()} divided by
+ * {@link AEKey#getFuzzySearchMaxValue()}).
+ * <p>
+ * Since the max damage of items is just another data component, keys that share the same primary key can have different
+ * max damage values, or none at all. Keys without a fuzzy max value are treated as undamaged. Fuzzy modes split keys
+ * into two partitions: those damaged more than the mode's {@link FuzzyMode#breakPoint}, and all others. A key matches a
+ * filter if both are in the same partition.
+ */
 final class FuzzySearch {
     @VisibleForTesting
     static final KeyComparator COMPARATOR = new KeyComparator();
@@ -35,67 +41,88 @@ final class FuzzySearch {
     }
 
     /**
-     * Does a fuzzy search. The map must have been created using {@link #createMap}.
+     * Does a fuzzy search. The map must have been created using {@link #createMap}. Returns a view of the map
+     * containing exactly the keys for which {@link #matches} is true.
      */
     @SuppressWarnings({ "unchecked" })
-    public static <T extends SortedMap<K, V>, K, V> T findFuzzy(T map, AEKey key, FuzzyMode fuzzy) {
-        var lowerBound = makeLowerBound(key, fuzzy);
-        var upperBound = makeUpperBound(key, fuzzy);
-        Preconditions.checkState(lowerBound.itemDamage > upperBound.itemDamage);
+    public static <T extends SortedMap<K, V>, K, V> T findFuzzy(T map, AEKey filter, FuzzyMode fuzzy) {
+        if (matchesAll(filter, fuzzy)) {
+            return map;
+        }
 
-        // We can use lower/upper bound in this map for queries because our comparator (see below) specifically
-        // supports dealing with it
-        return (T) map.subMap((K) lowerBound, (K) upperBound);
-    }
-
-    @VisibleForTesting
-    record FuzzyBound(int itemDamage) {
+        // Our comparator (see below) sorts all damaged keys before the split, and all undamaged keys after it
+        var split = (K) new FuzzySplit(fuzzy.breakPoint);
+        if (isDamaged(getDamagePercentage(filter), fuzzy.breakPoint)) {
+            return (T) map.headMap(split);
+        } else {
+            return (T) map.tailMap(split);
+        }
     }
 
     /**
-     * This comparator creates a strict and total ordering over all {@link AEKey} of the same item. To support selecting
-     * ranges of durability, it is defined for type {@link Object} and also accepts {@link FuzzyBound} as an argument to
-     * compare against.
+     * Tests if the given key matches the filter under the given fuzzy mode. The key and filter must share the same
+     * primary key.
+     */
+    public static boolean matches(AEKey key, AEKey filter, FuzzyMode fuzzy) {
+        return matchesAll(filter, fuzzy)
+                || isDamaged(getDamagePercentage(key), fuzzy.breakPoint) == isDamaged(getDamagePercentage(filter),
+                        fuzzy.breakPoint);
+    }
+
+    /**
+     * Same as {@link #matches}, for keys that have no fuzzy max value, and are thus undamaged.
+     */
+    public static boolean matchesUndamaged(AEKey filter, FuzzyMode fuzzy) {
+        return matchesAll(filter, fuzzy) || !isDamaged(getDamagePercentage(filter), fuzzy.breakPoint);
+    }
+
+    private static boolean matchesAll(AEKey filter, FuzzyMode fuzzy) {
+        return fuzzy == FuzzyMode.IGNORE_ALL || !filter.supportsFuzzyRangeSearch();
+    }
+
+    private static boolean isDamaged(float damagePercentage, float breakPoint) {
+        return damagePercentage > breakPoint;
+    }
+
+    /**
+     * Computed the same way as in {@link AEKey#fuzzyEquals}.
+     */
+    @VisibleForTesting
+    static float getDamagePercentage(AEKey key) {
+        var maxValue = key.getFuzzySearchMaxValue();
+        return maxValue > 0 ? (float) key.getFuzzySearchValue() / maxValue : 0;
+    }
+
+    /**
+     * Is never stored in a map. Only used as the bound for head/tail maps. It sorts after all keys that are damaged
+     * more than the break point, and before all other keys.
+     */
+    private record FuzzySplit(float breakPoint) {
+    }
+
+    /**
+     * This comparator creates a strict and total ordering over all {@link AEKey} of the same primary key, from most to
+     * least damaged. To support selecting damage partitions, it is defined for type {@link Object} and also accepts a
+     * {@link FuzzySplit} as an argument to compare against.
      */
     private static class KeyComparator implements Comparator<Object> {
         @Override
         public int compare(Object a, Object b) {
-            // Either argument can either be a damage bound or a shared item stack
-            // Since we never put damage bounds into the map as keys, only one
-            // of the two arguments can possibly be a bound
-            FuzzyBound boundA = null;
-            AEKey stackA = null;
-            int fuzzyOrderB;
-            if (a instanceof FuzzyBound) {
-                boundA = (FuzzyBound) a;
-                fuzzyOrderB = boundA.itemDamage;
-            } else {
-                stackA = (AEKey) a;
-                fuzzyOrderB = stackA.getFuzzySearchValue();
-            }
-            FuzzyBound boundB = null;
-            AEKey stackB = null;
-            int fuzzyOrderA;
-            if (b instanceof FuzzyBound) {
-                boundB = (FuzzyBound) b;
-                fuzzyOrderA = boundB.itemDamage;
-            } else {
-                stackB = (AEKey) b;
-                fuzzyOrderA = stackB.getFuzzySearchValue();
+            // Since splits are never put into the map, only one of the arguments can possibly be a split
+            if (a instanceof FuzzySplit split) {
+                return isDamaged(getDamagePercentage((AEKey) b), split.breakPoint) ? 1 : -1;
+            } else if (b instanceof FuzzySplit split) {
+                return isDamaged(getDamagePercentage((AEKey) a), split.breakPoint) ? -1 : 1;
             }
 
-            // When either argument is a damage bound, we just compare the damage values because it is used
-            // only to get a certain damage range out of the map.
-            if (boundA != null || boundB != null) {
-                return Integer.compare(fuzzyOrderA, fuzzyOrderB);
-            }
-
-            if (stackA.equals(stackB)) {
+            var keyA = (AEKey) a;
+            var keyB = (AEKey) b;
+            if (keyA.equals(keyB)) {
                 return 0;
             }
 
             // Damaged items are sorted before undamaged items
-            final var fuzzyOrder = Integer.compare(fuzzyOrderA, fuzzyOrderB);
+            var fuzzyOrder = Float.compare(getDamagePercentage(keyB), getDamagePercentage(keyA));
             if (fuzzyOrder != 0) {
                 return fuzzyOrder;
             }
@@ -105,56 +132,7 @@ final class FuzzySearch {
             // damage values to be predictable, while still having to satisfy the
             // complete order requirements of the sorted map
             // (We hope there won't be hash collisions... the probability is very low anyway)
-            return Long.compare(stackA.hashCode(), stackB.hashCode());
+            return Long.compare(keyA.hashCode(), keyB.hashCode());
         }
-    }
-
-    /**
-     * Minecraft reverses the damage values. So anything with a damage of 0 is undamaged and increases the more damaged
-     * the item is.
-     * <p>
-     * Further the used subMap follows [MAX_DAMAGE, MIN_DAMAGE), so to include undamaged items, we have to start with a
-     * lower damage value than 0, while it is fine to use {@link ItemStack#getMaxDamage()} for the upper bound.
-     */
-    private static final int MIN_DAMAGE_VALUE = -1;
-
-    /*
-     * Keep in mind that the stack order is from most damaged to least damaged, so this lower bound will actually be a
-     * higher number than the upper bound.
-     */
-    static FuzzyBound makeLowerBound(AEKey key, FuzzyMode fuzzy) {
-        var maxValue = key.getFuzzySearchMaxValue();
-        Preconditions.checkState(maxValue > 0, "Cannot use fuzzy search on keys that don't have a fuzzy max value: %s",
-                key);
-
-        int damage;
-        if (fuzzy == FuzzyMode.IGNORE_ALL) {
-            damage = maxValue;
-        } else {
-            var breakpoint = fuzzy.calculateBreakPoint(maxValue);
-            damage = key.getFuzzySearchValue() <= breakpoint ? breakpoint : maxValue;
-        }
-
-        return new FuzzyBound(damage);
-    }
-
-    /*
-     * Keep in mind that the stack order is from most damaged to least damaged, so this upper bound will actually be a
-     * lower number than the lower bound. It also is exclusive.
-     */
-    static FuzzyBound makeUpperBound(AEKey key, FuzzyMode fuzzy) {
-        var maxValue = key.getFuzzySearchMaxValue();
-        Preconditions.checkState(maxValue > 0, "Cannot use fuzzy search on keys that don't have a fuzzy max value: %s",
-                key);
-
-        int damage;
-        if (fuzzy == FuzzyMode.IGNORE_ALL) {
-            damage = MIN_DAMAGE_VALUE;
-        } else {
-            final var breakpoint = fuzzy.calculateBreakPoint(maxValue);
-            damage = key.getFuzzySearchValue() <= breakpoint ? MIN_DAMAGE_VALUE : breakpoint;
-        }
-
-        return new FuzzyBound(damage);
     }
 }
