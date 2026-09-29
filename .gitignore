@@ -25,6 +25,7 @@
 # include sourcecode
 !docs/
 !src/
+src/jmh/generated
 src/generated/resources/.cache
 out
 build
