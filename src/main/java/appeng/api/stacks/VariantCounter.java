@@ -19,11 +19,6 @@ import appeng.api.config.FuzzyMode;
  */
 class VariantCounter implements Iterable<Object2LongMap.Entry<AEKey>> {
     /**
-     * Enable to skip and remove keys that are mapped to zero.
-     */
-    private boolean dropZeros;
-
-    /**
      * The current state of this counter, determining which fields are valid and contain item information.
      */
     enum CounterState {
@@ -49,26 +44,16 @@ class VariantCounter implements Iterable<Object2LongMap.Entry<AEKey>> {
     }
 
     private VariantCounter(
-            boolean dropZeros,
             CounterState state,
             AEKey key,
             long count,
             AEKey2LongMap.OpenHashMap genericRecords,
             AEKey2LongMap.AVLTreeMap fuzzyRecords) {
-        this.dropZeros = dropZeros;
         this.state = state;
         this.key = key;
         this.count = count;
         this.genericRecords = genericRecords;
         this.fuzzyRecords = fuzzyRecords;
-    }
-
-    public boolean isDropZeros() {
-        return dropZeros;
-    }
-
-    public void setDropZeros(boolean dropZeros) {
-        this.dropZeros = dropZeros;
     }
 
     public long get(AEKey key) {
@@ -144,16 +129,12 @@ class VariantCounter implements Iterable<Object2LongMap.Entry<AEKey>> {
     }
 
     public long set(AEKey key, long amount) {
-        if (dropZeros && amount == 0) {
-            return remove(key);
-        } else {
-            return switch (state) {
-                case EMPTY -> setEmpty(key, amount);
-                case SINGLE -> setSingle(key, amount);
-                case GENERIC -> setGeneric(key, amount);
-                case FUZZY -> fuzzyRecords.put(key, amount);
-            };
-        }
+        return switch (state) {
+            case EMPTY -> setEmpty(key, amount);
+            case SINGLE -> setSingle(key, amount);
+            case GENERIC -> setGeneric(key, amount);
+            case FUZZY -> fuzzyRecords.put(key, amount);
+        };
     }
 
     // valid IFF state == CounterState.GENERIC
@@ -254,63 +235,41 @@ class VariantCounter implements Iterable<Object2LongMap.Entry<AEKey>> {
     public int size() {
         return switch (state) {
             case EMPTY -> 0;
-            case SINGLE -> dropZeros && count == 0 ? 0 : 1;
+            case SINGLE -> 1;
             case GENERIC -> mapSize(genericRecords);
             case FUZZY -> mapSize(fuzzyRecords);
         };
     }
 
     private int mapSize(AEKey2LongMap records) {
-        if (!dropZeros) {
-            return records.size();
-        }
-        var size = 0;
-        for (var value : records.values()) {
-            if (value != 0) {
-                size++;
-            }
-        }
-        return size;
+        return records.size();
     }
 
     public boolean isEmpty() {
         return switch (state) {
             case EMPTY -> true;
-            case SINGLE -> dropZeros && count == 0;
+            case SINGLE -> false;
             case GENERIC -> mapIsEmpty(genericRecords);
             case FUZZY -> mapIsEmpty(fuzzyRecords);
         };
     }
 
     private boolean mapIsEmpty(AEKey2LongMap records) {
-        if (!dropZeros) {
-            return records.isEmpty();
-        }
-        for (var value : records.values()) {
-            if (value != 0) {
-                return false;
-            }
-        }
-        return true;
+        return records.isEmpty();
     }
 
     @Override
     public @NotNull Iterator<Object2LongMap.Entry<AEKey>> iterator() {
         return switch (state) {
             case EMPTY -> Collections.emptyIterator();
-            case SINGLE -> dropZeros && count == 0 ? Collections.emptyIterator()
-                    : new SingleIterator();
+            case SINGLE -> new SingleIterator();
             case GENERIC -> iterator(genericRecords);
             case FUZZY -> iterator(fuzzyRecords);
         };
     }
 
     private Iterator<Object2LongMap.Entry<AEKey>> iterator(AEKey2LongMap records) {
-        var it = Object2LongMaps.fastIterator(records);
-        if (!dropZeros) {
-            return it;
-        }
-        return new NonDefaultIterator(it);
+        return Object2LongMaps.fastIterator(records);
     }
 
     @Override
@@ -326,29 +285,23 @@ class VariantCounter implements Iterable<Object2LongMap.Entry<AEKey>> {
 
     // valid IFF state == CounterState.SINGLE
     private void forEachSingle(Consumer<? super Object2LongMap.Entry<AEKey>> action) {
-        if (!dropZeros || count != 0) {
-            action.accept(singleton());
-        }
+        action.accept(singleton());
     }
 
     private void mapForEach(AEKey2LongMap records, Consumer<? super Object2LongMap.Entry<AEKey>> action) {
-        records.object2LongEntrySet().forEach(dropZeros ? new NonDefaultConsumer(action) : action);
+        records.object2LongEntrySet().forEach(action);
     }
 
     /**
      * Sets all amounts to zero.
      */
     public void reset() {
-        if (dropZeros) {
-            clear();
-        } else {
-            switch (state) {
-                case EMPTY -> {
-                }
-                case SINGLE -> count = 0;
-                case GENERIC -> genericRecords.replaceAll((key, value) -> 0L);
-                case FUZZY -> fuzzyRecords.replaceAll((key, value) -> 0L);
+        switch (state) {
+            case EMPTY -> {
             }
+            case SINGLE -> count = 0;
+            case GENERIC -> genericRecords.replaceAll((key, value) -> 0L);
+            case FUZZY -> fuzzyRecords.replaceAll((key, value) -> 0L);
         }
     }
 
@@ -370,7 +323,6 @@ class VariantCounter implements Iterable<Object2LongMap.Entry<AEKey>> {
 
     public VariantCounter copy() {
         return new VariantCounter(
-                dropZeros,
                 state,
                 key,
                 count,
@@ -460,60 +412,6 @@ class VariantCounter implements Iterable<Object2LongMap.Entry<AEKey>> {
             }
             removed = true;
             VariantCounter.this.remove(key);
-        }
-    }
-
-    /**
-     * Only returns entries that do not have amount 0.
-     */
-    private static class NonDefaultIterator implements Iterator<Object2LongMap.Entry<AEKey>> {
-        private final Iterator<Object2LongMap.Entry<AEKey>> parent;
-        private Object2LongMap.Entry<AEKey> next;
-
-        public NonDefaultIterator(Iterator<Object2LongMap.Entry<AEKey>> parent) {
-            this.parent = parent;
-            this.next = seekNext();
-        }
-
-        @Override
-        public boolean hasNext() {
-            return this.next != null;
-        }
-
-        @Override
-        public Object2LongMap.Entry<AEKey> next() {
-            if (this.next == null) {
-                throw new NoSuchElementException();
-            }
-
-            var result = this.next;
-            this.next = this.seekNext();
-            return result;
-        }
-
-        private Object2LongMap.Entry<AEKey> seekNext() {
-            while (this.parent.hasNext()) {
-                var entry = this.parent.next();
-
-                if (entry.getLongValue() == 0) {
-                    this.parent.remove();
-                } else {
-                    return entry;
-                }
-            }
-
-            return null;
-        }
-    }
-
-    private record NonDefaultConsumer(
-            Consumer<? super Object2LongMap.Entry<AEKey>> action) implements Consumer<Object2LongMap.Entry<AEKey>> {
-
-        @Override
-        public void accept(Object2LongMap.Entry<AEKey> entry) {
-            if (entry.getLongValue() != 0) {
-                action.accept(entry);
-            }
         }
     }
 }
