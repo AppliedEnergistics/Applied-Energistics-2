@@ -1,5 +1,7 @@
 package appeng.server.testplots;
 
+import java.util.List;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.Items;
@@ -150,23 +152,24 @@ public final class SubnetPlots {
                 .part(Direction.NORTH, AEParts.TERMINAL);
 
         plot.test(helper -> {
+            var red = AEItemKey.of(Items.RED_CONCRETE);
+            var blue = AEItemKey.of(Items.BLUE_CONCRETE);
             helper.startSequence()
                     .thenWaitUntil(() -> {
-                        helper.getGrid(origin);
-                        helper.getGrid(subnetOrigin);
+                        helper.assertGridOnline(origin);
+                        helper.assertGridOnline(subnetOrigin);
                     })
                     .thenExecute(() -> {
                         // Insert drive content
-                        var mainGrid = helper.getGrid(origin);
-                        var mainInv = mainGrid.getStorageService().getInventory();
-                        mainInv.insert(AEItemKey.of(Items.RED_CONCRETE), 64, Actionable.MODULATE,
-                                IActionSource.empty());
-                        mainInv.insert(AEItemKey.of(Items.BLUE_CONCRETE), 64, Actionable.MODULATE,
-                                IActionSource.empty());
+                        var mainInv = helper.getGrid(origin).getStorageService().getInventory();
+                        for (var key : List.of(red, blue)) {
+                            var inserted = mainInv.insert(key, 64, Actionable.MODULATE, IActionSource.empty());
+                            helper.check(inserted == 64, "failed to insert " + key + ": " + inserted, origin);
+                        }
                     })
-                    .thenIdle(1)
-                    .thenExecute(() -> {
-                        // Ensure both red and blue concrete are visible on the sub-network
+                    .thenWaitUntil(() -> {
+                        // Ensure both red and blue concrete are visible on the sub-network. The storage buses
+                        // discover their target on their own grid tick, which can lag behind the grid coming online.
                         helper.assertNetworkContains(subnetOrigin, Items.RED_CONCRETE);
                         helper.assertNetworkContains(subnetOrigin, Items.BLUE_CONCRETE);
                     })
