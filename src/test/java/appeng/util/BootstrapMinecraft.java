@@ -7,8 +7,10 @@ import java.lang.annotation.Target;
 
 import org.junit.jupiter.api.extension.ExtendWith;
 
+import net.neoforged.testframework.junit.EphemeralTestServerProvider;
+
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-@ExtendWith({ BootstrapMinecraftExtension.class })
+@ExtendWith({ EphemeralTestServerProvider.class, BootstrapMinecraftExtension.class })
 public @interface BootstrapMinecraft {
 }
