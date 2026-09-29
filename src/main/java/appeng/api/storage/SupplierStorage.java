@@ -49,6 +49,11 @@ public final class SupplierStorage implements MEStorage {
     }
 
     @Override
+    public int getEstimatedStackCount() {
+        return getDelegate().getEstimatedStackCount();
+    }
+
+    @Override
     public Component getDescription() {
         return getDelegate().getDescription();
     }
