@@ -36,6 +36,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
@@ -177,6 +179,33 @@ public class KeyCounterTest {
         assertEquals(1, itemList.getFirstEntry().getLongValue());
     }
 
+    /**
+     * Removing through the iterator must work regardless of how many variants of an item are stored.
+     */
+    @Test
+    public void testIteratorRemoveWithSingleVariant() {
+        itemList.add(diamondSword(100), 1);
+
+        var it = itemList.iterator();
+        it.next();
+        it.remove();
+        assertThrows(IllegalStateException.class, it::remove);
+
+        assertListContent();
+    }
+
+    @Test
+    public void testIteratorRemoveWithMultipleVariants() {
+        itemList.add(diamondSword(100), 1);
+        itemList.add(diamondSword(50), 1);
+
+        var it = itemList.iterator();
+        var removed = it.next().getKey();
+        it.remove();
+
+        assertThat(itemList.keySet()).hasSize(1).doesNotContain(removed);
+    }
+
     @Nested
     class FindFuzzyDamageableItems {
 
@@ -276,6 +305,123 @@ public class KeyCounterTest {
         }
     }
 
+    /**
+     * Same expectations as {@link FindFuzzyDamageableItems}, but with only a single variant of the item stored.
+     */
+    @Nested
+    class FindFuzzySingleDamageableItem {
+        @ParameterizedTest
+        @CsvSource({
+                "100, IGNORE_ALL, 0, 100",
+                "0, IGNORE_ALL, 0, 100",
+                "100, PERCENT_99, 100, 100",
+                "0, PERCENT_99, 0, 99",
+                "100, PERCENT_75, 75, 100",
+                "0, PERCENT_75, 0, 74",
+                "100, PERCENT_50, 50, 100",
+                "0, PERCENT_50, 0, 49",
+                "100, PERCENT_25, 25, 100",
+                "0, PERCENT_25, 0, 24",
+        })
+        void testFindFuzzy(int filterDurability, FuzzyMode fuzzyMode, int minDurabilityInclusive,
+                int maxDurabilityInclusive) {
+            var filter = diamondSword(filterDurability);
+            for (var i = 0; i <= 100; i++) {
+                var sword = diamondSword(i);
+                var list = new KeyCounter();
+                list.add(sword, 1);
+
+                var expected = i >= minDurabilityInclusive && i <= maxDurabilityInclusive
+                        ? List.of(sword)
+                        : List.of();
+                assertThat(list.findFuzzy(filter, fuzzyMode))
+                        .as("durability %d", i)
+                        .extracting(Map.Entry::getKey)
+                        .isEqualTo(expected);
+            }
+        }
+    }
+
+    /**
+     * Durability is a component, so variants of the same item can have different max damage values, or none at all.
+     * Fuzzy search must match {@link AEKey#fuzzyEquals} for each variant, regardless of which variants are stored and
+     * in which order they were added.
+     */
+    @Nested
+    class FindFuzzyMixedDurability {
+        @Test
+        void testNameTags() {
+            assertFindFuzzyMatchesFuzzyEquals(List.of(
+                    nameTag(),
+                    nameTag("bob"),
+                    nameTagWithDurability(0),
+                    nameTagWithDurability(50),
+                    nameTagWithDurability(90)));
+        }
+
+        @Test
+        void testSwords() {
+            var customMaxDamage = new ItemStack(Items.DIAMOND_SWORD);
+            customMaxDamage.set(DataComponents.MAX_DAMAGE, 100);
+            customMaxDamage.setDamageValue(60);
+
+            var noMaxDamage = new ItemStack(Items.DIAMOND_SWORD);
+            noMaxDamage.remove(DataComponents.MAX_DAMAGE);
+            // Without the name, the key has the same hash code as the undamaged sword. The fuzzy map's comparator
+            // uses hash codes as a tie-breaker and would merge the two keys.
+            noMaxDamage.set(DataComponents.CUSTOM_NAME, Component.literal("no max damage"));
+
+            assertFindFuzzyMatchesFuzzyEquals(List.of(
+                    diamondSword(100),
+                    diamondSword(50),
+                    diamondSword(0),
+                    AEItemKey.of(customMaxDamage),
+                    AEItemKey.of(noMaxDamage)));
+        }
+
+        private void assertFindFuzzyMatchesFuzzyEquals(List<AEItemKey> variants) {
+            for (var order : permutations(variants)) {
+                for (var count = 1; count <= order.size(); count++) {
+                    var stored = order.subList(0, count);
+                    var list = new KeyCounter();
+                    for (var key : stored) {
+                        list.add(key, 1);
+                    }
+
+                    for (var filter : variants) {
+                        for (var fuzzyMode : FuzzyMode.values()) {
+                            var expected = stored.stream()
+                                    .filter(key -> key.fuzzyEquals(filter, fuzzyMode))
+                                    .toList();
+                            assertThat(list.findFuzzy(filter, fuzzyMode))
+                                    .as("stored=%s, filter=%s, mode=%s", stored, filter, fuzzyMode)
+                                    .extracting(Map.Entry::getKey)
+                                    .containsExactlyInAnyOrderElementsOf(expected);
+                        }
+                    }
+                }
+            }
+        }
+
+        private static <T> List<List<T>> permutations(List<T> items) {
+            if (items.isEmpty()) {
+                return List.of(List.of());
+            }
+            var result = new ArrayList<List<T>>();
+            for (var i = 0; i < items.size(); i++) {
+                var rest = new ArrayList<>(items);
+                var first = rest.remove(i);
+                for (var permutation : permutations(rest)) {
+                    var list = new ArrayList<T>();
+                    list.add(first);
+                    list.addAll(permutation);
+                    result.add(list);
+                }
+            }
+            return result;
+        }
+    }
+
     @Test
     void testFindFuzzyForNormalItems() {
         var item1 = nameTag(null);
@@ -339,6 +485,14 @@ public class KeyCounterTest {
     // customName can be used to create items that differ in NBT
     private AEItemKey nameTag() {
         return nameTag(null);
+    }
+
+    // A name tag that was made damageable through its components
+    private AEItemKey nameTagWithDurability(int damage) {
+        var is = new ItemStack(Items.NAME_TAG);
+        is.set(DataComponents.MAX_DAMAGE, 100);
+        is.setDamageValue(damage);
+        return AEItemKey.of(is);
     }
 
     private AEItemKey nameTag(String customName) {
