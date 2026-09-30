@@ -560,6 +560,14 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
     public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
         this.drag_click.clear();
 
+        // Handler for Pick Block mouse click in Survival mode
+        // (Key presses & Creative clicks all reach slotClicked handler as CLONE slot clicks)
+        var pickBlockButton = InputConstants.Type.MOUSE.getOrCreate(event.button());
+        if (getMinecraft().options.keyPickItem.isActiveAndMatches(pickBlockButton)
+                && handlePickBlock(this.getHoveredSlot(event.x(), event.y()))) {
+            return true;
+        }
+
         // Forward right-clicks as-if they were left-clicks
         if (event.button() == 1) {
             handlingRightClick = true;
@@ -602,6 +610,15 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
         return super.mouseReleased(event);
     }
 
+    /**
+     * Called when the player uses the Pick Block binding (mouse button or key) while hovering the given slot.
+     *
+     * @return whether the event was handled and should not be processed further
+     */
+    protected boolean handlePickBlock(@Nullable Slot slot) {
+        return false;
+    }
+
     @Override
     public boolean mouseDragged(MouseButtonEvent event, double dragX, double dragY) {
         final Slot slot = this.getHoveredSlot(event.x(), event.y());
@@ -642,9 +659,21 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
             return;
         }
 
-        // Prevent cloning of wrapped itemstacks
-        if (clickType == ContainerInput.CLONE && slot != null && GenericStack.isWrapped(slot.getItem())) {
-            return;
+        if (clickType == ContainerInput.CLONE) {
+            // Pick Block bound to a keyboard key, or to a mouse button in Creative
+            if (handlePickBlock(slot)) {
+                return;
+            }
+
+            // Cloning would empty a FakeSlot
+            if (slot instanceof FakeSlot) {
+                return;
+            }
+
+            // Wrapped stacks (fluids, etc.) cannot be cloned into the player's hand
+            if (slot != null && GenericStack.isWrapped(slot.getItem())) {
+                return;
+            }
         }
 
         if (this.drag_click.size() <= 1

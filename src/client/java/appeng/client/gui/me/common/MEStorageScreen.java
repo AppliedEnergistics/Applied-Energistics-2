@@ -294,7 +294,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
                     action = mouseButton == 1 ? InventoryAction.PICKUP_SINGLE : InventoryAction.SHIFT_CLICK;
                     break;
 
-                case CLONE: // creative dupe:
+                case CLONE: // Pick Block: autocraft or Creative dupe
                     if (entry.isCraftable()) {
                         menu.handleInteraction(serial, InventoryAction.AUTO_CRAFT);
                         return;
@@ -303,8 +303,8 @@ public class MEStorageScreen<C extends MEStorageMenu>
                     }
                     break;
 
-                default:
                 case THROW: // drop item:
+                default:
             }
 
             if (action != null) {
@@ -513,15 +513,6 @@ public class MEStorageScreen<C extends MEStorageMenu>
             // Don't return immediately to also grab focus.
         }
 
-        // handler for middle mouse button crafting in survival mode
-        if (Minecraft.getInstance().options.keyPickItem.matchesMouse(event)) {
-            Slot slot = this.getHoveredSlot(event.x(), event.y());
-            if (slot instanceof RepoSlot repoSlot && repoSlot.isCraftable()) {
-                handleGridInventoryEntryMouseClick(repoSlot.getEntry(), event.button(), ContainerInput.CLONE);
-                return true;
-            }
-        }
-
         return super.mouseClicked(event, doubleClick);
     }
 
@@ -553,6 +544,21 @@ public class MEStorageScreen<C extends MEStorageMenu>
         }
 
         super.slotClicked(slot, slotIdx, mouseButton, clickType);
+    }
+
+    /**
+     * Handler for Pick Block autocrafting
+     */
+    @Override
+    protected boolean handlePickBlock(Slot slot) {
+        if (slot instanceof RepoSlot repoSlot && repoSlot.isCraftable()) {
+            // Placeholder button: just can't be 0/left or 1/right
+            var mouseButton = InputConstants.MOUSE_BUTTON_MIDDLE;
+            handleGridInventoryEntryMouseClick(repoSlot.getEntry(), mouseButton, ContainerInput.CLONE);
+            return true;
+        }
+
+        return super.handlePickBlock(slot);
     }
 
     @Override
