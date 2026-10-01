@@ -74,7 +74,7 @@ public final class AERenderPipelines {
             .withVertexShader("core/position_color")
             .withFragmentShader("core/position_color")
             .withVertexFormat(DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS)
-            .withDepthStencilState(DepthStencilState.DEFAULT)
+            .withDepthStencilState(new DepthStencilState(CompareOp.LESS_THAN_OR_EQUAL, true, -0.5f, -0.5f))
             .build();
 
     public static final RenderPipeline LIGHTNING_FX = RenderPipeline
