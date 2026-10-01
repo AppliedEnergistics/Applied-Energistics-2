@@ -1,7 +1,5 @@
 {
   "type": "minecraft:smelting",
-  "category": "misc",
-  "cookingtime": 200,
   "experience": 0.35,
   "ingredient": "#c:dusts/certus_quartz",
   "result": {

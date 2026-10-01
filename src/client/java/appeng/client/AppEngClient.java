@@ -332,7 +332,7 @@ public class AppEngClient extends AppEngBase {
 
     private void tickPinnedKeys(Minecraft minecraft) {
         // Only prune pinned keys when no screen is currently open
-        if (minecraft.screen == null) {
+        if (minecraft.gui.screen() == null) {
             PinnedKeys.prune();
         }
     }
@@ -442,14 +442,14 @@ public class AppEngClient extends AppEngBase {
 
         // Invalidate all sections that contain a cable bus within view distance
         // This should asynchronously update the chunk meshes and as part of that use the new facade render mode
-        var viewDistance = (int) Math.ceil(mc.levelRenderer.getLastViewDistance());
+        var viewDistance = (int) Math.ceil(mc.levelExtractor.lastViewDistance());
         ChunkPos.rangeClosed(mc.player.chunkPosition(), viewDistance).forEach(chunkPos -> {
             var chunk = mc.level.getChunkSource().getChunkNow(chunkPos.x(), chunkPos.z());
             if (chunk != null) {
                 for (var i = 0; i < chunk.getSectionsCount(); i++) {
                     var section = chunk.getSection(i);
                     if (section.maybeHas(state -> state.is(AEBlocks.CABLE_BUS.block()))) {
-                        mc.levelRenderer.setSectionDirty(chunkPos.x(), chunk.getSectionYFromSectionIndex(i),
+                        mc.levelExtractor.setSectionDirty(chunkPos.x(), chunk.getSectionYFromSectionIndex(i),
                                 chunkPos.z());
                     }
                 }
@@ -478,7 +478,7 @@ public class AppEngClient extends AppEngBase {
     @Override
     public void sendSystemMessage(Player player, Component text) {
         if (player == Minecraft.getInstance().player) {
-            Minecraft.getInstance().gui.getChat().addServerSystemMessage(text);
+            Minecraft.getInstance().gui.hud.getChat().addServerSystemMessage(text);
         }
         super.sendSystemMessage(player, text);
     }

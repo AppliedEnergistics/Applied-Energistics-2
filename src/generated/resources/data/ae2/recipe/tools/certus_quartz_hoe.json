@@ -1,6 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "key": {
     "a": "#c:gems/certus_quartz",
     "b": "#c:rods/wooden"

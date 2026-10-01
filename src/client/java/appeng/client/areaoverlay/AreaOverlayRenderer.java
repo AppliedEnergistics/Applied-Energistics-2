@@ -21,22 +21,21 @@ package appeng.client.areaoverlay;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import org.joml.Matrix4f;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.util.context.ContextKey;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.client.event.ExtractLevelRenderStateEvent;
-import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
+import net.neoforged.neoforge.client.event.SubmitCustomGeometryEvent;
 
 import appeng.client.render.AERenderTypes;
 import appeng.core.AppEng;
@@ -65,56 +64,51 @@ public class AreaOverlayRenderer {
     }
 
     @SubscribeEvent
-    public void renderWorldLastEvent(RenderLevelStageEvent.AfterWeather event) {
-        var visibleAreas = event.getLevelRenderState().getRenderDataOrDefault(OVERLAY_AREAS, List.of());
+    public void submitCustomGeometry(SubmitCustomGeometryEvent event) {
+        var levelRenderState = event.getLevelRenderState();
+        var visibleAreas = levelRenderState.getRenderDataOrDefault(OVERLAY_AREAS, List.of());
 
         if (visibleAreas.isEmpty()) {
             return;
         }
 
-        Minecraft minecraft = Minecraft.getInstance();
-        MultiBufferSource.BufferSource buffer = minecraft.renderBuffers().bufferSource();
+        var collector = event.getSubmitNodeCollector();
         PoseStack poseStack = event.getPoseStack();
 
         poseStack.pushPose();
 
-        Vec3 projectedView = minecraft.gameRenderer.getMainCamera().position();
+        Vec3 projectedView = levelRenderState.cameraRenderState.pos;
         poseStack.translate(-projectedView.x, -projectedView.y, -projectedView.z);
 
         for (var visibleArea : visibleAreas) {
-            render(visibleArea, poseStack, buffer);
+            submit(visibleArea, poseStack, collector);
         }
 
         poseStack.popPose();
-
-        buffer.endBatch(AERenderTypes.AREA_OVERLAY_LINE_OCCLUDED);
-        buffer.endBatch(AERenderTypes.AREA_OVERLAY_FACE);
-        buffer.endBatch(AERenderTypes.AREA_OVERLAY_LINE);
     }
 
-    public void render(IAreaOverlayDataSource area, PoseStack poseStack, MultiBufferSource buffer) {
+    public void submit(IAreaOverlayDataSource area, PoseStack poseStack, SubmitNodeCollector collector) {
         Level level = area.getOverlaySourceLocation().getLevel();
-        Collection<ChunkPos> allChunks = area.getOverlayChunks();
+        // The geometry is built later in the frame, so take a snapshot of the chunks now
+        Set<ChunkPos> allChunks = Set.copyOf(area.getOverlayChunks());
+        int minY = level.getMinY();
+        int maxY = level.getMaxY();
+        int areaColor = area.getOverlayColor();
 
-        RenderType typeLinesOccluded = AERenderTypes.AREA_OVERLAY_LINE_OCCLUDED;
-        render(level, allChunks, poseStack, buffer.getBuffer(typeLinesOccluded), true, 0x30ffffff);
-
-        RenderType typeFaces = AERenderTypes.AREA_OVERLAY_FACE;
-        render(level, allChunks, poseStack, buffer.getBuffer(typeFaces), false, area.getOverlayColor());
-
-        RenderType typeLines = AERenderTypes.AREA_OVERLAY_LINE;
-        render(level, allChunks, poseStack, buffer.getBuffer(typeLines), true, area.getOverlayColor());
+        collector.submitCustomGeometry(poseStack, AERenderTypes.AREA_OVERLAY_LINE_OCCLUDED,
+                (pose, builder) -> render(minY, maxY, allChunks, pose, builder, true, 0x30ffffff));
+        collector.submitCustomGeometry(poseStack, AERenderTypes.AREA_OVERLAY_FACE,
+                (pose, builder) -> render(minY, maxY, allChunks, pose, builder, false, areaColor));
+        collector.submitCustomGeometry(poseStack, AERenderTypes.AREA_OVERLAY_LINE,
+                (pose, builder) -> render(minY, maxY, allChunks, pose, builder, true, areaColor));
     }
 
-    private void render(Level level, Collection<ChunkPos> allChunks, PoseStack poseStack, VertexConsumer builder,
-            boolean renderLines, int color) {
+    private void render(int minY, int maxY, Collection<ChunkPos> allChunks, PoseStack.Pose pose,
+            VertexConsumer builder, boolean renderLines, int color) {
         int[] cols = decomposeColor(color);
         for (ChunkPos pos : allChunks) {
-            poseStack.pushPose();
-            poseStack.translate(pos.getMinBlockX(), 0, pos.getMinBlockZ());
-            Matrix4f posMat = poseStack.last().pose();
-            addVertices(level, allChunks, builder, posMat, pos, cols, renderLines);
-            poseStack.popPose();
+            Matrix4f posMat = new Matrix4f(pose.pose()).translate(pos.getMinBlockX(), 0, pos.getMinBlockZ());
+            addVertices(minY, maxY, allChunks, builder, posMat, pos, cols, renderLines);
         }
     }
 
@@ -127,13 +121,13 @@ public class AreaOverlayRenderer {
         return res;
     }
 
-    private void addVertices(Level level, Collection<ChunkPos> allChunks, VertexConsumer wr, Matrix4f posMat,
+    private void addVertices(int minY, int maxY, Collection<ChunkPos> allChunks, VertexConsumer wr, Matrix4f posMat,
             ChunkPos pos, int[] cols, boolean renderLines) {
         // Render around a whole chunk
         float x1 = 0f;
         float x2 = 16f;
-        float y1 = level.getMinY();
-        float y2 = level.getMaxY();
+        float y1 = minY;
+        float y2 = maxY;
         float z1 = 0f;
         float z2 = 16f;
 

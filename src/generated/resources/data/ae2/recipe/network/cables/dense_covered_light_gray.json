@@ -1,6 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "key": {
     "a": "ae2:fluix_covered_dense_cable",
     "b": "#c:dyes/light_gray"

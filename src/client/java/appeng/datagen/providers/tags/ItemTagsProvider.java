@@ -21,6 +21,7 @@ package appeng.datagen.providers.tags;
 import java.util.concurrent.CompletableFuture;
 
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.Identifier;
@@ -28,6 +29,7 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagEntry;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.common.Tags;
@@ -47,6 +49,11 @@ public class ItemTagsProvider extends BlockTagCopyingItemTagProvider implements 
     public ItemTagsProvider(PackOutput packOutput, CompletableFuture<HolderLookup.Provider> registries,
             CompletableFuture<TagLookup<Block>> blockTagsProvider) {
         super(packOutput, registries, blockTagsProvider, AppEng.MOD_ID);
+    }
+
+    @Override
+    protected IntrinsicTagAppender<Item> tag(TagKey<Item> tag) {
+        return new IntrinsicTagAppender<>(super.tag(tag), BuiltInRegistries.ITEM);
     }
 
     @Override

@@ -108,22 +108,9 @@ public class ColorApplicatorItem extends AEBasePoweredItem
 
     // TODO (RID): Sorted the colours according to the colour wheel
     static {
-        VANILLA_DYES.put(DyeColor.WHITE, Items.WHITE_DYE);
-        VANILLA_DYES.put(DyeColor.LIGHT_GRAY, Items.LIGHT_GRAY_DYE);
-        VANILLA_DYES.put(DyeColor.GRAY, Items.GRAY_DYE);
-        VANILLA_DYES.put(DyeColor.BLACK, Items.BLACK_DYE);
-        VANILLA_DYES.put(DyeColor.LIME, Items.LIME_DYE);
-        VANILLA_DYES.put(DyeColor.YELLOW, Items.YELLOW_DYE);
-        VANILLA_DYES.put(DyeColor.ORANGE, Items.ORANGE_DYE);
-        VANILLA_DYES.put(DyeColor.BROWN, Items.BROWN_DYE);
-        VANILLA_DYES.put(DyeColor.RED, Items.RED_DYE);
-        VANILLA_DYES.put(DyeColor.PINK, Items.PINK_DYE);
-        VANILLA_DYES.put(DyeColor.MAGENTA, Items.MAGENTA_DYE);
-        VANILLA_DYES.put(DyeColor.PURPLE, Items.PURPLE_DYE);
-        VANILLA_DYES.put(DyeColor.BLUE, Items.BLUE_DYE);
-        VANILLA_DYES.put(DyeColor.LIGHT_BLUE, Items.LIGHT_BLUE_DYE);
-        VANILLA_DYES.put(DyeColor.CYAN, Items.CYAN_DYE);
-        VANILLA_DYES.put(DyeColor.GREEN, Items.GREEN_DYE);
+        for (var color : AEColor.VALID_COLORS) {
+            VANILLA_DYES.put(color.dye, Items.DYE.pick(color.dye));
+        }
     }
 
     public ColorApplicatorItem(Properties props) {

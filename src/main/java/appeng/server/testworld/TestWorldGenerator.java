@@ -21,7 +21,7 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.Rotation;
-import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.entity.BlockEntityTypes;
 import net.minecraft.world.level.block.entity.SignText;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
@@ -120,7 +120,7 @@ public class TestWorldGenerator {
         level.setBlock(signPos,
                 Blocks.OAK_SIGN.defaultBlockState().rotate(Rotation.CLOCKWISE_180),
                 Block.UPDATE_ALL);
-        level.getBlockEntity(signPos, BlockEntityType.SIGN).ifPresent(sign -> {
+        level.getBlockEntity(signPos, BlockEntityTypes.SIGN).ifPresent(sign -> {
             var signText = sign.getText(true);
             sign.setAllowedPlayerEditor(null);
             signText.setHasGlowingText(true);

@@ -3,7 +3,7 @@ package appeng.server.testplots;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
@@ -126,12 +126,12 @@ public final class SpatialTestPlots {
             // Spawn cow + chicken
             helper.startSequence()
                     .thenExecute(() -> {
-                        helper.spawn(EntityType.CHICKEN, Vec3.atBottomCenterOf(chickenPos.above()));
+                        helper.spawn(EntityTypes.CHICKEN, Vec3.atBottomCenterOf(chickenPos.above()));
                         helper.spawnItem(Items.OBSIDIAN, Vec3.atCenterOf(chickenPos));
                     })
                     .thenWaitUntil(() -> {
                         helper.assertItemEntityCountIs(Items.OBSIDIAN, chickenPos, 1, 1);
-                        helper.assertEntitiesPresent(EntityType.CHICKEN, chickenPos, 1, 1);
+                        helper.assertEntitiesPresent(EntityTypes.CHICKEN, chickenPos, 1, 1);
                     })
                     .thenIdle(5)
                     // Wait for the grid to become available
@@ -140,7 +140,7 @@ public final class SpatialTestPlots {
                     .thenWaitUntil(() -> {
                         // Validate, that the chicken and obsidian are gone
                         helper.assertItemEntityCountIs(Items.OBSIDIAN, chickenPos, 1, 0);
-                        helper.assertEntitiesPresent(EntityType.CHICKEN, chickenPos, 0, 1);
+                        helper.assertEntitiesPresent(EntityTypes.CHICKEN, chickenPos, 0, 1);
                     })
                     .thenExecute(() -> {
                         // Swap the cell back to the input slot and trigger a transition
@@ -154,7 +154,7 @@ public final class SpatialTestPlots {
                     .thenWaitUntil(() -> {
                         // Validate that the chicken and obsidian are back
                         helper.assertItemEntityCountIs(Items.OBSIDIAN, chickenPos, 1, 1);
-                        helper.assertEntitiesPresent(EntityType.CHICKEN, chickenPos, 1, 1);
+                        helper.assertEntitiesPresent(EntityTypes.CHICKEN, chickenPos, 1, 1);
                     })
                     .thenSucceed();
         });
