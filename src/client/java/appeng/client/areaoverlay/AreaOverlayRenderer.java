@@ -26,9 +26,13 @@ import java.util.Set;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
+import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
+import org.joml.Matrix4fc;
+import org.joml.Vector3f;
 
 import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.util.Mth;
 import net.minecraft.util.context.ContextKey;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
@@ -80,14 +84,16 @@ public class AreaOverlayRenderer {
         Vec3 projectedView = levelRenderState.cameraRenderState.pos;
         poseStack.translate(-projectedView.x, -projectedView.y, -projectedView.z);
 
+        var viewMatrix = new Matrix4f(levelRenderState.cameraRenderState.viewRotationMatrix);
         for (var visibleArea : visibleAreas) {
-            submit(visibleArea, poseStack, collector);
+            submit(visibleArea, poseStack, viewMatrix, collector);
         }
 
         poseStack.popPose();
     }
 
-    public void submit(IAreaOverlayDataSource area, PoseStack poseStack, SubmitNodeCollector collector) {
+    public void submit(IAreaOverlayDataSource area, PoseStack poseStack, Matrix4fc viewMatrix,
+            SubmitNodeCollector collector) {
         Level level = area.getOverlaySourceLocation().getLevel();
         // The geometry is built later in the frame, so take a snapshot of the chunks now
         Set<ChunkPos> allChunks = Set.copyOf(area.getOverlayChunks());
@@ -96,33 +102,26 @@ public class AreaOverlayRenderer {
         int areaColor = area.getOverlayColor();
 
         collector.submitCustomGeometry(poseStack, AERenderTypes.AREA_OVERLAY_LINE_OCCLUDED,
-                (pose, builder) -> render(minY, maxY, allChunks, pose, builder, true, 0x30ffffff));
+                (pose, builder) -> render(minY, maxY, allChunks, pose, viewMatrix, builder, true, 0x30ffffff));
         collector.submitCustomGeometry(poseStack, AERenderTypes.AREA_OVERLAY_FACE,
-                (pose, builder) -> render(minY, maxY, allChunks, pose, builder, false, areaColor));
+                (pose, builder) -> render(minY, maxY, allChunks, pose, viewMatrix, builder, false, areaColor));
         collector.submitCustomGeometry(poseStack, AERenderTypes.AREA_OVERLAY_LINE,
-                (pose, builder) -> render(minY, maxY, allChunks, pose, builder, true, areaColor));
+                (pose, builder) -> render(minY, maxY, allChunks, pose, viewMatrix, builder, true, areaColor));
     }
 
     private void render(int minY, int maxY, Collection<ChunkPos> allChunks, PoseStack.Pose pose,
-            VertexConsumer builder, boolean renderLines, int color) {
-        int[] cols = decomposeColor(color);
+            Matrix4fc viewMatrix, VertexConsumer builder, boolean renderLines, int color) {
         for (ChunkPos pos : allChunks) {
             Matrix4f posMat = new Matrix4f(pose.pose()).translate(pos.getMinBlockX(), 0, pos.getMinBlockZ());
-            addVertices(minY, maxY, allChunks, builder, posMat, pos, cols, renderLines);
+            // Clipping lines against the camera plane requires knowing their position in view-space
+            Matrix4f viewSpaceMat = renderLines ? new Matrix4f(viewMatrix).mul(posMat) : null;
+            var edges = new EdgeWriter(builder, posMat, viewSpaceMat, color);
+            addVertices(minY, maxY, allChunks, edges, pos, renderLines);
         }
     }
 
-    private static int[] decomposeColor(int color) {
-        int[] res = new int[4];
-        res[0] = color >> 24 & 0xff;
-        res[1] = color >> 16 & 0xff;
-        res[2] = color >> 8 & 0xff;
-        res[3] = color & 0xff;
-        return res;
-    }
-
-    private void addVertices(int minY, int maxY, Collection<ChunkPos> allChunks, VertexConsumer wr, Matrix4f posMat,
-            ChunkPos pos, int[] cols, boolean renderLines) {
+    private void addVertices(int minY, int maxY, Collection<ChunkPos> allChunks, EdgeWriter edges, ChunkPos pos,
+            boolean renderLines) {
         // Render around a whole chunk
         float x1 = 0f;
         float x2 = 16f;
@@ -131,8 +130,6 @@ public class AreaOverlayRenderer {
         float z1 = 0f;
         float z2 = 16f;
 
-        final float lineWidth = 3f;
-
         boolean noNorth = !allChunks.contains(new ChunkPos(pos.x(), pos.z() - 1));
         boolean noSouth = !allChunks.contains(new ChunkPos(pos.x(), pos.z() + 1));
         boolean noWest = !allChunks.contains(new ChunkPos(pos.x() - 1, pos.z()));
@@ -140,98 +137,109 @@ public class AreaOverlayRenderer {
 
         if (noNorth) {
             // Face North, Edge Bottom
-            wr.addVertex(posMat, x1, y1, z1).setColor(cols[1], cols[2], cols[3], cols[0])
-                    .setNormal(1, 0, 0).setLineWidth(lineWidth);
-            wr.addVertex(posMat, x2, y1, z1).setColor(cols[1], cols[2], cols[3], cols[0])
-                    .setNormal(1, 0, 0).setLineWidth(lineWidth);
+            edges.add(x1, y1, z1, x2, y1, z1);
             // Face North, Edge Top
-            wr.addVertex(posMat, x2, y2, z1).setColor(cols[1], cols[2], cols[3], cols[0])
-                    .setNormal(-1, 0, 0).setLineWidth(lineWidth);
-            wr.addVertex(posMat, x1, y2, z1).setColor(cols[1], cols[2], cols[3], cols[0])
-                    .setNormal(-1, 0, 0).setLineWidth(lineWidth);
+            edges.add(x2, y2, z1, x1, y2, z1);
         }
 
         if (noSouth) {
             // Face South, Edge Bottom
-            wr.addVertex(posMat, x2, y1, z2).setColor(cols[1], cols[2], cols[3], cols[0])
-                    .setNormal(-1, 0, 0).setLineWidth(lineWidth);
-            wr.addVertex(posMat, x1, y1, z2).setColor(cols[1], cols[2], cols[3], cols[0])
-                    .setNormal(-1, 0, 0).setLineWidth(lineWidth);
+            edges.add(x2, y1, z2, x1, y1, z2);
             // Face South, Edge Top
-            wr.addVertex(posMat, x1, y2, z2).setColor(cols[1], cols[2], cols[3], cols[0])
-                    .setNormal(1, 0, 0).setLineWidth(lineWidth);
-            wr.addVertex(posMat, x2, y2, z2).setColor(cols[1], cols[2], cols[3], cols[0])
-                    .setNormal(1, 0, 0).setLineWidth(lineWidth);
+            edges.add(x1, y2, z2, x2, y2, z2);
         }
 
         if (noWest) {
             // Face West, Edge Bottom
-            wr.addVertex(posMat, x1, y1, z1).setColor(cols[1], cols[2], cols[3], cols[0])
-                    .setNormal(0, 0, 1).setLineWidth(lineWidth);
-            wr.addVertex(posMat, x1, y1, z2).setColor(cols[1], cols[2], cols[3], cols[0])
-                    .setNormal(0, 0, 1).setLineWidth(lineWidth);
+            edges.add(x1, y1, z1, x1, y1, z2);
             // Face West, Edge Top
-            wr.addVertex(posMat, x1, y2, z2).setColor(cols[1], cols[2], cols[3], cols[0])
-                    .setNormal(0, 0, -1).setLineWidth(lineWidth);
-            wr.addVertex(posMat, x1, y2, z1).setColor(cols[1], cols[2], cols[3], cols[0])
-                    .setNormal(0, 0, -1).setLineWidth(lineWidth);
+            edges.add(x1, y2, z2, x1, y2, z1);
         }
 
         if (noEast) {
             // Face East, Edge Bottom
-            wr.addVertex(posMat, x2, y1, z2).setColor(cols[1], cols[2], cols[3], cols[0])
-                    .setNormal(0, 0, -1).setLineWidth(lineWidth);
-            wr.addVertex(posMat, x2, y1, z1).setColor(cols[1], cols[2], cols[3], cols[0])
-                    .setNormal(0, 0, -1).setLineWidth(lineWidth);
+            edges.add(x2, y1, z2, x2, y1, z1);
             // Face East, Edge Top
-            wr.addVertex(posMat, x2, y2, z1).setColor(cols[1], cols[2], cols[3], cols[0])
-                    .setNormal(0, 0, 1).setLineWidth(lineWidth);
-            wr.addVertex(posMat, x2, y2, z2).setColor(cols[1], cols[2], cols[3], cols[0])
-                    .setNormal(0, 0, 1).setLineWidth(lineWidth);
+            edges.add(x2, y2, z1, x2, y2, z2);
         }
 
         if (renderLines) {
             if (noNorth || noWest) {
                 // Face North, Edge West
-                wr.addVertex(posMat, x1, y1, z1).setColor(cols[1], cols[2], cols[3], cols[0])
-                        .setNormal(0, 1, 0).setLineWidth(lineWidth);
-                wr.addVertex(posMat, x1, y2, z1).setColor(cols[1], cols[2], cols[3], cols[0])
-                        .setNormal(0, 1, 0).setLineWidth(lineWidth);
+                edges.add(x1, y1, z1, x1, y2, z1);
             }
 
             if (noNorth || noEast) {
                 // Face North, Edge East
-                wr.addVertex(posMat, x2, y2, z1).setColor(cols[1], cols[2], cols[3], cols[0])
-                        .setNormal(0, -1, 0).setLineWidth(lineWidth);
-                wr.addVertex(posMat, x2, y1, z1).setColor(cols[1], cols[2], cols[3], cols[0])
-                        .setNormal(0, -1, 0).setLineWidth(lineWidth);
+                edges.add(x2, y2, z1, x2, y1, z1);
             }
 
             if (noSouth || noEast) {
                 // Face South, Edge East
-                wr.addVertex(posMat, x2, y1, z2).setColor(cols[1], cols[2], cols[3], cols[0])
-                        .setNormal(0, 1, 0).setLineWidth(lineWidth);
-                wr.addVertex(posMat, x2, y2, z2).setColor(cols[1], cols[2], cols[3], cols[0])
-                        .setNormal(0, 1, 0).setLineWidth(lineWidth);
+                edges.add(x2, y1, z2, x2, y2, z2);
             }
             if (noSouth || noWest) {
                 // Face South, Edge West
-                wr.addVertex(posMat, x1, y2, z2).setColor(cols[1], cols[2], cols[3], cols[0])
-                        .setNormal(0, -1, 0).setLineWidth(lineWidth);
-                wr.addVertex(posMat, x1, y1, z2).setColor(cols[1], cols[2], cols[3], cols[0])
-                        .setNormal(0, -1, 0).setLineWidth(lineWidth);
+                edges.add(x1, y2, z2, x1, y1, z2);
             }
         } else {
             // Bottom Face
-            wr.addVertex(posMat, x1, y1, z1).setColor(cols[1], cols[2], cols[3], cols[0])
-                    .setNormal(1, 0, 0).setLineWidth(lineWidth);
-            wr.addVertex(posMat, x2, y1, z1).setColor(cols[1], cols[2], cols[3], cols[0])
-                    .setNormal(1, 0, 0).setLineWidth(lineWidth);
-            wr.addVertex(posMat, x2, y1, z2).setColor(cols[1], cols[2], cols[3], cols[0])
-                    .setNormal(-1, 0, 0).setLineWidth(lineWidth);
-            wr.addVertex(posMat, x1, y1, z2).setColor(cols[1], cols[2], cols[3], cols[0])
-                    .setNormal(-1, 0, 0).setLineWidth(lineWidth);
+            edges.add(x1, y1, z1, x2, y1, z1);
+            edges.add(x2, y1, z2, x1, y1, z2);
         }
+    }
 
+    /**
+     * Writes pairs of vertices, which are either a line segment or one half of a quad. Both vertices use the direction
+     * from the first to the second vertex as their normal, which the line shader uses as the line direction.
+     *
+     * @param viewSpaceMat If not null, line segments are clipped against the camera plane, like vanilla does for gizmo
+     *                     lines. The line shader cannot handle segments that end behind the camera and would render
+     *                     them with a view-dependent width and jitter (i.e. the long vertical edges when looking up or
+     *                     down).
+     */
+    private record EdgeWriter(VertexConsumer wr, Matrix4f posMat, @Nullable Matrix4f viewSpaceMat, int color) {
+
+        private static final float LINE_WIDTH = 3f;
+        private static final float NEAR_PLANE_Z = -0.05f;
+
+        void add(float x1, float y1, float z1, float x2, float y2, float z2) {
+            if (viewSpaceMat != null) {
+                var tmp = new Vector3f();
+                float startZ = viewSpaceMat.transformPosition(x1, y1, z1, tmp).z;
+                float endZ = viewSpaceMat.transformPosition(x2, y2, z2, tmp).z;
+                boolean startIsBehindCamera = startZ > NEAR_PLANE_Z;
+                boolean endIsBehindCamera = endZ > NEAR_PLANE_Z;
+                if (startIsBehindCamera && endIsBehindCamera) {
+                    return;
+                }
+                if (startIsBehindCamera || endIsBehindCamera) {
+                    float t = Mth.clamp((NEAR_PLANE_Z - startZ) / (endZ - startZ), 0f, 1f);
+                    float ix = Mth.lerp(t, x1, x2);
+                    float iy = Mth.lerp(t, y1, y2);
+                    float iz = Mth.lerp(t, z1, z2);
+                    if (startIsBehindCamera) {
+                        x1 = ix;
+                        y1 = iy;
+                        z1 = iz;
+                    } else {
+                        x2 = ix;
+                        y2 = iy;
+                        z2 = iz;
+                    }
+                }
+            }
+
+            var normal = new Vector3f(x2 - x1, y2 - y1, z2 - z1);
+            if (normal.lengthSquared() < 1e-12f) {
+                return;
+            }
+            normal.normalize();
+
+            wr.addVertex(posMat, x1, y1, z1).setColor(color).setNormal(normal.x, normal.y, normal.z)
+                    .setLineWidth(LINE_WIDTH);
+            wr.addVertex(posMat, x2, y2, z2).setColor(color).setNormal(normal.x, normal.y, normal.z)
+                    .setLineWidth(LINE_WIDTH);
+        }
     }
 }
