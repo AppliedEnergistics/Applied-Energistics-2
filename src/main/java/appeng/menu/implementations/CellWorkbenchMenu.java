@@ -67,7 +67,7 @@ public class CellWorkbenchMenu extends UpgradeableMenu<CellWorkbenchBlockEntity>
     public static final MenuType<CellWorkbenchMenu> TYPE = MenuTypeBuilder
             .create(CellWorkbenchMenu::new, CellWorkbenchBlockEntity.class)
             .build("cellworkbench");
-    
+
     @GuiSync(7)
     public CopyMode copyMode = CopyMode.CLEAR_ON_REMOVE;
 
