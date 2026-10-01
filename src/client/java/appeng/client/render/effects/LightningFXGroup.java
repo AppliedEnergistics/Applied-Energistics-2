@@ -19,7 +19,7 @@ import net.minecraft.util.Mth;
 import appeng.client.render.AERenderTypes;
 
 public class LightningFXGroup extends ParticleGroup<LightningFX> {
-    public static ParticleRenderType GROUP = new ParticleRenderType("AE2_LIGHTNING");
+    public static ParticleRenderType GROUP = new ParticleRenderType("AE2_LIGHTNING", "AE2L");
 
     public LightningFXGroup(ParticleEngine engine) {
         super(engine);

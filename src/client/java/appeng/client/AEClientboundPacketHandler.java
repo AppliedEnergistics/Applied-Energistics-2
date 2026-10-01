@@ -100,7 +100,7 @@ public class AEClientboundPacketHandler {
 
     public void handlePatternAccessTerminalPacket(PatternAccessTerminalPacket packet, Minecraft minecraft,
             Player player) {
-        if (Minecraft.getInstance().screen instanceof PatternAccessTermScreen<?> patternAccessTerminal) {
+        if (Minecraft.getInstance().gui.screen() instanceof PatternAccessTermScreen<?> patternAccessTerminal) {
             if (packet.fullUpdate()) {
                 patternAccessTerminal.postFullUpdate(packet.inventoryId(), packet.sortBy(), packet.group(),
                         packet.inventorySize(), packet.slots());
@@ -172,7 +172,7 @@ public class AEClientboundPacketHandler {
             return; // Packet received for an invalid container id, i.e. after closing it client-side
         }
 
-        Screen screen = Minecraft.getInstance().screen;
+        Screen screen = Minecraft.getInstance().gui.screen();
 
         if (screen instanceof CraftingCPUScreen<?> cpuScreen) {
             cpuScreen.postUpdate(packet.status());
@@ -186,7 +186,7 @@ public class AEClientboundPacketHandler {
     }
 
     public void handleNetworkStatusPacket(NetworkStatusPacket packet, Minecraft minecraft, Player player) {
-        final Screen gs = Minecraft.getInstance().screen;
+        final Screen gs = Minecraft.getInstance().gui.screen();
 
         if (gs instanceof NetworkStatusScreen) {
             ((NetworkStatusScreen) gs).processServerUpdate(packet.status());
@@ -224,7 +224,7 @@ public class AEClientboundPacketHandler {
 
     public void handleClearPatternAccessTerminalPacket(ClearPatternAccessTerminalPacket packet, Minecraft minecraft,
             Player player) {
-        if (Minecraft.getInstance().screen instanceof PatternAccessTermScreen<?> patternAccessTerminal) {
+        if (Minecraft.getInstance().gui.screen() instanceof PatternAccessTermScreen<?> patternAccessTerminal) {
             patternAccessTerminal.clear();
         }
     }

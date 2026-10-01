@@ -34,7 +34,6 @@ import java.util.function.Consumer;
 
 import com.google.common.primitives.Longs;
 
-import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -42,6 +41,7 @@ import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextColor;
 import net.minecraft.util.ARGB;
 
 import appeng.client.Point;
@@ -466,7 +466,7 @@ public class NumberEntryWidget implements ICompositeWidget {
                     - font.width(type.unit());
             var y = (int) (bounds.getY() + textFieldBounds.getY() + (textFieldBounds.getHeight() - font.lineHeight) / 2f
                     + 1);
-            guiGraphics.text(font, type.unit(), x, y, ARGB.opaque(ChatFormatting.DARK_GRAY.getColor()), false);
+            guiGraphics.text(font, type.unit(), x, y, ARGB.opaque(TextColor.DARK_GRAY.getValue()), false);
         }
     }
 

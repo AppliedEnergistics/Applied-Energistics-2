@@ -4,6 +4,7 @@ import java.util.List;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Items;
 
 import appeng.api.config.Actionable;
@@ -141,19 +142,19 @@ public final class SubnetPlots {
         var subnetOrigin = origin.north();
         plot.cable(subnetOrigin)
                 .part(Direction.SOUTH, AEParts.STORAGE_BUS, bus -> {
-                    bus.getConfig().addFilter(Items.RED_CONCRETE);
+                    bus.getConfig().addFilter(Items.CONCRETE.pick(DyeColor.RED));
                 });
         plot.cable(subnetOrigin.east())
                 .part(Direction.SOUTH, AEParts.STORAGE_BUS, bus -> {
-                    bus.getConfig().addFilter(Items.BLUE_CONCRETE);
+                    bus.getConfig().addFilter(Items.CONCRETE.pick(DyeColor.BLUE));
                 });
         plot.cable(subnetOrigin.east().east())
                 .part(Direction.SOUTH, AEParts.QUARTZ_FIBER)
                 .part(Direction.NORTH, AEParts.TERMINAL);
 
         plot.test(helper -> {
-            var red = AEItemKey.of(Items.RED_CONCRETE);
-            var blue = AEItemKey.of(Items.BLUE_CONCRETE);
+            var red = AEItemKey.of(Items.CONCRETE.pick(DyeColor.RED));
+            var blue = AEItemKey.of(Items.CONCRETE.pick(DyeColor.BLUE));
             helper.startSequence()
                     .thenWaitUntil(() -> {
                         helper.assertGridOnline(origin);
@@ -170,8 +171,8 @@ public final class SubnetPlots {
                     .thenWaitUntil(() -> {
                         // Ensure both red and blue concrete are visible on the sub-network. The storage buses
                         // discover their target on their own grid tick, which can lag behind the grid coming online.
-                        helper.assertNetworkContains(subnetOrigin, Items.RED_CONCRETE);
-                        helper.assertNetworkContains(subnetOrigin, Items.BLUE_CONCRETE);
+                        helper.assertNetworkContains(subnetOrigin, Items.CONCRETE.pick(DyeColor.RED));
+                        helper.assertNetworkContains(subnetOrigin, Items.CONCRETE.pick(DyeColor.BLUE));
                     })
                     .thenSucceed();
         });

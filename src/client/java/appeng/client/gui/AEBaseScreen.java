@@ -1047,8 +1047,8 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
             slot.y = HIDDEN_SLOT_POS.getY();
         }
 
-        minecraft.screen = null;
-        minecraft.setScreen(screen);
+        minecraft.gui.screen = null;
+        minecraft.gui.setScreen(screen);
 
         if (!screen.savedSlotInfos.isEmpty()) {
             // Restore slot state to that of the new screen

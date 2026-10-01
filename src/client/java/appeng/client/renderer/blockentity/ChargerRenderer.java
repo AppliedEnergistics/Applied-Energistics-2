@@ -80,7 +80,7 @@ public final class ChargerRenderer implements BlockEntityRenderer<ChargerBlockEn
 
                         @Override
                         public Vec3 position() {
-                            return be.getBlockPos().getCenter();
+                            return Vec3.atCenterOf(be.getBlockPos());
                         }
 
                         @Override

@@ -10,7 +10,7 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.StandingSignBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.entity.BlockEntityTypes;
 import net.minecraft.world.level.block.state.properties.RotationSegment;
 
 import appeng.server.testworld.PlotBuilder;
@@ -25,9 +25,9 @@ public final class GuidebookPlot {
 
     @TestPlot(value = "guidebook_structure_workarea", gameTest = false)
     public static void guidebookStructureWorkArea(PlotBuilder plot) {
-        plot.block("[0,15] -1 [0,15]", Blocks.BLACK_CONCRETE);
-        plot.block("-1 -1 [0,15]", Blocks.BLUE_TERRACOTTA);
-        plot.block("[0,15] -1 -1", Blocks.RED_TERRACOTTA);
+        plot.block("[0,15] -1 [0,15]", Blocks.CONCRETE.pick(DyeColor.BLACK));
+        plot.block("-1 -1 [0,15]", Blocks.DYED_TERRACOTTA.pick(DyeColor.BLUE));
+        plot.block("[0,15] -1 -1", Blocks.DYED_TERRACOTTA.pick(DyeColor.RED));
 
         var controlPos = BlockPos.ZERO.north(2).east(1);
         control(plot, controlPos.east(0), "LOAD", (blockEntity, origin) -> {
@@ -51,7 +51,7 @@ public final class GuidebookPlot {
             BiFunction<BlockEntity, BlockPos, String> commandSupplier) {
         plot.blockState(pos, Blocks.DARK_OAK_SIGN.defaultBlockState().setValue(StandingSignBlock.ROTATION,
                 RotationSegment.convertToSegment(Direction.NORTH)));
-        plot.customizeBlockEntity(pos, BlockEntityType.SIGN, sign -> {
+        plot.customizeBlockEntity(pos, BlockEntityTypes.SIGN, sign -> {
             var text = sign.getFrontText().setMessage(0, Component.literal(label)).setColor(DyeColor.WHITE);
             sign.setText(text, true);
         });
@@ -59,7 +59,7 @@ public final class GuidebookPlot {
         pos = pos.north();
         var cmdBlockRelPos = pos.below().below();
         plot.block(cmdBlockRelPos, Blocks.COMMAND_BLOCK);
-        plot.customizeBlockEntity(cmdBlockRelPos, BlockEntityType.COMMAND_BLOCK, cmdBlock -> {
+        plot.customizeBlockEntity(cmdBlockRelPos, BlockEntityTypes.COMMAND_BLOCK, cmdBlock -> {
             var origin = cmdBlock.getBlockPos().offset(
                     -cmdBlockRelPos.getX(),
                     -cmdBlockRelPos.getY(),

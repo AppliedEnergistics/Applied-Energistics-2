@@ -1,6 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "key": {
     "a": "#minecraft:wool",
     "b": "ae2:calculation_processor",
