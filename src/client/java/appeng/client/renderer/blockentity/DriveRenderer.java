@@ -65,7 +65,7 @@ public class DriveRenderer implements BlockEntityRenderer<DriveBlockEntity, Ches
             CameraRenderState cameraRenderState) {
         poseStack.pushPose();
         poseStack.translate(0.5, 0.5, 0.5);
-        poseStack.mulPose(state.blockOrientation.getQuaternion());
+        poseStack.rotate(state.blockOrientation.getQuaternion());
         poseStack.translate(-0.5, -0.5, -0.5);
 
         Vector3f slotTranslation = new Vector3f();

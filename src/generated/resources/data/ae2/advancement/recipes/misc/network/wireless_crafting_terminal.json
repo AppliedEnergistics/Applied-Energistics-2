@@ -23,7 +23,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "ae2:network/wireless_crafting_terminal"
+        "recipes": "ae2:network/wireless_crafting_terminal"
       },
       "trigger": "minecraft:recipe_unlocked"
     },

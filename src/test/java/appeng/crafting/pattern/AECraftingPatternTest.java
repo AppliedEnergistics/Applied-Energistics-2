@@ -11,6 +11,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Stream;
+
+import com.mojang.serialization.Lifecycle;
 
 import org.jetbrains.annotations.Nullable;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,7 +28,11 @@ import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.triggers.CriteriaTriggers;
 import net.minecraft.advancements.triggers.ImpossibleTrigger;
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderGetter;
+import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.BootstrapRegistry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.RecipeCategory;
@@ -99,8 +106,17 @@ class AECraftingPatternTest {
                 result.set((ShapedRecipe) recipe);
             }
 
+            @SuppressWarnings({ "unchecked", "rawtypes" })
             @Override
-            public void includeRootAdvancement() {
+            public <S> HolderGetter<S> lookup(ResourceKey<? extends Registry<? extends S>> key) {
+                // Creates standalone holders for any requested key
+                return new BootstrapRegistry<>((ResourceKey) key, Lifecycle.stable());
+            }
+
+            @Override
+            public <S> Stream<Holder.Reference<S>> listContextElements(
+                    ResourceKey<? extends Registry<? extends S>> key) {
+                return Stream.empty();
             }
         }, TEST_RECIPE_ID);
         return new RecipeHolder<>(TEST_RECIPE_ID, Objects.requireNonNull(result.get()));

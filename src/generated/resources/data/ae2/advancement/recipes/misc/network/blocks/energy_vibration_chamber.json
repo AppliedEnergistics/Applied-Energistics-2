@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "ae2:network/blocks/energy_vibration_chamber"
+        "recipes": "ae2:network/blocks/energy_vibration_chamber"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

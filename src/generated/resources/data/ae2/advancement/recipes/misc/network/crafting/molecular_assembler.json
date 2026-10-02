@@ -23,7 +23,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "ae2:network/crafting/molecular_assembler"
+        "recipes": "ae2:network/crafting/molecular_assembler"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

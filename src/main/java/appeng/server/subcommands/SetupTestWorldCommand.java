@@ -20,6 +20,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Prediction;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.entity.EntityTypeTest;
@@ -120,7 +121,7 @@ public class SetupTestWorldCommand implements ISubCommand {
         var playerInv = player.getInventory();
         var fullApplicator = ColorApplicatorItem.createFullColorApplicator();
         if (!playerInv.hasAnyOf(Collections.singleton(AEItems.COLOR_APPLICATOR.asItem()))) {
-            playerInv.placeItemBackInInventory(fullApplicator);
+            playerInv.placeItemBackInInventory(fullApplicator, Prediction.SERVER_ONLY);
         }
         NeoForge.EVENT_BUS.post(new KitOutPlayerEvent(player));
     }

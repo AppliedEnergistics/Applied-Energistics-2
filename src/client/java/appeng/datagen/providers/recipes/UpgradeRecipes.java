@@ -3,9 +3,10 @@ package appeng.datagen.providers.recipes;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.core.HolderLookup;
+import net.minecraft.advancements.Advancement;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.ItemStackTemplate;
@@ -25,8 +26,8 @@ import appeng.recipes.game.StorageCellDisassemblyRecipe;
 import appeng.recipes.game.StorageCellUpgradeRecipe;
 
 public class UpgradeRecipes extends AE2RecipeProvider {
-    public UpgradeRecipes(HolderLookup.Provider registries, RecipeOutput output) {
-        super(registries, output);
+    public UpgradeRecipes(BootstrapContext<Recipe<?>> recipeOutput, BootstrapContext<Advancement> advancementOutput) {
+        super(recipeOutput, advancementOutput);
     }
 
     // Defaults will always be Cell Component for upgrade/disassembly. Additional options are for modpack developers.

@@ -216,11 +216,11 @@ public class AppEngClient extends AppEngBase {
      * This modifier key has to be held to activate mouse wheel items.
      */
     private static final KeyMapping MOUSE_WHEEL_ITEM_MODIFIER = new KeyMapping(
-            "key.ae2.mouse_wheel_item_modifier", KeyConflictContext.IN_GAME, InputConstants.Type.KEYSYM,
+            "key.ae2.mouse_wheel_item_modifier", KeyConflictContext.IN_GAME, InputConstants.Type.KEYBOARD,
             InputConstants.KEY_LSHIFT, Hotkeys.CATEGORY);
 
     private static final KeyMapping PART_PLACEMENT_OPPOSITE = new KeyMapping(
-            "key.ae2.part_placement_opposite", KeyConflictContext.IN_GAME, InputConstants.Type.KEYSYM,
+            "key.ae2.part_placement_opposite", KeyConflictContext.IN_GAME, InputConstants.Type.KEYBOARD,
             InputConstants.KEY_LCONTROL, Hotkeys.CATEGORY);
 
     private static AppEngClient INSTANCE;
@@ -554,6 +554,10 @@ public class AppEngClient extends AppEngBase {
     private void registerRenderPipelines(RegisterRenderPipelinesEvent event) {
         event.registerPipeline(AERenderPipelines.LINES_BEHIND_BLOCK);
         event.registerPipeline(AERenderPipelines.LIGHTNING_FX);
+        event.registerOitPipelineSet(AERenderPipelines.OIT_LIGHTNING_FX);
+        event.registerOitPipelineSet(AERenderPipelines.OIT_AREA_OVERLAY_FACE);
+        event.registerOitPipelineSet(AERenderPipelines.OIT_AREA_OVERLAY_LINE);
+        event.registerOitPipelineSet(AERenderPipelines.OIT_AREA_OVERLAY_LINE_OCCLUDED);
     }
 
     private void registerBlockStateModels(RegisterBlockStateModels event) {

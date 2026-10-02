@@ -91,8 +91,7 @@ public class MeteoriteStructure extends Structure {
         final float meteoriteRadius = random.nextFloat() * 6.0f + 2;
         final int yOffset = (int) Math.ceil(meteoriteRadius) + 1;
 
-        var t2 = generator.getBiomeSource().getBiomesWithin(centerX, generator.getSeaLevel(), centerZ, 0,
-                context.randomState().sampler());
+        var t2 = context.biomeResolver().getBiomesWithin(centerX, generator.getSeaLevel(), centerZ, 0);
         var spawnBiome = t2.stream().findFirst().orElseThrow();
 
         final boolean isOcean = spawnBiome.is(ConventionTags.METEORITE_OCEAN);

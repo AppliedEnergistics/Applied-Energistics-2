@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "ae2:block_cutter/slabs/smooth_quartz_slab"
+        "recipes": "ae2:block_cutter/slabs/smooth_quartz_slab"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

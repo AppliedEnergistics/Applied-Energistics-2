@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "ae2:smelting/silicon_from_certus_quartz_dust"
+        "recipes": "ae2:smelting/silicon_from_certus_quartz_dust"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

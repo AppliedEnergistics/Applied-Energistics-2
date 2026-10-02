@@ -23,7 +23,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "ae2:network/cables/glass_pink"
+        "recipes": "ae2:network/cables/glass_pink"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

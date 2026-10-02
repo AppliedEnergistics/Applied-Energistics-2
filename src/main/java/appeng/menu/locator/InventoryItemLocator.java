@@ -24,13 +24,13 @@ record InventoryItemLocator(int itemIndex, @Nullable BlockHitResult hitResult) i
 
     public void writeToPacket(FriendlyByteBuf buf) {
         buf.writeInt(itemIndex);
-        buf.writeOptional(Optional.ofNullable(hitResult), FriendlyByteBuf::writeBlockHitResult);
+        buf.writeOptional(Optional.ofNullable(hitResult), BlockHitResult.STREAM_CODEC);
     }
 
     public static InventoryItemLocator readFromPacket(FriendlyByteBuf buf) {
         return new InventoryItemLocator(
                 buf.readInt(),
-                buf.readOptional(FriendlyByteBuf::readBlockHitResult).orElse(null));
+                buf.readOptional(BlockHitResult.STREAM_CODEC).orElse(null));
     }
 
     @Override

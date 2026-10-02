@@ -29,7 +29,6 @@ import com.google.common.collect.Sets;
 import com.mojang.blaze3d.platform.InputConstants;
 
 import org.jetbrains.annotations.Nullable;
-import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -271,7 +270,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
 
         long serial = entry.getSerial();
 
-        if (InputConstants.isKeyDown(Minecraft.getInstance().getWindow(), GLFW.GLFW_KEY_SPACE)) {
+        if (InputConstants.isKeyDown(InputConstants.KEY_SPACE)) {
             // Move everything from the same group of slots (i.e. player inventory excluding hotbar)
             menu.handleInteraction(serial, InventoryAction.MOVE_REGION);
         } else {
@@ -752,7 +751,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
 
     @Override
     public boolean keyPressed(KeyEvent event) {
-        if (this.searchField.isFocused() && event.key() == GLFW.GLFW_KEY_ENTER) {
+        if (this.searchField.isFocused() && event.key() == InputConstants.KEY_RETURN) {
             this.searchField.setFocused(false);
             this.setFocused(null);
             return true;

@@ -29,7 +29,7 @@ public class FluidBlockPictureInPictureRenderer
         extends PictureInPictureRenderer<FluidBlockPictureInPictureRenderer.State> {
     private static final RenderType CUTOUT_BLOCK_SHEET = RenderTypes.entityCutoutCull(TextureAtlas.LOCATION_BLOCKS);
     private static final RenderType TRANSLUCENT_BLOCK_SHEET = RenderTypes
-            .entityTranslucentCullItemTarget(TextureAtlas.LOCATION_BLOCKS);
+            .entityTranslucentCull(TextureAtlas.LOCATION_BLOCKS);
 
     @Override
     public Class<State> getRenderStateClass() {
@@ -98,14 +98,14 @@ public class FluidBlockPictureInPictureRenderer
         float rotation = 45;
 
         poseStack.scale(1, 1, -1);
-        poseStack.mulPose(new Quaternionf().rotationY(Mth.DEG_TO_RAD * -180));
+        poseStack.rotate(new Quaternionf().rotationY(Mth.DEG_TO_RAD * -180));
 
         Quaternionf flip = new Quaternionf().rotationZ(Mth.DEG_TO_RAD * 180);
         flip.mul(new Quaternionf().rotationX(Mth.DEG_TO_RAD * angle));
 
         Quaternionf rotate = new Quaternionf().rotationY(Mth.DEG_TO_RAD * rotation);
-        poseStack.mulPose(flip);
-        poseStack.mulPose(rotate);
+        poseStack.rotate(flip);
+        poseStack.rotate(rotate);
 
         // Move into the center of the block for the transforms
         poseStack.translate(-0.5f, -0.5f, -0.5f);

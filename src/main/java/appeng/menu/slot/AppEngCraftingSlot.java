@@ -24,6 +24,7 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.NonNullList;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.Prediction;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.RecipeCraftingHolder;
 import net.minecraft.world.item.ItemStack;
@@ -128,7 +129,7 @@ public class AppEngCraftingSlot extends AppEngSlot implements RecipeCraftingHold
                         if (this.craftingGrid.getStackInSlot(slotIdx).isEmpty()) {
                             this.craftingGrid.setItemDirect(slotIdx, remainingInSlot);
                         } else if (!this.player.getInventory().add(remainingInSlot)) {
-                            this.player.drop(remainingInSlot, false);
+                            this.player.drop(remainingInSlot, false, Prediction.PREDICTED);
                         }
                     }
                 }

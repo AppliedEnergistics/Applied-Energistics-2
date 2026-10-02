@@ -1,6 +1,7 @@
 {
   "type": "minecraft:smelting",
   "category": "blocks",
+  "cookingtime": 200,
   "ingredient": "ae2:sky_dust",
   "result": {
     "id": "ae2:sky_stone_block"

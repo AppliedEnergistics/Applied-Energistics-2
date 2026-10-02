@@ -66,7 +66,7 @@ public final class MockResourceManager {
         ReloadableResourceManager resourceManager = new ReloadableResourceManager(PackType.CLIENT_RESOURCES);
         resourceManager.createReload(Runnable::run, Runnable::run, CompletableFuture.supplyAsync(() -> Unit.INSTANCE),
                 List.of(
-                        ServerPacksSource.createVanillaPackSource(),
+                        ServerPacksSource.createVanillaPackSource().fullResources(),
                         packResources));
         return Mockito.spy(resourceManager);
     }

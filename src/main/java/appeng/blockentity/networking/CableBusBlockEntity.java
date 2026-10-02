@@ -30,6 +30,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.util.Prediction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -366,7 +367,7 @@ public class CableBusBlockEntity extends AEBaseBlockEntity implements AEMultiBlo
             }
 
             for (var item : is) {
-                player.getInventory().placeItemBackInInventory(item);
+                player.getInventory().placeItemBackInInventory(item, Prediction.SERVER_ONLY);
             }
         }
 

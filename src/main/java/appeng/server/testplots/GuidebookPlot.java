@@ -11,6 +11,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.StandingSignBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTypes;
+import net.minecraft.world.level.block.entity.SignTextSlot;
 import net.minecraft.world.level.block.state.properties.RotationSegment;
 
 import appeng.server.testworld.PlotBuilder;
@@ -52,8 +53,11 @@ public final class GuidebookPlot {
         plot.blockState(pos, Blocks.DARK_OAK_SIGN.defaultBlockState().setValue(StandingSignBlock.ROTATION,
                 RotationSegment.convertToSegment(Direction.NORTH)));
         plot.customizeBlockEntity(pos, BlockEntityTypes.SIGN, sign -> {
-            var text = sign.getFrontText().setMessage(0, Component.literal(label)).setColor(DyeColor.WHITE);
-            sign.setText(text, true);
+            var text = sign.getText(SignTextSlot.FRONT).asMutable()
+                    .setLine(0, Component.literal(label))
+                    .setColor(DyeColor.WHITE)
+                    .asImmutable();
+            sign.setText(text, SignTextSlot.FRONT);
         });
 
         pos = pos.north();

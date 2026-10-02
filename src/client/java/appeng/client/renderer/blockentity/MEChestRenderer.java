@@ -122,7 +122,7 @@ public class MEChestRenderer implements BlockEntityRenderer<MEChestBlockEntity, 
 
         poseStack.pushPose();
         poseStack.translate(0.5, 0.5, 0.5);
-        poseStack.mulPose(state.blockOrientation.getQuaternion());
+        poseStack.rotate(state.blockOrientation.getQuaternion());
         poseStack.translate(-0.5, -0.5, -0.5);
 
         // The models are created for the top-left slot of the drive model,

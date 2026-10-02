@@ -163,7 +163,7 @@ public final class InscriberRenderer implements BlockEntityRenderer<InscriberBlo
         // render inscriber
         poseStack.pushPose();
         poseStack.translate(0.5F, 0.5F, 0.5F);
-        poseStack.mulPose(state.orientation.getQuaternion());
+        poseStack.rotate(state.orientation.getQuaternion());
         poseStack.translate(-0.5F, -0.5F, -0.5F);
 
         var tas = sprites.get(TEXTURE_INSIDE);
@@ -291,7 +291,7 @@ public final class InscriberRenderer implements BlockEntityRenderer<InscriberBlo
             poseStack.pushPose();
             // move to center
             poseStack.translate(0.5f, 0.5f + o, 0.5f);
-            poseStack.mulPose(new Quaternionf().rotationX(Mth.DEG_TO_RAD * 90));
+            poseStack.rotate(new Quaternionf().rotationX(Mth.DEG_TO_RAD * 90));
             // set scale
             poseStack.scale(ITEM_RENDER_SCALE, ITEM_RENDER_SCALE, ITEM_RENDER_SCALE);
 

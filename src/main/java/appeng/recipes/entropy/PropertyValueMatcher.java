@@ -10,6 +10,7 @@ import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.level.block.state.StateHolder;
 import net.minecraft.world.level.block.state.properties.Property;
@@ -65,7 +66,7 @@ public sealed interface PropertyValueMatcher
             var type = buffer.readByte();
             return switch (type) {
                 case 0 -> new SingleValue(buffer.readUtf());
-                case 1 -> new MultiValue(buffer.readList(FriendlyByteBuf::readUtf));
+                case 1 -> new MultiValue(ByteBufCodecs.STRING_UTF8.apply(ByteBufCodecs.list()).decode(buffer));
                 case 2 -> new Range(buffer.readUtf(), buffer.readUtf());
                 default -> throw new IllegalStateException("Invalid property value matcher type: " + type);
             };
@@ -111,7 +112,7 @@ public sealed interface PropertyValueMatcher
         @Override
         public void toNetwork(FriendlyByteBuf buffer) {
             buffer.writeByte(1);
-            buffer.writeCollection(values, FriendlyByteBuf::writeUtf);
+            ByteBufCodecs.STRING_UTF8.apply(ByteBufCodecs.list()).encode(buffer, values);
         }
 
         @Override

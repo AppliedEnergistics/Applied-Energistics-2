@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "ae2:network/blocks/energy_dense_energy_cell"
+        "recipes": "ae2:network/blocks/energy_dense_energy_cell"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

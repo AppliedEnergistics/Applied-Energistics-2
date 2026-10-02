@@ -1,16 +1,17 @@
 package appeng.datagen.providers.recipes;
 
-import net.minecraft.core.HolderLookup;
-import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.advancements.Advancement;
+import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Recipe;
 
 import appeng.core.AppEng;
 import appeng.core.definitions.AEItems;
 import appeng.recipes.handlers.ChargerRecipeBuilder;
 
 public class ChargerRecipes extends AE2RecipeProvider {
-    public ChargerRecipes(HolderLookup.Provider registries, RecipeOutput output) {
-        super(registries, output);
+    public ChargerRecipes(BootstrapContext<Recipe<?>> recipeOutput, BootstrapContext<Advancement> advancementOutput) {
+        super(recipeOutput, advancementOutput);
     }
 
     @Override

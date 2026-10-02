@@ -21,14 +21,14 @@ package appeng.client.renderer.spatialstorage;
 import java.util.Optional;
 import java.util.OptionalDouble;
 
-import com.mojang.blaze3d.PrimitiveTopology;
-import com.mojang.blaze3d.buffers.GpuBuffer;
-import com.mojang.blaze3d.buffers.GpuBufferSlice;
-import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.ByteBufferBuilder;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.renderpearl.api.buffers.GpuBuffer;
+import com.mojang.renderpearl.api.buffers.GpuBufferSlice;
+import com.mojang.renderpearl.api.pipeline.PrimitiveTopology;
+import com.mojang.renderpearl.api.pipeline.RenderPipeline;
 
 import org.joml.Matrix4f;
 import org.joml.Matrix4fc;
@@ -63,7 +63,7 @@ public class SpatialStorageSkyRenderer implements CustomSkyboxRenderer, AutoClos
 
     @Override
     public boolean renderSky(LevelRenderState levelRenderState, SkyRenderState skyRenderState,
-            Matrix4fc modelViewMatrix, Runnable setupFog) {
+            Matrix4fc modelViewMatrix, GpuBufferSlice skyFog) {
         if (skyboxVertices == null) {
             skyboxVertices = buildSkybox();
         }
@@ -111,7 +111,7 @@ public class SpatialStorageSkyRenderer implements CustomSkyboxRenderer, AutoClos
                 .createRenderPass(() -> label, colorBuffer, Optional.empty(), depthBuffer, OptionalDouble.empty())) {
             RenderSystem.bindDefaultUniforms(pass);
             pass.setUniform("DynamicTransforms", dynamicTransforms);
-            pass.setPipeline(pipeline);
+            pass.setPipeline(RenderSystem.getCompiledPipeline(pipeline));
             pass.setVertexBuffer(0, vertices.slice());
             pass.setIndexBuffer(indexBuffer, autoIndexBuffer.type());
             pass.drawIndexed(indexCount, 1, 0, 0, 0);

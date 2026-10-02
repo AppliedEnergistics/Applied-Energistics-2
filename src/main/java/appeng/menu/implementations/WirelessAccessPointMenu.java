@@ -18,6 +18,7 @@
 
 package appeng.menu.implementations;
 
+import net.minecraft.util.Prediction;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
@@ -105,11 +106,11 @@ public class WirelessAccessPointMenu extends AEBaseMenu implements InternalInven
         super.removed(player);
 
         if (this.linkableIn.hasItem()) {
-            player.drop(this.linkableIn.getItem(), false);
+            player.drop(this.linkableIn.getItem(), false, Prediction.SERVER_ONLY);
         }
 
         if (this.linkableOut.hasItem()) {
-            player.drop(this.linkableOut.getItem(), false);
+            player.drop(this.linkableOut.getItem(), false, Prediction.SERVER_ONLY);
         }
     }
 

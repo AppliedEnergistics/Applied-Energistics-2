@@ -23,7 +23,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "ae2:tools/network_color_applicator"
+        "recipes": "ae2:tools/network_color_applicator"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

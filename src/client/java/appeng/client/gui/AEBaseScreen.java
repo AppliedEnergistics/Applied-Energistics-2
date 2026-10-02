@@ -32,7 +32,6 @@ import com.mojang.blaze3d.platform.InputConstants;
 
 import org.jetbrains.annotations.MustBeInvokedByOverriders;
 import org.jetbrains.annotations.Nullable;
-import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -700,7 +699,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
             InventoryAction action;
             if (getMinecraft().hasShiftDown()) {
                 action = InventoryAction.CRAFT_SHIFT;
-            } else if (InputConstants.isKeyDown(getMinecraft().getWindow(), GLFW.GLFW_KEY_SPACE)) {
+            } else if (InputConstants.isKeyDown(InputConstants.KEY_SPACE)) {
                 action = InventoryAction.CRAFT_ALL;
             } else {
                 // Craft stack on right-click, craft single on left-click
@@ -713,7 +712,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
             return;
         }
 
-        if (slot != null && InputConstants.isKeyDown(getMinecraft().getWindow(), GLFW.GLFW_KEY_SPACE)) {
+        if (slot != null && InputConstants.isKeyDown(InputConstants.KEY_SPACE)) {
             int slotNum = slot.index;
             final InventoryActionPacket p = new InventoryActionPacket(InventoryAction.MOVE_REGION, slotNum, 0);
             ClientPacketDistributor.sendToServer(p);

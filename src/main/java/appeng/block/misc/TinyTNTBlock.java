@@ -69,7 +69,7 @@ public class TinyTNTBlock extends AEBaseBlock {
     protected InteractionResult useItemOn(ItemStack heldItem, BlockState state, Level level, BlockPos pos,
             Player player, InteractionHand hand, BlockHitResult hit) {
         if (heldItem.is(Items.FLINT_AND_STEEL) || heldItem.is(Items.FIRE_CHARGE)) {
-            onCaughtFire(state, level, pos, hit.getDirection(), player);
+            onCaughtFire(state, level, pos, hit.getDirection(), player, heldItem);
             level.setBlock(pos, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL_IMMEDIATE);
             Item item = heldItem.getItem();
             if (!player.isCreative()) {
@@ -88,7 +88,7 @@ public class TinyTNTBlock extends AEBaseBlock {
 
     @Override
     public boolean onCaughtFire(BlockState state, Level level, BlockPos pos, @Nullable Direction direction,
-            @Nullable LivingEntity igniter) {
+            @Nullable LivingEntity igniter, ItemStack ignitionItem) {
         this.startFuse(level, pos, igniter);
         return true;
     }

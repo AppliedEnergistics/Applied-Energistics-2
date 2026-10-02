@@ -19,21 +19,34 @@
 package appeng.blockentity.misc;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.Identifier;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.SlotAccess;
+import net.minecraft.world.entity.SlotProvider;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.CookingFuel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.LootParams;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
+import net.minecraft.world.level.storage.loot.providers.number.ints.ResolvableInt;
+import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.common.loot.NeoForgeLootContextParams;
 
 import appeng.api.config.Actionable;
 import appeng.api.inventories.ISegmentedInventory;
@@ -314,11 +327,35 @@ public class VibrationChamberBlockEntity extends AENetworkedInvBlockEntity
     }
 
     public int getBurnTime(ItemStack is) {
-        return is.getBurnTime(null, level.fuelValues());
+        if (!(level instanceof ServerLevel serverLevel)) {
+            return 0;
+        }
+        return ResolvableInt.getFromItem(is, DataComponents.COOKING_FUEL, CookingFuel::burnTime,
+                getFuelLootContext(serverLevel, is), 0);
+    }
+
+    /**
+     * Cooking fuel burn times are data-driven and resolved against a loot context similar to the one used by vanilla
+     * furnaces (see BaseContainerBlockEntity#getLootContext).
+     */
+    private LootContext getFuelLootContext(ServerLevel serverLevel, ItemStack queriedStack) {
+        SlotProvider container = slot -> slot >= 0 && slot < inv.size()
+                ? SlotAccess.of(() -> inv.getStackInSlot(slot), stack -> inv.setItemDirect(slot, stack))
+                : null;
+        return new LootContext.Builder(
+                new LootParams.Builder(serverLevel)
+                        .withParameter(LootContextParams.BLOCK_STATE, this.getBlockState())
+                        .withParameter(LootContextParams.BLOCK_ENTITY, this)
+                        .withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(this.getBlockPos()))
+                        .withParameter(LootContextParams.CONTAINER, container)
+                        .withOptionalParameter(NeoForgeLootContextParams.QUERIED_STACK,
+                                queriedStack.isEmpty() ? null : queriedStack)
+                        .create(LootContextParamSets.CONTAINER_PROCESS))
+                .create(Optional.empty());
     }
 
     public boolean hasBurnTime(ItemStack is) {
-        return getBurnTime(is) > 0;
+        return is.has(DataComponents.COOKING_FUEL);
     }
 
     public double getCurrentFuelTicksPerTick() {
