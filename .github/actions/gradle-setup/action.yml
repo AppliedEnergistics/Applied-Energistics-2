@@ -9,6 +9,13 @@ runs:
         TAG: ${{ github.event.release.tag_name }}
       run: |
         echo "TAG=${TAG}" >> $GITHUB_ENV
+        # Tag pushes (e.g. the guide export) have no release event. Pass the tag's version as the
+        # unvalidated "version" Gradle property instead of TAG, so a tag with an unexpected prefix
+        # can't fail the build.
+        if [[ -z "$TAG" && "$GITHUB_REF_TYPE" == "tag" && "$GITHUB_REF_NAME" =~ ^([a-z]+/)?v[0-9] ]]; then
+          VERSION="${GITHUB_REF_NAME#*/}"
+          echo "ORG_GRADLE_PROJECT_version=${VERSION#v}" >> $GITHUB_ENV
+        fi
 
     - name: Set up JDK 21
       uses: actions/setup-java@v4
