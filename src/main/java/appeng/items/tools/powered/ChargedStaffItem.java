@@ -18,6 +18,7 @@
 
 package appeng.items.tools.powered;
 
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.AABB;
@@ -37,7 +38,7 @@ public class ChargedStaffItem extends AEBasePoweredItem {
     @Override
     public void hurtEnemy(ItemStack item, LivingEntity target, LivingEntity hitter) {
         var access = ItemAccess.forStack(item);
-        if (this.getAECurrentPower(access) > 300) {
+        if (this.getAECurrentPower(access.getResource()) > 300) {
             try (var tr = Transaction.openRoot()) {
                 this.extractAEPower(access, 300, tr);
                 tr.commit();
@@ -62,7 +63,7 @@ public class ChargedStaffItem extends AEBasePoweredItem {
     }
 
     @Override
-    public double getChargeRate(ItemAccess access) {
+    public double getChargeRate(DataComponentGetter item) {
         return 32d;
     }
 }

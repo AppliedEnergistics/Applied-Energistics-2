@@ -20,6 +20,7 @@ package appeng.block.networking;
 
 import java.util.function.Consumer;
 
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
@@ -43,16 +44,15 @@ public class EnergyCellBlockItem extends AEBaseBlockItem implements IAEItemPower
     @Override
     public void addCheckedInformation(ItemStack stack, TooltipContext context, Consumer<Component> lines,
             TooltipFlag tooltipFlags) {
-        var access = ItemAccess.forStack(stack);
-        var storedEnergy = getAECurrentPower(access);
-        var maxEnergy = getAEMaxPower(access);
+        var storedEnergy = getAECurrentPower(stack);
+        var maxEnergy = getAEMaxPower(stack);
         lines.accept(Tooltips.energyStorageComponent(storedEnergy, maxEnergy));
     }
 
     @Override
     public double injectAEPower(ItemAccess access, double amount, TransactionContext tr) {
-        final double internalCurrentPower = getAECurrentPower(access);
-        final double internalMaxPower = getAEMaxPower(access);
+        final double internalCurrentPower = getAECurrentPower(access.getResource());
+        final double internalMaxPower = getAEMaxPower(access.getResource());
         final double required = internalMaxPower - internalCurrentPower;
         final double overflow = Mth.clamp(amount - required, 0, amount);
 
@@ -65,7 +65,7 @@ public class EnergyCellBlockItem extends AEBaseBlockItem implements IAEItemPower
 
     @Override
     public double extractAEPower(ItemAccess access, double amount, TransactionContext tr) {
-        final double internalCurrentPower = getAECurrentPower(access);
+        final double internalCurrentPower = getAECurrentPower(access.getResource());
         final double fulfillable = Math.min(amount, internalCurrentPower);
 
         final double newPowerStored = internalCurrentPower - fulfillable;
@@ -75,22 +75,22 @@ public class EnergyCellBlockItem extends AEBaseBlockItem implements IAEItemPower
     }
 
     @Override
-    public double getAEMaxPower(ItemAccess access) {
+    public double getAEMaxPower(DataComponentGetter item) {
         return this.getMaxEnergyCapacity();
     }
 
     @Override
-    public double getAECurrentPower(ItemAccess access) {
-        return access.getResource().getOrDefault(AEComponents.STORED_ENERGY, 0.0);
+    public double getAECurrentPower(DataComponentGetter item) {
+        return item.getOrDefault(AEComponents.STORED_ENERGY, 0.0);
     }
 
     @Override
-    public AccessRestriction getPowerFlow(ItemAccess access) {
+    public AccessRestriction getPowerFlow(DataComponentGetter item) {
         return AccessRestriction.WRITE;
     }
 
     @Override
-    public double getChargeRate(ItemAccess access) {
+    public double getChargeRate(DataComponentGetter item) {
         return ((EnergyCellBlock) getBlock()).getChargeRate();
     }
 

@@ -1,12 +1,13 @@
 package appeng.api.upgrades;
 
+import net.minecraft.world.item.ItemInstance;
 import net.minecraft.world.level.ItemLike;
 
 /**
  * Provides read-only access to an inventory containing upgrades. This allows the upgrades of items to be read without
  * having to account for write-access.
  */
-public interface ReadOnlyUpgradeInventory {
+public interface ReadOnlyUpgradeInventory<T extends ItemInstance> extends Iterable<T> {
     /**
      * Item representation of the upgradable object this inventory is managing upgrades for.
      */

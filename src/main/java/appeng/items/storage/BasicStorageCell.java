@@ -22,6 +22,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
 
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Prediction;
@@ -114,7 +115,7 @@ public class BasicStorageCell extends AEBaseItem implements IBasicCellItem, AETo
     }
 
     @Override
-    public int getMaxUpgrades(ItemAccess access) {
+    public int getMaxUpgrades(DataComponentGetter item) {
         return keyType == AEKeyType.items() ? 4 : 3;
     }
 

@@ -21,6 +21,7 @@ package appeng.items.storage;
 import java.util.Optional;
 import java.util.function.Consumer;
 
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.ItemStack;
@@ -28,7 +29,6 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.material.Fluid;
-import net.neoforged.neoforge.transfer.access.ItemAccess;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.stacks.AEFluidKey;
@@ -106,7 +106,7 @@ public class CreativeCellItem extends AEBaseItem implements ICellWorkbenchItem {
     }
 
     @Override
-    public int getMaxUpgrades(ItemAccess access) {
+    public int getMaxUpgrades(DataComponentGetter item) {
         return 0;
     }
 }

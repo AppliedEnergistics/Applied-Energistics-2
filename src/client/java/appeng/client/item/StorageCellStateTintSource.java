@@ -10,7 +10,6 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.transfer.access.ItemAccess;
 
 import appeng.api.implementations.items.IAEItemPowerStorage;
 import appeng.api.storage.StorageCells;
@@ -35,7 +34,7 @@ public record StorageCellStateTintSource() implements ItemTintSource {
     private CellState getCellState(ItemStack stack) {
         if (stack.getItem() instanceof IAEItemPowerStorage powerStorage) {
             // If the cell is out of power, always display empty
-            if (powerStorage.getAECurrentPower(ItemAccess.forStack(stack)) <= 0) {
+            if (powerStorage.getAECurrentPower(stack) <= 0) {
                 return CellState.ABSENT;
             }
         }

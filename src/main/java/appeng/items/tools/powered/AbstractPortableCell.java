@@ -2,6 +2,7 @@ package appeng.items.tools.powered;
 
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Prediction;
@@ -51,7 +52,7 @@ public abstract class AbstractPortableCell extends PoweredContainerItem
     public abstract Identifier getRecipeId();
 
     @Override
-    public abstract double getChargeRate(ItemAccess access);
+    public abstract double getChargeRate(DataComponentGetter item);
 
     /**
      * Open a Portable Cell from a slot in the player inventory, i.e. activated via hotkey.
@@ -128,7 +129,7 @@ public abstract class AbstractPortableCell extends PoweredContainerItem
         playerInventory.setItem(playerInventory.getSelectedSlot(), ItemStack.EMPTY);
 
         var access = ItemAccess.forStack(stack);
-        double remainingEnergy = getAECurrentPower(access);
+        double remainingEnergy = getAECurrentPower(stack);
         for (var recipeStack : disassemblyItems) {
             var droppedStack = recipeStack.copy();
             // Dump remaining energy into whatever can accept it
@@ -149,7 +150,7 @@ public abstract class AbstractPortableCell extends PoweredContainerItem
     }
 
     @Override
-    public int getMaxUpgrades(ItemAccess access) {
+    public int getMaxUpgrades(DataComponentGetter item) {
         return 2;
     }
 

@@ -29,6 +29,7 @@ import org.slf4j.LoggerFactory;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
@@ -106,8 +107,8 @@ public class MatterCannonItem extends AEBasePoweredItem implements IBasicCellIte
     }
 
     @Override
-    public double getChargeRate(ItemAccess access) {
-        return 800d + 800d * Upgrades.getEnergyCardMultiplier(getUpgrades(access));
+    public double getChargeRate(DataComponentGetter item) {
+        return 800d + 800d * Upgrades.getEnergyCardMultiplier(getUpgradesReadOnly(item));
     }
 
     @Override
@@ -160,11 +161,11 @@ public class MatterCannonItem extends AEBasePoweredItem implements IBasicCellIte
         }
         shotPower = Math.min(shotPower, (int) req.getLongValue());
 
-        if (getAECurrentPower(access) < ENERGY_PER_SHOT) {
+        if (getAECurrentPower(stack) < ENERGY_PER_SHOT) {
             return false;
         }
 
-        shotPower = Math.min(shotPower, (int) getAECurrentPower(access) / ENERGY_PER_SHOT);
+        shotPower = Math.min(shotPower, (int) getAECurrentPower(stack) / ENERGY_PER_SHOT);
 
         try (var tr = Transaction.openRoot()) {
             extractAEPower(access, ENERGY_PER_SHOT * shotPower, tr);
@@ -402,7 +403,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IBasicCellIte
     }
 
     @Override
-    public int getMaxUpgrades(ItemAccess access) {
+    public int getMaxUpgrades(DataComponentGetter item) {
         return 4;
     }
 

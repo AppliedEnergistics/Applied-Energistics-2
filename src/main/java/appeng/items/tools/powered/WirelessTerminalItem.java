@@ -77,8 +77,8 @@ public class WirelessTerminalItem extends PoweredContainerItem implements IMenuI
     }
 
     @Override
-    public double getChargeRate(ItemAccess access) {
-        return 800d + 800d * Upgrades.getEnergyCardMultiplier(getUpgrades(access));
+    public double getChargeRate(DataComponentGetter item) {
+        return 800d + 800d * Upgrades.getEnergyCardMultiplier(getUpgradesReadOnly(item));
     }
 
     /**
@@ -224,8 +224,8 @@ public class WirelessTerminalItem extends PoweredContainerItem implements IMenuI
      *
      * @return returns true if there is any power left.
      */
-    public boolean hasPower(ItemAccess access, double amt) {
-        return getAECurrentPower(access) >= amt;
+    public boolean hasPower(DataComponentGetter item, double amt) {
+        return getAECurrentPower(item) >= amt;
     }
 
     /**
@@ -242,7 +242,7 @@ public class WirelessTerminalItem extends PoweredContainerItem implements IMenuI
     }
 
     @Override
-    public int getMaxUpgrades(ItemAccess access) {
+    public int getMaxUpgrades(DataComponentGetter item) {
         return 2;
     }
 

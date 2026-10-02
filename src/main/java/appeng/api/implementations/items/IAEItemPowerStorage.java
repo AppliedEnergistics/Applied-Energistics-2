@@ -23,6 +23,7 @@
 
 package appeng.api.implementations.items;
 
+import net.minecraft.core.component.DataComponentGetter;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
@@ -51,22 +52,22 @@ public interface IAEItemPowerStorage {
     /**
      * @return the current maximum power ( this can change :P )
      */
-    double getAEMaxPower(ItemAccess access);
+    double getAEMaxPower(DataComponentGetter item);
 
     /**
      * @return the current AE Power Level, this may exceed getMEMaxPower()
      */
-    double getAECurrentPower(ItemAccess access);
+    double getAECurrentPower(DataComponentGetter item);
 
     /**
      * Control the power flow by telling what the network can do, either add? or subtract? or both!
      *
      * @return access restriction of network
      */
-    AccessRestriction getPowerFlow(ItemAccess access);
+    AccessRestriction getPowerFlow(DataComponentGetter item);
 
     /**
      * @return The amount of AE per tick that the AE charger will charge this item at.
      */
-    double getChargeRate(ItemAccess access);
+    double getChargeRate(DataComponentGetter item);
 }

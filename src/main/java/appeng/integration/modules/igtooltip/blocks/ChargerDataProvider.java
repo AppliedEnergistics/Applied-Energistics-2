@@ -28,8 +28,8 @@ public final class ChargerDataProvider implements BodyProvider<ChargerBlockEntit
             if (chargingItem.getItem() instanceof IAEItemPowerStorage powerStorage
                     && Platform.isChargeable(chargingItem)) {
                 var access = ItemAccess.forHandlerIndex(chargerInventory.toResourceHandler(), 0);
-                var fillRate = Mth.floor(powerStorage.getAECurrentPower(access) * 100 /
-                        powerStorage.getAEMaxPower(access));
+                var fillRate = Mth.floor(powerStorage.getAECurrentPower(access.getResource()) * 100 /
+                        powerStorage.getAEMaxPower(access.getResource()));
                 tooltip.addLine(InGameTooltip.Charged.text(fillRate));
             }
         }

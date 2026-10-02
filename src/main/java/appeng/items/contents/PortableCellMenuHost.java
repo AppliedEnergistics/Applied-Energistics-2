@@ -124,7 +124,7 @@ public class PortableCellMenuHost<T extends AbstractPortableCell> extends ItemMe
         amt = usePowerMultiplier.multiply(amt);
 
         if (mode == Actionable.SIMULATE) {
-            return usePowerMultiplier.divide(Math.min(amt, this.item.getAECurrentPower(itemAccess())));
+            return usePowerMultiplier.divide(Math.min(amt, this.item.getAECurrentPower(itemAccess().getResource())));
         }
 
         double used;

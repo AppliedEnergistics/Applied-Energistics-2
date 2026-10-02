@@ -2,6 +2,7 @@ package appeng.api.upgrades;
 
 import org.jetbrains.annotations.ApiStatus;
 
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 
@@ -13,9 +14,13 @@ public interface IUpgradeableItem extends ItemLike {
     /**
      * {@return how many upgrades can at most be installed in this item}
      */
-    int getMaxUpgrades(ItemAccess access);
+    int getMaxUpgrades(DataComponentGetter item);
 
     default IUpgradeInventory getUpgrades(ItemAccess access) {
         return EmptyUpgradeInventory.INSTANCE;
+    }
+
+    default ReadOnlyItemUpgradeInventory getUpgradesReadOnly(DataComponentGetter item) {
+        return new ReadOnlyItemUpgradeInventory(this, item);
     }
 }

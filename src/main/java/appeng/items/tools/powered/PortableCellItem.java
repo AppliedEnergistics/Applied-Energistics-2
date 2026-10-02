@@ -23,6 +23,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
 
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.inventory.MenuType;
@@ -30,7 +31,6 @@ import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
-import net.neoforged.neoforge.transfer.access.ItemAccess;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.ids.AEComponents;
@@ -57,8 +57,8 @@ public class PortableCellItem extends AbstractPortableCell implements IBasicCell
     }
 
     @Override
-    public double getChargeRate(ItemAccess access) {
-        return 80d + 80d * Upgrades.getEnergyCardMultiplier(getUpgrades(access));
+    public double getChargeRate(DataComponentGetter item) {
+        return 80d + 80d * Upgrades.getEnergyCardMultiplier(getUpgradesReadOnly(item));
     }
 
     @Override
@@ -100,7 +100,7 @@ public class PortableCellItem extends AbstractPortableCell implements IBasicCell
     }
 
     @Override
-    public int getMaxUpgrades(ItemAccess access) {
+    public int getMaxUpgrades(DataComponentGetter item) {
         return this.keyType == AEKeyType.items() ? 4 : 3;
     }
 

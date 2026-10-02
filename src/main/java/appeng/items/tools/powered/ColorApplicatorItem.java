@@ -34,6 +34,7 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -120,8 +121,8 @@ public class ColorApplicatorItem extends AEBasePoweredItem
     }
 
     @Override
-    public double getChargeRate(ItemAccess access) {
-        return 80d + 80d * Upgrades.getEnergyCardMultiplier(getUpgrades(access));
+    public double getChargeRate(DataComponentGetter item) {
+        return 80d + 80d * Upgrades.getEnergyCardMultiplier(getUpgradesReadOnly(item));
     }
 
     @Override
@@ -162,12 +163,11 @@ public class ColorApplicatorItem extends AEBasePoweredItem
             }
 
             if (color != null) {
-                var access = ItemAccess.forStack(is);
                 if (color == AEColor.TRANSPARENT) {
                     // clean cables.
                     if (p != null
                             && level.getBlockEntity(pos) instanceof IColorableBlockEntity colorableBlockEntity
-                            && this.getAECurrentPower(access) > POWER_PER_USE
+                            && this.getAECurrentPower(is) > POWER_PER_USE
                             && colorableBlockEntity.getColor() != AEColor.TRANSPARENT) {
                         if (colorableBlockEntity.recolourBlock(side, AEColor.TRANSPARENT, p)) {
                             consumeColor(is, color, false);
@@ -178,7 +178,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
                     // clean paint balls..
                     final Block testBlk = level.getBlockState(pos.relative(side)).getBlock();
                     final BlockEntity painted = level.getBlockEntity(pos.relative(side));
-                    if (this.getAECurrentPower(access) > POWER_PER_USE && testBlk instanceof PaintSplotchesBlock
+                    if (this.getAECurrentPower(is) > POWER_PER_USE && testBlk instanceof PaintSplotchesBlock
                             && painted instanceof PaintSplotchesBlockEntity) {
                         consumeColor(is, color, false);
                         ((PaintSplotchesBlockEntity) painted).cleanSide(side.getOpposite());
@@ -186,7 +186,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
                     }
                 }
 
-                if (this.getAECurrentPower(access) > POWER_PER_USE
+                if (this.getAECurrentPower(is) > POWER_PER_USE
                         && this.recolourBlock(blk, side, level, pos, color, p)) {
                     consumeColor(is, color, false);
                     return InteractionResult.SUCCESS;
@@ -212,7 +212,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
 
         if (paintBallColor != null && interactionTarget instanceof Sheep sheep) {
             if (sheep.isAlive() && !sheep.isSheared() && sheep.getColor() != paintBallColor.dye) {
-                if (!player.level().isClientSide() && this.getAECurrentPower(ItemAccess.forStack(is)) > POWER_PER_USE) {
+                if (!player.level().isClientSide() && this.getAECurrentPower(is) > POWER_PER_USE) {
                     sheep.setColor(paintBallColor.dye);
                     sheep.level().playSound(player, sheep, SoundEvents.DYE_USE, SoundSource.PLAYERS, 1.0F, 1.0F);
                     this.consumeColor(is, paintBallColor, false);
@@ -485,7 +485,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
     }
 
     @Override
-    public int getMaxUpgrades(ItemAccess access) {
+    public int getMaxUpgrades(DataComponentGetter item) {
         return 2;
     }
 
@@ -553,7 +553,7 @@ public class ColorApplicatorItem extends AEBasePoweredItem
 
         // Fill it up with power
         try (var tr = Transaction.openRoot()) {
-            item.injectAEPower(access, item.getAEMaxPower(access), tr);
+            item.injectAEPower(access, item.getAEMaxPower(applicator), tr);
             tr.commit();
         }
         return applicator;

@@ -15,6 +15,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemInstance;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
@@ -115,10 +116,10 @@ public final class Upgrades {
      * Returns a cumulative energy multiplier based on the amount of "energy cards" fitted onto a tool. Returns 0 if no
      * such cards exist within the tool's upgrade inventory.
      */
-    public static int getEnergyCardMultiplier(IUpgradeInventory upgrades) {
+    public static int getEnergyCardMultiplier(ReadOnlyUpgradeInventory<? extends ItemInstance> upgrades) {
         int multiplier = 0;
         for (var card : upgrades) {
-            if (card.getItem() instanceof EnergyCardItem ec) {
+            if (card.typeHolder().value() instanceof EnergyCardItem ec) {
                 multiplier += ec.getEnergyMultiplier();
             }
         }

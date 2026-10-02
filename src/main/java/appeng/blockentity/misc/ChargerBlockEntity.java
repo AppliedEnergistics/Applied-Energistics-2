@@ -154,12 +154,12 @@ public class ChargerBlockEntity extends AENetworkedPoweredBlockEntity implements
                 var ps = (IAEItemPowerStorage) myItem.getItem();
                 var access = ItemAccess.forHandlerIndex(inv.toResourceHandler(), 0);
 
-                var currentPower = ps.getAECurrentPower(access);
-                var maxPower = ps.getAEMaxPower(access);
+                var currentPower = ps.getAECurrentPower(access.getResource());
+                var maxPower = ps.getAEMaxPower(access.getResource());
                 if (currentPower < maxPower) {
                     // Since we specify the charge rate in "per tick", calculate it per tick of the charger,
                     // which only ticks once every few actual game ticks.
-                    var chargeRate = ps.getChargeRate(access) * ticksSinceLastCall
+                    var chargeRate = ps.getChargeRate(access.getResource()) * ticksSinceLastCall
                             * AEConfig.instance().getChargerChargeRate();
 
                     // First charge from the local buffer
@@ -255,7 +255,7 @@ public class ChargerBlockEntity extends AENetworkedPoweredBlockEntity implements
             if (Platform.isChargeable(extractedItem)) {
                 final IAEItemPowerStorage ips = (IAEItemPowerStorage) extractedItem.getItem();
                 var access = ItemAccess.forHandlerIndex(inv.toResourceHandler(), slotIndex);
-                if (ips.getAECurrentPower(access) >= ips.getAEMaxPower(access)) {
+                if (ips.getAECurrentPower(access.getResource()) >= ips.getAEMaxPower(access.getResource())) {
                     return true;
                 }
             }

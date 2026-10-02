@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import org.junit.jupiter.api.Test;
 
 import net.minecraft.world.item.Items;
-import net.neoforged.neoforge.transfer.access.ItemAccess;
 
 import appeng.api.stacks.AEItemKey;
 import appeng.me.cells.BasicCellHandler;
@@ -18,10 +17,9 @@ class ColorApplicatorItemTest {
     void testCreateFullColorApplicator() {
         var applicator = ColorApplicatorItem.createFullColorApplicator();
         var item = (ColorApplicatorItem) applicator.getItem();
-        var access = ItemAccess.forStack(applicator);
 
-        assertNotEquals(0, item.getAEMaxPower(access));
-        assertEquals(item.getAEMaxPower(access), item.getAECurrentPower(access));
+        assertNotEquals(0, item.getAEMaxPower(applicator));
+        assertEquals(item.getAEMaxPower(applicator), item.getAECurrentPower(applicator));
 
         // Get new storage and list content
         var dyeStorage = BasicCellHandler.INSTANCE.getCellInventory(applicator, null);

@@ -67,7 +67,7 @@ public final class PendingCraftingJobs {
                 .anyMatch(accessor -> accessor.getAccess().getResource().typeHolder()
                         .value() instanceof WirelessTerminalItem wirelessTerminal
                         // Should have some power
-                        && wirelessTerminal.getAECurrentPower(accessor.getAccess()) > 0
+                        && wirelessTerminal.getAECurrentPower(accessor.getAccess().getResource()) > 0
                         // Should be linked (we don't know if it's linked to the grid for which we get notifications)
                         && wirelessTerminal.getLinkedPosition(accessor.getAccess().getResource()) != null);
     }

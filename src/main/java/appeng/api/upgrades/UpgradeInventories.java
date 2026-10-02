@@ -41,8 +41,8 @@ public final class UpgradeInventories {
     public static IUpgradeInventory forItem(ItemAccess access, ItemUpgradesChanged changeCallback) {
         var currentItem = access.getResource().getItem();
         if (currentItem instanceof IUpgradeableItem upgradeableItem) {
-            return new ItemUpgradeInventory(upgradeableItem, access, upgradeableItem.getMaxUpgrades(access),
-                    changeCallback);
+            return new ItemUpgradeInventory(upgradeableItem, access,
+                    upgradeableItem.getMaxUpgrades(access.getResource()), changeCallback);
         }
         return EmptyUpgradeInventory.INSTANCE;
     }

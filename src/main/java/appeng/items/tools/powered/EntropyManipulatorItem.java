@@ -27,6 +27,7 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -78,14 +79,14 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
     }
 
     @Override
-    public double getChargeRate(ItemAccess access) {
+    public double getChargeRate(DataComponentGetter item) {
         return 800d;
     }
 
     @Override
-    public void hurtEnemy(ItemStack item, LivingEntity target, LivingEntity hitter) {
-        var access = ItemAccess.forStack(item);
-        if (this.getAECurrentPower(access) > ENERGY_PER_USE) {
+    public void hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity hitter) {
+        var access = ItemAccess.forStack(stack);
+        if (this.getAECurrentPower(stack) > ENERGY_PER_USE) {
             try (var tr = Transaction.openRoot()) {
                 this.extractAEPower(access, ENERGY_PER_USE, tr);
                 tr.commit();
@@ -139,7 +140,7 @@ public class EntropyManipulatorItem extends AEBasePoweredItem implements IBlockT
             pos = target.getBlockPos();
         }
 
-        if (this.getAECurrentPower(ItemAccess.forStack(item)) > ENERGY_PER_USE) {
+        if (this.getAECurrentPower(item) > ENERGY_PER_USE) {
             if (!p.mayUseItemAt(pos, side, item)) {
                 return InteractionResult.FAIL;
             }

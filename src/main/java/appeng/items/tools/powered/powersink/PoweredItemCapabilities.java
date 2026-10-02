@@ -48,7 +48,7 @@ public class PoweredItemCapabilities implements EnergyHandler {
         if (!itemAccess.getResource().is(validItem)) {
             return 0;
         }
-        return (long) PowerUnit.AE.convertTo(PowerUnit.FE, item.getAECurrentPower(itemAccess));
+        return (long) PowerUnit.AE.convertTo(PowerUnit.FE, item.getAECurrentPower(itemAccess.getResource()));
     }
 
     @Override
@@ -57,7 +57,7 @@ public class PoweredItemCapabilities implements EnergyHandler {
         if (!currentItem.is(validItem)) {
             return 0;
         }
-        return (long) PowerUnit.AE.convertTo(PowerUnit.FE, item.getAEMaxPower(itemAccess));
+        return (long) PowerUnit.AE.convertTo(PowerUnit.FE, item.getAEMaxPower(currentItem));
     }
 
     @Override

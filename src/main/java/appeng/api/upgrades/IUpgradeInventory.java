@@ -23,6 +23,7 @@
 
 package appeng.api.upgrades;
 
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 
@@ -32,7 +33,7 @@ import appeng.api.inventories.InternalInventory;
  * This specialized inventory can be used to insert and extract upgrade cards into AE2 machines. Only upgrades supported
  * by the machine can be inserted.
  */
-public interface IUpgradeInventory extends ReadOnlyUpgradeInventory, InternalInventory {
+public interface IUpgradeInventory extends ReadOnlyUpgradeInventory<ItemStack>, InternalInventory {
     /**
      * Reads the contents of this upgrade inventory from a subtag of the given compound tag.
      */

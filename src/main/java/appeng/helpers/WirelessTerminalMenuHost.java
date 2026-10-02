@@ -110,7 +110,7 @@ public class WirelessTerminalMenuHost<T extends WirelessTerminalItem> extends It
 
     @Override
     public double extractAEPower(double amt, Actionable mode, PowerMultiplier usePowerMultiplier) {
-        final double extracted = Math.min(amt, getItem().getAECurrentPower(itemAccess()));
+        final double extracted = Math.min(amt, getItem().getAECurrentPower(itemAccess().getResource()));
 
         if (mode == Actionable.SIMULATE) {
             return extracted;

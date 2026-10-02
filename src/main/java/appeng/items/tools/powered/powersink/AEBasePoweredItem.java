@@ -21,6 +21,7 @@ package appeng.items.tools.powered.powersink;
 import java.util.function.Consumer;
 import java.util.function.DoubleSupplier;
 
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.CreativeModeTab;
@@ -51,9 +52,8 @@ public abstract class AEBasePoweredItem extends AEBaseItem implements IAEItemPow
     public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay tooltipDisplay,
             Consumer<Component> lines,
             TooltipFlag tooltipFlags) {
-        var access = ItemAccess.forStack(stack);
-        var storedEnergy = getAECurrentPower(access);
-        var energyCapacity = getAEMaxPower(access);
+        var storedEnergy = getAECurrentPower(stack);
+        var energyCapacity = getAEMaxPower(stack);
         lines.accept(Tooltips.energyStorageComponent(storedEnergy, energyCapacity));
     }
 
@@ -64,7 +64,7 @@ public abstract class AEBasePoweredItem extends AEBaseItem implements IAEItemPow
         var charged = new ItemStack(this, 1);
         var access = ItemAccess.forStack(charged);
         try (var tr = Transaction.openRoot()) {
-            injectAEPower(access, getAEMaxPower(access), tr);
+            injectAEPower(access, getAEMaxPower(access.getResource()), tr);
             tr.commit();
         }
         output.accept(charged);
@@ -82,8 +82,7 @@ public abstract class AEBasePoweredItem extends AEBaseItem implements IAEItemPow
 
     @Override
     public int getBarWidth(ItemStack stack) {
-        var access = ItemAccess.forStack(stack);
-        double filled = getAECurrentPower(access) / getAEMaxPower(access);
+        double filled = getAECurrentPower(stack) / getAEMaxPower(stack);
         return Mth.clamp((int) Math.round(filled * 13), 0, 13);
     }
 
@@ -95,8 +94,8 @@ public abstract class AEBasePoweredItem extends AEBaseItem implements IAEItemPow
 
     @Override
     public double injectAEPower(ItemAccess access, double amount, TransactionContext tr) {
-        final double maxStorage = this.getAEMaxPower(access);
-        final double currentStorage = this.getAECurrentPower(access);
+        final double maxStorage = this.getAEMaxPower(access.getResource());
+        final double currentStorage = this.getAECurrentPower(access.getResource());
         final double required = maxStorage - currentStorage;
         final double overflow = Mth.clamp(amount - required, 0, amount);
 
@@ -108,7 +107,7 @@ public abstract class AEBasePoweredItem extends AEBaseItem implements IAEItemPow
 
     @Override
     public double extractAEPower(ItemAccess access, double amount, TransactionContext tr) {
-        final double currentStorage = this.getAECurrentPower(access);
+        final double currentStorage = this.getAECurrentPower(access.getResource());
         final double fulfillable = Math.min(amount, currentStorage);
 
         setAECurrentPower(access, currentStorage - fulfillable, tr);
@@ -117,9 +116,9 @@ public abstract class AEBasePoweredItem extends AEBaseItem implements IAEItemPow
     }
 
     @Override
-    public double getAEMaxPower(ItemAccess access) {
+    public double getAEMaxPower(DataComponentGetter item) {
         // Allow per-item-stack overrides of the maximum power storage
-        return access.getResource().getOrDefault(AEComponents.ENERGY_CAPACITY, powerCapacity.getAsDouble());
+        return item.getOrDefault(AEComponents.ENERGY_CAPACITY, powerCapacity.getAsDouble());
     }
 
     /**
@@ -135,7 +134,7 @@ public abstract class AEBasePoweredItem extends AEBaseItem implements IAEItemPow
         }
 
         // Clamp current power to be within bounds
-        var currentPower = getAECurrentPower(access);
+        var currentPower = getAECurrentPower(access.getResource());
         if (currentPower > maxPower) {
             setAECurrentPower(access, maxPower, tr);
         }
@@ -158,8 +157,8 @@ public abstract class AEBasePoweredItem extends AEBaseItem implements IAEItemPow
     }
 
     @Override
-    public double getAECurrentPower(ItemAccess access) {
-        return access.getResource().getOrDefault(AEComponents.STORED_ENERGY, 0.0);
+    public double getAECurrentPower(DataComponentGetter item) {
+        return item.getOrDefault(AEComponents.STORED_ENERGY, 0.0);
     }
 
     protected final void setAECurrentPower(ItemAccess access, double power, TransactionContext tr) {
@@ -171,7 +170,7 @@ public abstract class AEBasePoweredItem extends AEBaseItem implements IAEItemPow
     }
 
     @Override
-    public AccessRestriction getPowerFlow(ItemAccess access) {
+    public AccessRestriction getPowerFlow(DataComponentGetter item) {
         return AccessRestriction.WRITE;
     }
 
