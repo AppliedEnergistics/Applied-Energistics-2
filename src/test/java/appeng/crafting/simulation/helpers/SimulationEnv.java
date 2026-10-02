@@ -259,6 +259,11 @@ public class SimulationEnv {
             }
 
             @Override
+            public int getEstimatedStackCount() {
+                return networkStorage.size();
+            }
+
+            @Override
             public Component getDescription() {
                 return Component.empty();
             }

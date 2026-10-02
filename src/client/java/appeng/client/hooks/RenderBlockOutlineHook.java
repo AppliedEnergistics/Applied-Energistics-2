@@ -6,8 +6,7 @@ import java.util.List;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.ShapeRenderer;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.state.level.BlockOutlineRenderState;
@@ -104,7 +103,7 @@ public class RenderBlockOutlineHook {
             var selectedPart = partHost.selectPartWorld(evt.getHitResult().getLocation());
             boolean highContrast = evt.isHighContrast();
             float lineWidth = Minecraft.getInstance().gameRenderer
-                    .getGameRenderState().windowRenderState.appropriateLineWidth;
+                    .gameRenderState().windowRenderState.appropriateLineWidth;
             if (selectedPart.facade != null) {
                 evt.addCustomRenderer(
                         new FacadeOutlineRenderer(selectedPart.facade, selectedPart.side, cameraRelativePos,
@@ -123,14 +122,15 @@ public class RenderBlockOutlineHook {
             IPart part, Vec3 cameraRelativePos) implements CustomBlockOutlineRenderer {
         @Override
         public boolean render(BlockOutlineRenderState blockOutlineRenderState,
-                MultiBufferSource.BufferSource bufferSource,
+                SubmitNodeCollector collector,
                 PoseStack poseStack,
-                boolean translucentPass,
                 LevelRenderState levelRenderState) {
             // Render without depth test to also have a preview for parts inside blocks.
-            renderPart(poseStack, bufferSource, cameraRelativePos, part, placement.side(), PREVIEW_LINE_WIDTH, false,
+            renderPart(poseStack, collector, blockOutlineRenderState.isTranslucent(), cameraRelativePos, part,
+                    placement.side(), PREVIEW_LINE_WIDTH, false,
                     true, true);
-            renderPart(poseStack, bufferSource, cameraRelativePos, part, placement.side(), PREVIEW_LINE_WIDTH, false,
+            renderPart(poseStack, collector, blockOutlineRenderState.isTranslucent(), cameraRelativePos, part,
+                    placement.side(), PREVIEW_LINE_WIDTH, false,
                     true, false);
             return false;
         }
@@ -141,27 +141,31 @@ public class RenderBlockOutlineHook {
             Vec3 cameraRelativePos) implements CustomBlockOutlineRenderer {
         @Override
         public boolean render(BlockOutlineRenderState blockOutlineRenderState,
-                MultiBufferSource.BufferSource bufferSource,
+                SubmitNodeCollector collector,
                 PoseStack poseStack,
-                boolean b,
                 LevelRenderState levelRenderState) {
             // Use same rendering inside blocks as part preview.
-            showFacadePlacementPreview(poseStack, cameraRelativePos, bufferSource, true);
-            showFacadePlacementPreview(poseStack, cameraRelativePos, bufferSource, false);
+            showFacadePlacementPreview(poseStack, cameraRelativePos, collector,
+                    blockOutlineRenderState.isTranslucent(), true);
+            showFacadePlacementPreview(poseStack, cameraRelativePos, collector,
+                    blockOutlineRenderState.isTranslucent(), false);
             return false;
         }
 
         private void showFacadePlacementPreview(PoseStack poseStack,
                 Vec3 cameraRelativePos,
-                MultiBufferSource buffers,
+                SubmitNodeCollector collector,
+                boolean afterTerrain,
                 boolean insideBlock) {
             if (renderAnchor) {
                 var cableAnchor = AEParts.CABLE_ANCHOR.get().createPart();
-                renderPart(poseStack, buffers, cameraRelativePos, cableAnchor, side, PREVIEW_LINE_WIDTH, false, true,
+                renderPart(poseStack, collector, afterTerrain, cameraRelativePos, cableAnchor, side, PREVIEW_LINE_WIDTH,
+                        false, true,
                         insideBlock);
             }
 
-            renderFacade(poseStack, buffers, cameraRelativePos, facade, side, PREVIEW_LINE_WIDTH, false, true,
+            renderFacade(poseStack, collector, afterTerrain, cameraRelativePos, facade, side, PREVIEW_LINE_WIDTH, false,
+                    true,
                     insideBlock);
         }
     }
@@ -172,9 +176,11 @@ public class RenderBlockOutlineHook {
             float lineWidth) implements CustomBlockOutlineRenderer {
         @Override
         public boolean render(BlockOutlineRenderState blockOutlineRenderState,
-                MultiBufferSource.BufferSource bufferSource, PoseStack poseStack, boolean b,
+                SubmitNodeCollector collector,
+                PoseStack poseStack,
                 LevelRenderState levelRenderState) {
-            renderFacade(poseStack, bufferSource, cameraRelativePos, facade, side, lineWidth, highContrast, false,
+            renderFacade(poseStack, collector, blockOutlineRenderState.isTranslucent(), cameraRelativePos, facade, side,
+                    lineWidth, highContrast, false,
                     false);
 
             return true;
@@ -187,15 +193,18 @@ public class RenderBlockOutlineHook {
             float lineWidth) implements CustomBlockOutlineRenderer {
         @Override
         public boolean render(BlockOutlineRenderState blockOutlineRenderState,
-                MultiBufferSource.BufferSource bufferSource, PoseStack poseStack, boolean b,
+                SubmitNodeCollector collector,
+                PoseStack poseStack,
                 LevelRenderState levelRenderState) {
-            renderPart(poseStack, bufferSource, cameraRelativePos, part, side, lineWidth, highContrast, false, false);
+            renderPart(poseStack, collector, blockOutlineRenderState.isTranslucent(), cameraRelativePos, part, side,
+                    lineWidth, highContrast, false, false);
             return true;
         }
     }
 
     private static void renderPart(PoseStack poseStack,
-            MultiBufferSource buffers,
+            SubmitNodeCollector collector,
+            boolean afterTerrain,
             Vec3 cameraRelativePos,
             IPart part,
             Direction side,
@@ -206,11 +215,13 @@ public class RenderBlockOutlineHook {
         var boxes = new ArrayList<AABB>();
         var helper = new BusCollisionHelper(boxes, side, true);
         part.getBoxes(helper);
-        renderBoxes(poseStack, buffers, cameraRelativePos, boxes, lineWidth, highContrast, preview, insideBlock);
+        renderBoxes(poseStack, collector, afterTerrain, cameraRelativePos, boxes, lineWidth, highContrast, preview,
+                insideBlock);
     }
 
     private static void renderFacade(PoseStack poseStack,
-            MultiBufferSource buffers,
+            SubmitNodeCollector collector,
+            boolean afterTerrain,
             Vec3 cameraRelativePos,
             IFacadePart facade,
             Direction side,
@@ -221,11 +232,13 @@ public class RenderBlockOutlineHook {
         var boxes = new ArrayList<AABB>();
         var helper = new BusCollisionHelper(boxes, side, true);
         facade.getBoxes(helper, false);
-        renderBoxes(poseStack, buffers, cameraRelativePos, boxes, lineWidth, highContrast, preview, insideBlock);
+        renderBoxes(poseStack, collector, afterTerrain, cameraRelativePos, boxes, lineWidth, highContrast, preview,
+                insideBlock);
     }
 
     private static void renderBoxes(PoseStack poseStack,
-            MultiBufferSource buffers,
+            SubmitNodeCollector collector,
+            boolean afterTerrain,
             Vec3 cameraRelativePos,
             List<AABB> boxes,
             float lineWidth,
@@ -235,38 +248,32 @@ public class RenderBlockOutlineHook {
         if (preview) {
             RenderType renderType = insideBlock ? AERenderTypes.LINES_BEHIND_BLOCK : RenderTypes.lines();
             int color = ARGB.white(insideBlock ? 0.2f : 0.6f);
-            renderBoxes(poseStack, buffers, cameraRelativePos, boxes, renderType, color, lineWidth);
+            renderBoxes(poseStack, collector, afterTerrain, cameraRelativePos, boxes, renderType, color, lineWidth);
         } else {
             if (highContrast) {
-                renderBoxes(poseStack, buffers, cameraRelativePos, boxes, RenderTypes.secondaryBlockOutline(),
+                renderBoxes(poseStack, collector, afterTerrain, cameraRelativePos, boxes,
+                        RenderTypes.secondaryBlockOutline(),
                         CommonColors.BLACK, HIGH_CONTRAST_SECONDARY_LINE_WIDTH);
             }
             int color = highContrast ? CommonColors.HIGH_CONTRAST_DIAMOND : ARGB.black(0.4f);
-            renderBoxes(poseStack, buffers, cameraRelativePos, boxes, RenderTypes.lines(), color, lineWidth);
+            renderBoxes(poseStack, collector, afterTerrain, cameraRelativePos, boxes, RenderTypes.lines(), color,
+                    lineWidth);
         }
     }
 
     private static void renderBoxes(PoseStack poseStack,
-            MultiBufferSource buffers,
+            SubmitNodeCollector collector,
+            boolean afterTerrain,
             Vec3 cameraRelativePos,
             List<AABB> boxes,
             RenderType renderType,
             int color,
             float lineWidth) {
-        var buffer = buffers.getBuffer(renderType);
-
+        poseStack.pushPose();
+        poseStack.translate(cameraRelativePos.x, cameraRelativePos.y, cameraRelativePos.z);
         for (var box : boxes) {
-            var shape = Shapes.create(box);
-
-            ShapeRenderer.renderShape(
-                    poseStack,
-                    buffer,
-                    shape,
-                    cameraRelativePos.x,
-                    cameraRelativePos.y,
-                    cameraRelativePos.z,
-                    color,
-                    lineWidth);
+            collector.submitShapeOutline(poseStack, Shapes.create(box), renderType, color, lineWidth, afterTerrain);
         }
+        poseStack.popPose();
     }
 }

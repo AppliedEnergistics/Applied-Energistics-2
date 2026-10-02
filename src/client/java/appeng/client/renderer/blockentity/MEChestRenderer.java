@@ -28,7 +28,6 @@ import org.joml.Matrix4f;
 import org.joml.Matrix4fc;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
@@ -79,7 +78,7 @@ public class MEChestRenderer implements BlockEntityRenderer<MEChestBlockEntity, 
         // Calculate the lightlevel in front of the drive for lighting the exposed cell model.
         if (be.getLevel() != null) {
             var frontPos = be.getBlockPos().relative(be.getFront());
-            state.frontLightCoords = LevelRenderer.getLightCoords(be.getLevel(), frontPos);
+            state.frontLightCoords = LightCoordsUtil.getLightCoords(be.getLevel(), frontPos);
         } else {
             state.frontLightCoords = LightCoordsUtil.FULL_BRIGHT;
         }

@@ -5,14 +5,14 @@ import java.util.concurrent.CompletableFuture;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
-import net.minecraft.data.tags.KeyTagProvider;
+import net.minecraft.data.tags.TagsProvider;
 import net.minecraft.world.item.trading.VillagerTrade;
 
 import appeng.api.ids.AETags;
 import appeng.core.AppEng;
 import appeng.init.InitVillager;
 
-public class VillagerTradeTagsProvider extends KeyTagProvider<VillagerTrade> {
+public class VillagerTradeTagsProvider extends TagsProvider<VillagerTrade> {
     public VillagerTradeTagsProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider) {
         super(output, Registries.VILLAGER_TRADE, lookupProvider, AppEng.MOD_ID);
     }

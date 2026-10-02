@@ -32,6 +32,7 @@ public final class InitDimensionTypes {
     @NotNull
     private static DimensionType createSpatialDimensionType(BootstrapContext<DimensionType> context) {
         var timelines = context.lookup(Registries.TIMELINE);
+        var blocks = context.lookup(Registries.BLOCK);
 
         return new DimensionType(
                 true, // fixedTime
@@ -42,7 +43,7 @@ public final class InitDimensionTypes {
                 SpatialStorageChunkGenerator.MIN_Y, // minY
                 SpatialStorageChunkGenerator.HEIGHT, // height
                 SpatialStorageChunkGenerator.HEIGHT, // logicalHeight
-                BlockTags.INFINIBURN_OVERWORLD, // infiniburn
+                blocks.getOrThrow(BlockTags.INFINIBURN_OVERWORLD), // infiniburn
                 1.0f, // ambientLight
                 new DimensionType.MonsterSettings(ConstantInt.of(0), 0),
                 DimensionType.Skybox.OVERWORLD,

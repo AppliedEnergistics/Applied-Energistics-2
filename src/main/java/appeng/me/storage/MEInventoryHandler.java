@@ -126,6 +126,32 @@ public class MEInventoryHandler extends DelegatingMEInventory {
     }
 
     @Override
+    public int getEstimatedStackCount() {
+        if (this.gettingAvailableContent) {
+            // Prevent recursion in case the internal inventory somehow calls this when the available items are queried.
+            // This is handled by the NetworkInventoryHandler when the initial query is coming from the network.
+            // However, this function might be called from the storage bus code directly,
+            // so we have to do this check manually.
+            return 0;
+        }
+
+        this.gettingAvailableContent = true;
+        try {
+            if (!this.filterAvailableContents) {
+                return super.getEstimatedStackCount();
+            } else {
+                if (!this.allowExtraction) {
+                    return 0;
+                }
+
+                return super.getEstimatedStackCount();
+            }
+        } finally {
+            this.gettingAvailableContent = false;
+        }
+    }
+
+    @Override
     public boolean isPreferredStorageFor(AEKey input, IActionSource source) {
         if (this.partitionListMode == IncludeExclude.WHITELIST) {
             if (this.partitionList.isListed(input)) {

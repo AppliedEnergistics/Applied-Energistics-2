@@ -117,6 +117,20 @@ public class PlotTestHelper extends GameTestHelper {
     }
 
     /**
+     * Asserts that the grid at the given position has finished booting, is powered, and that every node in it is active
+     * (i.e. has the channels it requires). A grid merely existing does not guarantee that devices such as drives have
+     * mounted their storage yet.
+     */
+    public void assertGridOnline(BlockPos pos) {
+        var grid = getGrid(pos);
+        check(!grid.getPathingService().isNetworkBooting(), "grid is still booting", pos);
+        check(grid.getEnergyService().isNetworkPowered(), "grid is not powered", pos);
+        for (var node : grid.getNodes()) {
+            check(node.isActive(), "node " + node.getOwner() + " is not active", pos);
+        }
+    }
+
+    /**
      * Checks that everything is initialized
      */
     public void checkAllInitialized() {

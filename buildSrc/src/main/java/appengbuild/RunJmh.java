@@ -1,12 +1,12 @@
 package appengbuild;
 
+import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.file.FileSystemOperations;
-import org.gradle.api.file.RegularFileProperty;
 import org.gradle.api.provider.ListProperty;
 import org.gradle.api.provider.Property;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.JavaExec;
-import org.gradle.api.tasks.OutputFile;
+import org.gradle.api.tasks.OutputDirectory;
 import org.gradle.api.tasks.TaskAction;
 import org.gradle.work.DisableCachingByDefault;
 
@@ -16,14 +16,17 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UncheckedIOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 /**
  * Runs JMH benchmarks found on the classpath. The main class must accept the JMH command line options; it defaults to
- * the JMH command line runner. Results are written to {@link #getJsonResultFile()} (JSON) and
- * {@link #getTextResultFile()} (text).
+ * the JMH command line runner. Every run writes its results to {@link #getResultsDirectory()}, as
+ * {@code <timestamp>-<revision>.json} (JSON) and {@code <timestamp>-<revision>.txt} (text), where the revision is
+ * given by {@link #getRevision()}. This allows comparing the results of runs on different revisions.
  * <p>
  * Every run starts with an empty task-specific temporary directory, which is used as the working directory and, via
  * {@code java.io.tmpdir}, for temporary files. JMH passes both on to its forked JVMs.
@@ -35,6 +38,7 @@ public abstract class RunJmh extends JavaExec {
         getOutputs().upToDateWhen(task -> false);
         setWorkingDir(getTemporaryDir());
         systemProperty("java.io.tmpdir", getJavaTempDir().getAbsolutePath());
+        getResultsDirectory().convention(getProject().getLayout().getBuildDirectory().dir("reports/jmh"));
 
         getWarmupForks().convention(0);
         getWarmupIterations().convention(1);
@@ -79,16 +83,18 @@ public abstract class RunJmh extends JavaExec {
     public abstract ListProperty<String> getExtraArgs();
 
     /**
-     * Machine-readable benchmark results in JSON format.
+     * Directory that receives the results of every run: machine-readable benchmark results in JSON format, and a
+     * human-readable log of the run, to which JMH's console output is copied. Defaults to {@code build/reports/jmh}.
      */
-    @OutputFile
-    public abstract RegularFileProperty getJsonResultFile();
+    @OutputDirectory
+    public abstract DirectoryProperty getResultsDirectory();
 
     /**
-     * Human-readable log of the benchmark run. JMH's console output is copied to this file.
+     * Identifies the revision of the benchmarked code in the names of the result files, i.e. {@code 3ca129526} or
+     * {@code 3ca129526-dirty}.
      */
-    @OutputFile
-    public abstract RegularFileProperty getTextResultFile();
+    @Input
+    public abstract Property<String> getRevision();
 
     @Inject
     protected abstract FileSystemOperations getFileSystemOperations();
@@ -105,6 +111,12 @@ public abstract class RunJmh extends JavaExec {
         if (!getJavaTempDir().mkdirs()) {
             throw new UncheckedIOException(new IOException("Failed to create " + getJavaTempDir()));
         }
+
+        var timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd-HHmmss"));
+        var baseName = timestamp + "-" + getRevision().get();
+        var resultsDirectory = getResultsDirectory().get();
+        var jsonResultFile = resultsDirectory.file(baseName + ".json").getAsFile();
+        var textResultFile = resultsDirectory.file(baseName + ".txt").getAsFile();
 
         var args = new ArrayList<String>();
         // Fail the task if any benchmark throws, instead of just reporting it
@@ -123,7 +135,7 @@ public abstract class RunJmh extends JavaExec {
         args.add("-rf");
         args.add("json");
         args.add("-rff");
-        args.add(getJsonResultFile().get().getAsFile().getAbsolutePath());
+        args.add(jsonResultFile.getAbsolutePath());
         for (var profiler : getProfilers().get()) {
             args.add("-prof");
             args.add(profiler);
@@ -132,11 +144,15 @@ public abstract class RunJmh extends JavaExec {
         args(args);
 
         // JMH writes its output either to the console or to a file (-o), so copy the console output to the file instead
-        try (var fileOut = new FileOutputStream(getTextResultFile().get().getAsFile())) {
+        try (var fileOut = new FileOutputStream(textResultFile)) {
             setStandardOutput(new TeeOutputStream(System.out, fileOut));
             super.exec();
         } catch (IOException e) {
             throw new UncheckedIOException(e);
+        } catch (RuntimeException e) {
+            // Don't leave incomplete results behind, which would be picked up by reports. The log explains the failure.
+            jsonResultFile.delete();
+            throw e;
         }
     }
 

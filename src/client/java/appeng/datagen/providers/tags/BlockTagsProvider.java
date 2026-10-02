@@ -24,9 +24,10 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
-import net.minecraft.data.tags.IntrinsicHolderTagsProvider;
+import net.minecraft.data.tags.TagsProvider;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
@@ -40,9 +41,14 @@ import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.BlockDefinition;
 import appeng.datagen.providers.IAE2DataProvider;
 
-public class BlockTagsProvider extends IntrinsicHolderTagsProvider<Block> implements IAE2DataProvider {
+public class BlockTagsProvider extends TagsProvider<Block> implements IAE2DataProvider {
     public BlockTagsProvider(PackOutput packOutput, CompletableFuture<HolderLookup.Provider> registries) {
-        super(packOutput, Registries.BLOCK, registries, block -> block.builtInRegistryHolder().key(), AppEng.MOD_ID);
+        super(packOutput, Registries.BLOCK, registries, AppEng.MOD_ID);
+    }
+
+    @Override
+    protected IntrinsicTagAppender<Block> tag(TagKey<Block> tag) {
+        return new IntrinsicTagAppender<>(super.tag(tag), BuiltInRegistries.BLOCK);
     }
 
     @Override

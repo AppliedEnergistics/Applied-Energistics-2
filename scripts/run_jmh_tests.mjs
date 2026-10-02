@@ -1,24 +1,22 @@
-// Runs the JMH benchmarks on several commits and collects the results in build/reports/jmh/all-results.json.
-// Use generate_report.mjs afterwards to render a chart from the collected results.
+// Runs the JMH benchmarks on several commits. The jmh task writes the results of each run to build/reports/jmh/,
+// tagged with the commit they were produced from. Use generate_report.mjs afterwards to compare them.
 //
 // Usage:
 //   node run_jmh_tests.mjs --count <n>   Benchmark the current commit and the <n> - 1 commits before it
 //   node run_jmh_tests.mjs <ref>...      Benchmark the given refs (branches, tags, commits), in the given order
 //
-// The first commit in the results (the oldest commit for --count, or the first ref) is used as the
-// baseline by generate_report.mjs.
+// At the end, this prints the generate_report.mjs command line that compares the benchmarked commits, using the first
+// one (the oldest commit for --count, or the first ref) as the baseline.
 import { simpleGit } from 'simple-git';
 import { spawnSync } from 'child_process';
 import path from 'path';
-import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'fs';
+import { mkdirSync, readdirSync, rmSync } from 'fs';
 import { URL, fileURLToPath } from 'url';
 import { parseArgs } from 'util';
 
 const __dirname = fileURLToPath(new URL('.', import.meta.url));
 const repositoryRoot = path.join(__dirname, '..');
 const jmhDirectory = path.join(repositoryRoot, 'build/reports/jmh/');
-const resultFile = path.join(jmhDirectory, 'results.json');
-const allResultsFile = path.join(jmhDirectory, 'all-results.json');
 const git = simpleGit(repositoryRoot);
 
 const usage = 'Usage: node run_jmh_tests.mjs --count <n> | <ref>...';
@@ -89,9 +87,8 @@ function runJmh(iterations) {
 
 mkdirSync(jmhDirectory, { recursive: true });
 
-const allResults = [];
+const benchmarkedCommits = [];
 const failedCommits = [];
-writeFileSync(allResultsFile, JSON.stringify(allResults));
 try {
     let warmedUp = false;
     for (const commit of commits) {
@@ -102,32 +99,23 @@ try {
         if (!warmedUp) {
             // do one warmup run before the main sequence to warm the fs cache
             console.log('executing warmup run to warm fs cache');
+            // Its results aren't meant to be compared, so remove them afterwards
+            const existingFiles = new Set(readdirSync(jmhDirectory));
             runJmh(3);
+            for (const file of readdirSync(jmhDirectory)) {
+                if (!existingFiles.has(file)) {
+                    rmSync(path.join(jmhDirectory, file), { force: true });
+                }
+            }
             warmedUp = true;
         }
 
-        // Ensure we never pick up the results of a previous run if this one fails
-        rmSync(resultFile, { force: true });
-        if (!runJmh(options.iterations) || !existsSync(resultFile)) {
+        if (!runJmh(options.iterations)) {
             console.error(`JMH failed for commit ${label}, skipping it`);
             failedCommits.push(label);
             continue;
         }
-
-        allResults.push({
-            commit: {
-                hash: commit.hash,
-                ref: commit.ref,
-                date: commit.date,
-                message: commit.message,
-                refs: commit.refs,
-                body: commit.body,
-                author_name: commit.author_name,
-                author_email: commit.author_email,
-            },
-            results: JSON.parse(readFileSync(resultFile, 'utf8')),
-        });
-        writeFileSync(allResultsFile, JSON.stringify(allResults, null, 2));
+        benchmarkedCommits.push(commit.hash.substring(0, 9));
     }
 } finally {
     try {
@@ -138,7 +126,10 @@ try {
     }
 }
 
-console.log(`wrote results for ${allResults.length} commit(s) to ${allResultsFile}`);
+console.log(`wrote results for ${benchmarkedCommits.length} commit(s) to ${jmhDirectory}`);
+if (benchmarkedCommits.length > 0) {
+    console.log(`compare them with: node generate_report.mjs ${benchmarkedCommits.join(' ')}`);
+}
 if (failedCommits.length > 0) {
     console.error(`JMH failed for: ${failedCommits.join(', ')}`);
     process.exitCode = 1;
