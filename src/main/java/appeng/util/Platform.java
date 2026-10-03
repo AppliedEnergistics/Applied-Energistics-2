@@ -46,6 +46,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Containers;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
@@ -58,6 +59,7 @@ import net.neoforged.fml.ModList;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.fml.loading.FMLLoader;
 import net.neoforged.fml.util.thread.SidedThreadGroups;
+import net.neoforged.neoforge.common.util.FakePlayer;
 import net.neoforged.neoforge.common.util.FakePlayerFactory;
 import net.neoforged.neoforge.fluids.FluidStack;
 
@@ -259,6 +261,8 @@ public class Platform {
 
     private static final UUID DEFAULT_FAKE_PLAYER_UUID = UUID.fromString("60C173A5-E1E6-4B87-85B1-272CE424521D");
 
+    private static final String FAKE_PLAYER_NAME = "[AE2]";
+
     public static Player getFakePlayer(ServerLevel level, @Nullable UUID playerUuid) {
         Objects.requireNonNull(level);
 
@@ -266,7 +270,16 @@ public class Platform {
             playerUuid = DEFAULT_FAKE_PLAYER_UUID;
         }
 
-        return FakePlayerFactory.get(level, new GameProfile(playerUuid, "[AE2]"));
+        return FakePlayerFactory.get(level, new GameProfile(playerUuid, FAKE_PLAYER_NAME));
+    }
+
+    /**
+     * @return true if the given entity is a fake player created by {@link #getFakePlayer(ServerLevel, UUID)}, as
+     *         opposed to a real player or a fake player created by another mod.
+     */
+    public static boolean isAe2FakePlayer(@Nullable Entity entity) {
+        return entity instanceof FakePlayer fakePlayer
+                && FAKE_PLAYER_NAME.equals(fakePlayer.getGameProfile().name());
     }
 
     public static Direction rotateAround(Direction forward, Direction axis) {
