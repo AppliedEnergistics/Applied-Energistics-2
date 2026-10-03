@@ -2,6 +2,7 @@ package appeng.items.tools.powered;
 
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Prediction;
@@ -14,8 +15,9 @@ import net.minecraft.world.item.component.DyedItemColor;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 
-import appeng.api.config.Actionable;
 import appeng.api.implementations.menuobjects.IMenuItem;
 import appeng.api.storage.StorageCells;
 import appeng.api.storage.cells.ICellWorkbenchItem;
@@ -50,7 +52,7 @@ public abstract class AbstractPortableCell extends PoweredContainerItem
     public abstract Identifier getRecipeId();
 
     @Override
-    public abstract double getChargeRate(ItemStack stack);
+    public abstract double getChargeRate(DataComponentGetter item);
 
     /**
      * Open a Portable Cell from a slot in the player inventory, i.e. activated via hotkey.
@@ -126,31 +128,43 @@ public abstract class AbstractPortableCell extends PoweredContainerItem
 
         playerInventory.setItem(playerInventory.getSelectedSlot(), ItemStack.EMPTY);
 
+        var access = ItemAccess.forStack(stack);
         double remainingEnergy = getAECurrentPower(stack);
         for (var recipeStack : disassemblyItems) {
             var droppedStack = recipeStack.copy();
             // Dump remaining energy into whatever can accept it
             if (remainingEnergy > 0 && droppedStack.getItem() instanceof EnergyCellBlockItem energyCell) {
-                remainingEnergy = energyCell.injectAEPower(droppedStack, remainingEnergy, Actionable.MODULATE);
+                try (var tr = Transaction.openRoot()) {
+                    remainingEnergy = energyCell.injectAEPower(ItemAccess.forStack(droppedStack), remainingEnergy, tr);
+                    tr.commit();
+                }
             }
 
             playerInventory.placeItemBackInInventory(droppedStack, Prediction.SERVER_ONLY);
         }
 
         // Drop upgrades
-        getUpgrades(stack).forEach(s -> playerInventory.placeItemBackInInventory(s, Prediction.SERVER_ONLY));
+        getUpgrades(access).forEach(s -> playerInventory.placeItemBackInInventory(s, Prediction.SERVER_ONLY));
 
         return true;
     }
 
     @Override
-    public IUpgradeInventory getUpgrades(ItemStack is) {
-        return UpgradeInventories.forItem(is, 2, this::onUpgradesChanged);
+    public int getMaxUpgrades(DataComponentGetter item) {
+        return 2;
     }
 
-    public void onUpgradesChanged(ItemStack stack, IUpgradeInventory upgrades) {
+    @Override
+    public IUpgradeInventory getUpgrades(ItemAccess access) {
+        return UpgradeInventories.forItem(access, this::onUpgradesChanged);
+    }
+
+    public void onUpgradesChanged(ItemAccess access, IUpgradeInventory upgrades) {
         // The energy card is crafted with a dense energy cell, while the base portable just uses a normal energy cell.
         // Since the dense cells capacity is 8x the normal capacity, the result should be 9x normal.
-        setAEMaxPowerMultiplier(stack, 1 + Upgrades.getEnergyCardMultiplier(upgrades) * 8);
+        try (var tr = Transaction.openRoot()) {
+            setAEMaxPowerMultiplier(access, 1 + Upgrades.getEnergyCardMultiplier(upgrades) * 8, tr);
+            tr.commit();
+        }
     }
 }

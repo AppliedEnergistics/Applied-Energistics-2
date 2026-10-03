@@ -45,7 +45,7 @@ public class NetworkToolMenuHost<T extends NetworkToolItem> extends ItemMenuHost
         super(item, player, locator);
         this.host = host;
         this.supplierInv = new SupplierInternalInventory<>(
-                new StackDependentSupplier<>(this::getItemStack, NetworkToolItem::getInventory));
+                new AccessDependentSupplier<>(itemAccess(), NetworkToolItem::getInventory));
     }
 
     @Override

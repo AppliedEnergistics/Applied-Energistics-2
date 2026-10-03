@@ -23,6 +23,7 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
@@ -58,7 +59,7 @@ public class ItemMenuHost<T extends Item> implements IUpgradeableObject {
             throw new IllegalArgumentException("The current item in-slot is " + currentStack.getItem() + " but " +
                     "this menu requires " + item);
         }
-        this.upgrades = new DelegateItemUpgradeInventory(this::getItemStack);
+        this.upgrades = new DelegateItemUpgradeInventory(itemAccess());
     }
 
     /**
@@ -93,6 +94,10 @@ public class ItemMenuHost<T extends Item> implements IUpgradeableObject {
         return locator.locateItem(player);
     }
 
+    public ItemAccess itemAccess() {
+        return locator.itemAccess(player);
+    }
+
     /**
      * @return True if this host is on the client-side.
      */
@@ -110,8 +115,7 @@ public class ItemMenuHost<T extends Item> implements IUpgradeableObject {
      * Checks if the item underlying this host is still in place.
      */
     public boolean isValid() {
-        var currentItem = getItemStack();
-        return !currentItem.isEmpty() && currentItem.is(item);
+        return itemAccess().getResource().is(item);
     }
 
     /**

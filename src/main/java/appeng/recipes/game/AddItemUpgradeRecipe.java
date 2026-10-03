@@ -9,6 +9,7 @@ import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 
 import appeng.api.upgrades.IUpgradeableItem;
 
@@ -35,7 +36,7 @@ public class AddItemUpgradeRecipe extends CustomRecipe {
             var stack = input.getItem(i);
             if (stack.getItem() instanceof IUpgradeableItem upgradableItem) {
                 var upgraded = stack.copy();
-                var upgrades = upgradableItem.getUpgrades(upgraded);
+                var upgrades = upgradableItem.getUpgrades(ItemAccess.forStack(upgraded));
 
                 for (int j = 0; j < input.size(); j++) {
                     if (j == i) {
