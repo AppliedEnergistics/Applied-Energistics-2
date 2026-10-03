@@ -90,6 +90,7 @@ import appeng.init.worldgen.InitStructures;
 import appeng.integration.Integrations;
 import appeng.recipes.AERecipeSerializers;
 import appeng.recipes.AERecipeTypes;
+import appeng.recipes.transform.TransformLogic;
 import appeng.server.AECommand;
 import appeng.server.services.ChunkLoadingService;
 import appeng.server.testworld.GameTestPlotAdapter;
@@ -189,6 +190,8 @@ public abstract class AppEngBase implements AppEng {
 
         NeoForge.EVENT_BUS.addListener(WrenchHook::onPlayerUseBlockEvent);
         NeoForge.EVENT_BUS.addListener(SkyStoneBreakSpeed::handleBreakFaster);
+        NeoForge.EVENT_BUS.addListener(TransformLogic::onServerStarted);
+        NeoForge.EVENT_BUS.addListener(TransformLogic::onReloadServerResources);
         NeoForge.EVENT_BUS.addListener(this::registerSynchronizedRecipes);
 
         HotkeyActions.init();
