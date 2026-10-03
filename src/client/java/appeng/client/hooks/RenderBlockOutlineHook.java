@@ -246,7 +246,7 @@ public class RenderBlockOutlineHook {
             boolean preview,
             boolean insideBlock) {
         if (preview) {
-            RenderType renderType = insideBlock ? AERenderTypes.LINES_BEHIND_BLOCK : RenderTypes.lines();
+            RenderType renderType = insideBlock ? AERenderTypes.LINES_BEHIND_BLOCK : getOutlineRenderType(false);
             int color = ARGB.white(insideBlock ? 0.2f : 0.6f);
             renderBoxes(poseStack, collector, afterTerrain, cameraRelativePos, boxes, renderType, color, lineWidth);
         } else {
@@ -256,8 +256,22 @@ public class RenderBlockOutlineHook {
                         CommonColors.BLACK, HIGH_CONTRAST_SECONDARY_LINE_WIDTH);
             }
             int color = highContrast ? CommonColors.HIGH_CONTRAST_DIAMOND : ARGB.black(0.4f);
-            renderBoxes(poseStack, collector, afterTerrain, cameraRelativePos, boxes, RenderTypes.lines(), color,
-                    lineWidth);
+            renderBoxes(poseStack, collector, afterTerrain, cameraRelativePos, boxes,
+                    getOutlineRenderType(highContrast), color, lineWidth);
+        }
+    }
+
+    /**
+     * Picks the render type for outlines the same way as vanilla's block outline rendering. When improved transparency
+     * is enabled, translucent outlines are rendered using OIT, which requires render types that support it.
+     */
+    private static RenderType getOutlineRenderType(boolean highContrast) {
+        if (highContrast) {
+            return RenderTypes.linesDepthBias();
+        } else if (Minecraft.getInstance().gameRenderer.useImprovedTransparency()) {
+            return RenderTypes.linesTranslucentNoDepthWrite();
+        } else {
+            return RenderTypes.linesTranslucent();
         }
     }
 

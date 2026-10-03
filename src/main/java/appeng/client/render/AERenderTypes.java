@@ -12,11 +12,12 @@ public final class AERenderTypes {
     }
 
     /**
-     * Similar to {@link RenderTypes#LINES}, but with inverted depth test.
+     * Similar to {@link RenderTypes#LINES_TRANSLUCENT}, but with inverted depth test.
      */
     public static final RenderType LINES_BEHIND_BLOCK = RenderType.create(
             "ae2:lines_behind_block",
             RenderSetup.builder(AERenderPipelines.LINES_BEHIND_BLOCK)
+                    .setOitPipelines(AERenderPipelines.OIT_LINES_OCCLUDED)
                     .setLayeringTransform(LayeringTransform.VIEW_OFFSET_Z_LAYERING)
                     .createRenderSetup());
 
@@ -46,7 +47,7 @@ public final class AERenderTypes {
     public static final RenderType AREA_OVERLAY_LINE_OCCLUDED = RenderType.create(
             "ae2_area_overlay_line_occluded",
             RenderSetup.builder(AERenderPipelines.AREA_OVERLAY_LINE_OCCLUDED)
-                    .setOitPipelines(AERenderPipelines.OIT_AREA_OVERLAY_LINE_OCCLUDED)
+                    .setOitPipelines(AERenderPipelines.OIT_LINES_OCCLUDED)
                     .createRenderSetup());
 
     public static final RenderType STORAGE_CELL_LEDS = RenderType.create(

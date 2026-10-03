@@ -506,7 +506,8 @@ public class MEStorageScreen<C extends MEStorageMenu>
     @Override
     public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
         // Right-clicking on the search field should clear it
-        if (this.searchField.isMouseOver(event.x(), event.y()) && event.button() == 1) {
+        if (this.searchField.isMouseOver(event.x(), event.y())
+                && event.button() == InputConstants.MOUSE_BUTTON_RIGHT) {
             this.searchField.setValue("");
             setSearchText("");
             // Don't return immediately to also grab focus.

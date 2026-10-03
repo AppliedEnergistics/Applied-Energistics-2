@@ -568,13 +568,14 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
         }
 
         // Forward right-clicks as-if they were left-clicks
-        if (event.button() == 1) {
+        if (event.button() == InputConstants.MOUSE_BUTTON_RIGHT) {
             handlingRightClick = true;
             try {
                 for (var widget : this.children()) {
                     if (widget.isMouseOver(event.x(), event.y())) {
                         return super.mouseClicked(new MouseButtonEvent(
-                                event.x(), event.y(), new MouseButtonInfo(0, event.buttonInfo().modifiers())),
+                                event.x(), event.y(),
+                                new MouseButtonInfo(InputConstants.MOUSE_BUTTON_LEFT, event.buttonInfo().modifiers())),
                                 doubleClick);
                     }
                 }
@@ -633,7 +634,8 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
             if (this.drag_click.size() > 1) {
                 for (Slot dr : this.drag_click) {
                     var p = new InventoryActionPacket(
-                            event.button() == 0 ? InventoryAction.PICKUP_OR_SET_DOWN : InventoryAction.PLACE_SINGLE,
+                            event.button() == InputConstants.MOUSE_BUTTON_LEFT ? InventoryAction.PICKUP_OR_SET_DOWN
+                                    : InventoryAction.PLACE_SINGLE,
                             dr.index, 0);
                     ClientPacketDistributor.sendToServer(p);
                 }
@@ -676,7 +678,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
         }
 
         if (this.drag_click.size() <= 1
-                && mouseButton == InputConstants.MOUSE_BUTTON_RIGHT
+                && mouseButton == 1 // Right-click (container click numbering)
                 && getEmptyingAction(slot, menu.getCarried()) != null) {
             var p = new InventoryActionPacket(InventoryAction.EMPTY_ITEM, slotIdx, 0);
             ClientPacketDistributor.sendToServer(p);

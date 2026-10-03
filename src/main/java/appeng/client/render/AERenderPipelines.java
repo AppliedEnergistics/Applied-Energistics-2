@@ -20,9 +20,9 @@ public final class AERenderPipelines {
     }
 
     /**
-     * Similar to {@link RenderPipelines#LINES}, but with inverted depth test.
+     * Similar to {@link RenderPipelines#LINES_TRANSLUCENT}, but with inverted depth test.
      */
-    public static final RenderPipeline LINES_BEHIND_BLOCK = RenderPipelines.LINES.toBuilder()
+    public static final RenderPipeline LINES_BEHIND_BLOCK = RenderPipelines.LINES_TRANSLUCENT.toBuilder()
             .withLocation(AppEng.makeId("pipeline/lines_behind_block"))
             .withDepthStencilState(new DepthStencilState(CompareOp.LESS_THAN, false))
             .build();
@@ -99,11 +99,12 @@ public final class AERenderPipelines {
             .build();
 
     /**
-     * Pipelines used for {@link #AREA_OVERLAY_LINE_OCCLUDED} when improved transparency (OIT) is enabled. Like the
-     * non-OIT pipeline, this only renders the parts of the lines that are hidden behind other geometry.
+     * Pipelines used for {@link #AREA_OVERLAY_LINE_OCCLUDED} and {@link #LINES_BEHIND_BLOCK} when improved transparency
+     * (OIT) is enabled. Like the non-OIT pipelines, this only renders the parts of the lines that are hidden behind
+     * other geometry.
      */
-    public static final OitPipelineSet OIT_AREA_OVERLAY_LINE_OCCLUDED = OitPipelineSet
-            .builder(AppEng.makeId("area_overlay_line_occluded"),
+    public static final OitPipelineSet OIT_LINES_OCCLUDED = OitPipelineSet
+            .builder(AppEng.makeId("lines_occluded"),
                     RenderPipeline.builder(RenderPipelines.OIT_LINES_SNIPPET))
             .withDepthBoundsModifier(AERenderPipelines::invertDepthTest)
             .withTransmittanceModifier(AERenderPipelines::invertDepthTest)

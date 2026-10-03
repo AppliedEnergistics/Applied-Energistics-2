@@ -557,7 +557,7 @@ public class AppEngClient extends AppEngBase {
         event.registerOitPipelineSet(AERenderPipelines.OIT_LIGHTNING_FX);
         event.registerOitPipelineSet(AERenderPipelines.OIT_AREA_OVERLAY_FACE);
         event.registerOitPipelineSet(AERenderPipelines.OIT_AREA_OVERLAY_LINE);
-        event.registerOitPipelineSet(AERenderPipelines.OIT_AREA_OVERLAY_LINE_OCCLUDED);
+        event.registerOitPipelineSet(AERenderPipelines.OIT_LINES_OCCLUDED);
     }
 
     private void registerBlockStateModels(RegisterBlockStateModels event) {
