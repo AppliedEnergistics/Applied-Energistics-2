@@ -25,7 +25,7 @@ public class CuriosIntegration {
                 return;
             }
             var equipped = cap.getEquippedCurios();
-            event.add(IntStream.range(0, equipped.getSlots()).mapToObj(index -> {
+            event.add(IntStream.range(0, equipped.size()).mapToObj(index -> {
                 return new SearchInventoryEvent.InventoryItemAccessor() {
                     @Override
                     public ItemAccess getAccess() {
