@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "ae2:materials/cardcrafting"
+        "recipes": "ae2:materials/cardcrafting"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

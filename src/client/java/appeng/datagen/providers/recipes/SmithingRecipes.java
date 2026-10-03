@@ -1,12 +1,14 @@
 package appeng.datagen.providers.recipes;
 
-import net.minecraft.core.HolderLookup;
+import net.minecraft.advancements.Advancement;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.SmithingTransformRecipeBuilder;
+import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.Recipe;
 
 import appeng.core.ConventionTags;
 import appeng.core.definitions.AEBlocks;
@@ -14,8 +16,8 @@ import appeng.core.definitions.AEItems;
 import appeng.core.definitions.ItemDefinition;
 
 public class SmithingRecipes extends AE2RecipeProvider {
-    public SmithingRecipes(HolderLookup.Provider registries, RecipeOutput output) {
-        super(registries, output);
+    public SmithingRecipes(BootstrapContext<Recipe<?>> recipeOutput, BootstrapContext<Advancement> advancementOutput) {
+        super(recipeOutput, advancementOutput);
     }
 
     @Override

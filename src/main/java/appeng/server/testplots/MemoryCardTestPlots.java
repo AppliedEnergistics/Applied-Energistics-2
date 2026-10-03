@@ -7,6 +7,7 @@ import java.util.Set;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponentMap;
+import net.minecraft.util.Prediction;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -161,7 +162,7 @@ public final class MemoryCardTestPlots {
             var to = helper.getPart(BlockPos.ZERO, Direction.WEST, PatternProviderPart.class);
 
             var player = (FakePlayer) Platform.getFakePlayer(helper.getLevel(), null);
-            player.getInventory().placeItemBackInInventory(AEItems.BLANK_PATTERN.stack(64));
+            player.getInventory().placeItemBackInInventory(AEItems.BLANK_PATTERN.stack(64), Prediction.SERVER_ONLY);
             // In a creative world the player would be in creative too, and we dont give blank patterns back in creative
             player.gameMode.changeGameModeForPlayer(GameType.SURVIVAL);
 

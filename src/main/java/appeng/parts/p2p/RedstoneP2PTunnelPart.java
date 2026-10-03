@@ -22,7 +22,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.RedStoneWireBlock;
+import net.minecraft.world.level.block.RedstoneWireBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
@@ -116,7 +116,7 @@ public class RedstoneP2PTunnelPart extends P2PTunnelPart<RedstoneP2PTunnelPart> 
             final Block b = state.getBlock();
             if (b != null && !this.isOutput()) {
                 Direction srcSide = this.getSide();
-                if (b instanceof RedStoneWireBlock) {
+                if (b instanceof RedstoneWireBlock) {
                     srcSide = Direction.UP;
                 }
 

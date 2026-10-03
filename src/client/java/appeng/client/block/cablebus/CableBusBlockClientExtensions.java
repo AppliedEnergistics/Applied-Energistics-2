@@ -5,10 +5,12 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleEngine;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.util.Util;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.client.extensions.common.IClientBlockExtensions;
 
 import appeng.block.networking.CableBusBlock;
@@ -26,7 +28,7 @@ public class CableBusBlockClientExtensions implements IClientBlockExtensions {
     }
 
     @Override
-    public boolean addHitEffects(BlockState state, Level level, HitResult target,
+    public boolean addHitEffects(BlockState state, Level level, BlockPos blockPos, Direction face,
             ParticleEngine effectRenderer) {
 
         // Half the particle rate. Since we're spawning concentrated on a specific spot,
@@ -35,11 +37,14 @@ public class CableBusBlockClientExtensions implements IClientBlockExtensions {
             return true;
         }
 
-        if (target.getType() != HitResult.Type.BLOCK) {
-            return false;
+        // Spawn the particle where the player is actually looking, if possible
+        Vec3 location;
+        if (Minecraft.getInstance().hitResult instanceof BlockHitResult hitResult
+                && hitResult.getBlockPos().equals(blockPos)) {
+            location = hitResult.getLocation();
+        } else {
+            location = Vec3.atCenterOf(blockPos).relative(face, 0.5);
         }
-        BlockPos blockPos = BlockPos.containing(target.getLocation().x, target.getLocation().y,
-                target.getLocation().z);
 
         ICableBusContainer cb = block.cb(level, blockPos);
 
@@ -59,9 +64,9 @@ public class CableBusBlockClientExtensions implements IClientBlockExtensions {
         var textures = cableBusModel.getParticleMaterials(renderState);
         if (!textures.isEmpty()) {
             var texture = Util.getRandom(textures, level.getRandom());
-            double x = target.getLocation().x;
-            double y = target.getLocation().y;
-            double z = target.getLocation().z;
+            double x = location.x;
+            double y = location.y;
+            double z = location.z;
             // FIXME: Check how this looks, probably like shit, maybe provide parts the ability to supply particle
             // textures???
             effectRenderer.add(

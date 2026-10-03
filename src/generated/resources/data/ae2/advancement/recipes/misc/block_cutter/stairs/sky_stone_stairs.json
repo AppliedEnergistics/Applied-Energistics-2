@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "ae2:block_cutter/stairs/sky_stone_stairs"
+        "recipes": "ae2:block_cutter/stairs/sky_stone_stairs"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

@@ -32,7 +32,6 @@ import com.mojang.blaze3d.platform.InputConstants;
 
 import org.jetbrains.annotations.MustBeInvokedByOverriders;
 import org.jetbrains.annotations.Nullable;
-import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -569,13 +568,14 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
         }
 
         // Forward right-clicks as-if they were left-clicks
-        if (event.button() == 1) {
+        if (event.button() == InputConstants.MOUSE_BUTTON_RIGHT) {
             handlingRightClick = true;
             try {
                 for (var widget : this.children()) {
                     if (widget.isMouseOver(event.x(), event.y())) {
                         return super.mouseClicked(new MouseButtonEvent(
-                                event.x(), event.y(), new MouseButtonInfo(0, event.buttonInfo().modifiers())),
+                                event.x(), event.y(),
+                                new MouseButtonInfo(InputConstants.MOUSE_BUTTON_LEFT, event.buttonInfo().modifiers())),
                                 doubleClick);
                     }
                 }
@@ -634,7 +634,8 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
             if (this.drag_click.size() > 1) {
                 for (Slot dr : this.drag_click) {
                     var p = new InventoryActionPacket(
-                            event.button() == 0 ? InventoryAction.PICKUP_OR_SET_DOWN : InventoryAction.PLACE_SINGLE,
+                            event.button() == InputConstants.MOUSE_BUTTON_LEFT ? InventoryAction.PICKUP_OR_SET_DOWN
+                                    : InventoryAction.PLACE_SINGLE,
                             dr.index, 0);
                     ClientPacketDistributor.sendToServer(p);
                 }
@@ -677,7 +678,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
         }
 
         if (this.drag_click.size() <= 1
-                && mouseButton == InputConstants.MOUSE_BUTTON_RIGHT
+                && mouseButton == 1 // Right-click (container click numbering)
                 && getEmptyingAction(slot, menu.getCarried()) != null) {
             var p = new InventoryActionPacket(InventoryAction.EMPTY_ITEM, slotIdx, 0);
             ClientPacketDistributor.sendToServer(p);
@@ -700,7 +701,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
             InventoryAction action;
             if (getMinecraft().hasShiftDown()) {
                 action = InventoryAction.CRAFT_SHIFT;
-            } else if (InputConstants.isKeyDown(getMinecraft().getWindow(), GLFW.GLFW_KEY_SPACE)) {
+            } else if (InputConstants.isKeyDown(InputConstants.KEY_SPACE)) {
                 action = InventoryAction.CRAFT_ALL;
             } else {
                 // Craft stack on right-click, craft single on left-click
@@ -713,7 +714,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
             return;
         }
 
-        if (slot != null && InputConstants.isKeyDown(getMinecraft().getWindow(), GLFW.GLFW_KEY_SPACE)) {
+        if (slot != null && InputConstants.isKeyDown(InputConstants.KEY_SPACE)) {
             int slotNum = slot.index;
             final InventoryActionPacket p = new InventoryActionPacket(InventoryAction.MOVE_REGION, slotNum, 0);
             ClientPacketDistributor.sendToServer(p);

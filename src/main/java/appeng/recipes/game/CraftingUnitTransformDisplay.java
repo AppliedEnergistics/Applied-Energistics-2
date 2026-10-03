@@ -3,6 +3,7 @@ package appeng.recipes.game;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -19,7 +20,8 @@ public record CraftingUnitTransformDisplay(
 
     public static final MapCodec<CraftingUnitTransformDisplay> MAP_CODEC = RecordCodecBuilder.mapCodec(
             builder -> builder.group(
-                    Block.CODEC.fieldOf("upgradedBlock").forGetter(CraftingUnitTransformDisplay::upgradedBlock),
+                    BuiltInRegistries.BLOCK.byNameCodec().fieldOf("upgradedBlock")
+                            .forGetter(CraftingUnitTransformDisplay::upgradedBlock),
                     SlotDisplay.CODEC.fieldOf("upgradeItem").forGetter(CraftingUnitTransformDisplay::upgradeItem))
                     .apply(builder, CraftingUnitTransformDisplay::new));
 

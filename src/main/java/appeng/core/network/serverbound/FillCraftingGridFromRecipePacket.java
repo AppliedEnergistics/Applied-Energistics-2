@@ -18,6 +18,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Prediction;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
@@ -232,7 +233,7 @@ public record FillCraftingGridFromRecipePacket(
                 if (craftMatrix.getStackInSlot(displaced.slot()).isEmpty()) {
                     craftMatrix.setItemDirect(displaced.slot(), displacedItem);
                 } else {
-                    player.drop(displacedItem, false);
+                    player.drop(displacedItem, false, Prediction.SERVER_ONLY);
                 }
             }
         }

@@ -49,7 +49,7 @@ public final class InitDimensionTypes {
                 DimensionType.Skybox.OVERWORLD,
                 CardinalLighting.Type.DEFAULT,
                 EnvironmentAttributeMap.builder()
-                        .set(EnvironmentAttributes.BED_RULE, BedRule.EXPLODES)
+                        .set(EnvironmentAttributes.BED_RULE, BedRule.DESTROY_ON_USE)
                         .set(EnvironmentAttributes.RESPAWN_ANCHOR_WORKS, false)
                         // TODO 1.21.11: environmental effects SpatialStorageDimensionIds.SKY_PROPERTIES_ID
                         .build(),

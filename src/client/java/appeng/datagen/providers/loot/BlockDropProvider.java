@@ -27,10 +27,9 @@ import com.google.common.collect.ImmutableMap;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.core.Holder;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.data.loot.BlockLootSubProvider;
+import net.minecraft.data.loot.LootTableSubProvider;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.item.enchantment.Enchantment;
@@ -45,7 +44,7 @@ import net.minecraft.world.level.storage.loot.functions.ApplyBonusCount;
 import net.minecraft.world.level.storage.loot.functions.ApplyExplosionDecay;
 import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
 import net.minecraft.world.level.storage.loot.predicates.ExplosionCondition;
-import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
+import net.minecraft.world.level.storage.loot.providers.number.ints.ContextIntProviders;
 
 import appeng.core.AppEng;
 import appeng.core.ConventionTags;
@@ -76,8 +75,8 @@ public class BlockDropProvider extends BlockLootSubProvider {
                 .build();
     }
 
-    public BlockDropProvider(HolderLookup.Provider providers) {
-        super(Set.of(), FeatureFlags.REGISTRY.allFlags(), providers);
+    public BlockDropProvider(LootTableSubProvider.Context output) {
+        super(Set.of(), FeatureFlags.REGISTRY.allFlags(), output);
     }
 
     @Override
@@ -100,7 +99,7 @@ public class BlockDropProvider extends BlockLootSubProvider {
 
     private LootTable.Builder defaultBuilder(Block block) {
         Builder<?> entry = LootItem.lootTableItem(block);
-        LootPool.Builder pool = LootPool.lootPool().setRolls(ConstantValue.exactly(1)).add(entry)
+        LootPool.Builder pool = LootPool.lootPool().setRolls(ContextIntProviders.exactly(1)).add(entry)
                 .when(ExplosionCondition.survivesExplosion());
 
         return LootTable.lootTable().withPool(pool);
@@ -121,20 +120,21 @@ public class BlockDropProvider extends BlockLootSubProvider {
     private LootTable.Builder quartzCluster(Block cluster) {
         return createSilkTouchDispatchTable(cluster,
                 LootItem.lootTableItem(AEItems.CERTUS_QUARTZ_CRYSTAL)
-                        .apply(SetItemCountFunction.setCount(ConstantValue.exactly(4)))
+                        .apply(SetItemCountFunction.setCount(ContextIntProviders.exactly(4)))
                         .apply(ApplyBonusCount.addUniformBonusCount(getEnchantment(Enchantments.FORTUNE)))
                         .apply(ApplyExplosionDecay.explosionDecay()));
     }
 
     private LootTable.Builder mysteriousCube(Block block) {
-        return createSilkTouchDispatchTable(block, TagEntry.tagContents(ConventionTags.INSCRIBER_PRESSES)
-                .when(ExplosionCondition.survivesExplosion()))
+        return createSilkTouchDispatchTable(block,
+                TagEntry.tagContents(items.getOrThrow(ConventionTags.INSCRIBER_PRESSES))
+                        .when(ExplosionCondition.survivesExplosion()))
                 .withPool(
-                        LootPool.lootPool().when(doesNotHaveSilkTouch()).setRolls(ConstantValue.exactly(1.0F))
+                        LootPool.lootPool().when(doesNotHaveSilkTouch()).setRolls(ContextIntProviders.exactly(1))
                                 .add(LootItem.lootTableItem(AEItems.GUIDE)));
     }
 
     protected final Holder<Enchantment> getEnchantment(ResourceKey<Enchantment> key) {
-        return registries.lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(key);
+        return enchantments.getOrThrow(key);
     }
 }

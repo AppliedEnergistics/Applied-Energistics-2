@@ -21,7 +21,7 @@ class EntropyRecipeSerializerTest {
                 .setOutputBlock(Blocks.DIRT)
                 .build();
 
-        var recipeJson = Recipe.CODEC.encodeStart(JsonOps.INSTANCE, recipe).getOrThrow();
+        var recipeJson = Recipe.DIRECT_CODEC.encodeStart(JsonOps.INSTANCE, recipe).getOrThrow();
         assertEquals(
                 """
                         {"mode":"cool","input":{"block":{"id":"minecraft:grass_block"}},"output":{"block":{"id":"minecraft:dirt"}},"type":"ae2:entropy"}
@@ -38,7 +38,7 @@ class EntropyRecipeSerializerTest {
                         """,
                 JsonElement.class);
 
-        var recipe = (EntropyRecipe) Recipe.CODEC.decode(JsonOps.INSTANCE, jsonEl).getOrThrow().getFirst();
+        var recipe = (EntropyRecipe) Recipe.DIRECT_CODEC.decode(JsonOps.INSTANCE, jsonEl).getOrThrow().getFirst();
         assertEquals(EntropyMode.COOL, recipe.getMode());
         assertEquals(Optional.of(Blocks.GRASS_BLOCK), recipe.getInput().block().map(EntropyRecipe.BlockInput::block));
         assertEquals(Optional.of(Blocks.DIRT), recipe.getOutput().block().map(EntropyRecipe.BlockOutput::block));

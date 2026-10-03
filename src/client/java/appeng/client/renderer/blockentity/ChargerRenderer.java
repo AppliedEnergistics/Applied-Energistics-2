@@ -102,7 +102,7 @@ public final class ChargerRenderer implements BlockEntityRenderer<ChargerBlockEn
 
         poseStack.pushPose();
         poseStack.translate(0.5, 0.5, 0.5);
-        poseStack.mulPose(state.blockOrientation.getQuaternion());
+        poseStack.rotate(state.blockOrientation.getQuaternion());
         poseStack.translate(-0.5, -0.5, -0.5);
 
         poseStack.mulPose(state.transform.getMatrix());

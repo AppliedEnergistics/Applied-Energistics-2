@@ -118,6 +118,6 @@ public class CertusQuartzClusterBlock extends AEBaseBlock implements SimpleWater
     }
 
     public PushReaction getPistonPushReaction(BlockState state) {
-        return PushReaction.DESTROY;
+        return PushReaction.POPPED;
     }
 }

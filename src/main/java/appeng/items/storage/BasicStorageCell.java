@@ -24,6 +24,7 @@ import java.util.function.Consumer;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.Prediction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -164,11 +165,11 @@ public class BasicStorageCell extends AEBaseItem implements IBasicCellItem, AETo
 
         // Drop items from the recipe.
         for (var disassembledStack : disassembledStacks) {
-            playerInventory.placeItemBackInInventory(disassembledStack.copy());
+            playerInventory.placeItemBackInInventory(disassembledStack.copy(), Prediction.SERVER_ONLY);
         }
 
         // Drop upgrades
-        getUpgrades(stack).forEach(playerInventory::placeItemBackInInventory);
+        getUpgrades(stack).forEach(s -> playerInventory.placeItemBackInInventory(s, Prediction.SERVER_ONLY));
 
         return true;
     }

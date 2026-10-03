@@ -160,7 +160,7 @@ public class MeteoriteCompassModel implements ItemModel {
             qi.setOverlayCoords(packedOverlay);
             var renderType = Sheets.translucentItemSheet();
             nodes.submitCustomGeometry(poseStack, renderType, (pose, buffer) -> {
-                for (var bakedQuad : this.pointer.quads()) {
+                for (var bakedQuad : this.pointer.quads().all()) {
                     bakedQuad = transformer.apply(bakedQuad);
                     buffer.putBakedQuad(pose, bakedQuad, qi);
                 }

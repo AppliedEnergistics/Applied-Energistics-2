@@ -31,6 +31,7 @@ import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.Prediction;
 import net.minecraft.util.Util;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -235,7 +236,7 @@ public class MemoryCardItem extends AEBaseItem implements IMemoryCard {
                     }
                 }
                 if (!removed.isEmpty()) {
-                    player.drop(removed, false);
+                    player.drop(removed, false, Prediction.SERVER_ONLY);
                 }
             }
         }
@@ -257,7 +258,7 @@ public class MemoryCardItem extends AEBaseItem implements IMemoryCard {
                     if (!cards.isEmpty()) {
                         overflow = upgrades.addItems(cards);
                         if (!overflow.isEmpty()) {
-                            player.getInventory().placeItemBackInInventory(overflow);
+                            player.getInventory().placeItemBackInInventory(overflow, Prediction.SERVER_ONLY);
                         }
                         missingAmount -= cards.getCount();
                     }

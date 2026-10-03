@@ -23,7 +23,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "ae2:network/blocks/controller"
+        "recipes": "ae2:network/blocks/controller"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

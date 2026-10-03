@@ -2,11 +2,11 @@
   "gives": {
     "id": "ae2:sky_stone_block"
   },
-  "max_uses": 8.0,
+  "max_uses": 8,
   "reputation_discount": 0.05,
   "wants": {
-    "count": 5.0,
+    "count": 5,
     "id": "minecraft:emerald"
   },
-  "xp": 20.0
+  "xp": 20
 }

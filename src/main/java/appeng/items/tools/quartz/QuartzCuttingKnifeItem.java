@@ -56,7 +56,6 @@ public class QuartzCuttingKnifeItem extends AEBaseItem implements IMenuItem {
         if (!level.isClientSide()) {
             MenuOpener.open(QuartzKnifeMenu.TYPE, p, MenuLocators.forHand(p, hand));
         }
-        p.swing(hand);
         return InteractionResult.SUCCESS;
     }
 

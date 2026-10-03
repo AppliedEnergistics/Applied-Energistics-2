@@ -47,7 +47,7 @@ public record ClientboundInitialGuiSyncData(int containerId,
                 classIdMap.put(field.className, classId);
             }
         }
-        buffer.writeCollection(classList, ByteBufCodecs.STRING_UTF8);
+        ByteBufCodecs.STRING_UTF8.apply(ByteBufCodecs.list()).encode(buffer, classList);
 
         // Now write out the fields
         buffer.writeInt(fields.size());
@@ -61,7 +61,7 @@ public record ClientboundInitialGuiSyncData(int containerId,
     }
 
     private static Map<Integer, SynchronizedFieldHeader> decodeFields(FriendlyByteBuf buffer) {
-        var classNames = buffer.readCollection(ArrayList::new, ByteBufCodecs.STRING_UTF8);
+        var classNames = ByteBufCodecs.STRING_UTF8.apply(ByteBufCodecs.list()).decode(buffer);
         var fieldCount = buffer.readInt();
         var fields = new HashMap<Integer, SynchronizedFieldHeader>(fieldCount);
         for (int i = 0; i < fieldCount; i++) {

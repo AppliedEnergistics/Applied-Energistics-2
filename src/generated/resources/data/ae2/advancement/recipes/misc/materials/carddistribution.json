@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "ae2:materials/carddistribution"
+        "recipes": "ae2:materials/carddistribution"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

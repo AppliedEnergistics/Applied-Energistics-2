@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "ae2:tools/paintballs_light_blue"
+        "recipes": "ae2:tools/paintballs_light_blue"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

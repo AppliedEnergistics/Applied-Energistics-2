@@ -18,11 +18,10 @@
 
 package appeng.items.tools.quartz;
 
-import net.minecraft.world.item.AxeItem;
-import net.minecraft.world.item.ToolMaterial;
+import net.minecraft.world.item.Item;
 
-public class QuartzAxeItem extends AxeItem {
+public class QuartzAxeItem extends Item {
     public QuartzAxeItem(Properties props) {
-        super(ToolMaterial.IRON, 6.0F, -3.1F, props);
+        super(props);
     }
 }
