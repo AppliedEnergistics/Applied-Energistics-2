@@ -21,6 +21,7 @@ package appeng.items.storage;
 import java.util.Optional;
 import java.util.function.Consumer;
 
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.ItemStack;
@@ -102,5 +103,10 @@ public class CreativeCellItem extends AEBaseItem implements ICellWorkbenchItem {
             configInv.setStack(i, new GenericStack(AEFluidKey.of(fluids[i]), 1));
         }
         return cell;
+    }
+
+    @Override
+    public int getMaxUpgrades(DataComponentGetter item) {
+        return 0;
     }
 }
