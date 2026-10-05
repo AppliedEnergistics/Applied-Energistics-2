@@ -176,7 +176,8 @@ public class BasicStorageCell extends AEBaseItem implements IBasicCellItem, AETo
         }
 
         // Drop upgrades
-        getUpgrades(ItemAccess.forStack(stack)).forEach(s -> playerInventory.placeItemBackInInventory(s, Prediction.SERVER_ONLY));
+        getUpgrades(ItemAccess.forStack(stack))
+                .forEach(s -> playerInventory.placeItemBackInInventory(s, Prediction.SERVER_ONLY));
 
         return true;
     }
