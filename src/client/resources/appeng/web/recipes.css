@@ -1,0 +1,39 @@
+/* Styles for AE2 recipes on the guide website, see AERecipeWebRenderer */
+
+/* Same layout as the in-game inscriber recipe (LytInscriberRecipe) */
+.ae2-inscriber {
+  grid-column: 1 / span 3;
+  position: relative;
+  width: calc(90px * var(--gui-scale));
+  height: calc(64px * var(--gui-scale));
+  background-repeat: no-repeat;
+  background-position: calc(18px * var(--gui-scale)) calc(7px * var(--gui-scale));
+  background-size: calc(46px * var(--gui-scale)) calc(50px * var(--gui-scale));
+  image-rendering: pixelated;
+}
+
+.ae2-inscriber > div {
+  position: absolute;
+  line-height: 0;
+}
+
+.ae2-inscriber-top {
+  left: 0;
+  top: 0;
+}
+
+.ae2-inscriber-middle {
+  left: calc(18px * var(--gui-scale));
+  top: calc(23px * var(--gui-scale));
+}
+
+.ae2-inscriber-bottom {
+  left: 0;
+  top: calc(46px * var(--gui-scale));
+}
+
+/* Centered on the large result slot used in-game */
+.ae2-inscriber-result {
+  left: calc(68px * var(--gui-scale));
+  top: calc(24px * var(--gui-scale));
+}

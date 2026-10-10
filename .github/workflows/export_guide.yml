@@ -14,6 +14,9 @@ jobs:
   export-guide:
     name: Export Guide
     runs-on: ubuntu-latest
+    outputs:
+      game-version: ${{ steps.versions.outputs.game-version }}
+      mod-version: ${{ steps.versions.outputs.mod-version }}
 
     steps:
       - name: Install Software OpenGL Rendering
@@ -29,23 +32,41 @@ jobs:
       - name: Install software Vulkan driver
         run: sudo apt-get update && sudo apt-get install -y --no-install-recommends mesa-vulkan-drivers libvulkan1
       - name: Export Guide
+        # Fatal errors during startup open a dialog that never gets closed and blocks the game from exiting
+        timeout-minutes: 10
         run: DRI_PRIME=0 xvfb-run ./gradlew runGuideexport
       - name: Optimize PNG compression
         run: |
           mkdir oxipng
           curl -Ls https://github.com/shssoichiro/oxipng/releases/download/v8.0.0/oxipng-8.0.0-x86_64-unknown-linux-musl.tar.gz | tar --strip-components=1 -zx -C oxipng
           find build/guide -name "*.png" -exec oxipng/oxipng --strip safe {} \;
-      - name: Recompress the guide json
+      - id: versions
+        name: Determine Game and Mod-Version
         run: |
-          gunzip build/guide/guide.*.json.gz
-          zopfli build/guide/guide.*.json
-          rm -f build/guide/guide.*.json
-      - name: Compress guide files before upload as artifact
-        run: tar cf guide.tar build/guide/
+          GAME_VERSION=$(jq -r '.gameMajorVersion // .gameVersion // empty' build/guide/index.json)
+          MOD_VERSION=$(jq -r '.modVersion // empty' build/guide/index.json)
+          echo "Game-Version: $GAME_VERSION"
+          echo "Mod-Version: $MOD_VERSION"
+          if [ -z "$GAME_VERSION" ] || [ -z "$MOD_VERSION" ]; then
+            exit 1
+          fi
+          echo "game-version=$GAME_VERSION" >> "$GITHUB_OUTPUT"
+          echo "mod-version=$MOD_VERSION" >> "$GITHUB_OUTPUT"
+      - name: ZIP Exported Guide Data
+        run: cd build/guide && zip -qr ../../guide.zip .
+      # Always generate the website, so we notice right away when a change breaks it
+      - name: Generate Guide Website
+        run: ./gradlew renderGuideWebsite
+      # The artifact is zipped again on upload, which would gain nothing for the already compressed ZIP
       - uses: actions/upload-artifact@v4
         with:
           name: guide
-          path: guide.tar
+          path: guide.zip
+          compression-level: 0
+      # Deployed to GitHub Pages by publish-web-snapshot
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: build/website
 
   # Attach the guide as a release artifact if we're building a tag which might be a release
   attach-release-artifact:
@@ -54,85 +75,76 @@ jobs:
     name: Attach Release Artifact
     runs-on: ubuntu-latest
     steps:
-      - id: download
-        uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v4
         with:
           name: guide
-      - name: Decompress guide tar
-        run: tar xf ${{steps.download.outputs.download-path}}/guide.tar
-      - name: Create ZIP
-        working-directory: build/guide
-        run: zip -r ../../guide-assets.zip .
+      - run: mv guide.zip guide-assets.zip
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
           files: guide-assets.zip
 
-  # This job publishes the release version of guides to S3
+  # This job publishes the release version of guides to the guide website.
   # Our general approach is that the latest release for any given
   # Minecraft version will be used to upload the guide data for it.
-  # We only publish our main Neoforge releases to the site.
+  # We only publish releases to the site.
+  # The guide data of each Minecraft version is attached to the guide-data release of the guide repository,
+  # from which the guide website is built (see https://github.com/AppliedEnergistics/guide).
   publish-web-release:
     needs: export-guide
     name: Publish Release to Web
     runs-on: ubuntu-latest
     environment: Production
     if: startsWith(github.ref, 'refs/tags/v')
+    # Replacing the guide data isn't atomic, so never publish two releases at once
+    concurrency:
+      group: guide-data
+      cancel-in-progress: false
     steps:
       - uses: actions/download-artifact@v4
         with:
           name: guide
-      - name: Decompress guide tar
-        run: tar xf guide.tar
-      - id: versions
-        name: Determine Game and Mod-Version
-        run: |
-          GAME_VERSION=$(jq -r .gameMajorVersion 'build/guide/index.json')
-          echo "Game-Version: $GAME_VERSION"
-          
-          echo "GAME_VERSION=$GAME_VERSION" >> "$GITHUB_OUTPUT"
-          
-          if [ -z "$GAME_VERSION" ]
-          then
-            exit 1
-          fi
-      - uses: jakejarvis/s3-sync-action@7ed8b112447abb09f1da74f3466e4194fc7a6311
+      # The GitHub App is only installed on the guide repository and can upload release assets and start workflows there
+      - id: app-token
+        uses: actions/create-github-app-token@v3
         with:
-          args: --acl public-read --follow-symlinks --delete
+          client-id: ${{ secrets.GUIDE_PUBLISHING_APP_CLIENT_ID }}
+          private-key: ${{ secrets.GUIDE_PUBLISHING_APP_PRIVATE_KEY }}
+          owner: AppliedEnergistics
+          repositories: guide
+          permission-contents: write
+          permission-actions: write
+      - name: Upload guide data
         env:
-          AWS_S3_BUCKET: 'guide-assets'
-          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
-          AWS_S3_ENDPOINT: 'https://02aa146d8ef70ae7f9548b98cbb63161.r2.cloudflarestorage.com'
-          AWS_REGION: 'auto'
-          SOURCE_DIR: 'build/guide/'
-          DEST_DIR: "minecraft-${{ steps.versions.outputs.GAME_VERSION }}"
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          ZIP_NAME: minecraft-${{ needs.export-guide.outputs.game-version }}.zip
+        run: |
+          mv guide.zip "$ZIP_NAME"
+          gh release upload guide-data "$ZIP_NAME" --clobber -R AppliedEnergistics/guide
+      - name: Publish guide website
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+        run: gh workflow run publish.yml -R AppliedEnergistics/guide
 
-  # This job publishes to a development folder on the S3 bucket and only runs for
-  # the master branch. To avoid the cost of publishing the assets for every
-  # push to master, it'll only run for manually triggered workflows (workflow_dispatch)
-  # or once per night.
+  # This job publishes the guide website of the main branch as the development version of the guide to the
+  # GitHub Pages of this repository. To avoid deploying for every push to main, it only runs for manually
+  # triggered workflows (workflow_dispatch) or once per night.
   publish-web-snapshot:
     needs: export-guide
     name: Publish Snapshot to Web
     runs-on: ubuntu-latest
-    environment: Production
     if: github.ref == 'refs/heads/main' && (github.event_name == 'workflow_dispatch' || github.event_name == 'schedule')
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    # Never cancel a deployment that is in progress
+    concurrency:
+      group: pages
+      cancel-in-progress: false
     steps:
-      - uses: actions/download-artifact@v4
-        with:
-          name: guide
-      - name: Decompress guide tar
-        run: tar xf guide.tar
-      # Finally, upload to S3
-      - uses: jakejarvis/s3-sync-action@7ed8b112447abb09f1da74f3466e4194fc7a6311
-        with:
-          args: --acl public-read --follow-symlinks --delete
-        env:
-          AWS_S3_BUCKET: 'guide-assets'
-          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
-          AWS_S3_ENDPOINT: 'https://02aa146d8ef70ae7f9548b98cbb63161.r2.cloudflarestorage.com'
-          AWS_REGION: 'auto'
-          SOURCE_DIR: 'build/guide/'
-          DEST_DIR: "development"
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
