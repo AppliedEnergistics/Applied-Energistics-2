@@ -104,12 +104,14 @@ jobs:
           fi
       # The GitHub App is only installed on the guide repository and can upload release assets and start workflows there
       - id: app-token
-        uses: actions/create-github-app-token@v2
+        uses: actions/create-github-app-token@v3
         with:
-          app-id: ${{ secrets.GUIDE_APP_ID }}
+          client-id: ${{ secrets.GUIDE_APP_CLIENT_ID }}
           private-key: ${{ secrets.GUIDE_APP_PRIVATE_KEY }}
           owner: AppliedEnergistics
           repositories: guide
+          permission-contents: write
+          permission-actions: write
       - name: Upload guide data
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
