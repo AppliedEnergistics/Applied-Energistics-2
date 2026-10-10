@@ -28,7 +28,9 @@ jobs:
       # for which we install Mesa's software implementation (lavapipe).
       - name: Install software Vulkan driver
         run: sudo apt-get update && sudo apt-get install -y --no-install-recommends mesa-vulkan-drivers libvulkan1
+      # Fatal errors during startup open a dialog that never gets closed and blocks the game from exiting
       - name: Export Guide
+        timeout-minutes: 10
         run: DRI_PRIME=0 xvfb-run ./gradlew runGuideexport
       - name: Optimize PNG compression
         run: |
