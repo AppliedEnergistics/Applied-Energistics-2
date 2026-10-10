@@ -52,14 +52,23 @@ jobs:
           fi
           echo "game-version=$GAME_VERSION" >> "$GITHUB_OUTPUT"
           echo "mod-version=$MOD_VERSION" >> "$GITHUB_OUTPUT"
-      - name: Create ZIP
-        working-directory: build/guide
-        run: zip -qr ../../guide.zip .
-      # The artifact is zipped again on upload, which would gain nothing for the already compressed ZIP
+      # Always generate the website, so we notice right away when a change breaks it
+      - name: Generate guide website
+        run: ./gradlew renderGuideWebsite
+      - name: Create ZIPs
+        run: |
+          (cd build/guide && zip -qr ../../guide.zip .)
+          (cd build/website && zip -qr ../../website.zip .)
+      # Artifacts are zipped again on upload, which would gain nothing for the already compressed ZIPs
       - uses: actions/upload-artifact@v4
         with:
           name: guide
           path: guide.zip
+          compression-level: 0
+      - uses: actions/upload-artifact@v4
+        with:
+          name: website
+          path: website.zip
           compression-level: 0
 
   # Attach the guide as a release artifact if we're building a tag which might be a release
@@ -148,3 +157,34 @@ jobs:
           AWS_REGION: 'auto'
           SOURCE_DIR: 'build/guide/'
           DEST_DIR: "development"
+
+  # This job publishes the guide website of the main branch as the development version of the guide to the
+  # GitHub Pages of this repository. It runs whenever the snapshot is published to the S3 bucket.
+  # Deploying to GitHub Pages requires the github-pages environment, which is why this isn't part of the job above.
+  publish-web-snapshot-site:
+    needs: export-guide
+    name: Publish Snapshot Website
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && (github.event_name == 'workflow_dispatch' || github.event_name == 'schedule')
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    # Never cancel a deployment that is in progress
+    concurrency:
+      group: pages
+      cancel-in-progress: false
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: website
+      - name: Extract website ZIP
+        run: unzip -q website.zip -d build/website
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: build/website
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
