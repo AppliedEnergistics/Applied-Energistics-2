@@ -53,6 +53,13 @@ jobs:
       # Always generate the website, so we notice right away when a change breaks it
       - name: Generate Guide Website
         run: ./gradlew renderGuideWebsite
+      # The website is only published as the development version of the guide, which shouldn't show up in search engines
+      - name: Disallow Indexing of the Guide Website
+        run: |
+          cat > build/website/robots.txt <<EOF
+          User-agent: *
+          Disallow: /
+          EOF
       # The artifact is zipped again on upload, which would gain nothing for the already compressed ZIP
       - uses: actions/upload-artifact@v4
         with:
