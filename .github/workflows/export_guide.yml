@@ -52,24 +52,21 @@ jobs:
           fi
           echo "game-version=$GAME_VERSION" >> "$GITHUB_OUTPUT"
           echo "mod-version=$MOD_VERSION" >> "$GITHUB_OUTPUT"
+      - name: ZIP Exported Guide Data
+        run: cd build/guide && zip -qr ../../guide.zip .
       # Always generate the website, so we notice right away when a change breaks it
-      - name: Generate guide website
+      - name: Generate Guide Website
         run: ./gradlew renderGuideWebsite
-      - name: Create ZIPs
-        run: |
-          (cd build/guide && zip -qr ../../guide.zip .)
-          (cd build/website && zip -qr ../../website.zip .)
-      # Artifacts are zipped again on upload, which would gain nothing for the already compressed ZIPs
+      # The artifact is zipped again on upload, which would gain nothing for the already compressed ZIP
       - uses: actions/upload-artifact@v4
         with:
           name: guide
           path: guide.zip
           compression-level: 0
-      - uses: actions/upload-artifact@v4
+      # Deployed to GitHub Pages by publish-web-snapshot
+      - uses: actions/upload-pages-artifact@v3
         with:
-          name: website
-          path: website.zip
-          compression-level: 0
+          path: build/website
 
   # Attach the guide as a release artifact if we're building a tag which might be a release
   attach-release-artifact:
@@ -129,41 +126,12 @@ jobs:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
         run: gh workflow run publish.yml -R AppliedEnergistics/guide
 
-  # This job publishes to a development folder on the S3 bucket and only runs for
-  # the master branch. To avoid the cost of publishing the assets for every
-  # push to master, it'll only run for manually triggered workflows (workflow_dispatch)
-  # or once per night.
+  # This job publishes the guide website of the main branch as the development version of the guide to the
+  # GitHub Pages of this repository. To avoid deploying for every push to main, it only runs for manually
+  # triggered workflows (workflow_dispatch) or once per night.
   publish-web-snapshot:
     needs: export-guide
     name: Publish Snapshot to Web
-    runs-on: ubuntu-latest
-    environment: Production
-    if: github.ref == 'refs/heads/main' && (github.event_name == 'workflow_dispatch' || github.event_name == 'schedule')
-    steps:
-      - uses: actions/download-artifact@v4
-        with:
-          name: guide
-      - name: Extract guide ZIP
-        run: unzip -q guide.zip -d build/guide
-      # Finally, upload to S3
-      - uses: jakejarvis/s3-sync-action@7ed8b112447abb09f1da74f3466e4194fc7a6311
-        with:
-          args: --acl public-read --follow-symlinks --delete
-        env:
-          AWS_S3_BUCKET: 'guide-assets'
-          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
-          AWS_S3_ENDPOINT: 'https://02aa146d8ef70ae7f9548b98cbb63161.r2.cloudflarestorage.com'
-          AWS_REGION: 'auto'
-          SOURCE_DIR: 'build/guide/'
-          DEST_DIR: "development"
-
-  # This job publishes the guide website of the main branch as the development version of the guide to the
-  # GitHub Pages of this repository. It runs whenever the snapshot is published to the S3 bucket.
-  # Deploying to GitHub Pages requires the github-pages environment, which is why this isn't part of the job above.
-  publish-web-snapshot-site:
-    needs: export-guide
-    name: Publish Snapshot Website
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main' && (github.event_name == 'workflow_dispatch' || github.event_name == 'schedule')
     permissions:
@@ -177,14 +145,6 @@ jobs:
       group: pages
       cancel-in-progress: false
     steps:
-      - uses: actions/download-artifact@v4
-        with:
-          name: website
-      - name: Extract website ZIP
-        run: unzip -q website.zip -d build/website
-      - uses: actions/upload-pages-artifact@v3
-        with:
-          path: build/website
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
