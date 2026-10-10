@@ -14,6 +14,9 @@ jobs:
   export-guide:
     name: Export Guide
     runs-on: ubuntu-latest
+    outputs:
+      game-version: ${{ steps.versions.outputs.game-version }}
+      mod-version: ${{ steps.versions.outputs.mod-version }}
 
     steps:
       - name: Install Software OpenGL Rendering
@@ -28,8 +31,8 @@ jobs:
       # for which we install Mesa's software implementation (lavapipe).
       - name: Install software Vulkan driver
         run: sudo apt-get update && sudo apt-get install -y --no-install-recommends mesa-vulkan-drivers libvulkan1
-      # Fatal errors during startup open a dialog that never gets closed and blocks the game from exiting
       - name: Export Guide
+        # Fatal errors during startup open a dialog that never gets closed and blocks the game from exiting
         timeout-minutes: 10
         run: DRI_PRIME=0 xvfb-run ./gradlew runGuideexport
       - name: Optimize PNG compression
@@ -37,17 +40,27 @@ jobs:
           mkdir oxipng
           curl -Ls https://github.com/shssoichiro/oxipng/releases/download/v8.0.0/oxipng-8.0.0-x86_64-unknown-linux-musl.tar.gz | tar --strip-components=1 -zx -C oxipng
           find build/guide -name "*.png" -exec oxipng/oxipng --strip safe {} \;
-      - name: Recompress the guide json
+      - id: versions
+        name: Determine Game and Mod-Version
         run: |
-          gunzip build/guide/guide.*.json.gz
-          zopfli build/guide/guide.*.json
-          rm -f build/guide/guide.*.json
-      - name: Compress guide files before upload as artifact
-        run: tar cf guide.tar build/guide/
+          GAME_VERSION=$(jq -r '.gameMajorVersion // .gameVersion // empty' build/guide/index.json)
+          MOD_VERSION=$(jq -r '.modVersion // empty' build/guide/index.json)
+          echo "Game-Version: $GAME_VERSION"
+          echo "Mod-Version: $MOD_VERSION"
+          if [ -z "$GAME_VERSION" ] || [ -z "$MOD_VERSION" ]; then
+            exit 1
+          fi
+          echo "game-version=$GAME_VERSION" >> "$GITHUB_OUTPUT"
+          echo "mod-version=$MOD_VERSION" >> "$GITHUB_OUTPUT"
+      - name: Create ZIP
+        working-directory: build/guide
+        run: zip -qr ../../guide.zip .
+      # The artifact is zipped again on upload, which would gain nothing for the already compressed ZIP
       - uses: actions/upload-artifact@v4
         with:
           name: guide
-          path: guide.tar
+          path: guide.zip
+          compression-level: 0
 
   # Attach the guide as a release artifact if we're building a tag which might be a release
   attach-release-artifact:
@@ -56,15 +69,10 @@ jobs:
     name: Attach Release Artifact
     runs-on: ubuntu-latest
     steps:
-      - id: download
-        uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v4
         with:
           name: guide
-      - name: Decompress guide tar
-        run: tar xf ${{steps.download.outputs.download-path}}/guide.tar
-      - name: Create ZIP
-        working-directory: build/guide
-        run: zip -r ../../guide-assets.zip .
+      - run: mv guide.zip guide-assets.zip
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
@@ -73,7 +81,7 @@ jobs:
   # This job publishes the release version of guides to the guide website.
   # Our general approach is that the latest release for any given
   # Minecraft version will be used to upload the guide data for it.
-  # We only publish our main Neoforge releases to the site.
+  # We only publish releases to the site.
   # The guide data of each Minecraft version is attached to the guide-data release of the guide repository,
   # from which the guide website is built (see https://github.com/AppliedEnergistics/guide).
   publish-web-release:
@@ -90,20 +98,6 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: guide
-      - name: Decompress guide tar
-        run: tar xf guide.tar
-      - id: versions
-        name: Determine Game and Mod-Version
-        run: |
-          GAME_VERSION=$(jq -r '.gameMajorVersion // .gameVersion // empty' 'build/guide/index.json')
-          echo "Game-Version: $GAME_VERSION"
-          
-          echo "GAME_VERSION=$GAME_VERSION" >> "$GITHUB_OUTPUT"
-          
-          if [ -z "$GAME_VERSION" ]
-          then
-            exit 1
-          fi
       # The GitHub App is only installed on the guide repository and can upload release assets and start workflows there
       - id: app-token
         uses: actions/create-github-app-token@v3
@@ -117,9 +111,9 @@ jobs:
       - name: Upload guide data
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
-          ZIP_NAME: minecraft-${{ steps.versions.outputs.GAME_VERSION }}.zip
+          ZIP_NAME: minecraft-${{ needs.export-guide.outputs.game-version }}.zip
         run: |
-          (cd build/guide && zip -qr "../../$ZIP_NAME" .)
+          mv guide.zip "$ZIP_NAME"
           gh release upload guide-data "$ZIP_NAME" --clobber -R AppliedEnergistics/guide
       - name: Publish guide website
         env:
@@ -140,8 +134,8 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: guide
-      - name: Decompress guide tar
-        run: tar xf guide.tar
+      - name: Extract guide ZIP
+        run: unzip -q guide.zip -d build/guide
       # Finally, upload to S3
       - uses: jakejarvis/s3-sync-action@7ed8b112447abb09f1da74f3466e4194fc7a6311
         with:
