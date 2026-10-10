@@ -1,13 +1,9 @@
 name: 'Export Guide'
 
 on:
-  # This will run the workflow every day at 01:00 UTC
-  # This will run against master and publish the development version of the guide
-  schedule:
-    - cron: '0 1 * * *'
   # Allow running it manually against any ref
   workflow_dispatch: { }
-  # Run on all push events
+  # Run on all push events, which publishes the development version of the guide for the main branch
   push: {}
 
 jobs:
@@ -127,13 +123,12 @@ jobs:
         run: gh workflow run publish.yml -R AppliedEnergistics/guide
 
   # This job publishes the guide website of the main branch as the development version of the guide to the
-  # GitHub Pages of this repository. To avoid deploying for every push to main, it only runs for manually
-  # triggered workflows (workflow_dispatch) or once per night.
+  # GitHub Pages of this repository. Running the workflow manually publishes the guide of any ref instead.
   publish-web-snapshot:
     needs: export-guide
     name: Publish Snapshot to Web
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' && (github.event_name == 'workflow_dispatch' || github.event_name == 'schedule')
+    if: github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch'
     permissions:
       pages: write
       id-token: write
