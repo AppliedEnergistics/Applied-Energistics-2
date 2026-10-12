@@ -22,7 +22,6 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.AABB;
-import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.AddServerReloadListenersEvent;
 import net.neoforged.neoforge.event.server.ServerStartedEvent;
 import net.neoforged.neoforge.registries.holdersets.OrHolderSet;
@@ -212,12 +211,10 @@ public final class TransformLogic {
         return ret;
     }
 
-    @SubscribeEvent
     public static void onServerStarted(ServerStartedEvent e) {
         clearCache();
     }
 
-    @SubscribeEvent
     public static void onReloadServerResources(AddServerReloadListenersEvent e) {
         e.addListener(AppEng.makeId("transform_logic_cache_invalidation"), new SimplePreparableReloadListener<Void>() {
             @Override
