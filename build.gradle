@@ -89,6 +89,7 @@ dependencies {
     compileOnly "mcp.mobius.waila:wthit-api:neo-${project.wthit_version}"
     compileOnly "curse.maven:jade-324717:${project.jade_file_id}"
     clientCompileOnly "mezz.jei:jei-${project.jei_minecraft_version}-neoforge-api:${project.jei_version}"
+    clientCompileOnly "curse.maven:irisshaders-455508:${project.iris_file_id}"
 
     switch (project.runtime_itemlist_mod) {
         case "emi":
