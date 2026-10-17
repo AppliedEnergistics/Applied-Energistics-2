@@ -110,7 +110,6 @@ import appeng.client.guidebook.ConfigValueTagExtension;
 import appeng.client.guidebook.PartAnnotationStrategy;
 import appeng.client.hooks.BlockAttackHook;
 import appeng.client.hooks.RenderBlockOutlineHook;
-import appeng.client.integrations.iris.IrisCompat;
 import appeng.client.integrations.itemlists.FluidBlockPictureInPictureRenderer;
 import appeng.client.item.ColorApplicatorItemModel;
 import appeng.client.item.EnergyFillLevelProperty;
@@ -555,7 +554,6 @@ public class AppEngClient extends AppEngBase {
     private void registerRenderPipelines(RegisterRenderPipelinesEvent event) {
         event.registerPipeline(AERenderPipelines.LINES_BEHIND_BLOCK);
         event.registerPipeline(AERenderPipelines.LIGHTNING_FX);
-        IrisCompat.init();
     }
 
     private void registerBlockStateModels(RegisterBlockStateModels event) {

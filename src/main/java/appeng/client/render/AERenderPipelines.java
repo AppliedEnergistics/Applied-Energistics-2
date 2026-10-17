@@ -5,6 +5,7 @@ import com.mojang.blaze3d.pipeline.ColorTargetState;
 import com.mojang.blaze3d.pipeline.DepthStencilState;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.platform.CompareOp;
+import com.mojang.blaze3d.shaders.UniformType;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
 
@@ -68,13 +69,14 @@ public final class AERenderPipelines {
             .withDepthStencilState(new DepthStencilState(CompareOp.GREATER_THAN, false))
             .build();
 
-    public static final RenderPipeline STORAGE_CELL_LEDS = RenderPipeline
-            .builder(RenderPipelines.MATRICES_PROJECTION_SNIPPET, RenderPipelines.GLOBALS_SNIPPET)
+    public static final RenderPipeline STORAGE_CELL_LEDS = RenderPipelines.LIGHTNING.toBuilder()
             .withLocation(AppEng.makeId("pipeline/storage_cell_leds"))
             .withVertexShader("core/position_color")
             .withFragmentShader("core/position_color")
-            .withVertexFormat(DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS)
-            .withDepthStencilState(DepthStencilState.DEFAULT)
+            // toBuilder only copies Lightning's Matrices and Fog
+            .withUniform("Globals", UniformType.UNIFORM_BUFFER)
+            // Lightning uses additive-style blending, the LEDs are opaque
+            .withColorTargetState(ColorTargetState.DEFAULT)
             .build();
 
     public static final RenderPipeline LIGHTNING_FX = RenderPipeline
