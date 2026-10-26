@@ -160,7 +160,7 @@ public final class AEFluidKey extends AEKey {
 
     @Override
     public boolean hasComponents() {
-        return stack.getComponents().isEmpty();
+        return !stack.isComponentsPatchEmpty();
     }
 
     public FluidStack toStack(int amount) {
@@ -190,6 +190,6 @@ public final class AEFluidKey extends AEKey {
         var id = BuiltInRegistries.FLUID.getKey(getFluid());
         String idString = id != BuiltInRegistries.FLUID.getDefaultKey() ? id.toString()
                 : getFluid().getClass().getName() + "(unregistered)";
-        return stack.getComponents().isEmpty() ? idString : idString + " (+components)";
+        return stack.isComponentsPatchEmpty() ? idString : idString + " (+components)";
     }
 }
