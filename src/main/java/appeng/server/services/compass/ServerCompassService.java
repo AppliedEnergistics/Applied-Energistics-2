@@ -18,6 +18,7 @@
 
 package appeng.server.services.compass;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
@@ -53,24 +54,33 @@ public final class ServerCompassService {
     private static final int MAX_RANGE = 174;
     private static final int CHUNK_SIZE = 16;
 
-    private record Query(ServerLevel level, ChunkPos chunk) {
-    }
-
-    // We use this basic cache to prevent client-side spamming, although the client can request arbitrary
-    // chunk positions and range, if malicious.
-    private static final LoadingCache<Query, Optional<BlockPos>> CLOSEST_METEORITE_CACHE = CacheBuilder.newBuilder()
+    // Keep per-level caches weak so unloaded worlds can be garbage-collected. The nested loader only holds a
+    // weak reference to its level, avoiding a value-to-key reference cycle in the outer weak-key cache.
+    private static final LoadingCache<ServerLevel, LoadingCache<ChunkPos, Optional<BlockPos>>> CLOSEST_METEORITE_CACHE = CacheBuilder
+            .newBuilder()
             .maximumSize(100)
             .weakKeys()
-            .expireAfterWrite(5, TimeUnit.SECONDS)
             .build(new CacheLoader<>() {
                 @Override
-                public Optional<BlockPos> load(ServerCompassService.Query query) {
-                    return Optional.ofNullable(findClosestMeteoritePos(query.level, query.chunk));
+                public LoadingCache<ChunkPos, Optional<BlockPos>> load(ServerLevel level) {
+                    var weakLevel = new WeakReference<>(level);
+                    return CacheBuilder.newBuilder()
+                            .maximumSize(100)
+                            .expireAfterWrite(5, TimeUnit.SECONDS)
+                            .build(new CacheLoader<>() {
+                                @Override
+                                public Optional<BlockPos> load(ChunkPos chunkPos) {
+                                    var serverLevel = weakLevel.get();
+                                    return serverLevel == null
+                                            ? Optional.empty()
+                                            : Optional.ofNullable(findClosestMeteoritePos(serverLevel, chunkPos));
+                                }
+                            });
                 }
             });
 
     public static Optional<BlockPos> getClosestMeteorite(ServerLevel level, ChunkPos chunkPos) {
-        return CLOSEST_METEORITE_CACHE.getUnchecked(new Query(level, chunkPos));
+        return CLOSEST_METEORITE_CACHE.getUnchecked(level).getUnchecked(chunkPos);
     }
 
     @Nullable
@@ -178,7 +188,7 @@ public final class ServerCompassService {
         for (var i = 0; i < level.getSectionsCount(); i++) {
             updateArea(compassRegion, chunk, i);
         }
-        CLOSEST_METEORITE_CACHE.invalidate(new Query(level, chunk.getPos()));
+        CLOSEST_METEORITE_CACHE.invalidate(level);
     }
 
     /**
@@ -188,7 +198,7 @@ public final class ServerCompassService {
         ChunkAccess chunk = level.getChunk(pos);
         var compassRegion = CompassRegion.get(level, chunk.getPos());
         updateArea(compassRegion, chunk, level.getSectionIndex(pos.getY()));
-        CLOSEST_METEORITE_CACHE.invalidate(new Query(level, chunk.getPos()));
+        CLOSEST_METEORITE_CACHE.invalidate(level);
     }
 
     public static void rebuild(ServerLevel level, ChunkPos center, CommandSourceStack source) {
@@ -239,7 +249,7 @@ public final class ServerCompassService {
         }
 
         source.sendSystemMessage(Component.literal("Found " + hits + " hits"));
-        CLOSEST_METEORITE_CACHE.invalidateAll();
+        CLOSEST_METEORITE_CACHE.invalidate(level);
     }
 
     private static boolean[] indexChunk(ChunkAccess chunk) {
