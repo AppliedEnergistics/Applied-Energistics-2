@@ -17,7 +17,7 @@ jobs:
     steps:
       - name: Install Software OpenGL Rendering
         run: sudo apt-get install xvfb libgl1-mesa-dri zopfli
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 50
       - run: git fetch origin --tags
@@ -61,13 +61,13 @@ jobs:
           Disallow: /
           EOF
       # The artifact is zipped again on upload, which would gain nothing for the already compressed ZIP
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: guide
           path: guide.zip
           compression-level: 0
       # Deployed to GitHub Pages by publish-web-snapshot
-      - uses: actions/upload-pages-artifact@v3
+      - uses: actions/upload-pages-artifact@v5
         with:
           path: build/website
 
@@ -78,14 +78,19 @@ jobs:
     name: Attach Release Artifact
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           name: guide
       - run: mv guide.zip guide-assets.zip
       - name: Release
-        uses: softprops/action-gh-release@v1
-        with:
-          files: guide-assets.zip
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          TAG: ${{ github.ref_name }}
+        run: |
+          # The release may not exist yet if the tag was pushed before the release was created
+          gh release view "$TAG" > /dev/null || gh release create "$TAG" --verify-tag --title "$TAG" --notes ""
+          gh release upload "$TAG" guide-assets.zip --clobber
 
   # This job publishes the release version of guides to the guide website.
   # Our general approach is that the latest release for any given
@@ -104,7 +109,7 @@ jobs:
       group: guide-data
       cancel-in-progress: false
     steps:
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           name: guide
       # The GitHub App is only installed on the guide repository and can upload release assets and start workflows there
@@ -149,4 +154,4 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5

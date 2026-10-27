@@ -22,7 +22,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 50
       - run: git fetch origin --tags
@@ -59,13 +59,13 @@ jobs:
         if: success() || failure()
         run: npx junit-report-merger junit.xml "**/TEST-*.xml"
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: success() || failure()
         with:
           name: test-results
           path: junit.xml
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: dist
           path: build/libs/
@@ -83,7 +83,7 @@ jobs:
       - name: Archive build results
         run: tar -I zstd -cf build.tar.zst build/libs build/repo
       - name: Upload build and gradle folders
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: build-artifacts
           path: build.tar.zst
@@ -97,7 +97,7 @@ jobs:
     if: github.ref == 'refs/heads/main'
     steps:
       - name: Download build artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: build-artifacts
       - name: Unpack build artifact
