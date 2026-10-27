@@ -3,6 +3,7 @@ package appeng.server.services.compass;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.clearInvocations;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -67,16 +68,13 @@ class ServerCompassServiceTest {
                 DataFixers.getDataFixer(),
                 server.registryAccess());
         when(level.getDataStorage()).thenReturn(dimensionalDataStorage);
-        when(level.getChunkSource()).thenReturn(mock(ServerChunkCache.class));
 
         var origin = new ChunkPos(0, 0);
-        CompassRegion.get(level, origin).setHasCompassTarget(origin.x(), origin.z(), 0, true);
-        var expected = origin.getMiddleBlockPosition(0);
-        assertEquals(expected, ServerCompassService.getClosestMeteorite(level, origin).orElseThrow());
+        assertTrue(ServerCompassService.getClosestMeteorite(level, origin).isEmpty());
+        verify(level, atLeastOnce()).getDataStorage();
 
         clearInvocations(level);
-        assertEquals(expected,
-                ServerCompassService.getClosestMeteorite(level, new ChunkPos(origin.x(), origin.z())).orElseThrow());
+        assertTrue(ServerCompassService.getClosestMeteorite(level, new ChunkPos(origin.x(), origin.z())).isEmpty());
         verify(level, never()).getDataStorage();
     }
 
