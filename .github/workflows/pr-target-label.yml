@@ -21,7 +21,8 @@ jobs:
           script: |
             const LABEL_PREFIX = 'MC ';
             const LABEL_COLOR = '1d76db';
-            const VERSION_BRANCH = /^\d+\.\d+(\.\d+)?$/;
+            // Version branches, optionally prefixed with a mod loader (e.g. 1.21.1 or forge/1.20.1)
+            const VERSION_BRANCH = /^(?:(?:forge|fabric|neoforge)\/)?(\d+\.\d+(?:\.\d+)?)$/;
 
             const { owner, repo } = context.repo;
             const knownLabels = new Set();
@@ -30,7 +31,8 @@ jobs:
             // left unlabeled, since the version main tracks changes over the lifetime of a PR.
             function getVersion(pr) {
               const base = pr.base.ref;
-              return VERSION_BRANCH.test(base) ? base : null;
+              const match = base.match(VERSION_BRANCH);
+              return match ? match[1] : null;
             }
 
             async function ensureLabel(name, version) {
