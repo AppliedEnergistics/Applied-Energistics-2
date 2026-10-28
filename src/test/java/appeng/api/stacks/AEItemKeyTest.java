@@ -26,6 +26,23 @@ import appeng.util.BootstrapMinecraft;
 
 @BootstrapMinecraft
 class AEItemKeyTest {
+    /**
+     * Reading the read-only stack must not be able to change the key: storage buses match keys against the real stacks
+     * in external inventories, and a mutated key never matches again.
+     */
+    @Test
+    void testReadOnlyStackDoesNotShareTagWithKey() {
+        var stack = new ItemStack(Items.PAPER);
+        // An unparseable custom name, which vanilla removes from the tag when it is read
+        stack.getOrCreateTagElement("display").putString("Name", "{}");
+        var key = AEItemKey.of(stack);
+
+        key.getReadOnlyStack().getHoverName();
+
+        assertTrue(key.matches(stack));
+        assertEquals(AEItemKey.of(stack), key);
+    }
+
     @Test
     void testFuzzySearchValues() {
         var undamaged = AEItemKey.of(Items.DIAMOND_PICKAXE);

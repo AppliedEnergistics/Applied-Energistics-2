@@ -159,7 +159,9 @@ public final class AEItemKey extends AEKey {
     public ItemStack getReadOnlyStack() {
         if (readOnlyStack == null) {
             readOnlyStack = new ItemStack(item, 1, internedCaps.tag);
-            readOnlyStack.setTag(internedTag.tag);
+            // Copy, so that items which write NBT when read cannot mutate this (interned) key.
+            // Vanilla does this itself: getHoverName() removes an unparseable custom name.
+            readOnlyStack.setTag(copyTag());
         } else {
             if (readOnlyStack.isEmpty()) {
                 LOG.error("Something destroyed the read-only itemstack of {}", this);
