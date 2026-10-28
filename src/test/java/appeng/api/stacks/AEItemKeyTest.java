@@ -42,6 +42,17 @@ class AEItemKeyTest {
     }
 
     @Test
+    void hasComponentsReflectsComponentsPatch() {
+        var plain = AEItemKey.of(Items.DIAMOND_PICKAXE);
+        // The item's default components do not count as attached components.
+        assertFalse(plain.hasComponents(), "default components must not count as attached components");
+
+        var damagedStack = plain.toStack();
+        damagedStack.setDamageValue(1);
+        assertTrue(AEItemKey.of(damagedStack).hasComponents(), "a component in the patch must count");
+    }
+
+    @Test
     void testFuzzySearchValues() {
         var undamaged = AEItemKey.of(Items.DIAMOND_PICKAXE);
         var damagedStack = undamaged.toStack();

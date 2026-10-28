@@ -230,7 +230,7 @@ public final class AEItemKey extends AEKey {
 
     @Override
     public boolean hasComponents() {
-        return stack.getComponents().isEmpty();
+        return !stack.isComponentsPatchEmpty();
     }
 
     /**
