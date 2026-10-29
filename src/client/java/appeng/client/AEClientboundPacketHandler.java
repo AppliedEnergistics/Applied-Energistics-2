@@ -16,6 +16,7 @@ import io.netty.buffer.Unpooled;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -71,6 +72,7 @@ import appeng.menu.AEBaseMenu;
 import appeng.menu.guisync.LinkStatusAwareMenu;
 import appeng.menu.me.common.MEStorageMenu;
 import appeng.menu.me.crafting.CraftConfirmMenu;
+import appeng.parts.automation.PlaneSoundVolume;
 
 public class AEClientboundPacketHandler {
     public void handleGuiDataSyncPacket(GuiDataSyncPacket packet, Minecraft minecraft, Player player) {
@@ -113,6 +115,12 @@ public class AEClientboundPacketHandler {
     public void handleBlockTransitionEffectPacket(BlockTransitionEffectPacket packet, Minecraft minecraft,
             Player player) {
         spawnParticles(packet, player.level());
+
+        if (packet.soundMode() == BlockTransitionEffectPacket.SoundMode.BLOCK
+                && player.level() instanceof ClientLevel clientLevel) {
+            // level.removeBlock (unlike destroyBlock) doesn't trigger vanilla's own break-particle burst
+            clientLevel.addDestroyBlockEffect(packet.pos(), packet.blockState());
+        }
 
         playBreakOrPickupSound(packet);
     }
@@ -159,6 +167,9 @@ public class AEClientboundPacketHandler {
         } else {
             return;
         }
+
+        // This packet is only ever sent for Annihilation Plane pickups, so scale it by the plane volume config.
+        volume = PlaneSoundVolume.scale(volume, (float) AEConfig.instance().getPlaneVolumeMultiplier());
 
         SimpleSoundInstance sound = new SimpleSoundInstance(soundEvent, SoundSource.BLOCKS, (volume + 1.0F) / 2.0F,
                 pitch * 0.8F,

@@ -9,6 +9,7 @@
     "spatial.MinecraftServerMixin",
     "AnvilMenuMixin",
     "EnchantmentHelperMixin",
+    "FormationPlaneVolumeMixin",
     "ItemEntityMixin",
     "tests.TestInstanceBlockEntityMixin",
     "tests.TestCommandMixin",
