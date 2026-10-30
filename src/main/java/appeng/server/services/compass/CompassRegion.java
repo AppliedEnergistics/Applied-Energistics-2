@@ -28,6 +28,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.saveddata.SavedData;
+import net.minecraft.world.level.storage.DimensionDataStorage;
 
 import appeng.core.AELog;
 import appeng.core.worlddata.AESavedData;
@@ -55,6 +56,14 @@ final class CompassRegion extends AESavedData {
      * Gets the name of the save data for a region that has the given coordinates.
      */
     private static String getRegionSaveName(int regionX, int regionZ) {
+        return "ae2_compass_v2_" + regionX + "_" + regionZ;
+    }
+
+    /**
+     * Legacy regions were selected using truncating division, which put chunks with negative coordinates into the wrong
+     * region and made chunks on both sides of the origin overlap in region 0.
+     */
+    private static String getLegacyRegionSaveName(int regionX, int regionZ) {
         return "ae2_compass_" + regionX + "_" + regionZ;
     }
 
@@ -62,15 +71,81 @@ final class CompassRegion extends AESavedData {
      * Retrieve the compass region that serves the given chunk position.
      */
     public static CompassRegion get(ServerLevel level, ChunkPos chunkPos) {
-        Objects.requireNonNull(level, "level");
         Objects.requireNonNull(chunkPos, "chunkPos");
 
-        var regionX = chunkPos.x / CHUNKS_PER_REGION;
-        var regionZ = chunkPos.z / CHUNKS_PER_REGION;
+        return get(level, chunkPos.x, chunkPos.z);
+    }
 
-        return level.getDataStorage().computeIfAbsent(
-                FACTORY,
-                getRegionSaveName(regionX, regionZ));
+    /**
+     * Retrieve the compass region that serves the given chunk position.
+     */
+    public static CompassRegion get(ServerLevel level, int cx, int cz) {
+        Objects.requireNonNull(level, "level");
+
+        var regionX = Math.floorDiv(cx, CHUNKS_PER_REGION);
+        var regionZ = Math.floorDiv(cz, CHUNKS_PER_REGION);
+
+        var storage = level.getDataStorage();
+        var saveName = getRegionSaveName(regionX, regionZ);
+        var region = storage.get(FACTORY, saveName);
+        if (region == null) {
+            region = migrateLegacyRegions(storage, regionX, regionZ);
+            storage.set(saveName, region);
+        }
+        return region;
+    }
+
+    static boolean hasCompassTarget(ServerLevel level, int cx, int cz) {
+        return get(level, cx, cz).hasCompassTarget(cx, cz);
+    }
+
+    /**
+     * Creates a new region and populates it from the legacy regions that held data for chunks in this region.
+     * <p>
+     * Legacy region 0 on each axis held the data of chunks on both sides of the origin, so we cannot tell which side
+     * the data belonged to. It is copied to both sides, which preserves the previous behavior for that data.
+     */
+    private static CompassRegion migrateLegacyRegions(DimensionDataStorage storage, int regionX, int regionZ) {
+        var result = new CompassRegion();
+
+        for (var legacyRegionX : getLegacySourceRegions(regionX)) {
+            for (var legacyRegionZ : getLegacySourceRegions(regionZ)) {
+                var legacyRegion = storage.get(FACTORY, getLegacyRegionSaveName(legacyRegionX, legacyRegionZ));
+                if (legacyRegion == null) {
+                    continue;
+                }
+
+                // The index within a region is the same for legacy and current regions
+                for (var entry : legacyRegion.sections.entrySet()) {
+                    var bits = entry.getValue();
+                    for (var i = bits.nextSetBit(0); i >= 0; i = bits.nextSetBit(i + 1)) {
+                        var x = i % CHUNKS_PER_REGION;
+                        var z = i / CHUNKS_PER_REGION;
+                        if (getLegacySourceRegion(regionX, x) == legacyRegionX
+                                && getLegacySourceRegion(regionZ, z) == legacyRegionZ) {
+                            result.setHasCompassTarget(x, z, entry.getKey(), true);
+                        }
+                    }
+                }
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * The legacy regions on one axis that may contain data for the given region.
+     */
+    private static int[] getLegacySourceRegions(int region) {
+        return region >= 0 ? new int[] { region } : new int[] { region, region + 1 };
+    }
+
+    /**
+     * The legacy region on one axis that held the data for the chunk at the given offset within the given region.
+     */
+    private static int getLegacySourceRegion(int region, int offset) {
+        // Chunk coordinate is region * CHUNKS_PER_REGION + offset, which legacy regions divided with truncation
+        return region >= 0 || offset == 0 ? region : region + 1;
     }
 
     public static CompassRegion load(CompoundTag nbt, HolderLookup.Provider registries) {

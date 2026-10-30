@@ -113,12 +113,11 @@ public final class ServerCompassService {
 
     @Nullable
     private static ChunkPos findClosestMeteoriteChunk(ServerLevel level, ChunkPos chunkPos) {
-        var cr = CompassRegion.get(level, chunkPos);
         var cx = chunkPos.x;
         var cz = chunkPos.z;
 
         // Am I standing on it?
-        if (cr.hasCompassTarget(cx, cz)) {
+        if (CompassRegion.hasCompassTarget(level, cx, cz)) {
             return chunkPos;
         }
 
@@ -134,7 +133,7 @@ public final class ServerCompassService {
             int chosen_z = cz;
 
             for (int z = minZ; z <= maxZ; z++) {
-                if (cr.hasCompassTarget(minX, z)) {
+                if (CompassRegion.hasCompassTarget(level, minX, z)) {
                     final int closeness = dist(cx, cz, minX, z);
                     if (closeness < closest) {
                         closest = closeness;
@@ -143,7 +142,7 @@ public final class ServerCompassService {
                     }
                 }
 
-                if (cr.hasCompassTarget(maxX, z)) {
+                if (CompassRegion.hasCompassTarget(level, maxX, z)) {
                     final int closeness = dist(cx, cz, maxX, z);
                     if (closeness < closest) {
                         closest = closeness;
@@ -154,7 +153,7 @@ public final class ServerCompassService {
             }
 
             for (int x = minX + 1; x < maxX; x++) {
-                if (cr.hasCompassTarget(x, minZ)) {
+                if (CompassRegion.hasCompassTarget(level, x, minZ)) {
                     final int closeness = dist(cx, cz, x, minZ);
                     if (closeness < closest) {
                         closest = closeness;
@@ -163,7 +162,7 @@ public final class ServerCompassService {
                     }
                 }
 
-                if (cr.hasCompassTarget(x, maxZ)) {
+                if (CompassRegion.hasCompassTarget(level, x, maxZ)) {
                     final int closeness = dist(cx, cz, x, maxZ);
                     if (closeness < closest) {
                         closest = closeness;
