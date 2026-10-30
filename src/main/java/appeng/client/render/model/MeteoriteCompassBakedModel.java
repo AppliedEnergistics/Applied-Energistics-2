@@ -41,6 +41,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ChunkPos;
@@ -63,9 +64,20 @@ public class MeteoriteCompassBakedModel implements IDynamicBakedModel {
     // Rotation is expressed as radians
     public static final ModelProperty<Float> ROTATION = new ModelProperty<>();
 
+    private static final long NANOS_PER_TICK = 50_000_000L;
+
+    // .5 seconds per full rotation
+    private static final float FAST_SPIN_SPEED = Mth.TWO_PI / .5f;
+
+    // 3 seconds per full rotation
+    private static final float SLOW_SPIN_SPEED = Mth.TWO_PI / 3;
+
     private final BakedModel base;
 
     private final BakedModel pointer;
+
+    // Only used for compasses of the local player, others point directly at their target
+    private final CompassNeedle needle = new CompassNeedle();
 
     public MeteoriteCompassBakedModel(BakedModel base, BakedModel pointer) {
         this.base = base;
@@ -153,7 +165,10 @@ public class MeteoriteCompassBakedModel implements IDynamicBakedModel {
             public BakedModel resolve(BakedModel originalModel, ItemStack stack, @Nullable ClientLevel level,
                     @Nullable LivingEntity entity, int seed) {
                 float rotation;
-                if (level != null && entity != null) {
+                if (level != null && entity instanceof Player player && player.isLocalPlayer()) {
+                    rotation = getSimulatedRotation(level, entity.position(),
+                            Mth.DEG_TO_RAD * entity.getVisualRotationYInDegrees());
+                } else if (level != null && entity != null) {
                     rotation = getAnimatedRotation(entity.position(), true, 0);
                 } else {
                     rotation = getAnimatedRotation(null, false, 0);
@@ -209,6 +224,32 @@ public class MeteoriteCompassBakedModel implements IDynamicBakedModel {
         public List<BakedModel> getRenderPasses(ItemStack itemStack, boolean fabulous) {
             return List.of(this);
         }
+    }
+
+    /**
+     * Gets the world space rotation of the simulated needle given the position and rotation of the compass. The
+     * rotation of the compass case is then added by {@link FixedRotationModel#applyTransform}.
+     */
+    private float getSimulatedRotation(ClientLevel level, Vec3 pos, float ownerRotation) {
+        // Uses game time instead of real time so that the needle stops while the game is paused
+        var partialTick = Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(false);
+        var nanos = level.getGameTime() * NANOS_PER_TICK + (long) (partialTick * NANOS_PER_TICK);
+        var caseAngle = -ownerRotation;
+
+        var ourChunkPos = new ChunkPos(BlockPos.containing(pos));
+        var closestMeteorite = CompassManager.INSTANCE.getClosestMeteorite(ourChunkPos, true);
+        if (closestMeteorite == null) {
+            return needle.update(nanos, caseAngle, null, FAST_SPIN_SPEED) + caseAngle;
+        }
+
+        var x = closestMeteorite.getX();
+        var z = closestMeteorite.getZ();
+        var dx = pos.x - x;
+        var dz = pos.z - z;
+        if (dx * dx + dz * dz <= 6 * 6) {
+            return needle.update(nanos, caseAngle, null, SLOW_SPIN_SPEED) + caseAngle;
+        }
+        return needle.update(nanos, caseAngle, (float) rad(pos.x(), pos.z(), x, z), 0) + caseAngle;
     }
 
     /**
