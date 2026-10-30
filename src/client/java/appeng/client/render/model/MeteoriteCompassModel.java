@@ -33,6 +33,7 @@ import org.joml.Quaternionf;
 import org.joml.Vector2f;
 import org.joml.Vector3fc;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.SubmitNodeCollector;
@@ -45,6 +46,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.ItemOwner;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ChunkPos;
@@ -63,9 +65,20 @@ public class MeteoriteCompassModel implements ItemModel {
 
     private static final Identifier MODEL_POINTER = AppEng.makeId("item/meteorite_compass_pointer");
 
+    private static final long NANOS_PER_TICK = 50_000_000L;
+
+    // 3 seconds per full rotation
+    private static final float SLOW_SPIN_SPEED = Mth.TWO_PI / 3;
+
+    // .5 seconds per full rotation
+    private static final float FAST_SPIN_SPEED = Mth.TWO_PI / .5f;
+
     private final ItemBaseModelWrapper pointer;
 
     private final RotatedPointerRenderer rotatedPointerRenderer;
+
+    // Only used for compasses of the local player, others point directly at their target
+    private final CompassNeedle needle = new CompassNeedle();
 
     public MeteoriteCompassModel(ItemBaseModelWrapper pointer) {
         this.pointer = pointer;
@@ -78,8 +91,12 @@ public class MeteoriteCompassModel implements ItemModel {
         Float target = null;
         if (level != null && owner != null) {
             float ownerRotation = owner.getVisualRotationYInDegrees();
-            var lookVector = Vec3.Z_AXIS.yRot(-Mth.DEG_TO_RAD * ownerRotation);
-            target = getAnimatedRotation(owner.position(), lookVector);
+            if (owner.asLivingEntity() instanceof Player player && player.isLocalPlayer()) {
+                target = getSimulatedRotation(level, owner.position(), Mth.DEG_TO_RAD * ownerRotation);
+            } else {
+                var lookVector = Vec3.Z_AXIS.yRot(-Mth.DEG_TO_RAD * ownerRotation);
+                target = getAnimatedRotation(owner.position(), lookVector);
+            }
         }
 
         var pointerLayer = renderState.newLayer();
@@ -88,6 +105,29 @@ public class MeteoriteCompassModel implements ItemModel {
         pointerLayer.setupSpecialModel(rotatedPointerRenderer, target);
         renderState.setAnimated();
         renderState.appendModelIdentityElement(this);
+    }
+
+    /**
+     * Gets the rotation of the simulated needle given the position and rotation of the compass.
+     */
+    private float getSimulatedRotation(ClientLevel level, Vec3 pos, float ownerRotation) {
+        // Uses game time instead of real time so that the needle stops while the game is paused
+        var partialTick = Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaPartialTick(false);
+        var nanos = level.getGameTime() * NANOS_PER_TICK + (long) (partialTick * NANOS_PER_TICK);
+        var caseAngle = -ownerRotation;
+
+        var ourChunkPos = ChunkPos.containing(BlockPos.containing(pos));
+        var closestMeteorite = CompassManager.INSTANCE.getClosestMeteorite(ourChunkPos, true);
+        if (closestMeteorite == null) {
+            return needle.update(nanos, caseAngle, null, SLOW_SPIN_SPEED);
+        }
+
+        var dx = closestMeteorite.getX() - pos.x;
+        var dz = closestMeteorite.getZ() - pos.z;
+        if (dx * dx + dz * dz <= 6 * 6) {
+            return needle.update(nanos, caseAngle, null, FAST_SPIN_SPEED); // We're on it
+        }
+        return needle.update(nanos, caseAngle, CompassNeedle.getBearing(dx, dz), 0);
     }
 
     /**
