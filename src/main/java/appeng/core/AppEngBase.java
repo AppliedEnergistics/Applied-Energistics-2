@@ -92,6 +92,7 @@ import appeng.recipes.AERecipeSerializers;
 import appeng.recipes.AERecipeTypes;
 import appeng.server.AECommand;
 import appeng.server.services.ChunkLoadingService;
+import appeng.server.services.compass.ServerCompassService;
 import appeng.server.testworld.GameTestPlotAdapter;
 import appeng.sounds.AppEngSounds;
 import appeng.spatial.SpatialStorageChunkGenerator;
@@ -189,6 +190,7 @@ public abstract class AppEngBase implements AppEng {
 
         NeoForge.EVENT_BUS.addListener(WrenchHook::onPlayerUseBlockEvent);
         NeoForge.EVENT_BUS.addListener(SkyStoneBreakSpeed::handleBreakFaster);
+        NeoForge.EVENT_BUS.addListener(ServerCompassService::onLevelUnload);
         NeoForge.EVENT_BUS.addListener(this::registerSynchronizedRecipes);
 
         HotkeyActions.init();
