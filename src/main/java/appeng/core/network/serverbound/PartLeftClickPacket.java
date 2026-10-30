@@ -7,7 +7,6 @@ import net.minecraft.network.protocol.game.ServerboundPlayerActionPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.phys.BlockHitResult;
 import net.neoforged.neoforge.common.CommonHooks;
-import net.neoforged.neoforge.common.NeoForge;
 
 import appeng.api.parts.IPartHost;
 import appeng.core.network.CustomAppEngPayload;
@@ -42,10 +41,15 @@ public record PartLeftClickPacket(BlockHitResult hitResult, boolean alternateUse
 
     @Override
     public void handleOnServer(ServerPlayer player) {
+        // The hit result is sent by the client, so don't trust it to be loaded or within reach
+        if (!player.level().isLoaded(hitResult.getBlockPos())
+                || !player.isWithinBlockInteractionRange(hitResult.getBlockPos(), 1.0)) {
+            return;
+        }
+
         // Fire event on the server to give protection mods a chance to cancel the interaction
         var evt = CommonHooks.onLeftClickBlock(player, hitResult.getBlockPos(), hitResult.getDirection(),
                 ServerboundPlayerActionPacket.Action.START_DESTROY_BLOCK);
-        NeoForge.EVENT_BUS.post(evt);
         if (evt.isCanceled()) {
             return;
         }
