@@ -24,6 +24,7 @@
 package appeng.api.storage.cells;
 
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 
 import appeng.api.config.FuzzyMode;
 import appeng.api.upgrades.IUpgradeableItem;
@@ -38,7 +39,7 @@ public interface ICellWorkbenchItem extends IUpgradeableItem {
      * @return true if the item should be editable in the cell workbench.
      */
     default boolean isEditable(ItemStack is) {
-        return getConfigInventory(is).size() > 0 || getUpgrades(is).size() > 0;
+        return getConfigInventory(is).size() > 0 || getUpgrades(ItemAccess.forStack(is)).size() > 0;
     }
 
     /**
