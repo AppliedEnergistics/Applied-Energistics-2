@@ -7,6 +7,8 @@ import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 
+import appeng.core.AppEng;
+
 public final class AERenderTypes {
 
     private AERenderTypes() {
@@ -55,12 +57,15 @@ public final class AERenderTypes {
                     .bufferSize(65535)
                     .createRenderSetup());
 
+    /**
+     * The LEDs are only colored by their vertices, but the pipeline is based on the one of {@link RenderTypes#eyes},
+     * which requires a texture.
+     */
     public static final RenderType STORAGE_CELL_LEDS = RenderType.create(
             "ae2_drive_leds",
             RenderSetup.builder(AERenderPipelines.STORAGE_CELL_LEDS)
-                    .withTexture("Sampler0", TextureAtlas.LOCATION_BLOCKS)
-                    .useLightmap()
-                    .useOverlay()
+                    .bufferSize(32565)
+                    .withTexture("Sampler0", AppEng.makeId("textures/block/drive/cell_led.png"))
                     .createRenderSetup());
 
 }

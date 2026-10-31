@@ -69,14 +69,14 @@ public final class AERenderPipelines {
             .build();
 
     /**
-     * Similar to {@link RenderPipelines#ENTITY_CUTOUT_CULL}, but without directional shading since the brightness of
-     * the LEDs must not depend on the orientation of the block they're in, and with the depth bias of
-     * {@link RenderPipelines#CRUMBLING} to stop the LEDs from z-fighting with the cell model right behind them.
+     * Same as {@link RenderPipelines#EYES}, which shader packs treat as emissive, but without blending since the LEDs
+     * are opaque, and with the depth bias of {@link RenderPipelines#CRUMBLING} to stop the LEDs from z-fighting with
+     * the cell model right behind them.
      */
-    public static final RenderPipeline STORAGE_CELL_LEDS = RenderPipelines.ENTITY_CUTOUT_CULL.toBuilder()
+    public static final RenderPipeline STORAGE_CELL_LEDS = RenderPipelines.EYES.toBuilder()
             .withLocation(AppEng.makeId("pipeline/storage_cell_leds"))
-            .withShaderDefine("NO_CARDINAL_LIGHTING")
-            .withDepthStencilState(new DepthStencilState(CompareOp.LESS_THAN_OR_EQUAL, true, -1.0F, -10.0F))
+            .withColorTargetState(ColorTargetState.DEFAULT)
+            .withDepthStencilState(new DepthStencilState(CompareOp.LESS_THAN_OR_EQUAL, false, -1.0F, -10.0F))
             .build();
 
     public static final RenderPipeline LIGHTNING_FX = RenderPipeline
