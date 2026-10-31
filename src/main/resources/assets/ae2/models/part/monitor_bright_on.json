@@ -13,7 +13,7 @@
         "north": {
           "texture": "#lights",
           "tintindex": 3,
-          "neoforge_data": { "block_light": 15, "sky_light": 15 }
+          "neoforge_data": { "light_emission": 15 }
         }
       }
     }
