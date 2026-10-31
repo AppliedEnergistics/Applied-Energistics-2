@@ -146,6 +146,7 @@ import appeng.client.render.model.MeteoriteCompassModel;
 import appeng.client.render.model.QuartzGlassModel;
 import appeng.client.render.model.SingleSpinnableVariant;
 import appeng.client.renderer.blockentity.CableBusRenderer;
+import appeng.client.renderer.blockentity.CellLedRenderer;
 import appeng.client.renderer.blockentity.ChargerRenderer;
 import appeng.client.renderer.blockentity.CraftingMonitorRenderer;
 import appeng.client.renderer.blockentity.CrankRenderer;
@@ -554,6 +555,7 @@ public class AppEngClient extends AppEngBase {
     private void registerRenderPipelines(RegisterRenderPipelinesEvent event) {
         event.registerPipeline(AERenderPipelines.LINES_BEHIND_BLOCK);
         event.registerPipeline(AERenderPipelines.LIGHTNING_FX);
+        event.registerPipeline(AERenderPipelines.STORAGE_CELL_LEDS);
     }
 
     private void registerBlockStateModels(RegisterBlockStateModels event) {
@@ -612,6 +614,8 @@ public class AppEngClient extends AppEngBase {
     private void registerStandaloneModels(ModelEvent.RegisterStandalone event) {
         event.register(CrankRenderer.HANDLE_MODEL,
                 SimpleUnbakedStandaloneModel.simpleModelWrapper(CrankRenderer.HANDLE_MODEL_ID));
+        event.register(CellLedRenderer.LED_MODEL,
+                SimpleUnbakedStandaloneModel.simpleModelWrapper(CellLedRenderer.LED_MODEL_ID));
 
         // For rendering the ME chest we require the original storage cell models as standalone models
         for (var cellModelKey : StorageCellModels.standaloneModels().values()) {

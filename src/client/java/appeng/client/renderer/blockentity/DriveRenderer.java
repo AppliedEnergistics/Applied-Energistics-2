@@ -18,12 +18,16 @@
 
 package appeng.client.renderer.blockentity;
 
+import java.util.Objects;
+
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
@@ -32,7 +36,6 @@ import net.minecraft.world.phys.Vec3;
 
 import appeng.api.orientation.BlockOrientation;
 import appeng.blockentity.storage.DriveBlockEntity;
-import appeng.client.render.AERenderTypes;
 import appeng.client.render.model.DriveModel;
 
 /**
@@ -40,7 +43,11 @@ import appeng.client.render.model.DriveModel;
  */
 public class DriveRenderer implements BlockEntityRenderer<DriveBlockEntity, ChestOrDriveRenderState> {
 
+    private final BlockStateModelPart ledModel;
+
     public DriveRenderer(BlockEntityRendererProvider.Context context) {
+        ledModel = Objects.requireNonNull(Minecraft.getInstance().getModelManager()
+                .getStandaloneModel(CellLedRenderer.LED_MODEL));
     }
 
     @Override
@@ -77,10 +84,7 @@ public class DriveRenderer implements BlockEntityRenderer<DriveBlockEntity, Ches
                 poseStack.translate(slotTranslation.x(), slotTranslation.y(), slotTranslation.z());
 
                 int slot = row * 2 + col;
-                nodes.submitCustomGeometry(
-                        poseStack,
-                        AERenderTypes.STORAGE_CELL_LEDS,
-                        (pose, consumer) -> CellLedRenderer.renderLed(state.cellColors[slot], consumer, pose));
+                CellLedRenderer.renderLed(state.cellColors[slot], ledModel, poseStack, nodes, state.lightCoords);
 
                 poseStack.popPose();
             }

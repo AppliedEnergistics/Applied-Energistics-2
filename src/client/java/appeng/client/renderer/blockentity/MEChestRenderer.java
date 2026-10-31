@@ -19,6 +19,7 @@
 package appeng.client.renderer.blockentity;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Function;
 
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -31,6 +32,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.block.BlockAndTintGetter;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
@@ -48,7 +50,6 @@ import net.neoforged.neoforge.client.model.quad.QuadTransforms;
 import appeng.api.client.StorageCellModels;
 import appeng.api.orientation.BlockOrientation;
 import appeng.blockentity.storage.MEChestBlockEntity;
-import appeng.client.render.AERenderTypes;
 import appeng.util.Platform;
 
 /**
@@ -61,9 +62,12 @@ public class MEChestRenderer implements BlockEntityRenderer<MEChestBlockEntity, 
 
     private final ModelManager modelManager;
 
+    private final BlockStateModelPart ledModel;
+
     public MEChestRenderer(BlockEntityRendererProvider.Context context) {
         Minecraft client = Minecraft.getInstance();
         modelManager = client.getModelManager();
+        ledModel = Objects.requireNonNull(modelManager.getStandaloneModel(CellLedRenderer.LED_MODEL));
     }
 
     @Override
@@ -139,10 +143,7 @@ public class MEChestRenderer implements BlockEntityRenderer<MEChestBlockEntity, 
                 OverlayTexture.NO_OVERLAY,
                 0);
 
-        nodes.submitCustomGeometry(
-                poseStack,
-                AERenderTypes.STORAGE_CELL_LEDS,
-                (pose, consumer) -> CellLedRenderer.renderLed(state.cellColors[0], consumer, pose));
+        CellLedRenderer.renderLed(state.cellColors[0], ledModel, poseStack, nodes, state.frontLightCoords);
 
         poseStack.popPose();
     }

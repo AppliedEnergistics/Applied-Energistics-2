@@ -18,49 +18,46 @@
 
 package appeng.client.renderer.blockentity;
 
+import java.util.List;
+
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import org.joml.Vector3f;
 
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.ARGB;
+import net.neoforged.neoforge.client.model.standalone.StandaloneModelKey;
+
+import appeng.client.render.AERenderTypes;
+import appeng.core.AppEng;
+
 /**
- * Utility class to render LEDs for storage cells from a Block entity Renderer.
+ * Utility class to render LEDs for storage cells from a Block entity Renderer. The model is positioned for the upper
+ * left slot in a drive, uses a white sprite tinted with the LED color and is declared emissive.
  */
 public class CellLedRenderer {
 
-    // The positions are based on the upper left slot in a drive
-    private static final float L = 5 / 16.f; // left (x-axis)
-    private static final float R = 4 / 16.f; // right (x-axis)
-    private static final float T = 1 / 16.f; // top (y-axis)
-    private static final float B = -0.001f / 16.f; // bottom (y-axis)
-    private static final float FR = -0.001f / 16.f; // front (z-axis)
-    private static final float BA = 0.999f / 16.f; // back (z-axis)
+    public static final Identifier LED_MODEL_ID = AppEng.makeId("block/drive_cell_led");
+    public static final StandaloneModelKey<BlockStateModelPart> LED_MODEL = new StandaloneModelKey<>(
+            LED_MODEL_ID::toString);
 
-    // Vertex data for the LED cuboid (has no back)
-    // Directions are when looking from the front onto the LED
-    private static final float[] LED_QUADS = {
-            // Front Face
-            R, T, FR, L, T, FR, L, B, FR, R, B, FR,
-            // Left Face
-            L, T, FR, L, T, BA, L, B, BA, L, B, FR,
-            // Right Face
-            R, T, BA, R, T, FR, R, B, FR, R, B, BA,
-            // Top Face
-            R, T, BA, L, T, BA, L, T, FR, R, T, FR,
-            // Bottom Face
-            R, B, FR, L, B, FR, L, B, BA, R, B, BA, };
-
-    public static void renderLed(Vector3f color, VertexConsumer buffer, PoseStack.Pose pose) {
+    public static void renderLed(Vector3f color, BlockStateModelPart ledModel, PoseStack poseStack,
+            SubmitNodeCollector nodes, int lightCoords) {
         if (color == null) {
             return;
         }
 
-        for (int i = 0; i < LED_QUADS.length; i += 3) {
-            float x = LED_QUADS[i];
-            float y = LED_QUADS[i + 1];
-            float z = LED_QUADS[i + 2];
-            buffer.addVertex(pose, x, y, z).setColor(color.x(), color.y(), color.z(), 1.f);
-        }
+        nodes.submitBlockModel(
+                poseStack,
+                AERenderTypes.STORAGE_CELL_LEDS,
+                List.of(ledModel),
+                new int[] { ARGB.colorFromFloat(1.f, color.x(), color.y(), color.z()) },
+                lightCoords,
+                OverlayTexture.NO_OVERLAY,
+                0);
     }
 
     private CellLedRenderer() {
