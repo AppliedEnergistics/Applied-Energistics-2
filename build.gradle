@@ -120,6 +120,12 @@ dependencies {
         localRuntimeOnly("curse.maven:athena-841890:${project.athena_file_id}")
     }
 
+    // Iris
+    if (project.runtime_iris == "true") {
+        localRuntimeOnly("maven.modrinth:iris:${project.iris_version}")
+        localRuntimeOnly("maven.modrinth:sodium:${project.sodium_version}")
+    }
+
     // unit test dependencies
     testImplementation(platform("org.junit:junit-bom:${project.junit_version}"))
     testImplementation(platform("org.assertj:assertj-bom:${project.assertj_version}"))

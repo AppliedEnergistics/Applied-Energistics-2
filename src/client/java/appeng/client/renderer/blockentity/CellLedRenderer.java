@@ -23,6 +23,9 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import org.joml.Vector3f;
 
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.util.LightCoordsUtil;
+
 /**
  * Utility class to render LEDs for storage cells from a Block entity Renderer.
  */
@@ -50,6 +53,19 @@ public class CellLedRenderer {
             // Bottom Face
             R, B, FR, L, B, FR, L, B, BA, R, B, BA, };
 
+    // One normal for each face in LED_QUADS
+    private static final float[] LED_NORMALS = {
+            // Front Face
+            0, 0, -1,
+            // Left Face
+            1, 0, 0,
+            // Right Face
+            -1, 0, 0,
+            // Top Face
+            0, 1, 0,
+            // Bottom Face
+            0, -1, 0, };
+
     public static void renderLed(Vector3f color, VertexConsumer buffer, PoseStack.Pose pose) {
         if (color == null) {
             return;
@@ -59,7 +75,13 @@ public class CellLedRenderer {
             float x = LED_QUADS[i];
             float y = LED_QUADS[i + 1];
             float z = LED_QUADS[i + 2];
-            buffer.addVertex(pose, x, y, z).setColor(color.x(), color.y(), color.z(), 1.f);
+            int normal = i / 12 * 3;
+            buffer.addVertex(pose, x, y, z)
+                    .setColor(color.x(), color.y(), color.z(), 1.f)
+                    .setUv(0, 0)
+                    .setOverlay(OverlayTexture.NO_OVERLAY)
+                    .setLight(LightCoordsUtil.FULL_BRIGHT)
+                    .setNormal(pose, LED_NORMALS[normal], LED_NORMALS[normal + 1], LED_NORMALS[normal + 2]);
         }
     }
 
