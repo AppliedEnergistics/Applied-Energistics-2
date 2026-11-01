@@ -14,7 +14,7 @@
         "north": {
           "texture": "#lightsBright",
           "tintindex": 3,
-          "neoforge_data": { "block_light": 15, "sky_light": 15 }
+          "neoforge_data": { "light_emission": 15 }
         }
       }
     },
@@ -25,7 +25,7 @@
         "north": {
           "texture": "#lightsMedium",
           "tintindex": 2,
-          "neoforge_data": { "block_light": 15, "sky_light": 15 }
+          "neoforge_data": { "light_emission": 15 }
         }
       }
     },
@@ -36,7 +36,7 @@
         "north": {
           "texture": "#lightsDark",
           "tintindex": 1,
-          "neoforge_data": { "block_light": 15, "sky_light": 15 }
+          "neoforge_data": { "light_emission": 15 }
         }
       }
     }
