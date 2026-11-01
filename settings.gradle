@@ -48,6 +48,13 @@ dependencyResolutionManagement {
                 includeGroup 'curse.maven'
             }
         }
+        maven {
+            name = 'Modrinth'
+            url = 'https://api.modrinth.com/maven'
+            content {
+                includeGroup 'maven.modrinth'
+            }
+        }
         maven { // for TOP
             url = 'https://maven.k-4u.nl/'
             content {

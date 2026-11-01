@@ -21,7 +21,14 @@ package appeng.client.renderer.blockentity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
+import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
+
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.util.LightCoordsUtil;
+
+import appeng.client.render.AERenderTypes;
 
 /**
  * Utility class to render LEDs for storage cells from a Block entity Renderer.
@@ -50,16 +57,49 @@ public class CellLedRenderer {
             // Bottom Face
             R, B, FR, L, B, FR, L, B, BA, R, B, BA, };
 
-    public static void renderLed(Vector3f color, VertexConsumer buffer, PoseStack.Pose pose) {
+    // One normal for each face in LED_QUADS
+    private static final float[] LED_NORMALS = {
+            // Front Face
+            0, 0, -1,
+            // Left Face
+            1, 0, 0,
+            // Right Face
+            -1, 0, 0,
+            // Top Face
+            0, 1, 0,
+            // Bottom Face
+            0, -1, 0, };
+
+    /**
+     * Submits an LED at the current pose.
+     *
+     * @param color The color of the LED, or null if there's no cell and thus no LED.
+     */
+    public static void submitLed(@Nullable Vector3f color, PoseStack poseStack, SubmitNodeCollector nodes) {
         if (color == null) {
             return;
         }
 
+        // The LEDs don't write depth, so they have to be drawn after the models of the cell and the block they are on.
+        // Same as what vanilla does for the eyes this render type is based on.
+        nodes.order(1).submitCustomGeometry(
+                poseStack,
+                AERenderTypes.STORAGE_CELL_LEDS,
+                (pose, consumer) -> renderLed(color, consumer, pose));
+    }
+
+    private static void renderLed(Vector3f color, VertexConsumer buffer, PoseStack.Pose pose) {
         for (int i = 0; i < LED_QUADS.length; i += 3) {
             float x = LED_QUADS[i];
             float y = LED_QUADS[i + 1];
             float z = LED_QUADS[i + 2];
-            buffer.addVertex(pose, x, y, z).setColor(color.x(), color.y(), color.z(), 1.f);
+            int normal = i / 12 * 3;
+            buffer.addVertex(pose, x, y, z)
+                    .setColor(color.x(), color.y(), color.z(), 1.f)
+                    .setUv(0, 0)
+                    .setOverlay(OverlayTexture.NO_OVERLAY)
+                    .setLight(LightCoordsUtil.FULL_BRIGHT)
+                    .setNormal(pose, LED_NORMALS[normal], LED_NORMALS[normal + 1], LED_NORMALS[normal + 2]);
         }
     }
 
