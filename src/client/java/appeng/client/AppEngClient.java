@@ -554,6 +554,7 @@ public class AppEngClient extends AppEngBase {
     private void registerRenderPipelines(RegisterRenderPipelinesEvent event) {
         event.registerPipeline(AERenderPipelines.LINES_BEHIND_BLOCK);
         event.registerPipeline(AERenderPipelines.LIGHTNING_FX);
+        event.registerPipeline(AERenderPipelines.STORAGE_CELL_LEDS);
         event.registerOitPipelineSet(AERenderPipelines.OIT_LIGHTNING_FX);
         event.registerOitPipelineSet(AERenderPipelines.OIT_AREA_OVERLAY_FACE);
         event.registerOitPipelineSet(AERenderPipelines.OIT_AREA_OVERLAY_LINE);
