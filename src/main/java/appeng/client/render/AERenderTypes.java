@@ -59,7 +59,7 @@ public final class AERenderTypes {
     public static final RenderType STORAGE_CELL_LEDS = RenderType.create(
             "ae2_drive_leds",
             RenderSetup.builder(AERenderPipelines.STORAGE_CELL_LEDS)
-                    .withTexture("Sampler0", AppEng.makeId("textures/block/drive/cell_led.png"))
+                    .withTexture("Sampler0", AppEng.makeId("textures/white.png"))
                     .createRenderSetup());
 
 }
