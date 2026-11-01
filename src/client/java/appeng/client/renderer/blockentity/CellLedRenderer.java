@@ -21,10 +21,14 @@ package appeng.client.renderer.blockentity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
+import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.util.LightCoordsUtil;
+
+import appeng.client.render.AERenderTypes;
 
 /**
  * Utility class to render LEDs for storage cells from a Block entity Renderer.
@@ -66,11 +70,25 @@ public class CellLedRenderer {
             // Bottom Face
             0, -1, 0, };
 
-    public static void renderLed(Vector3f color, VertexConsumer buffer, PoseStack.Pose pose) {
+    /**
+     * Submits an LED at the current pose.
+     *
+     * @param color The color of the LED, or null if there's no cell and thus no LED.
+     */
+    public static void submitLed(@Nullable Vector3f color, PoseStack poseStack, SubmitNodeCollector nodes) {
         if (color == null) {
             return;
         }
 
+        // The LEDs don't write depth, so they have to be drawn after the models of the cell and the block they are on.
+        // Same as what vanilla does for the eyes this render type is based on.
+        nodes.order(1).submitCustomGeometry(
+                poseStack,
+                AERenderTypes.STORAGE_CELL_LEDS,
+                (pose, consumer) -> renderLed(color, consumer, pose));
+    }
+
+    private static void renderLed(Vector3f color, VertexConsumer buffer, PoseStack.Pose pose) {
         for (int i = 0; i < LED_QUADS.length; i += 3) {
             float x = LED_QUADS[i];
             float y = LED_QUADS[i + 1];
