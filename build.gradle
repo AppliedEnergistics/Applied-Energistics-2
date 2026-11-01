@@ -170,6 +170,10 @@ neoForge {
             // systemProperty('mixin.debug.export', 'true')
             logLevel = org.slf4j.event.Level.INFO
             systemProperty('guideme.ae2.guide.sources', file('guidebook').absolutePath)
+            if (project.runtime_iris == "true") {
+                // Iris fails the additional validation that only runs in dev
+                systemProperty('neoforge.disableBlaze3DValidation', 'true')
+            }
         }
         client {
             client()
