@@ -65,7 +65,7 @@ public final class AERenderTypes {
             "ae2_drive_leds",
             RenderSetup.builder(AERenderPipelines.STORAGE_CELL_LEDS)
                     .bufferSize(32565)
-                    .withTexture("Sampler0", AppEng.makeId("textures/block/drive/cell_led.png"))
+                    .withTexture("Sampler0", AppEng.makeId("textures/white.png"))
                     .createRenderSetup());
 
 }
