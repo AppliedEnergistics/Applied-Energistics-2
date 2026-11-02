@@ -11,10 +11,15 @@ import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.entity.ChestBlockEntity;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEParts;
 import appeng.parts.AEBasePart;
+import appeng.parts.p2p.ItemP2PTunnelPart;
 import appeng.server.testworld.PlotBuilder;
 
 @TestPlotClass
@@ -34,6 +39,53 @@ public class ItemP2PTestPlots {
         plot.test(helper -> helper
                 .startSequence()
                 .thenWaitUntil(() -> helper.assertContainerContains(chestPos, Items.BEDROCK))
+                .thenSucceed());
+    }
+
+    /**
+     * Inserting fewer items than there are outputs squared used to leave part of the remainder undistributed, so the
+     * tunnel accepted less than it could have (e.g. only 6 of 8 items with 3 outputs).
+     */
+    @TestPlot("p2p_items_distributes_remainder")
+    public static void itemDistributesRemainder(PlotBuilder plot) {
+        var origin = BlockPos.ZERO;
+        plot.creativeEnergyCell(origin.below());
+        plot.cable(origin).part(Direction.WEST, AEParts.ITEM_P2P_TUNNEL);
+        List<BlockPos> outputPositions = new ArrayList<>();
+        for (var i = 1; i <= 3; i++) {
+            var p = origin.east(i);
+            plot.cable(p).part(Direction.DOWN, AEParts.ITEM_P2P_TUNNEL);
+            plot.chest(p.below());
+            outputPositions.add(p);
+        }
+
+        plot.afterGridInitAt(origin, (grid, gridNode) -> {
+            var absOrigin = ((AEBasePart) gridNode.getOwner()).getBlockEntity().getBlockPos();
+            linkTunnels(grid,
+                    PosAndSide.west(absOrigin),
+                    outputPositions.stream().map(p -> PosAndSide.down(p.offset(absOrigin))).toList());
+        });
+
+        plot.test(helper -> helper
+                .startSequence()
+                .thenWaitUntil(() -> {
+                    var input = helper.getPart(origin, Direction.WEST, ItemP2PTunnelPart.class);
+                    helper.check(input.isActive() && input.getOutputs().size() == 3, "tunnels are not linked yet");
+                })
+                .thenExecute(() -> {
+                    var handler = helper.getCapability(origin, Capabilities.Item.BLOCK, Direction.WEST);
+                    try (var tx = Transaction.open(null)) {
+                        var inserted = handler.insert(ItemResource.of(Items.DIAMOND), 8, tx);
+                        helper.check(inserted == 8, "expected all 8 diamonds to be inserted, but got " + inserted);
+                        tx.commit();
+                    }
+
+                    var total = 0;
+                    for (var p : outputPositions) {
+                        total += helper.getBlockEntity(p.below(), ChestBlockEntity.class).countItem(Items.DIAMOND);
+                    }
+                    helper.check(total == 8, "expected 8 diamonds across the output chests, but got " + total);
+                })
                 .thenSucceed());
     }
 
