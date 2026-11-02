@@ -249,6 +249,7 @@ public class NetworkCraftingProviders {
         private List<IPatternDetails> getSortedPatterns() {
             if (needsSorting) {
                 sortPatterns();
+                needsSorting = false;
             }
             return sortedPatterns;
         }
