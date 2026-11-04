@@ -6,6 +6,10 @@
   "render_type": "cutout",
   "elements": [
     {
+      "from": [0, 0, 0],
+      "to": [16, 16, 16],
+      "shade": false,
+      "light_emission": 15,
       "faces": {
         "down": {
           "texture": "#lights",
@@ -37,10 +41,7 @@
           "uv": [0, 0, 16, 16],
           "neoforge_data": { "light_emission": 15 }
         }
-      },
-      "from": [0, 0, 0],
-      "shade": false,
-      "to": [16, 16, 16]
+      }
     },
     {
       "faces": {
