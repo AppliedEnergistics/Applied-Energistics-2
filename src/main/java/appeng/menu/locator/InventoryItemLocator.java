@@ -8,6 +8,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.BlockHitResult;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 
 import appeng.api.implementations.menuobjects.IMenuItem;
 
@@ -20,6 +21,11 @@ import appeng.api.implementations.menuobjects.IMenuItem;
 record InventoryItemLocator(int itemIndex, @Nullable BlockHitResult hitResult) implements ItemMenuHostLocator {
     public ItemStack locateItem(Player player) {
         return player.getInventory().getItem(itemIndex);
+    }
+
+    @Override
+    public ItemAccess itemAccess(Player player) {
+        return ItemAccess.forPlayerSlot(player, itemIndex);
     }
 
     public void writeToPacket(FriendlyByteBuf buf) {

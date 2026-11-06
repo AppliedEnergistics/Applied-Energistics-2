@@ -11,6 +11,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.material.Fluids;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 
 import appeng.api.config.Actionable;
 import appeng.api.networking.security.IActionSource;
@@ -85,7 +86,7 @@ public class BasicInventoryTest {
     void testEvenDistribution() {
         var item = AEItems.ITEM_CELL_1K.get();
         var stack = new ItemStack(item);
-        item.getUpgrades(stack).addItems(AEItems.EQUAL_DISTRIBUTION_CARD.stack());
+        item.getUpgrades(ItemAccess.forStack(stack)).addItems(AEItems.EQUAL_DISTRIBUTION_CARD.stack());
         var cell = StorageCells.getCellInventory(stack, null);
         Objects.requireNonNull(cell);
 
@@ -114,7 +115,7 @@ public class BasicInventoryTest {
     void testVoidUpgrade() {
         var item = AEItems.ITEM_CELL_1K.get();
         var stack = new ItemStack(item);
-        item.getUpgrades(stack).addItems(AEItems.VOID_CARD.stack());
+        item.getUpgrades(ItemAccess.forStack(stack)).addItems(AEItems.VOID_CARD.stack());
 
         // Setup whitelist
         var allowed = AEItemKey.of(Items.DIAMOND);
@@ -139,7 +140,7 @@ public class BasicInventoryTest {
     void testVoidUpgradeUnformatted() {
         var item = AEItems.ITEM_CELL_1K.get();
         var stack = new ItemStack(item);
-        item.getUpgrades(stack).addItems(AEItems.VOID_CARD.stack());
+        item.getUpgrades(ItemAccess.forStack(stack)).addItems(AEItems.VOID_CARD.stack());
 
         var cell = StorageCells.getCellInventory(stack, null);
         Objects.requireNonNull(cell);
@@ -154,8 +155,9 @@ public class BasicInventoryTest {
 
         // Part two, fill cell with 63 different types this time.
         cell.extract(filler, Long.MAX_VALUE, Actionable.MODULATE, SRC);
-        item.getUpgrades(stack).removeItems(1, AEItems.VOID_CARD.stack(), null);
-        item.getUpgrades(stack).addItems(AEItems.EQUAL_DISTRIBUTION_CARD.stack());
+        var access = ItemAccess.forStack(stack);
+        item.getUpgrades(access).removeItems(1, AEItems.VOID_CARD.stack(), null);
+        item.getUpgrades(access).addItems(AEItems.EQUAL_DISTRIBUTION_CARD.stack());
         cell = StorageCells.getCellInventory(stack, null);
         Objects.requireNonNull(cell);
 
@@ -166,7 +168,7 @@ public class BasicInventoryTest {
             cell.insert(keys[i], Long.MAX_VALUE, Actionable.MODULATE, SRC);
         }
 
-        item.getUpgrades(stack).addItems(AEItems.VOID_CARD.stack());
+        item.getUpgrades(access).addItems(AEItems.VOID_CARD.stack());
         cell = StorageCells.getCellInventory(stack, null);
         Objects.requireNonNull(cell);
 

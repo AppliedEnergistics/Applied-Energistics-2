@@ -24,7 +24,7 @@ public final class SupplierStorage implements MEStorage {
         this.supplier = supplier;
     }
 
-    private MEStorage getDelegate() {
+    public MEStorage getDelegate() {
         return Objects.requireNonNullElseGet(supplier.get(), NullInventory::of);
     }
 

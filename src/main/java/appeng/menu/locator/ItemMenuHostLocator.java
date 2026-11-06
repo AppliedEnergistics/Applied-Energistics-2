@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.BlockHitResult;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 
 import appeng.api.implementations.menuobjects.IMenuItem;
 import appeng.api.implementations.menuobjects.ItemMenuHost;
@@ -48,6 +49,8 @@ public interface ItemMenuHostLocator extends MenuHostLocator {
      * <strong>The returned stack will be modified by the {@link ItemMenuHost}</strong>, it must be updated in-place.
      */
     ItemStack locateItem(Player player);
+
+    ItemAccess itemAccess(Player player);
 
     /**
      * @return The slot of the item in the player inventory if this locator represents a location in the player

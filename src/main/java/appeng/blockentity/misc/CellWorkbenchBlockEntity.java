@@ -28,6 +28,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 
 import appeng.api.config.CopyMode;
 import appeng.api.config.Settings;
@@ -225,17 +226,8 @@ public class CellWorkbenchBlockEntity extends AEBaseBlockEntity
                 return UpgradeInventories.empty();
             }
 
-            final ItemStack is = this.cell.getStackInSlot(0);
-            if (is.isEmpty()) {
-                return UpgradeInventories.empty();
-            }
-
-            var inv = cell.getUpgrades(is);
-            if (inv == null) {
-                return UpgradeInventories.empty();
-            }
-
-            return this.cacheUpgrades = inv;
+            var access = ItemAccess.forHandlerIndex(this.cell.toResourceHandler(), 0);
+            return this.cacheUpgrades = cell.getUpgrades(access);
         }
         return this.cacheUpgrades;
     }
