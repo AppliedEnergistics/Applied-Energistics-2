@@ -22,7 +22,11 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.world.item.crafting.Ingredient;
+
+import appeng.api.stacks.AEKey;
 
 /**
  * Represents a client-side only repository of {@link GridInventoryEntry} entries that represent the network content
@@ -39,6 +43,18 @@ public interface IClientRepo {
     void handleUpdate(boolean fullUpdate, List<GridInventoryEntry> entries);
 
     /**
+     * Incremented whenever the contents change, for caching derived data.
+     */
+    long getRevision();
+
+    /**
+     * @return The keys that changed since the last call, or {@code null} if every key has to be assumed changed, which
+     *         is the case after a full update replaced the contents.
+     */
+    @Nullable
+    Set<AEKey> drainChangedKeys();
+
+    /**
      * @return All entries in this repository, regardless of any filter.
      */
     Set<GridInventoryEntry> getAllEntries();
@@ -47,4 +63,14 @@ public interface IClientRepo {
      * Find all entries that match the given ingredient.
      */
     Collection<GridInventoryEntry> getByIngredient(Ingredient ingredient);
+
+    /**
+     * Checks if the repository knows that the given key can be crafted.
+     */
+    boolean isCraftable(AEKey what);
+
+    /**
+     * @return The craftable keys, as an unmodifiable snapshot until the contents change.
+     */
+    Set<AEKey> getCraftableKeys();
 }

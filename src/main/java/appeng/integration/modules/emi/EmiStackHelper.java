@@ -10,6 +10,7 @@ import dev.emi.emi.api.recipe.EmiRecipe;
 import dev.emi.emi.api.stack.EmiIngredient;
 import dev.emi.emi.api.stack.EmiStack;
 
+import appeng.api.integrations.emi.EmiStackConverter;
 import appeng.api.integrations.emi.EmiStackConverters;
 import appeng.api.stacks.GenericStack;
 
@@ -31,7 +32,15 @@ public final class EmiStackHelper {
 
     @Nullable
     public static EmiStack toEmiStack(GenericStack stack) {
-        for (var converter : EmiStackConverters.getConverters()) {
+        return toEmiStack(stack, EmiStackConverters.getConverters());
+    }
+
+    /**
+     * Uses a pre-fetched converter list, for converting many stacks in a loop.
+     */
+    @Nullable
+    public static EmiStack toEmiStack(GenericStack stack, List<EmiStackConverter> converters) {
+        for (var converter : converters) {
             var emiStack = converter.toEmiStack(stack);
             if (emiStack != null) {
                 return emiStack;

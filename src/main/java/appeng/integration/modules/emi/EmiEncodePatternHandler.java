@@ -3,7 +3,6 @@ package appeng.integration.modules.emi;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import net.minecraft.world.item.crafting.RecipeHolder;
 
@@ -15,7 +14,6 @@ import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
 import appeng.core.localization.ItemModText;
 import appeng.integration.modules.itemlists.EncodingHelper;
-import appeng.menu.me.common.GridInventoryEntry;
 import appeng.menu.me.items.PatternEncodingTermMenu;
 
 /**
@@ -64,10 +62,7 @@ public class EmiEncodePatternHandler<T extends PatternEncodingTermMenu> extends 
             }
         } else {
             var repo = menu.getClientRepo();
-            Set<AEKey> craftableKeys = repo != null ? repo.getAllEntries().stream()
-                    .filter(GridInventoryEntry::isCraftable)
-                    .map(GridInventoryEntry::getWhat)
-                    .collect(Collectors.toSet()) : Set.of();
+            Set<AEKey> craftableKeys = repo != null ? repo.getCraftableKeys() : Set.of();
 
             return new Result.EncodeWithCraftables(craftableKeys);
         }

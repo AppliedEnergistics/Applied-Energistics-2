@@ -38,6 +38,7 @@ config="ae2.mixins.json"
 [[dependencies.ae2]]
     modId="emi"
     type="OPTIONAL"
+    versionRange="${emi_version_range}"
     ordering="AFTER"
     side="BOTH"
 

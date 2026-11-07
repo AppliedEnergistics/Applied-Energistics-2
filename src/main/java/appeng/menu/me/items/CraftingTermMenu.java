@@ -277,16 +277,12 @@ public class CraftingTermMenu extends MEStorageMenu implements ICraftingGridMenu
 
     protected boolean isCraftable(ItemStack itemStack) {
         var clientRepo = getClientRepo();
-
-        if (clientRepo != null) {
-            for (var stack : clientRepo.getAllEntries()) {
-                if (AEItemKey.matches(stack.getWhat(), itemStack) && stack.isCraftable()) {
-                    return true;
-                }
-            }
+        if (clientRepo == null) {
+            return false;
         }
 
-        return false;
+        var key = AEItemKey.of(itemStack);
+        return key != null && clientRepo.isCraftable(key);
     }
 
     public void clearToPlayerInventory() {

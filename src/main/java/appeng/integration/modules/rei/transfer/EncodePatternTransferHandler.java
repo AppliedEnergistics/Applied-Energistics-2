@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
@@ -30,7 +29,6 @@ import appeng.core.localization.ItemModText;
 import appeng.integration.modules.itemlists.EncodingHelper;
 import appeng.integration.modules.itemlists.TransferHelper;
 import appeng.integration.modules.rei.GenericEntryStackHelper;
-import appeng.menu.me.common.GridInventoryEntry;
 import appeng.menu.me.items.PatternEncodingTermMenu;
 
 /**
@@ -70,10 +68,7 @@ public class EncodePatternTransferHandler<T extends PatternEncodingTermMenu> ext
             }
         } else {
             var repo = menu.getClientRepo();
-            Set<AEKey> craftableKeys = repo != null ? repo.getAllEntries().stream()
-                    .filter(GridInventoryEntry::isCraftable)
-                    .map(GridInventoryEntry::getWhat)
-                    .collect(Collectors.toSet()) : Set.of();
+            Set<AEKey> craftableKeys = repo != null ? repo.getCraftableKeys() : Set.of();
 
             var anyCraftable = display.getInputEntries().stream().anyMatch(ing -> isCraftable(craftableKeys, ing));
             var tooltip = TransferHelper.createEncodingTooltip(anyCraftable, true);

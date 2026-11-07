@@ -62,7 +62,8 @@ dependencies {
     implementation("org.appliedenergistics:guideme:${guideme_version}")
 
     // compile against provided APIs
-    compileOnly "dev.emi:emi-neoforge:${emi_version}:api"
+    // Full artifact, since the craftables cache reuses EMI's EmiFavorite/EmiStackList instead of duplicating them
+    compileOnly "dev.emi:emi-neoforge:${emi_version}"
     compileOnly "me.shedaniel:RoughlyEnoughItems-neoforge:${project.rei_version}"
     compileOnly "mcp.mobius.waila:wthit-api:neo-${project.wthit_version}"
     compileOnly "curse.maven:jade-324717:${project.jade_file_id}"
@@ -204,6 +205,7 @@ final generateModMetadata = tasks.register('generateModMetadata', ProcessResourc
             'neoforge_version_range',
             'top_version_range',
             'jade_version_range',
+            'emi_version_range',
             'guideme_version'
     ].collectEntries { [it, project[it]] }
 
