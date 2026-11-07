@@ -20,6 +20,7 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 import dev.emi.emi.api.recipe.EmiPlayerInventory;
 import dev.emi.emi.api.recipe.EmiRecipe;
@@ -35,6 +36,8 @@ import dev.emi.emi.api.widget.Widget;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
 import appeng.core.AEConfig;
+import appeng.core.network.serverbound.InventoryActionPacket;
+import appeng.helpers.InventoryAction;
 import appeng.integration.modules.itemlists.EncodingHelper;
 import appeng.integration.modules.itemlists.TransferHelper;
 import appeng.menu.AEBaseMenu;
@@ -142,7 +145,26 @@ abstract class AbstractRecipeHandler<T extends AEBaseMenu> implements StandardRe
 
     @Override
     public boolean craft(EmiRecipe recipe, EmiCraftContext<T> context) {
-        return transferRecipe(recipe, context, true).canCraft();
+        if (!transferRecipe(recipe, context, true).canCraft()) {
+            return false;
+        }
+
+        // EMI only moves the ingredients for NONE; the other destinations take the result out of the slot
+        var action = getCraftAction(context);
+        var outputSlot = getOutputSlot(context.getScreenHandler());
+        if (action != null && outputSlot != null) {
+            PacketDistributor.sendToServer(new InventoryActionPacket(action, outputSlot.index, 0));
+        }
+        return true;
+    }
+
+    private static @Nullable InventoryAction getCraftAction(EmiCraftContext<?> context) {
+        var all = context.getAmount() > 1;
+        return switch (context.getDestination()) {
+            case NONE -> null;
+            case CURSOR -> all ? InventoryAction.CRAFT_STACK : InventoryAction.CRAFT_ITEM;
+            case INVENTORY -> all ? InventoryAction.CRAFT_ALL : InventoryAction.CRAFT_ONE;
+        };
     }
 
     @Override
