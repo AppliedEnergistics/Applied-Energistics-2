@@ -20,6 +20,7 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 import dev.emi.emi.api.recipe.EmiPlayerInventory;
 import dev.emi.emi.api.recipe.EmiRecipe;
@@ -35,6 +36,8 @@ import dev.emi.emi.api.widget.Widget;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
 import appeng.core.AEConfig;
+import appeng.core.network.serverbound.InventoryActionPacket;
+import appeng.helpers.InventoryAction;
 import appeng.integration.modules.itemlists.EncodingHelper;
 import appeng.integration.modules.itemlists.TransferHelper;
 import appeng.menu.AEBaseMenu;
@@ -142,7 +145,26 @@ abstract class AbstractRecipeHandler<T extends AEBaseMenu> implements StandardRe
 
     @Override
     public boolean craft(EmiRecipe recipe, EmiCraftContext<T> context) {
-        return transferRecipe(recipe, context, true).canCraft();
+        if (!transferRecipe(recipe, context, true).canCraft()) {
+            return false;
+        }
+
+        // EMI expects the crafted result to be taken for the inventory and cursor destinations, while AE2 crafts when
+        // the result slot is clicked. Ask for the same click the result slot would send.
+        var outputSlot = getOutputSlot(context.getScreenHandler());
+        if (outputSlot != null) {
+            PacketDistributor.sendToServer(new InventoryActionPacket(getCraftAction(context), outputSlot.index, 0));
+        }
+        return true;
+    }
+
+    private static InventoryAction getCraftAction(EmiCraftContext<?> context) {
+        var all = context.getAmount() > 1;
+        return switch (context.getDestination()) {
+            case INVENTORY -> all ? InventoryAction.CRAFT_ALL : InventoryAction.CRAFT_SHIFT;
+            case CURSOR -> all ? InventoryAction.CRAFT_STACK : InventoryAction.CRAFT_ITEM;
+            case NONE -> InventoryAction.CRAFT_ITEM;
+        };
     }
 
     @Override
