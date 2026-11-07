@@ -4,10 +4,13 @@ import static appeng.integration.modules.itemlists.TransferHelper.BLUE_SLOT_HIGH
 import static appeng.integration.modules.itemlists.TransferHelper.RED_SLOT_HIGHLIGHT_COLOR;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.WeakHashMap;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -17,6 +20,7 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
@@ -32,9 +36,9 @@ import dev.emi.emi.api.widget.Bounds;
 import dev.emi.emi.api.widget.SlotWidget;
 import dev.emi.emi.api.widget.Widget;
 
+import appeng.api.integrations.emi.EmiStackConverters;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
-import appeng.core.AEConfig;
 import appeng.integration.modules.itemlists.EncodingHelper;
 import appeng.integration.modules.itemlists.TransferHelper;
 import appeng.menu.AEBaseMenu;
@@ -46,7 +50,19 @@ abstract class AbstractRecipeHandler<T extends AEBaseMenu> implements StandardRe
     protected static final int CRAFTING_GRID_WIDTH = 3;
     protected static final int CRAFTING_GRID_HEIGHT = 3;
 
+    /**
+     * Reused by {@link #canCraftWith}, which runs for every candidate recipe.
+     */
+    private static final ThreadLocal<Scratch> SCRATCH = ThreadLocal.withInitial(Scratch::new);
+
     private final Class<T> containerClass;
+
+    /**
+     * Everything EMI derives from one screen, kept only while that screen is open. The screens are weakly referenced so
+     * that closing a terminal releases the converted stacks of a large network instead of retaining them until the next
+     * terminal is opened.
+     */
+    private final Map<AbstractContainerScreen<T>, ScreenCache> screenCaches = new WeakHashMap<>();
 
     AbstractRecipeHandler(Class<T> containerClass) {
         this.containerClass = containerClass;
@@ -76,34 +92,122 @@ abstract class AbstractRecipeHandler<T extends AEBaseMenu> implements StandardRe
 
     @Override
     public EmiPlayerInventory getInventory(AbstractContainerScreen<T> screen) {
-        if (!AEConfig.instance().isExposeNetworkInventoryToEmi()) {
-            return StandardRecipeHandler.super.getInventory(screen);
+        var menu = screen.getMenu();
+        var slots = getInputSources(menu);
+        var carried = menu.getCarried();
+
+        // Everything EMI derives from the inventory has to be covered here, or cached values go stale
+        var fingerprint = 17;
+        for (var slot : slots) {
+            var stack = slot.getItem();
+            fingerprint = 31 * fingerprint + ItemStack.hashItemAndComponents(stack);
+            fingerprint = 31 * fingerprint + stack.getCount();
+        }
+        fingerprint = 31 * fingerprint + ItemStack.hashItemAndComponents(carried);
+        fingerprint = 31 * fingerprint + carried.getCount();
+
+        var repo = menu instanceof MEStorageMenu storageMenu ? storageMenu.getClientRepo() : null;
+        var revision = repo != null ? repo.getRevision() : -1;
+
+        // EMI asks for the inventory far more often than it changes, so it is only rebuilt once the network revision or
+        // the relevant slots change
+        var cache = screenCaches.get(screen);
+        if (cache == null) {
+            cache = new ScreenCache();
+            screenCaches.put(screen, cache);
         }
 
-        var list = new ArrayList<EmiStack>();
-
-        for (Slot slot : getInputSources(screen.getMenu())) {
-            list.add(EmiStack.of(slot.getItem()));
+        if (cache.inventory != null
+                && cache.revision == revision
+                && cache.fingerprint == fingerprint) {
+            return cache.inventory;
         }
 
-        if (screen.getMenu() instanceof MEStorageMenu menu) {
-            var repo = menu.getClientRepo();
+        var list = new ArrayList<EmiStack>(slots.size() + (repo != null ? repo.getAllEntries().size() : 0));
 
-            if (repo != null) {
-                for (var entry : repo.getAllEntries()) {
-                    if (entry.getStoredAmount() <= 0) {
-                        continue; // Skip items that are only craftable
-                    }
-                    var emiStack = EmiStackHelper
-                            .toEmiStack(new GenericStack(entry.getWhat(), entry.getStoredAmount()));
-                    if (emiStack != null) {
-                        list.add(emiStack);
-                    }
+        // Passed separately so the craftables cache can tell slot changes from network changes
+        var slotStacks = new ArrayList<EmiStack>(slots.size());
+        for (var slot : slots) {
+            var stack = EmiStack.of(slot.getItem());
+            list.add(stack);
+            if (!stack.isEmpty()) {
+                slotStacks.add(stack);
+            }
+        }
+        var carriedStack = EmiStack.of(carried);
+        if (!carriedStack.isEmpty()) {
+            slotStacks.add(carriedStack);
+        }
+
+        if (repo != null) {
+            var converters = EmiStackConverters.getConverters();
+            var networkStacks = cache.networkStacks;
+            var seenKeys = cache.seenKeys;
+            var present = 0;
+            seenKeys.clear();
+
+            for (var entry : repo.getAllEntries()) {
+                var amount = entry.getStoredAmount();
+                if (amount <= 0) {
+                    continue; // Skip items that are only craftable
                 }
+
+                var what = entry.getWhat();
+                seenKeys.add(what);
+
+                var emiStack = networkStacks.get(what);
+                if (emiStack == null) {
+                    emiStack = EmiStackHelper.toEmiStack(new GenericStack(what, amount), converters);
+                    if (emiStack == null) {
+                        continue;
+                    }
+                    networkStacks.put(what, emiStack);
+                } else if (emiStack.getAmount() != amount) {
+                    // EMI's constructor adds up the amounts of stacks that are equal to each other, so a stack that was
+                    // merged into another one has to be reset to the amount that is stored in the network
+                    emiStack.setAmount(amount);
+                }
+                present++;
+                list.add(emiStack);
+            }
+
+            if (networkStacks.size() > present) {
+                // Entries for keys that are no longer in the network
+                networkStacks.keySet().retainAll(seenKeys);
             }
         }
 
-        return new EmiPlayerInventory(list);
+        var inventory = new NetworkEmiPlayerInventory(list, slotStacks, cache.craftables, revision, fingerprint, repo);
+        cache.inventory = inventory;
+        cache.revision = revision;
+        cache.fingerprint = fingerprint;
+        return inventory;
+    }
+
+    /**
+     * The state EMI derives from a screen, and nothing else. The inventory is not retained anywhere but here, so it is
+     * released together with the screen.
+     */
+    private static final class ScreenCache {
+        private @Nullable EmiPlayerInventory inventory;
+        private long revision;
+        private int fingerprint;
+
+        /**
+         * Outlives the inventory instances EMI asks for.
+         */
+        private final CraftablesCache craftables = new CraftablesCache();
+
+        /**
+         * One converted stack per network key, reused across rebuilds to avoid converting the whole network again. The
+         * amounts are shared with the inventory that EMI was last given, see the reset in {@link #getInventory}.
+         */
+        private final Map<AEKey, EmiStack> networkStacks = new HashMap<>();
+
+        /**
+         * The network keys seen during the last rebuild, to drop the converted stacks of keys that are gone.
+         */
+        private final Set<AEKey> seenKeys = new HashSet<>();
     }
 
     @Override
@@ -111,7 +215,87 @@ abstract class AbstractRecipeHandler<T extends AEBaseMenu> implements StandardRe
         if (context.getType() == EmiCraftContext.Type.FILL_BUTTON) {
             return transferRecipe(recipe, context, false).canCraft();
         }
-        return StandardRecipeHandler.super.canCraft(recipe, context);
+        return canCraftWith(context.getInventory(), recipe);
+    }
+
+    /**
+     * Same result as {@link EmiPlayerInventory#canCraft(EmiRecipe)}, without EMI's per-recipe map and list allocations.
+     */
+    private static boolean canCraftWith(EmiPlayerInventory inventory, EmiRecipe recipe) {
+        var scratch = SCRATCH.get();
+        scratch.reset();
+
+        for (var ingredient : recipe.getInputs()) {
+            if (ingredient.isEmpty()) {
+                continue;
+            }
+
+            var satisfied = false;
+            if (ingredient instanceof EmiStack single) {
+                // getEmiStacks() allocates a list, so fast-path the common case
+                satisfied = scratch.consume(inventory, single);
+            } else {
+                for (var stack : ingredient.getEmiStacks()) {
+                    if (scratch.consume(inventory, stack)) {
+                        satisfied = true;
+                        break;
+                    }
+                }
+            }
+
+            if (!satisfied) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * What the ingredients of one recipe consumed so far, so a recipe needing four of an item isn't craftable from one.
+     */
+    private static final class Scratch {
+        private EmiStack[] stacks = new EmiStack[16];
+        private long[] amounts = new long[16];
+        private int count;
+
+        void reset() {
+            count = 0;
+        }
+
+        boolean consume(EmiPlayerInventory inventory, EmiStack stack) {
+            // Key and value are the same instance, so identity comparison is enough
+            var identity = inventory.inventory.get(stack);
+            if (identity == null) {
+                return false;
+            }
+
+            var index = -1;
+            var alreadyUsed = 0L;
+            for (var i = 0; i < count; i++) {
+                if (stacks[i] == identity) {
+                    index = i;
+                    alreadyUsed = amounts[i];
+                    break;
+                }
+            }
+
+            if (identity.getAmount() - alreadyUsed < stack.getAmount()) {
+                return false;
+            }
+
+            if (index >= 0) {
+                amounts[index] = alreadyUsed + stack.getAmount();
+            } else {
+                if (count == stacks.length) {
+                    stacks = Arrays.copyOf(stacks, count * 2);
+                    amounts = Arrays.copyOf(amounts, count * 2);
+                }
+                stacks[count] = identity;
+                amounts[count] = stack.getAmount();
+                count++;
+            }
+            return true;
+        }
     }
 
     protected abstract Result transferRecipe(T menu,

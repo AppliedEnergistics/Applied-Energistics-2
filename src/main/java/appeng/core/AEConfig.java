@@ -230,10 +230,6 @@ public final class AEConfig {
         return client.enableFacadeRecipesInRecipeViewer.getAsBoolean();
     }
 
-    public boolean isExposeNetworkInventoryToEmi() {
-        return client.exposeNetworkInventoryToEmi.getAsBoolean();
-    }
-
     public int getCraftingCalculationTimePerTick() {
         return common.craftingCalculationTimePerTick.get();
     }
@@ -426,7 +422,6 @@ public final class AEConfig {
         public final BooleanValue disableColoredCableRecipesInRecipeViewer;
         public final BooleanValue enableFacadesInRecipeViewer;
         public final BooleanValue enableFacadeRecipesInRecipeViewer;
-        public final BooleanValue exposeNetworkInventoryToEmi;
         public final EnumValue<PowerUnit> selectedPowerUnit;
         public final BooleanValue debugGuiOverlays;
         public final BooleanValue showPlacementPreview;
@@ -461,8 +456,6 @@ public final class AEConfig {
                     "Show facades in REI/JEI/EMI item list");
             this.enableFacadeRecipesInRecipeViewer = define(builder, "enableFacadeRecipesInRecipeViewer", true,
                     "Show facade recipes in REI/JEI/EMI for supported blocks");
-            this.exposeNetworkInventoryToEmi = define(builder, "provideNetworkInventoryToEmi", false,
-                    "Expose the full network inventory to EMI, which might cause performance problems.");
             builder.pop();
 
             builder.push("client");

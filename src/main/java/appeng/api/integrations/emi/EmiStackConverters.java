@@ -5,10 +5,10 @@ import java.util.List;
 import com.google.common.collect.ImmutableList;
 
 /**
- * Register your {@link EmiStackConverter} instances for JEI here.
+ * Register your {@link EmiStackConverter} instances for EMI here.
  */
 public final class EmiStackConverters {
-    private static List<EmiStackConverter> converters = ImmutableList.of();
+    private static volatile List<EmiStackConverter> converters = ImmutableList.of();
 
     private EmiStackConverters() {
     }
@@ -33,9 +33,9 @@ public final class EmiStackConverters {
     }
 
     /**
-     * @return The currently registered converters.
+     * @return The currently registered converters, called for every stack conversion
      */
-    public static synchronized List<EmiStackConverter> getConverters() {
+    public static List<EmiStackConverter> getConverters() {
         return converters;
     }
 }

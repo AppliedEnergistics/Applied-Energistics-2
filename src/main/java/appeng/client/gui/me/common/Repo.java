@@ -24,6 +24,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -84,6 +85,20 @@ public class Repo implements IClientRepo {
      */
     private final Int2ObjectOpenHashMap<List<GridInventoryEntry>> entriesByItemId = new Int2ObjectOpenHashMap<>();
     private boolean entriesByItemIdNeedsUpdate = true;
+    /**
+     * Rebuilt lazily after the contents change.
+     */
+    private @Nullable Set<AEKey> craftableKeys;
+    private long revision;
+
+    /**
+     * Changed since the last {@link #drainChangedKeys()}.
+     */
+    private final Set<AEKey> changedKeys = new HashSet<>();
+    /**
+     * Set when the contents were replaced, so every key counts as changed.
+     */
+    private boolean changedKeysUnknown;
     private final RepoSearch search = new RepoSearch();
     private IPartitionList partitionList;
     private Runnable updateViewListener;
@@ -108,12 +123,17 @@ public class Repo implements IClientRepo {
     public final void handleUpdate(boolean fullUpdate, List<GridInventoryEntry> entries) {
         if (fullUpdate) {
             clear();
+        } else if (entries.isEmpty()) {
+            // Nothing changed, so there is nothing to invalidate or re-sort
+            return;
         }
 
         for (var entry : entries) {
             handleUpdate(entry);
         }
 
+        revision++;
+        craftableKeys = null;
         updateView();
     }
 
@@ -129,6 +149,7 @@ public class Repo implements IClientRepo {
             }
             if (serverEntry.isMeaningful()) {
                 entries.put(serverEntry.getSerial(), serverEntry);
+                markChanged(serverEntry.getWhat());
             }
             return;
         }
@@ -136,6 +157,7 @@ public class Repo implements IClientRepo {
         // Update the local entry
         if (!serverEntry.isMeaningful()) {
             entries.remove(serverEntry.getSerial());
+            markChanged(localEntry.getWhat());
         } else if (serverEntry.getWhat() == null) {
             entries.put(serverEntry.getSerial(), new GridInventoryEntry(
                     serverEntry.getSerial(),
@@ -143,8 +165,16 @@ public class Repo implements IClientRepo {
                     serverEntry.getStoredAmount(),
                     serverEntry.getRequestableAmount(),
                     serverEntry.isCraftable()));
+            markChanged(localEntry.getWhat());
         } else {
             entries.put(serverEntry.getSerial(), serverEntry);
+            markChanged(serverEntry.getWhat());
+        }
+    }
+
+    private void markChanged(@Nullable AEKey what) {
+        if (what != null) {
+            changedKeys.add(what);
         }
     }
 
@@ -359,6 +389,10 @@ public class Repo implements IClientRepo {
         this.pinnedRow.clear();
         this.entriesByItemId.clear();
         this.entriesByItemIdNeedsUpdate = true;
+        this.craftableKeys = null;
+        this.changedKeys.clear();
+        this.changedKeysUnknown = true;
+        this.revision++;
     }
 
     public final boolean hasPinnedRow() {
@@ -462,15 +496,47 @@ public class Repo implements IClientRepo {
         this.updateViewListener = updateViewListener;
     }
 
+    @Override
+    public long getRevision() {
+        return revision;
+    }
+
+    @Override
+    public @Nullable Set<AEKey> drainChangedKeys() {
+        if (changedKeysUnknown) {
+            changedKeysUnknown = false;
+            changedKeys.clear();
+            return null;
+        }
+        if (changedKeys.isEmpty()) {
+            return Set.of();
+        }
+        var result = Set.copyOf(changedKeys);
+        changedKeys.clear();
+        return result;
+    }
+
     /**
      * Checks if the repo knows that the given key can be crafted.
      */
+    @Override
     public boolean isCraftable(AEKey what) {
-        for (var entry : entries.values()) {
-            if (entry.isCraftable() && what.equals(entry.getWhat())) {
-                return true;
+        return getCraftableKeys().contains(what);
+    }
+
+    @Override
+    public Set<AEKey> getCraftableKeys() {
+        var keys = craftableKeys;
+        if (keys == null) {
+            var result = new HashSet<AEKey>();
+            for (var entry : entries.values()) {
+                if (entry.isCraftable()) {
+                    result.add(entry.getWhat());
+                }
             }
+            keys = Collections.unmodifiableSet(result);
+            craftableKeys = keys;
         }
-        return false;
+        return keys;
     }
 }
