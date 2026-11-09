@@ -16,6 +16,9 @@ import net.neoforged.neoforge.common.util.FakePlayer;
 import appeng.api.stacks.AEItemKey;
 import appeng.core.definitions.AEParts;
 import appeng.core.network.serverbound.FillCraftingGridFromRecipePacket;
+import appeng.core.network.serverbound.InventoryActionPacket;
+import appeng.helpers.InventoryAction;
+import appeng.menu.SlotSemantics;
 import appeng.menu.locator.MenuLocators;
 import appeng.menu.me.items.CraftingTermMenu;
 import appeng.parts.reporting.CraftingTerminalPart;
@@ -24,6 +27,130 @@ import appeng.server.testworld.PlotBuilder;
 @TestPlotClass
 public final class CraftingTerminalTestPlots {
     private CraftingTerminalTestPlots() {
+    }
+
+    /**
+     * Recipe viewers that can take the result (EMI's "craft to inventory") fill the grid and then click the result
+     * slot. This verifies that the click actually crafts in a crafting terminal.
+     */
+    @TestPlot("crafting_terminal_quick_craft")
+    public static void quickCraftFromRecipe(PlotBuilder plot) {
+        var origin = BlockPos.ZERO;
+        plot.creativeEnergyCell(origin.below());
+        plot.drive(origin).addItemCell64k().add(Items.JUNGLE_PLANKS, 6);
+        plot.cable(origin.above()).part(Direction.NORTH, AEParts.CRAFTING_TERMINAL);
+
+        plot.test(helper -> {
+            helper.startSequence()
+                    .thenExecute(() -> helper.getGrid(origin)) // Wait for grid init
+                    .thenWaitUntil(() -> helper.check(
+                            helper.getPart(origin.above(), Direction.NORTH, CraftingTerminalPart.class).isActive(),
+                            "crafting terminal is not active"))
+                    .thenExecute(() -> {
+                        var part = helper.getPart(origin.above(), Direction.NORTH, CraftingTerminalPart.class);
+
+                        var player = new FakePlayer(helper.getLevel(),
+                                new GameProfile(UUID.randomUUID(), "test-quick-craft"));
+                        try {
+                            var menu = new CraftingTermMenu(1, player.getInventory(), part);
+                            menu.setLocator(MenuLocators.forPart(part));
+                            player.containerMenu = menu;
+                            menu.broadcastChanges();
+
+                            // Jungle stairs are six jungle planks, i.e. one craft per plank in storage
+                            var templates = NonNullList.withSize(9, ItemStack.EMPTY);
+                            for (var slot : Set.of(0, 3, 4, 6, 7, 8)) {
+                                templates.set(slot, new ItemStack(Items.JUNGLE_PLANKS));
+                            }
+                            new FillCraftingGridFromRecipePacket(ResourceLocation.parse("minecraft:jungle_stairs"),
+                                    templates, false).handleOnServer(player);
+
+                            var outputSlot = menu.getSlots(SlotSemantics.CRAFTING_RESULT).get(0);
+                            helper.check(!outputSlot.getItem().isEmpty(),
+                                    "result slot is empty after filling the grid");
+
+                            // Same packet the client sends when the result slot is clicked with shift
+                            new InventoryActionPacket(InventoryAction.CRAFT_SHIFT, outputSlot.index, 0)
+                                    .handleOnServer(player);
+
+                            var crafted = 0;
+                            var inventory = player.getInventory();
+                            for (var i = 0; i < inventory.getContainerSize(); i++) {
+                                var stack = inventory.getItem(i);
+                                if (stack.is(Items.JUNGLE_STAIRS)) {
+                                    crafted += stack.getCount();
+                                }
+                            }
+                            helper.check(crafted > 0,
+                                    "expected the crafted item in the player inventory, but found " + crafted);
+                            helper.check(outputSlot.getItem().isEmpty(), "result slot still holds an item");
+                        } finally {
+                            player.closeContainer();
+                        }
+                    })
+                    .thenSucceed();
+        });
+    }
+
+    /**
+     * "Craft one to inventory" crafts one recipe's result, not a whole stack.
+     */
+    @TestPlot("crafting_terminal_craft_one_to_inventory")
+    public static void craftOneToInventory(PlotBuilder plot) {
+        var origin = BlockPos.ZERO;
+        plot.creativeEnergyCell(origin.below());
+        plot.drive(origin).addItemCell64k().add(Items.JUNGLE_PLANKS, 6);
+        plot.cable(origin.above()).part(Direction.NORTH, AEParts.CRAFTING_TERMINAL);
+
+        plot.test(helper -> {
+            helper.startSequence()
+                    .thenExecute(() -> helper.getGrid(origin)) // Wait for grid init
+                    .thenWaitUntil(() -> helper.check(
+                            helper.getPart(origin.above(), Direction.NORTH, CraftingTerminalPart.class).isActive(),
+                            "crafting terminal is not active"))
+                    .thenExecute(() -> {
+                        var part = helper.getPart(origin.above(), Direction.NORTH, CraftingTerminalPart.class);
+
+                        var player = new FakePlayer(helper.getLevel(),
+                                new GameProfile(UUID.randomUUID(), "test-craft-one"));
+                        try {
+                            var menu = new CraftingTermMenu(1, player.getInventory(), part);
+                            menu.setLocator(MenuLocators.forPart(part));
+                            player.containerMenu = menu;
+                            menu.broadcastChanges();
+
+                            var templates = NonNullList.withSize(9, ItemStack.EMPTY);
+                            for (var slot : Set.of(0, 3, 4, 6, 7, 8)) {
+                                templates.set(slot, new ItemStack(Items.JUNGLE_PLANKS));
+                            }
+                            new FillCraftingGridFromRecipePacket(ResourceLocation.parse("minecraft:jungle_stairs"),
+                                    templates, false).handleOnServer(player);
+
+                            var outputSlot = menu.getSlots(SlotSemantics.CRAFTING_RESULT).get(0);
+                            var perCraft = outputSlot.getItem().getCount();
+                            helper.check(perCraft > 0, "result slot is empty after filling the grid");
+
+                            new InventoryActionPacket(InventoryAction.CRAFT_ONE, outputSlot.index, 0)
+                                    .handleOnServer(player);
+
+                            var crafted = 0;
+                            var inventory = player.getInventory();
+                            for (var i = 0; i < inventory.getContainerSize(); i++) {
+                                var stack = inventory.getItem(i);
+                                if (stack.is(Items.JUNGLE_STAIRS)) {
+                                    crafted += stack.getCount();
+                                }
+                            }
+                            helper.check(crafted == perCraft,
+                                    "expected one craft (" + perCraft + ") in the player inventory, but found "
+                                            + crafted);
+                            helper.check(menu.getCarried().isEmpty(), "cursor is not empty");
+                        } finally {
+                            player.closeContainer();
+                        }
+                    })
+                    .thenSucceed();
+        });
     }
 
     /**

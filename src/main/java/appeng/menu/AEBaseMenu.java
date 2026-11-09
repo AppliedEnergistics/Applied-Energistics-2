@@ -570,6 +570,7 @@ public abstract class AEBaseMenu extends AbstractContainerMenu {
                 case CRAFT_ALL:
                 case CRAFT_ITEM:
                 case CRAFT_STACK:
+                case CRAFT_ONE:
                     craftingTermSlot.doClick(action, player);
                 default:
             }
