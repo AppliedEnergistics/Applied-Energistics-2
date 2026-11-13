@@ -58,6 +58,7 @@ public class BasicCellInventory implements StorageCell {
     @Nullable
     private final ISaveProvider container;
     private final AEKeyType keyType;
+    private final boolean hasUnsupportedKeys;
     private final IPartitionList partitionList;
     private final IncludeExclude partitionListMode;
     private int maxItemTypes;
@@ -88,6 +89,8 @@ public class BasicCellInventory implements StorageCell {
         this.storedItemCount = storedStacks.stream().mapToLong(GenericStack::amount).sum();
         this.storedAmounts = null;
         this.keyType = cellType.getKeyType();
+        // Keep foreign keys in old or externally edited cells extractable.
+        this.hasUnsupportedKeys = storedStacks.stream().anyMatch(stack -> !keyType.contains(stack.what()));
 
         // Updates the partition list and mode based on installed upgrades and the configured filter.
         var builder = IPartitionList.builder();
@@ -409,6 +412,11 @@ public class BasicCellInventory implements StorageCell {
 
     @Override
     public long extract(AEKey what, long amount, Actionable mode, IActionSource source) {
+        // Storage preference checks also probe cells from unrelated key spaces.
+        // Avoid loading and searching their inventories for keys they cannot contain.
+        if (!hasUnsupportedKeys && !keyType.contains(what)) {
+            return 0;
+        }
         var currentAmount = getCellItems().getLong(what);
         if (currentAmount > 0) {
             if (amount >= currentAmount) {
