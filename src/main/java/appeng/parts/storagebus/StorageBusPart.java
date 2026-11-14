@@ -250,9 +250,7 @@ public class StorageBusPart extends UpgradeablePart
         if (pos.relative(getSide()).equals(neighbor)) {
             // Tick again to update the monitor.
             if (!isClientSide()) {
-                getMainNode().ifPresent((grid, node) -> {
-                    grid.getTickManager().alertDevice(node);
-                });
+                invalidateOnExternalStorageChange();
             }
         }
     }
@@ -427,6 +425,9 @@ public class StorageBusPart extends UpgradeablePart
     }
 
     private void invalidateOnExternalStorageChange() {
+        if (this.monitor != null) {
+            this.monitor.invalidateCache();
+        }
         getMainNode().ifPresent((grid, node) -> {
             grid.getTickManager().alertDevice(node);
         });
