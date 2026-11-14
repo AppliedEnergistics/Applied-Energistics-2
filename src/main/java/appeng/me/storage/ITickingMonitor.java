@@ -24,4 +24,10 @@ public interface ITickingMonitor {
 
     TickRateModulation onTick();
 
+    /**
+     * Called when the monitored storage may have changed, so cached information about its contents is outdated.
+     */
+    default void invalidateCache() {
+    }
+
 }

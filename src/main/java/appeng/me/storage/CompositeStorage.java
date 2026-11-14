@@ -1,7 +1,9 @@
 package appeng.me.storage;
 
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 import net.minecraft.network.chat.Component;
 
@@ -31,6 +33,12 @@ public class CompositeStorage implements MEStorage, ITickingMonitor {
 
     public void setStorages(Map<AEKeyType, MEStorage> storages) {
         this.storages = Objects.requireNonNull(storages);
+        this.forceCacheRebuild = true;
+    }
+
+    @Override
+    public void invalidateCache() {
+        this.forceCacheRebuild = true;
     }
 
     @Override
@@ -54,7 +62,18 @@ public class CompositeStorage implements MEStorage, ITickingMonitor {
     @Override
     public long extract(AEKey what, long amount, Actionable mode, IActionSource source) {
         var storage = storages.get(what.getType());
-        var extracted = storage != null ? storage.extract(what, amount, mode, source) : 0;
+        if (storage == null) {
+            return 0;
+        }
+
+        // Querying the external inventory is expensive, and network extractions can visit every storage bus.
+        // Skip keys the external inventory did not contain when it was last scanned, unless the cache is
+        // known to be outdated.
+        if (!forceCacheRebuild && cache.isKnownAbsent(what)) {
+            return 0;
+        }
+
+        var extracted = storage.extract(what, amount, mode, source);
 
         if (extracted > 0 && mode == Actionable.MODULATE) {
             forceCacheRebuild = true;
@@ -114,6 +133,8 @@ public class CompositeStorage implements MEStorage, ITickingMonitor {
     private class InventoryCache {
         private KeyCounter frontBuffer = new KeyCounter();
         private KeyCounter backBuffer = new KeyCounter();
+        private final Set<AEKey> unextractableKeys = new HashSet<>();
+        private final Set<AEKeyType> completelyScannedTypes = new HashSet<>();
 
         public boolean update() {
             // Flip back & front buffer and start building a new list
@@ -121,10 +142,18 @@ public class CompositeStorage implements MEStorage, ITickingMonitor {
             backBuffer = frontBuffer;
             frontBuffer = tmp;
             frontBuffer.reset();
+            unextractableKeys.clear();
+            completelyScannedTypes.clear();
 
             // Rebuild the front buffer
-            for (var storage : storages.values()) {
-                storage.getAvailableStacks(frontBuffer);
+            for (var entry : storages.entrySet()) {
+                if (entry.getValue() instanceof ExternalStorageFacade facade) {
+                    if (facade.getAvailableStacks(frontBuffer, unextractableKeys)) {
+                        completelyScannedTypes.add(entry.getKey());
+                    }
+                } else {
+                    entry.getValue().getAvailableStacks(frontBuffer);
+                }
             }
 
             boolean changed = false;
@@ -149,6 +178,16 @@ public class CompositeStorage implements MEStorage, ITickingMonitor {
 
         public void getAvailableKeys(KeyCounter out) {
             out.addAll(frontBuffer);
+        }
+
+        /**
+         * @return True if the last scan covered every key of this type in the external inventory, and the given key was
+         *         not among them, even as a key that could not be extracted.
+         */
+        public boolean isKnownAbsent(AEKey what) {
+            return completelyScannedTypes.contains(what.getType())
+                    && !contains(what)
+                    && !unextractableKeys.contains(what);
         }
 
         public boolean contains(AEKey what) {
