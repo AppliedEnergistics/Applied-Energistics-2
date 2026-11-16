@@ -101,8 +101,8 @@ class EnergyServiceTest extends AbstractGridNodeTest {
     }
 
     /**
-     * Extracting a minuscule amount of power must never cause a power provider to be dropped from the grid, even if
-     * the provider is unable to hand out such a small amount (see #9074).
+     * Extracting a minuscule amount of power must never cause a power provider to be dropped from the grid, even if the
+     * provider is unable to hand out such a small amount (see #9074).
      */
     @Test
     void testExtractingMinusculeAmountDoesNotDropProvider() {
@@ -126,8 +126,8 @@ class EnergyServiceTest extends AbstractGridNodeTest {
     }
 
     /**
-     * A power storage that behaves like the energy cell: Extracting less than
-     * {@link StoredEnergyAmount#MIN_AMOUNT} yields nothing.
+     * A power storage that behaves like the energy cell: Extracting less than {@link StoredEnergyAmount#MIN_AMOUNT}
+     * yields nothing.
      */
     private static class MinAmountPowerStorage extends InfinitePowerStorage {
         private final StoredEnergyAmount stored;
