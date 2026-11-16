@@ -144,8 +144,7 @@ public class NetworkStatusScreen extends AEBaseScreen<NetworkStatusMenu> {
         }
 
         if (tooltip != null) {
-            // We need to relativize the offset because the matrix stack is currently "pushed" to the local coordinates
-            this.drawTooltipWithHeader(guiGraphics, mouseX - offsetX, mouseY - offsetY, tooltip);
+            this.drawTooltipWithHeader(guiGraphics, mouseX, mouseY, tooltip);
         }
     }
 
