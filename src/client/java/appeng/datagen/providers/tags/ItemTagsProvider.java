@@ -58,6 +58,8 @@ public class ItemTagsProvider extends BlockTagCopyingItemTagProvider implements 
         tag(ItemTags.MINING_ENCHANTABLE).add(AEParts.ANNIHILATION_PLANE.asItem());
         tag(ItemTags.MINING_LOOT_ENCHANTABLE).add(AEParts.ANNIHILATION_PLANE.asItem());
 
+        tag(ItemTags.BOOKSHELF_BOOKS).add(AEItems.GUIDE.asItem());
+
         // Provide empty blacklist tags
         tag(AETags.ANNIHILATION_PLANE_ITEM_BLACKLIST);
 
