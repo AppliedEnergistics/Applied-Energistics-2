@@ -6,7 +6,8 @@ runs:
     - name: Export release tag as environment variable
       shell: bash
       env:
-        TAG: ${{ github.event.release.tag_name }}
+        # Release events and tag pushes both have a tag ref, but only release events have event.release
+        TAG: ${{ (github.ref_type == 'tag' && github.ref_name) || github.event.release.tag_name }}
       run: |
         echo "TAG=${TAG}" >> $GITHUB_ENV
 
