@@ -47,7 +47,6 @@ import net.neoforged.neoforge.client.model.quad.QuadTransforms;
 import appeng.api.client.StorageCellModels;
 import appeng.api.orientation.BlockOrientation;
 import appeng.blockentity.storage.MEChestBlockEntity;
-import appeng.client.render.AERenderTypes;
 import appeng.util.Platform;
 
 /**
@@ -138,10 +137,7 @@ public class MEChestRenderer implements BlockEntityRenderer<MEChestBlockEntity, 
                 OverlayTexture.NO_OVERLAY,
                 0);
 
-        nodes.submitCustomGeometry(
-                poseStack,
-                AERenderTypes.STORAGE_CELL_LEDS,
-                (pose, consumer) -> CellLedRenderer.renderLed(state.cellColors[0], consumer, pose));
+        CellLedRenderer.submitLed(state.cellColors[0], poseStack, nodes);
 
         poseStack.popPose();
     }

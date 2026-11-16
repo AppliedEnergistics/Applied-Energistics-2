@@ -111,17 +111,15 @@ public final class AERenderPipelines {
             .withAccumulateModifier(AERenderPipelines::invertDepthTest)
             .build();
 
-    public static final RenderPipeline STORAGE_CELL_LEDS = RenderPipeline
-            .builder(RenderPipelines.GLOBALS_SNIPPET)
-            .withBindGroupLayout(BindGroupLayouts.DYNAMIC_TRANSFORMS)
-            .withBindGroupLayout(BindGroupLayouts.PROJECTION)
+    /**
+     * Same as {@link RenderPipelines#EYES}, which shader packs treat as emissive, but without blending since the LEDs
+     * are opaque, and with the depth bias of {@link RenderPipelines#CRUMBLING} to stop the LEDs from z-fighting with
+     * the cell model right behind them.
+     */
+    public static final RenderPipeline STORAGE_CELL_LEDS = RenderPipelines.EYES.toBuilder()
             .withLocation(AppEng.makeId("pipeline/storage_cell_leds"))
             .withColorTargetState(ColorTargetState.DEFAULT)
-            .withVertexShader("core/position_color")
-            .withFragmentShader("core/position_color")
-            .withVertexBinding(0, DefaultVertexFormat.POSITION_COLOR)
-            .withPrimitiveTopology(PrimitiveTopology.QUADS)
-            .withDepthStencilState(DepthStencilState.DEFAULT)
+            .withDepthStencilState(new DepthStencilState(CompareOp.GREATER_THAN_OR_EQUAL, false, 1.0F, 10.0F))
             .build();
 
     public static final RenderPipeline LIGHTNING_FX = RenderPipeline

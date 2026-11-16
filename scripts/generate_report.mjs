@@ -15,7 +15,7 @@ import { readdirSync, readFileSync, writeFileSync } from 'fs';
 import { URL, fileURLToPath } from 'url';
 import { parseArgs } from 'util';
 import { simpleGit } from 'simple-git';
-import { D3Node } from 'd3-node';
+import { JSDOM } from 'jsdom';
 import * as d3 from 'd3';
 
 const __dirname = fileURLToPath(new URL('.', import.meta.url));
@@ -215,7 +215,7 @@ function renderChart() {
     const chartHeight = height + margin.top + margin.bottom
     const errorBarWidth = 10
 
-    const d3n = new D3Node()
+    const document = new JSDOM().window.document
 
     // Results are keyed by their index, since there may be several for the same revision
     const runLabels = runs.map(run => runLabel(run, 40));
@@ -239,7 +239,11 @@ function renderChart() {
         };
     }
 
-    const svg = d3n.createSVG(chartWidth, chartHeight)
+    const svg = d3.select(document.body)
+        .append("svg")
+        .attr("xmlns", "http://www.w3.org/2000/svg")
+        .attr("width", chartWidth)
+        .attr("height", chartHeight)
 
     const g = svg.append("g").attr("transform", `translate(${margin.left},${margin.top})`);
     g.append("g").attr("transform", `translate(${width},0)`).attr("stroke-dasharray", "1 1").call(d3.axisLeft(y).tickSize(width));
@@ -300,7 +304,7 @@ function renderChart() {
         .style("alignment-baseline", "middle")
 
     const chartFile = path.join(jmhDirectory, 'chart.svg');
-    writeFileSync(chartFile, d3n.svgString())
+    writeFileSync(chartFile, svg.node().outerHTML)
     console.log();
     console.log(`wrote chart to ${chartFile}`);
 }

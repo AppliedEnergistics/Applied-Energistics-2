@@ -1,0 +1,5 @@
+/* Styles for the AE2 guide website, passed to the website generator by the renderGuideWebsite task */
+
+:root {
+  background-image: url("../../main/resources/assets/ae2/textures/block/sky_stone_block.png");
+}

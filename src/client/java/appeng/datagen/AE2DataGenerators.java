@@ -18,14 +18,11 @@
 
 package appeng.datagen;
 
-import java.util.List;
-
-import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.data.advancements.AdvancementProvider;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
+import net.neoforged.neoforge.data.event.GatherDataRegistryEntriesEvent;
 
 import appeng.core.AppEng;
 import appeng.core.definitions.AEDamageTypes;
@@ -55,16 +52,30 @@ import appeng.init.worldgen.InitStructures;
 @EventBusSubscriber(modid = AppEng.MOD_ID)
 public class AE2DataGenerators {
 
+    // Registry entries are gathered before the generator exists, but the advancements already add translations
+    private static final LocalizationProvider LOCALIZATION = new LocalizationProvider();
+
+    @SubscribeEvent
+    public static void onGatherRegistryEntries(GatherDataRegistryEntriesEvent event) {
+        // Worldgen et al
+        event.add(Registries.DIMENSION_TYPE, InitDimensionTypes::init)
+                .add(Registries.STRUCTURE, InitStructures::initDatagenStructures)
+                .add(Registries.STRUCTURE_SET, InitStructures::initDatagenStructureSets)
+                .add(Registries.BIOME, InitBiomes::init)
+                .add(Registries.DAMAGE_TYPE, AEDamageTypes::init)
+                .add(Registries.TRADE_SET, InitVillager::bootstrapTradeSets)
+                .add(Registries.VILLAGER_TRADE, InitVillager::bootstrapTrades);
+
+        // Loot, advancements and recipes
+        event.add(Registries.LOOT_TABLE, AE2LootTableProvider.create())
+                .advancement(output -> new AdvancementGenerator(output, LOCALIZATION))
+                .add(AE2RecipeProvider.create());
+    }
+
     @SubscribeEvent
     public static void onGatherData(GatherDataEvent.Client event) {
         var generator = event.getGenerator();
-        var localization = new LocalizationProvider(generator);
-
-        // Worldgen et al
-        event.createWorldRegistryObjects(createWorldEntriesBuilder());
-
-        // Loot, advancements and recipes
-        event.createReloadableRegistryObjects(createReloadableEntriesBuilder(localization));
+        LOCALIZATION.setPackOutput(generator.getPackOutput());
 
         // Tags
         event.createBlockAndItemTags(BlockTagsProvider::new, ItemTagsProvider::new);
@@ -73,7 +84,7 @@ public class AE2DataGenerators {
         event.createProvider(PoiTypeTagsProvider::new);
         event.createProvider(VillagerTradeTagsProvider::new);
         event.createProvider((packOutput, registries) -> new DataComponentTypeTagProvider(packOutput, registries,
-                localization));
+                LOCALIZATION));
 
         // Models
         event.addProvider(AE2ModelProvider.create(
@@ -90,25 +101,6 @@ public class AE2DataGenerators {
         event.createProvider(RaidHeroGiftsProvider::new);
 
         // Must run last
-        event.addProvider(localization);
-    }
-
-    private static RegistrySetBuilder createWorldEntriesBuilder() {
-        return new RegistrySetBuilder()
-                .add(Registries.DIMENSION_TYPE, InitDimensionTypes::init)
-                .add(Registries.STRUCTURE, InitStructures::initDatagenStructures)
-                .add(Registries.STRUCTURE_SET, InitStructures::initDatagenStructureSets)
-                .add(Registries.BIOME, InitBiomes::init)
-                .add(Registries.DAMAGE_TYPE, AEDamageTypes::init)
-                .add(Registries.TRADE_SET, InitVillager::bootstrapTradeSets)
-                .add(Registries.VILLAGER_TRADE, InitVillager::bootstrapTrades);
-    }
-
-    private static RegistrySetBuilder createReloadableEntriesBuilder(LocalizationProvider localization) {
-        return new RegistrySetBuilder()
-                .add(Registries.LOOT_TABLE, AE2LootTableProvider.create())
-                .add(Registries.ADVANCEMENT, new AdvancementProvider(List.of(
-                        output -> new AdvancementGenerator(output, localization))))
-                .add(AE2RecipeProvider.create());
+        event.addProvider(LOCALIZATION);
     }
 }
