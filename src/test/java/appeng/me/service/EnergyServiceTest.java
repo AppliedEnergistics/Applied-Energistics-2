@@ -17,10 +17,15 @@ import net.minecraft.world.level.storage.TagValueOutput;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 
+import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
+import appeng.api.config.PowerMultiplier;
+import appeng.api.networking.energy.IAEPowerStorage;
 import appeng.me.AbstractGridNodeTest;
 import appeng.me.GridConnection;
+import appeng.me.InfinitePowerStorage;
 import appeng.me.ManagedGridNode;
+import appeng.me.energy.StoredEnergyAmount;
 
 class EnergyServiceTest extends AbstractGridNodeTest {
     public static final Offset<Double> TOLERANCE = Offset.offset(0.1);
@@ -93,6 +98,69 @@ class EnergyServiceTest extends AbstractGridNodeTest {
         // Stored energy should not have increased
         energyService.refreshPower();
         assertThat(energyService.getStoredPower()).isCloseTo(40, TOLERANCE);
+    }
+
+    /**
+     * Extracting a minuscule amount of power must never cause a power provider to be dropped from the grid, even if
+     * the provider is unable to hand out such a small amount (see #9074).
+     */
+    @Test
+    void testExtractingMinusculeAmountDoesNotDropProvider() {
+        var storage = new MinAmountPowerStorage(100);
+        var node = makeNode();
+        node.addService(IAEPowerStorage.class, storage);
+        var energyService = (EnergyService) node.getInternalGrid().getEnergyService();
+        energyService.refreshPower();
+        assertThat(energyService.getStoredPower()).isCloseTo(100, TOLERANCE);
+
+        var minuscule = StoredEnergyAmount.MIN_AMOUNT / 10;
+        energyService.extractAEPower(minuscule, Actionable.MODULATE, PowerMultiplier.CONFIG);
+
+        // The provider should still be part of the grid, and be usable
+        energyService.refreshPower();
+        assertThat(energyService.getStoredPower()).isCloseTo(100, TOLERANCE);
+        assertThat(energyService.extractAEPower(10, Actionable.MODULATE, PowerMultiplier.ONE))
+                .isCloseTo(10, TOLERANCE);
+        energyService.refreshPower();
+        assertThat(energyService.getStoredPower()).isCloseTo(90, TOLERANCE);
+    }
+
+    /**
+     * A power storage that behaves like the energy cell: Extracting less than
+     * {@link StoredEnergyAmount#MIN_AMOUNT} yields nothing.
+     */
+    private static class MinAmountPowerStorage extends InfinitePowerStorage {
+        private final StoredEnergyAmount stored;
+
+        MinAmountPowerStorage(double amount) {
+            stored = new StoredEnergyAmount(amount, amount, type -> {
+            });
+        }
+
+        @Override
+        public double getAECurrentPower() {
+            return stored.getAmount();
+        }
+
+        @Override
+        public double getAEMaxPower() {
+            return stored.getMaximum();
+        }
+
+        @Override
+        public AccessRestriction getPowerFlow() {
+            return AccessRestriction.READ_WRITE;
+        }
+
+        @Override
+        public double injectAEPower(double amt, Actionable mode) {
+            return amt - stored.insert(amt, mode == Actionable.MODULATE);
+        }
+
+        @Override
+        public double extractAEPower(double amt, Actionable mode, PowerMultiplier pm) {
+            return pm.divide(stored.extract(pm.multiply(amt), mode == Actionable.MODULATE));
+        }
     }
 
     @NotNull
