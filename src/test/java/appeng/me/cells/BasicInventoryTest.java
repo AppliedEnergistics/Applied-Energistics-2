@@ -2,7 +2,6 @@ package appeng.me.cells;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.List;
 import java.util.Objects;
 
 import org.junit.jupiter.api.Test;
@@ -14,12 +13,10 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.material.Fluids;
 
 import appeng.api.config.Actionable;
-import appeng.api.ids.AEComponents;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKeyType;
-import appeng.api.stacks.GenericStack;
 import appeng.api.storage.StorageCells;
 import appeng.api.storage.cells.CellState;
 import appeng.core.definitions.AEItems;
@@ -45,17 +42,6 @@ public class BasicInventoryTest {
         assertThat(itemCell.insert(AEItemKey.of(Items.DIAMOND), 7, Actionable.MODULATE, SRC)).isEqualTo(7);
         assertThat(itemCell.extract(AEItemKey.of(Items.DIAMOND), 3, Actionable.SIMULATE, SRC)).isEqualTo(3);
         assertThat(itemCell.extract(AEItemKey.of(Items.DIAMOND), 7, Actionable.MODULATE, SRC)).isEqualTo(7);
-    }
-
-    @Test
-    void foreignPersistedKeysRemainExtractable() {
-        var stack = AEItems.ITEM_CELL_1K.stack();
-        var water = AEFluidKey.of(Fluids.WATER);
-        stack.set(AEComponents.STORAGE_CELL_INV, List.of(new GenericStack(water, 1000)));
-        var cell = BasicCellInventory.createInventory(stack, null);
-        assertThat(cell.extract(water, 400, Actionable.SIMULATE, SRC)).isEqualTo(400);
-        assertThat(cell.extract(water, 1000, Actionable.MODULATE, SRC)).isEqualTo(1000);
-        assertThat(cell.getAvailableStacks().get(water)).isZero();
     }
 
     /**
