@@ -16,7 +16,6 @@ import appeng.blockentity.networking.EnergyCellBlockEntity;
 import appeng.core.definitions.AEBlocks;
 import appeng.core.definitions.AEParts;
 import appeng.me.service.EnergyService;
-import appeng.parts.automation.AnnihilationPlanePart;
 import appeng.server.testworld.PlotBuilder;
 import appeng.util.Platform;
 

@@ -2,7 +2,6 @@ package appeng.server.testworld;
 
 import java.util.Objects;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 
 import org.jetbrains.annotations.Nullable;
 
