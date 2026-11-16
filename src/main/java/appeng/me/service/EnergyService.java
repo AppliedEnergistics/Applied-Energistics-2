@@ -338,7 +338,9 @@ public class EnergyService implements IEnergyService, IGridServiceProvider {
                 final double newPower = node.extractAEPower(req, mode, PowerMultiplier.ONE);
                 extractedPower += newPower;
 
-                if (newPower < req && mode == Actionable.MODULATE) {
+                // Only drop providers that are actually depleted. A provider may also return less than requested
+                // for tiny amounts it cannot hand out while still holding plenty of energy.
+                if (newPower < req && mode == Actionable.MODULATE && node.getAECurrentPower() < req) {
                     it.remove();
                 }
             }
