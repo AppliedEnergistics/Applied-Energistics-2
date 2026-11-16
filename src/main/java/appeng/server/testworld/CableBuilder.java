@@ -1,8 +1,11 @@
 package appeng.server.testworld;
 
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.material.Fluid;
 
@@ -35,6 +38,15 @@ public class CableBuilder {
             ItemDefinition<? extends PartItem<T>> part,
             Consumer<T> partCustomizer) {
         plotBuilder.part(bb, side, part, partCustomizer);
+        return this;
+    }
+
+    /**
+     * Places a part using an item stack that can be customized first, i.e. to add enchantments.
+     */
+    public CableBuilder partItem(Direction side, ItemDefinition<? extends PartItem<?>> part,
+            BiConsumer<HolderLookup.Provider, ItemStack> stackCustomizer) {
+        plotBuilder.part(bb, side, part, stackCustomizer);
         return this;
     }
 
