@@ -88,14 +88,14 @@ public class AnnihilationPlaneTests {
                     })
                     .thenIdle(10) // wait for the annihilation plane to get its tick and go to sleep
                     .thenExecute(() -> {
-                        initialPower[0] = helper.getBlockEntity(origin, EnergyCellBlockEntity.class)
+                        initialPower[0] = ((EnergyCellBlockEntity) helper.getBlockEntity(origin))
                                 .getAECurrentPower();
                         helper.check(initialPower[0] > 0, "grid should have been charged", origin);
                         helper.setBlock(targetPos, Blocks.DIRT);
                     })
                     .thenWaitUntil(() -> helper.assertBlockPresent(Blocks.AIR, targetPos))
                     .thenExecute(() -> {
-                        var cell = helper.getBlockEntity(origin, EnergyCellBlockEntity.class);
+                        var cell = ((EnergyCellBlockEntity) helper.getBlockEntity(origin));
                         var energy = (EnergyService) helper.getGrid(origin).getEnergyService();
                         energy.refreshPower();
                         helper.check(energy.getStoredPower() > 0,
