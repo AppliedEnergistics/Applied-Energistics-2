@@ -48,6 +48,8 @@ public class TestCraftingJob {
      * job has been planned and started.
      */
     public void tickUntilStarted() {
+        // A grid merely existing is not enough: the CPU must be online and powered before a job can be submitted.
+        helper.assertGridOnline(gridOrigin);
         if (planFuture == null) {
             var grid = helper.getGrid(gridOrigin);
             var src = new MachineSource(grid::getPivot);
@@ -70,7 +72,8 @@ public class TestCraftingJob {
             var grid = helper.getGrid(BlockPos.ZERO);
             var result = grid.getCraftingService().submitJob(plan, null, null, true,
                     new BaseActionSource());
-            helper.check(result.successful(), "failed to submit job");
+            helper.check(result.successful(),
+                    "failed to submit job: " + result.errorCode() + " " + result.errorDetail());
             submitted = true;
         }
     }
