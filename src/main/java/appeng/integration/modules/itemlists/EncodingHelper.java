@@ -134,20 +134,23 @@ public final class EncodingHelper {
                 // Due to how some crafting recipes work, the ingredient can match more than just one item in the
                 // network inventory. We'll find all network inventory entries that it matches and sort them
                 // according to their suitability for encoding a pattern
-                var bestNetworkIngredient = prioritizedNetworkInv.entrySet().stream()
+                var bestInput = prioritizedNetworkInv.entrySet().stream()
                         .filter(ni -> ni.getKey() instanceof AEItemKey itemKey && itemKey.matches(ingredient))
                         .max(Comparator.comparingInt(Map.Entry::getValue))
-                        .map(entry -> entry.getKey() instanceof AEItemKey itemKey ? itemKey.toStack() : null);
+                        .map(entry -> entry.getKey() instanceof AEItemKey itemKey ? itemKey.toStack() : null)
+                        .orElse(ItemStack.EMPTY);
 
-                ItemStack bestIngredient = bestNetworkIngredient.orElse(ItemStack.EMPTY);
-                if (bestIngredient.isEmpty()) {
-                    bestIngredient = findIngredientInViewerStacks(ingredient, genericIngredients, visiblePredicate);
+                // Fall back to finding it in the stacks actually shown by the recipe viewer (JEI, et al)
+                if (bestInput.isEmpty()) {
+                    bestInput = findIngredientInViewerStacks(ingredient, genericIngredients, visiblePredicate);
                 }
-                if (bestIngredient.isEmpty()) {
-                    bestIngredient = findIngredientInRecipeItems(ingredient, visiblePredicate);
+                // And if that fails, fall back to the items exposed by the recipe ingredient itself,
+                // which will lose components, however.
+                if (bestInput.isEmpty()) {
+                    bestInput = findIngredientInRecipeItems(ingredient, visiblePredicate);
                 }
 
-                encodedInputs.set(slot, bestIngredient);
+                encodedInputs.set(slot, bestInput);
             }
         } else {
             for (int slot = 0; slot < genericIngredients.size(); slot++) {
@@ -192,7 +195,8 @@ public final class EncodingHelper {
     private static ItemStack findIngredientInViewerStacks(Ingredient ingredient,
             List<List<GenericStack>> viewerIngredients,
             Predicate<ItemStack> visiblePredicate) {
-        // Slot order of recipe viewers does not necessarily match the 3x3 matrix, so we match by ingredient.
+        // Slot order of recipe viewers does not necessarily match the 3x3 matrix, so we match every item to the
+        // ingredient.
         // We return the first visible match right away. A hidden match is only remembered as a fallback in case no
         // visible match exists, so we don't return early on it.
         ItemStack firstViewerMatch = ItemStack.EMPTY;
@@ -219,7 +223,7 @@ public final class EncodingHelper {
      */
     private static ItemStack findIngredientInRecipeItems(Ingredient ingredient,
             Predicate<ItemStack> visiblePredicate) {
-        // Return the first visible item immediately, remember the first item as a fallback.
+        // Return the first visible item immediately, remember the first item as a fallback if none are visible.
         ItemStack firstItem = ItemStack.EMPTY;
         for (var holder : (Iterable<Holder<Item>>) ingredient.items()::iterator) {
             var stack = holder.value().getDefaultInstance();
