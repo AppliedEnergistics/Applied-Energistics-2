@@ -41,6 +41,7 @@ import appeng.crafting.inv.ChildCraftingSimulationState;
 import appeng.crafting.inv.CraftingSimulationState;
 import appeng.crafting.inv.NetworkCraftingSimulationState;
 import appeng.hooks.ticking.TickHandler;
+import appeng.me.service.CraftingService;
 
 public class CraftingCalculation {
     private final NetworkCraftingSimulationState networkInv;
@@ -55,8 +56,16 @@ public class CraftingCalculation {
     private final CalculationStrategy strategy;
     private boolean simulate = false;
     final ICraftingSimulationRequester simRequester;
+    @Nullable
+    private final CraftingService craftingService;
+    private final boolean blockServerTick;
     private boolean running = false;
     private boolean done = false;
+    /**
+     * True while this calculation has been granted a slice and has not yet paused or finished. Guarded by
+     * {@link #monitor}.
+     */
+    private boolean sliceOpen = false;
     private int time = 5;
     private int incTime = Integer.MAX_VALUE;
     private final List<CraftAttempt> attempts = AELog.isCraftingLogEnabled() ? new ArrayList<>() : null;
@@ -68,6 +77,8 @@ public class CraftingCalculation {
         this.requestedAmount = output.amount();
         this.strategy = strategy;
         this.simRequester = simRequester;
+        this.blockServerTick = simRequester.blocksServerTick();
+        this.craftingService = grid.getCraftingService() instanceof CraftingService service ? service : null;
 
         var storage = grid.getStorageService();
         var craftingService = grid.getCraftingService();
@@ -176,6 +187,7 @@ public class CraftingCalculation {
                 if (this.watch.elapsed(TimeUnit.MICROSECONDS) > this.time) {
                     this.running = false;
                     this.watch.stop();
+                    this.closeSlice();
                     this.monitor.notify();
                 }
 
@@ -201,8 +213,13 @@ public class CraftingCalculation {
         synchronized (this.monitor) {
             this.running = false;
             this.done = true;
+            this.closeSlice();
             this.monitor.notify();
         }
+    }
+
+    public boolean blocksServerTick() {
+        return this.blockServerTick;
     }
 
     public boolean isSimulation() {
@@ -222,26 +239,21 @@ public class CraftingCalculation {
     }
 
     /**
-     * returns true if this needs more simulation.
+     * Returns true if this needs more simulation.
+     * <p>
+     * Grants a time slice and, for calculations that {@link #blocksServerTick() block the server tick}, waits until the
+     * slice is spent. Background calculations use {@link #grantSimulationTime(int)} directly.
      *
      * @param micros microseconds of simulation
      * @return true if this needs more simulation
      */
     public boolean simulateFor(int micros) {
-        this.time = micros;
+        if (!this.grantSimulationTime(micros)) {
+            return false;
+        }
 
         synchronized (this.monitor) {
-            if (this.done) {
-                return false;
-            }
-
-            this.watch.reset();
-            this.watch.start();
-            this.running = true;
-
             AELog.craftingDebug("main thread is now going to sleep");
-
-            this.monitor.notify();
 
             while (this.running) {
                 try {
@@ -254,6 +266,61 @@ public class CraftingCalculation {
         }
 
         return true;
+    }
+
+    /**
+     * Grants a time slice and returns without waiting for the calculator thread to spend it.
+     * <p>
+     * A slice that is already running is left alone, so a later tick cannot extend it. Returns false when the
+     * calculation is finished and the caller should drop it.
+     *
+     * @param micros microseconds of simulation
+     * @return true if this needs more simulation
+     */
+    public boolean grantSimulationTime(int micros) {
+        if (this.craftingService != null) {
+            this.craftingService.flushDeferredCraftingProviderUpdates();
+        }
+
+        synchronized (this.monitor) {
+            if (this.done) {
+                return false;
+            }
+
+            if (this.running) {
+                return true;
+            }
+
+            this.time = micros;
+            if (this.watch.isRunning()) {
+                this.watch.stop();
+            }
+            this.watch.reset();
+            this.watch.start();
+            this.running = true;
+            this.openSlice();
+
+            AELog.craftingDebug("crafting calculation granted a time slice");
+            this.monitor.notify();
+        }
+
+        return true;
+    }
+
+    private void openSlice() {
+        if (this.sliceOpen || this.craftingService == null) {
+            return;
+        }
+        this.sliceOpen = true;
+        this.craftingService.beginCalculationSlice();
+    }
+
+    private void closeSlice() {
+        if (!this.sliceOpen || this.craftingService == null) {
+            return;
+        }
+        this.sliceOpen = false;
+        this.craftingService.endCalculationSlice();
     }
 
     private void logCraftingJob(ICraftingPlan plan) {

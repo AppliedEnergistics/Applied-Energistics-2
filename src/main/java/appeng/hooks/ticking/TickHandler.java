@@ -326,22 +326,41 @@ public class TickHandler {
     }
 
     /**
-     * Simulates the current crafting requests before they user can submit them to be processed.
+     * Grants each in-progress crafting calculation its time slice for this tick.
+     * <p>
+     * Calculations that block the server tick wait inside {@link CraftingCalculation#simulateFor(int)} until the slice
+     * is spent. Background calculations are granted the same kind of slice and the tick continues. The two groups do
+     * not share a divisor, so background jobs do not shorten a player calculation.
      */
     private void simulateCraftingJobs(LevelAccessor level) {
         synchronized (this.craftingJobs) {
             final Collection<CraftingCalculation> jobSet = this.craftingJobs.get(level);
 
             if (!jobSet.isEmpty()) {
-                final int jobSize = jobSet.size();
+                int interactiveJobs = 0;
+                int backgroundJobs = 0;
+                for (var job : jobSet) {
+                    if (job.blocksServerTick()) {
+                        interactiveJobs++;
+                    } else {
+                        backgroundJobs++;
+                    }
+                }
+
                 final int microSecondsPerTick = AEConfig.instance().getCraftingCalculationTimePerTick() * 1000;
-                final int simTime = Math.max(1, microSecondsPerTick / jobSize);
+                final int interactiveTime = interactiveJobs == 0 ? 0
+                        : Math.max(1, microSecondsPerTick / interactiveJobs);
+                final int backgroundTime = backgroundJobs == 0 ? 0
+                        : Math.max(1, microSecondsPerTick / backgroundJobs);
 
                 final Iterator<CraftingCalculation> i = jobSet.iterator();
 
                 while (i.hasNext()) {
                     final CraftingCalculation cj = i.next();
-                    if (!cj.simulateFor(simTime)) {
+                    var stillRunning = cj.blocksServerTick()
+                            ? cj.simulateFor(interactiveTime)
+                            : cj.grantSimulationTime(backgroundTime);
+                    if (!stillRunning) {
                         i.remove();
                     }
                 }

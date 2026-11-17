@@ -24,12 +24,15 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Queue;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableSet;
@@ -127,6 +130,13 @@ public class CraftingService implements ICraftingService, IGridServiceProvider {
     private long lastProcessedCraftingLogicChangeTick;
     private long lastProcessedCraftableChangeTick;
     private boolean updateList = false;
+    /**
+     * Calculations on this grid that have been granted a slice and have not paused. Pattern-provider changes are held
+     * until this returns to zero so the calculator thread is not reading those maps at the same time.
+     */
+    private final AtomicInteger openCalculationSlices = new AtomicInteger();
+    private final Queue<Runnable> deferredProviderUpdates = new ConcurrentLinkedQueue<>();
+    private boolean flushingProviderUpdates;
 
     public CraftingService(IGrid grid, IStorageService storageGrid, IEnergyService energyGrid) {
         this.grid = grid;
@@ -139,6 +149,8 @@ public class CraftingService implements ICraftingService, IGridServiceProvider {
 
     @Override
     public void onServerEndTick() {
+        this.flushDeferredCraftingProviderUpdates();
+
         if (this.updateList) {
             this.updateList = false;
             this.updateCPUClusters();
@@ -183,8 +195,10 @@ public class CraftingService implements ICraftingService, IGridServiceProvider {
             }
         }
 
-        // Throttle updates of craftables to once every 10 ticks
-        if (lastProcessedCraftableChangeTick != craftingProviders.getLastModifiedOnTick()) {
+        // Copy the craftable keys when the provider list has changed. While a calculation on this grid is inside a
+        // time slice, keep the previous copy. The stamp is left unchanged, so this runs once that slice has paused.
+        if (this.openCalculationSlices.get() == 0
+                && lastProcessedCraftableChangeTick != craftingProviders.getLastModifiedOnTick()) {
             lastProcessedCraftableChangeTick = craftingProviders.getLastModifiedOnTick();
 
             // If everything is empty, there's nothing to do
@@ -231,7 +245,7 @@ public class CraftingService implements ICraftingService, IGridServiceProvider {
             }
         }
 
-        this.craftingProviders.removeProvider(gridNode);
+        this.runOrDeferProviderUpdate(() -> this.craftingProviders.removeProvider(gridNode));
 
         if (gridNode.getOwner() instanceof CraftingBlockEntity) {
             this.updateList = true;
@@ -243,8 +257,11 @@ public class CraftingService implements ICraftingService, IGridServiceProvider {
 
         // The provider can already be added because it gets callback from the storage service,
         // in which it might already register itself before coming to this point.
-        this.craftingProviders.removeProvider(gridNode);
-        this.craftingProviders.addProvider(gridNode);
+        // The remove and add stay one update so a deferred pair cannot be split.
+        this.runOrDeferProviderUpdate(() -> {
+            this.craftingProviders.removeProvider(gridNode);
+            this.craftingProviders.addProvider(gridNode);
+        });
 
         var watchingNode = gridNode.getService(ICraftingWatcherNode.class);
         if (watchingNode != null) {
@@ -317,24 +334,70 @@ public class CraftingService implements ICraftingService, IGridServiceProvider {
 
     @Override
     public void refreshNodeCraftingProvider(IGridNode node) {
-        this.craftingProviders.removeProvider(node);
-        this.craftingProviders.addProvider(node);
+        this.runOrDeferProviderUpdate(() -> {
+            this.craftingProviders.removeProvider(node);
+            this.craftingProviders.addProvider(node);
+        });
     }
 
     @Override
     public void addGlobalCraftingProvider(ICraftingProvider cc) {
-        this.craftingProviders.addProvider(cc);
+        this.runOrDeferProviderUpdate(() -> this.craftingProviders.addProvider(cc));
     }
 
     @Override
     public void removeGlobalCraftingProvider(ICraftingProvider cc) {
-        this.craftingProviders.removeProvider(cc);
+        this.runOrDeferProviderUpdate(() -> this.craftingProviders.removeProvider(cc));
     }
 
     @Override
     public void refreshGlobalCraftingProvider(ICraftingProvider cc) {
-        this.craftingProviders.removeProvider(cc);
-        this.craftingProviders.addProvider(cc);
+        this.runOrDeferProviderUpdate(() -> {
+            this.craftingProviders.removeProvider(cc);
+            this.craftingProviders.addProvider(cc);
+        });
+    }
+
+    /**
+     * Called on the server thread when a calculation on this grid is granted a time slice.
+     */
+    public void beginCalculationSlice() {
+        this.openCalculationSlices.incrementAndGet();
+    }
+
+    /**
+     * Called on the calculator thread when that slice pauses or the calculation finishes.
+     */
+    public void endCalculationSlice() {
+        this.openCalculationSlices.updateAndGet(open -> Math.max(0, open - 1));
+    }
+
+    /**
+     * Applies pattern-provider updates that were held while a calculation slice was open. Does nothing while a slice is
+     * still open. Server thread only.
+     */
+    public void flushDeferredCraftingProviderUpdates() {
+        if (this.flushingProviderUpdates || this.openCalculationSlices.get() > 0) {
+            return;
+        }
+
+        this.flushingProviderUpdates = true;
+        try {
+            Runnable update;
+            while (this.openCalculationSlices.get() == 0 && (update = this.deferredProviderUpdates.poll()) != null) {
+                update.run();
+            }
+        } finally {
+            this.flushingProviderUpdates = false;
+        }
+    }
+
+    private void runOrDeferProviderUpdate(Runnable update) {
+        if (this.flushingProviderUpdates || this.openCalculationSlices.get() == 0) {
+            update.run();
+            return;
+        }
+        this.deferredProviderUpdates.add(update);
     }
 
     @Nullable

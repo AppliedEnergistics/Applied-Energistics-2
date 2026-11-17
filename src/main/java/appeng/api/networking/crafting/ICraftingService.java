@@ -104,8 +104,10 @@ public interface ICraftingService extends IGridService {
      * @param craftWhat    result
      * @param strategy     usually {@link CalculationStrategy#REPORT_MISSING_ITEMS} for player requests
      *
-     * @return a future which will at an undetermined point in the future get you the {@link ICraftingPlan} do not wait
-     *         on this, your be waiting forever.
+     * @return a future which will at an undetermined point in the future get you the {@link ICraftingPlan}. Do not wait
+     *         on this, or you will be waiting forever. Automation that polls the future can return {@code false} from
+     *         {@link ICraftingSimulationRequester#blocksServerTick()} so the server tick grants the calculation a time
+     *         slice without waiting for it.
      */
     Future<ICraftingPlan> beginCraftingCalculation(Level level, ICraftingSimulationRequester simRequester,
             AEKey craftWhat, long amount, CalculationStrategy strategy);
