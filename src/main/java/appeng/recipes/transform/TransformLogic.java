@@ -18,7 +18,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.AABB;
-import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.client.event.RecipesUpdatedEvent;
 import net.neoforged.neoforge.event.AddReloadListenerEvent;
 import net.neoforged.neoforge.event.server.ServerStartedEvent;
@@ -182,17 +181,14 @@ public final class TransformLogic {
         return ret;
     }
 
-    @SubscribeEvent
     public static void onServerStarted(ServerStartedEvent e) {
         clearCache();
     }
 
-    @SubscribeEvent
     public static void onReloadServerResources(AddReloadListenerEvent e) {
         clearCache();
     }
 
-    @SubscribeEvent
     public static void onClientRecipesUpdated(RecipesUpdatedEvent e) {
         clearCache();
     }
