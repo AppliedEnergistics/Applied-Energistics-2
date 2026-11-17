@@ -46,7 +46,7 @@ import appeng.blockentity.misc.CellWorkbenchBlockEntity;
 import appeng.helpers.externalstorage.GenericStackInv;
 import appeng.menu.SlotSemantics;
 import appeng.menu.guisync.ClientActionKey;
-import appeng.menu.guisync.SynchronizedValue;
+import appeng.menu.guisync.GuiSync;
 import appeng.menu.slot.CellPartitionSlot;
 import appeng.menu.slot.IPartitionSlotHost;
 import appeng.menu.slot.OptionalRestrictedInputSlot;
@@ -68,8 +68,8 @@ public class CellWorkbenchMenu extends UpgradeableMenu<CellWorkbenchBlockEntity>
             .create(CellWorkbenchMenu::new, CellWorkbenchBlockEntity.class)
             .build("cellworkbench");
 
-    private final SynchronizedValue<CopyMode> copyMode = SynchronizedValue.create(CopyMode.STREAM_CODEC,
-            CopyMode.CLEAR_ON_REMOVE);
+    @GuiSync(7)
+    public CopyMode copyMode = CopyMode.CLEAR_ON_REMOVE;
 
     public CellWorkbenchMenu(int id, Inventory ip, CellWorkbenchBlockEntity te) {
         super(TYPE, id, ip, te);
@@ -140,7 +140,7 @@ public class CellWorkbenchMenu extends UpgradeableMenu<CellWorkbenchBlockEntity>
 
     @Override
     protected void loadSettingsFromHost(IConfigManager cm) {
-        this.setCopyMode(this.getWorkBenchCopyMode());
+        this.copyMode = this.getWorkBenchCopyMode();
         this.setFuzzyMode(this.getWorkBenchFuzzyMode());
     }
 
@@ -221,10 +221,6 @@ public class CellWorkbenchMenu extends UpgradeableMenu<CellWorkbenchBlockEntity>
     }
 
     public CopyMode getCopyMode() {
-        return this.copyMode.get();
-    }
-
-    private void setCopyMode(CopyMode copyMode) {
-        this.copyMode.set(copyMode);
+        return this.copyMode;
     }
 }
