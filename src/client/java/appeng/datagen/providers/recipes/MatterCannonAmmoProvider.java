@@ -18,13 +18,13 @@
 
 package appeng.datagen.providers.recipes;
 
-import net.minecraft.core.HolderGetter;
-import net.minecraft.core.HolderLookup;
+import net.minecraft.advancements.Advancement;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.item.Item;
+import net.minecraft.world.item.crafting.Recipe;
 
 import appeng.core.AppEng;
 import appeng.core.ConventionTags;
@@ -32,11 +32,10 @@ import appeng.core.definitions.AEItems;
 import appeng.recipes.mattercannon.MatterCannonAmmo;
 
 public class MatterCannonAmmoProvider extends AE2RecipeProvider {
-    private final HolderGetter<Item> items;
 
-    public MatterCannonAmmoProvider(HolderLookup.Provider registries, RecipeOutput output) {
-        super(registries, output);
-        items = registries.lookupOrThrow(Registries.ITEM);
+    public MatterCannonAmmoProvider(BootstrapContext<Recipe<?>> recipeOutput,
+            BootstrapContext<Advancement> advancementOutput) {
+        super(recipeOutput, advancementOutput);
     }
 
     @Override

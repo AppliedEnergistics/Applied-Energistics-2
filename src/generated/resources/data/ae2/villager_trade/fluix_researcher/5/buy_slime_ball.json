@@ -2,11 +2,11 @@
   "gives": {
     "id": "minecraft:slime_ball"
   },
-  "max_uses": 5.0,
+  "max_uses": 5,
   "reputation_discount": 0.05,
   "wants": {
-    "count": 8.0,
+    "count": 8,
     "id": "minecraft:emerald"
   },
-  "xp": 12.0
+  "xp": 12
 }

@@ -23,7 +23,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "ae2:misc/fluixpearl"
+        "recipes": "ae2:misc/fluixpearl"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

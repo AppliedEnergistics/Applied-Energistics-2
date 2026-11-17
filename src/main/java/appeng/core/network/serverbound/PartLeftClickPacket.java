@@ -30,13 +30,13 @@ public record PartLeftClickPacket(BlockHitResult hitResult, boolean alternateUse
     }
 
     public static PartLeftClickPacket decode(RegistryFriendlyByteBuf stream) {
-        var hitResult = stream.readBlockHitResult();
+        var hitResult = BlockHitResult.STREAM_CODEC.decode(stream);
         var alternateUseMode = stream.readBoolean();
         return new PartLeftClickPacket(hitResult, alternateUseMode);
     }
 
     public void write(RegistryFriendlyByteBuf data) {
-        data.writeBlockHitResult(hitResult);
+        BlockHitResult.STREAM_CODEC.encode(data, hitResult);
         data.writeBoolean(alternateUseMode);
     }
 

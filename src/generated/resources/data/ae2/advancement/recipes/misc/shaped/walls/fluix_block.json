@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "ae2:shaped/walls/fluix_block"
+        "recipes": "ae2:shaped/walls/fluix_block"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

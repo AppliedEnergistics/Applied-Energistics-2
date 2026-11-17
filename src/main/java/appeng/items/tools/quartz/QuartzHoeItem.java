@@ -18,11 +18,10 @@
 
 package appeng.items.tools.quartz;
 
-import net.minecraft.world.item.HoeItem;
-import net.minecraft.world.item.ToolMaterial;
+import net.minecraft.world.item.Item;
 
-public class QuartzHoeItem extends HoeItem {
+public class QuartzHoeItem extends Item {
     public QuartzHoeItem(Properties props) {
-        super(ToolMaterial.IRON, -2, -1.0F, props);
+        super(props);
     }
 }

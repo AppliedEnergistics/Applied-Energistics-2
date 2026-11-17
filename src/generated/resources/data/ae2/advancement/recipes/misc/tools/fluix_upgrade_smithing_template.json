@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "ae2:tools/fluix_upgrade_smithing_template"
+        "recipes": "ae2:tools/fluix_upgrade_smithing_template"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

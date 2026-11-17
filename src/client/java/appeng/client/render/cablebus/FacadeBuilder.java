@@ -246,7 +246,7 @@ public class FacadeBuilder {
                             // Keep the cull-face for faces that are flush with the outer block-face on the
                             // side the facade is attached to, but clear it for anything that faces inwards
                             quad.setDirection(originalQuad.direction());
-                            quad.setShade(originalQuad.materialInfo().shade());
+                            quad.setShadeOverride(originalQuad.materialInfo().shadeDirectionOverride());
                             quad.setAmbientOcclusion(originalQuad.materialInfo().ambientOcclusion());
                             interpolator.setInputQuad(quad);
 

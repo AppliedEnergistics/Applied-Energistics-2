@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "ae2:network/cables/dense_smart_from_smart"
+        "recipes": "ae2:network/cables/dense_smart_from_smart"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

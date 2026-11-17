@@ -23,7 +23,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "ae2:network/cables/dense_covered_white"
+        "recipes": "ae2:network/cables/dense_covered_white"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

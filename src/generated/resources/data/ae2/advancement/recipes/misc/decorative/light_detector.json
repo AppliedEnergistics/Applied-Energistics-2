@@ -23,7 +23,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "ae2:decorative/light_detector"
+        "recipes": "ae2:decorative/light_detector"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

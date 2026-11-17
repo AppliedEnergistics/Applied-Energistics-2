@@ -53,7 +53,8 @@ public final class AEConfig {
 
     private AEConfig(ModContainer container) {
         container.registerConfig(ModConfig.Type.CLIENT, client.spec);
-        container.registerConfig(ModConfig.Type.COMMON, common.spec);
+        // Keep the old file name to continue reading existing configs
+        container.registerConfig(ModConfig.Type.LOCAL, common.spec, "ae2-common.toml");
         container.getEventBus().addListener((ModConfigEvent.Loading evt) -> {
             if (evt.getConfig().getSpec() == common.spec) {
                 common.sync();

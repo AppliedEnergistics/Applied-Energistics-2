@@ -32,7 +32,6 @@ import net.minecraft.world.phys.Vec3;
 
 import appeng.api.orientation.BlockOrientation;
 import appeng.blockentity.storage.DriveBlockEntity;
-import appeng.client.render.AERenderTypes;
 import appeng.client.render.model.DriveModel;
 
 /**
@@ -65,7 +64,7 @@ public class DriveRenderer implements BlockEntityRenderer<DriveBlockEntity, Ches
             CameraRenderState cameraRenderState) {
         poseStack.pushPose();
         poseStack.translate(0.5, 0.5, 0.5);
-        poseStack.mulPose(state.blockOrientation.getQuaternion());
+        poseStack.rotate(state.blockOrientation.getQuaternion());
         poseStack.translate(-0.5, -0.5, -0.5);
 
         Vector3f slotTranslation = new Vector3f();
@@ -77,10 +76,7 @@ public class DriveRenderer implements BlockEntityRenderer<DriveBlockEntity, Ches
                 poseStack.translate(slotTranslation.x(), slotTranslation.y(), slotTranslation.z());
 
                 int slot = row * 2 + col;
-                nodes.submitCustomGeometry(
-                        poseStack,
-                        AERenderTypes.STORAGE_CELL_LEDS,
-                        (pose, consumer) -> CellLedRenderer.renderLed(state.cellColors[slot], consumer, pose));
+                CellLedRenderer.submitLed(state.cellColors[slot], poseStack, nodes);
 
                 poseStack.popPose();
             }

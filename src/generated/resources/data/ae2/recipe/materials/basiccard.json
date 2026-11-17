@@ -1,6 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "key": {
     "a": "#c:ingots/gold",
     "b": "#c:ingots/iron",

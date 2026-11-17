@@ -2,11 +2,11 @@
   "gives": {
     "id": "minecraft:emerald"
   },
-  "max_uses": 10.0,
+  "max_uses": 10,
   "reputation_discount": 0.05,
   "wants": {
-    "count": 2.0,
+    "count": 2,
     "id": "ae2:quartz_glass"
   },
-  "xp": 10.0
+  "xp": 10
 }

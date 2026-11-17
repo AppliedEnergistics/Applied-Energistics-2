@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "ae2:network/blocks/pattern_providers_interface_alt"
+        "recipes": "ae2:network/blocks/pattern_providers_interface_alt"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

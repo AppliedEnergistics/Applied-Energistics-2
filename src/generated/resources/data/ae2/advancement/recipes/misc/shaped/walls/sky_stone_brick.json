@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "ae2:shaped/walls/sky_stone_brick"
+        "recipes": "ae2:shaped/walls/sky_stone_brick"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

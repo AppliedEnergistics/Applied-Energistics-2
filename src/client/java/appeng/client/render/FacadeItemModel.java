@@ -137,9 +137,10 @@ public class FacadeItemModel implements ItemModel {
                 submitNodeCollector.submitCustomGeometry(poseStack, renderType, (pose, consumer) -> {
                     for (var cullFace : Platform.CULL_FACES) {
                         for (var quad : blockModelPart.getQuads(cullFace)) {
-                            var shade = (quad.materialInfo().shade() && quad.direction() != null)
-                                    ? getShade(quad.direction())
-                                    : 1f;
+                            var shadeDirection = quad.materialInfo().shadeDirectionOverride() != null
+                                    ? quad.materialInfo().shadeDirectionOverride()
+                                    : quad.direction();
+                            var shade = shadeDirection != null ? getShade(shadeDirection) : 1f;
                             qi.setColor(-1);
                             qi.scaleColor(shade);
                             consumer.putBakedQuad(

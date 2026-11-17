@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "ae2:network/blocks/quantum_link"
+        "recipes": "ae2:network/blocks/quantum_link"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

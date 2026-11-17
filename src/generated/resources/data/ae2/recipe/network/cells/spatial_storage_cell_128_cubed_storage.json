@@ -1,6 +1,5 @@
 {
   "type": "minecraft:crafting_shapeless",
-  "category": "misc",
   "ingredients": [
     "ae2:item_cell_housing",
     "ae2:spatial_cell_component_128"

@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "ae2:tools/certus_quartz_pickaxe"
+        "recipes": "ae2:tools/certus_quartz_pickaxe"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

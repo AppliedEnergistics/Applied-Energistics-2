@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "ae2:network/parts/quartz_fiber_part"
+        "recipes": "ae2:network/parts/quartz_fiber_part"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

@@ -40,6 +40,9 @@ public abstract class ProjectVersionSource implements ValueSource<String, Projec
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             throw new RuntimeException("Interrupted");
+        } catch (MissingVersionTagException e) {
+            LOG.warn("{} Falling back to version 0.0.0-SNAPSHOT.", e.getMessage());
+            return "0.0.0-SNAPSHOT";
         } catch (Exception e) {
             LOG.error("Failed to determine Project version from Git.", e);
             return "0.0.0-SNAPSHOT";
@@ -81,9 +84,12 @@ public abstract class ProjectVersionSource implements ValueSource<String, Projec
         String currentRev = "HEAD";
 
         while (true) {
-            String described = git("describe", "--long", "--tags", currentRev);
-            if (described == null) {
-                throw new GradleException("Cannot calculate the project version without a previous Git tag. Did you forget to run \"git fetch --tags\"?");
+            String described;
+            try {
+                described = git("describe", "--long", "--tags", currentRev);
+            } catch (GitCommandException e) {
+                throw new MissingVersionTagException("Cannot calculate the project version without a previous Git tag ("
+                                                     + e.getOutput() + "). Did you forget to run \"git fetch --tags\"?");
             }
 
             // Describe (long) output is "<tag>-<offset>-g<commit>"
@@ -181,8 +187,7 @@ public abstract class ProjectVersionSource implements ValueSource<String, Projec
         stdoutReader.join();
 
         if (exitCode != 0) {
-            throw new RuntimeException("Failed running " + combinedArgs + ". Exit Code " + exitCode
-                                       + ", Output: " + combinedOutput);
+            throw new GitCommandException(combinedArgs, exitCode, combinedOutput.toString());
         }
 
         return stdout.toString().trim();
@@ -209,6 +214,25 @@ public abstract class ProjectVersionSource implements ValueSource<String, Projec
         stdoutReader.setDaemon(true);
         stdoutReader.start();
         return stdoutReader;
+    }
+
+    private static class GitCommandException extends RuntimeException {
+        private final String output;
+
+        GitCommandException(List<String> args, int exitCode, String output) {
+            super("Failed running " + args + ". Exit Code " + exitCode + ", Output: " + output);
+            this.output = output;
+        }
+
+        String getOutput() {
+            return output;
+        }
+    }
+
+    private static class MissingVersionTagException extends GradleException {
+        MissingVersionTagException(String message) {
+            super(message);
+        }
     }
 
     public abstract static class ProjectVersionSourceParams implements ValueSourceParameters {

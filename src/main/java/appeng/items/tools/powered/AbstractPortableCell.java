@@ -4,6 +4,7 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.Prediction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -133,11 +134,11 @@ public abstract class AbstractPortableCell extends PoweredContainerItem
                 remainingEnergy = energyCell.injectAEPower(droppedStack, remainingEnergy, Actionable.MODULATE);
             }
 
-            playerInventory.placeItemBackInInventory(droppedStack);
+            playerInventory.placeItemBackInInventory(droppedStack, Prediction.SERVER_ONLY);
         }
 
         // Drop upgrades
-        getUpgrades(stack).forEach(playerInventory::placeItemBackInInventory);
+        getUpgrades(stack).forEach(s -> playerInventory.placeItemBackInInventory(s, Prediction.SERVER_ONLY));
 
         return true;
     }

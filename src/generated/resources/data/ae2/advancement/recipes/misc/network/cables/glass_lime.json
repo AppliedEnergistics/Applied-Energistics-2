@@ -23,7 +23,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "ae2:network/cables/glass_lime"
+        "recipes": "ae2:network/cables/glass_lime"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

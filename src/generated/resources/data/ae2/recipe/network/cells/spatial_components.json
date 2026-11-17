@@ -1,6 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "key": {
     "a": "#c:dusts/glowstone",
     "b": "ae2:fluix_pearl",

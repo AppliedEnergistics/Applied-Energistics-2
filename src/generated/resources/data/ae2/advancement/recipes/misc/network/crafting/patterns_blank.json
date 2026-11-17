@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "ae2:network/crafting/patterns_blank"
+        "recipes": "ae2:network/crafting/patterns_blank"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

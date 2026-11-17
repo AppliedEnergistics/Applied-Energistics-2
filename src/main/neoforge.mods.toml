@@ -1,6 +1,5 @@
 modLoader="javafml"
 loaderVersion="[1,)"
-logoFile="logo.png"
 license="See GitHub repository for details"
 issueTrackerURL="https://github.com/AppliedEnergistics/Applied-Energistics-2/issues"
 
@@ -11,6 +10,7 @@ displayName="Applied Energistics 2"
 description="A Mod about Matter, Energy and using them to conquer the world..."
 authors="Team AppliedEnergistics"
 displayURL="https://appliedenergistics.org"
+iconFile="logo.png"
 
 [[mixins]]
 config="ae2.mixins.json"

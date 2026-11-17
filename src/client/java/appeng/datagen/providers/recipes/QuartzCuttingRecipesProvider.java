@@ -2,8 +2,8 @@ package appeng.datagen.providers.recipes;
 
 import java.util.List;
 
-import net.minecraft.core.HolderLookup;
-import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.advancements.Advancement;
+import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -16,8 +16,9 @@ import appeng.recipes.quartzcutting.QuartzCuttingRecipe;
 
 public class QuartzCuttingRecipesProvider extends AE2RecipeProvider {
 
-    public QuartzCuttingRecipesProvider(HolderLookup.Provider registries, RecipeOutput output) {
-        super(registries, output);
+    public QuartzCuttingRecipesProvider(BootstrapContext<Recipe<?>> recipeOutput,
+            BootstrapContext<Advancement> advancementOutput) {
+        super(recipeOutput, advancementOutput);
     }
 
     @Override

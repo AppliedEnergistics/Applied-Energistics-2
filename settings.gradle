@@ -5,8 +5,8 @@ pluginManagement {
     plugins {
         id 'com.diffplug.spotless' version '6.25.0'
         // https://projects.neoforged.net/neoforged/ModDevGradle
-        id 'net.neoforged.moddev' version '2.0.141'
-        id 'net.neoforged.moddev.repositories' version '2.0.141'
+        id 'net.neoforged.moddev' version '2.0.148'
+        id 'net.neoforged.moddev.repositories' version '2.0.148'
     }
 }
 
@@ -48,6 +48,13 @@ dependencyResolutionManagement {
                 includeGroup 'curse.maven'
             }
         }
+        maven {
+            name = 'Modrinth'
+            url = 'https://api.modrinth.com/maven'
+            content {
+                includeGroup 'maven.modrinth'
+            }
+        }
         maven { // for TOP
             url = 'https://maven.k-4u.nl/'
             content {
@@ -64,6 +71,7 @@ dependencyResolutionManagement {
             url = 'https://maven.blamejared.com/'
             content {
                 includeGroup 'mezz.jei'
+                includeGroup 'net.mezzdev.config'
             }
         }
         mavenLocal() {

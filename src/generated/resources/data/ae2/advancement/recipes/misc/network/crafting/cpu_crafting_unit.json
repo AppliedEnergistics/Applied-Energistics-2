@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "ae2:network/crafting/cpu_crafting_unit"
+        "recipes": "ae2:network/crafting/cpu_crafting_unit"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

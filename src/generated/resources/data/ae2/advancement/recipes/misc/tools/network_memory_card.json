@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "ae2:tools/network_memory_card"
+        "recipes": "ae2:tools/network_memory_card"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

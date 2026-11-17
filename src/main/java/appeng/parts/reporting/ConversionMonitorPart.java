@@ -19,6 +19,7 @@
 package appeng.parts.reporting;
 
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Prediction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -184,7 +185,7 @@ public class ConversionMonitorPart extends AbstractMonitorPart implements ISubMe
             if (retrieved != 0) {
                 var newItems = itemKey.toStack((int) retrieved);
                 if (!player.getInventory().add(newItems)) {
-                    player.drop(newItems, false);
+                    player.drop(newItems, false, Prediction.SERVER_ONLY);
                 }
 
                 if (player.containerMenu != null) {

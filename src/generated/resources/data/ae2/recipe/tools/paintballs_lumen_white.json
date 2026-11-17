@@ -1,6 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "key": {
     "a": "ae2:white_paint_ball",
     "b": "#c:dusts/glowstone"

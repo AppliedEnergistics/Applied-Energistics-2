@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
+import net.minecraft.tags.BlockItemTags;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.DyeColor;
@@ -139,7 +140,7 @@ public final class ConventionTags {
 
     // For Growth Accelerator
     public static final TagKey<Block> CROPS = BlockTags.CROPS;
-    public static final TagKey<Block> SAPLINGS = BlockTags.SAPLINGS;
+    public static final TagKey<Block> SAPLINGS = BlockItemTags.SAPLINGS.block();
 
     /**
      * Platform tags for blocks that should not be moved, i.e. some pipes, chunk loaders, etc...

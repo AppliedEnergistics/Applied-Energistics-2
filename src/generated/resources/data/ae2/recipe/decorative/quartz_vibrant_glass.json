@@ -1,6 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "key": {
     "a": "minecraft:glowstone_dust",
     "b": "ae2:quartz_glass"

@@ -146,9 +146,9 @@ public class CachedPlane {
                     var section = c.getSection(c.getSectionIndex(pos.getY()));
 
                     // Coordinate within the section
-                    int sx = pos.getX() & (LevelChunkSection.SECTION_WIDTH - 1);
-                    int sy = pos.getY() & (LevelChunkSection.SECTION_HEIGHT - 1);
-                    int sz = pos.getZ() & (LevelChunkSection.SECTION_WIDTH - 1);
+                    int sx = pos.getX() & (SectionPos.SECTION_SIZE - 1);
+                    int sy = pos.getY() & (SectionPos.SECTION_SIZE - 1);
+                    int sz = pos.getZ() & (SectionPos.SECTION_SIZE - 1);
                     var state = section.getBlockState(sx, sy, sz);
 
                     if (savedData != null) {
@@ -321,9 +321,9 @@ public class CachedPlane {
             var chunk = this.level.getChunk(newPosition);
             var section = chunk.getSection(chunk.getSectionIndex(newPosition.getY()));
             section.setBlockState(
-                    newPosition.getX() & (LevelChunkSection.SECTION_WIDTH - 1),
-                    newPosition.getY() & (LevelChunkSection.SECTION_HEIGHT - 1),
-                    newPosition.getZ() & (LevelChunkSection.SECTION_WIDTH - 1),
+                    newPosition.getX() & (SectionPos.SECTION_SIZE - 1),
+                    newPosition.getY() & (SectionPos.SECTION_SIZE - 1),
+                    newPosition.getZ() & (SectionPos.SECTION_SIZE - 1),
                     moveRecord.state);
 
             var strategy = moveRecord.strategy();

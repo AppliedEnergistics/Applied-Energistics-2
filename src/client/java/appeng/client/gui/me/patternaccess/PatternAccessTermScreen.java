@@ -32,6 +32,7 @@ import java.util.Set;
 import java.util.WeakHashMap;
 
 import com.google.common.collect.HashMultimap;
+import com.mojang.blaze3d.platform.InputConstants;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -309,7 +310,7 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
 
     @Override
     public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
-        if (event.button() == 1 && this.searchField.isMouseOver(event.x(), event.y())) {
+        if (event.button() == InputConstants.MOUSE_BUTTON_RIGHT && this.searchField.isMouseOver(event.x(), event.y())) {
             this.searchField.setValue("");
             // Don't return immediately to also grab focus.
         }

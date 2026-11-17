@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "ae2:materials/cardredstone"
+        "recipes": "ae2:materials/cardredstone"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

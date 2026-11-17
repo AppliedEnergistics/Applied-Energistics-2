@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "ae2:network/cables/covered_red"
+        "recipes": "ae2:network/cables/covered_red"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

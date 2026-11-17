@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "ae2:network/parts/annihilation_plane_alt2"
+        "recipes": "ae2:network/parts/annihilation_plane_alt2"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

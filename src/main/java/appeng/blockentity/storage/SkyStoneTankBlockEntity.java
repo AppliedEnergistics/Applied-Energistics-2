@@ -50,7 +50,7 @@ public class SkyStoneTankBlockEntity extends AEBaseBlockEntity {
     }
 
     public boolean onPlayerUse(Player player, InteractionHand hand) {
-        return FluidUtil.interactWithFluidHandler(player, hand, getBlockPos(), tank);
+        return FluidUtil.interactWithFluidHandler(player, hand, getBlockPos(), tank, null);
     }
 
     public ResourceHandler<FluidResource> getFluidHandler() {

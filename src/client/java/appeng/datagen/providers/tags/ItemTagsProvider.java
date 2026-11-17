@@ -21,6 +21,7 @@ package appeng.datagen.providers.tags;
 import java.util.concurrent.CompletableFuture;
 
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.Identifier;
@@ -28,6 +29,7 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagEntry;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.common.Tags;
@@ -50,6 +52,11 @@ public class ItemTagsProvider extends BlockTagCopyingItemTagProvider implements 
     }
 
     @Override
+    protected IntrinsicTagAppender<Item> tag(TagKey<Item> tag) {
+        return new IntrinsicTagAppender<>(super.tag(tag), BuiltInRegistries.ITEM);
+    }
+
+    @Override
     protected void addTags(HolderLookup.Provider registries) {
         copyBlockTags();
 
@@ -57,6 +64,8 @@ public class ItemTagsProvider extends BlockTagCopyingItemTagProvider implements 
         tag(ItemTags.DURABILITY_ENCHANTABLE).add(AEParts.ANNIHILATION_PLANE.asItem());
         tag(ItemTags.MINING_ENCHANTABLE).add(AEParts.ANNIHILATION_PLANE.asItem());
         tag(ItemTags.MINING_LOOT_ENCHANTABLE).add(AEParts.ANNIHILATION_PLANE.asItem());
+
+        tag(ItemTags.BOOKSHELF_BOOKS).add(AEItems.GUIDE.asItem());
 
         // Provide empty blacklist tags
         tag(AETags.ANNIHILATION_PLANE_ITEM_BLACKLIST);

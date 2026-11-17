@@ -19,6 +19,7 @@
 package appeng.block.crafting;
 
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.Prediction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -54,9 +55,10 @@ public class CraftingBlockItem extends AEBaseBlockItem {
                 player.setItemInHand(hand, ItemStack.EMPTY);
 
                 var inv = player.getInventory();
-                inv.placeItemBackInInventory(removedUpgrade.copyWithCount(removedUpgrade.getCount() * itemCount));
+                inv.placeItemBackInInventory(removedUpgrade.copyWithCount(removedUpgrade.getCount() * itemCount),
+                        Prediction.SERVER_ONLY);
                 // This is hard-coded, as this is always a base block.
-                inv.placeItemBackInInventory(AEBlocks.CRAFTING_UNIT.stack(itemCount));
+                inv.placeItemBackInInventory(AEBlocks.CRAFTING_UNIT.stack(itemCount), Prediction.SERVER_ONLY);
             }
             return InteractionResult.SUCCESS_SERVER;
         }

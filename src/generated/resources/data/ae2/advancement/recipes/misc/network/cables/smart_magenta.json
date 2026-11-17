@@ -23,7 +23,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "ae2:network/cables/smart_magenta"
+        "recipes": "ae2:network/cables/smart_magenta"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

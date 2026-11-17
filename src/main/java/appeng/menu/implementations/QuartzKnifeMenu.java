@@ -21,6 +21,7 @@ package appeng.menu.implementations;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Prediction;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
@@ -79,7 +80,7 @@ public class QuartzKnifeMenu extends AEBaseMenu {
     public void removed(Player player) {
         ItemStack item = this.inSlot.extractItem(0, Integer.MAX_VALUE, false);
         if (!item.isEmpty()) {
-            player.drop(item, false);
+            player.drop(item, false, Prediction.SERVER_ONLY);
         }
     }
 

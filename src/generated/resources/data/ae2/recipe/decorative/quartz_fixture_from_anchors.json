@@ -1,6 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "key": {
     "a": "ae2:charged_certus_quartz_crystal",
     "b": "ae2:cable_anchor"

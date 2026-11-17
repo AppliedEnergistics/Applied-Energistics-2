@@ -18,22 +18,11 @@
 
 package appeng.datagen;
 
-import java.util.List;
-import java.util.Set;
-import java.util.concurrent.CompletableFuture;
-import java.util.function.BiFunction;
-
-import net.minecraft.core.HolderLookup;
-import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.data.DataProvider;
-import net.minecraft.data.PackOutput;
-import net.minecraft.data.advancements.AdvancementProvider;
-import net.minecraft.data.registries.RegistryPatchGenerator;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.common.data.DatapackBuiltinEntriesProvider;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
+import net.neoforged.neoforge.data.event.GatherDataRegistryEntriesEvent;
 
 import appeng.core.AppEng;
 import appeng.core.definitions.AEDamageTypes;
@@ -63,71 +52,55 @@ import appeng.init.worldgen.InitStructures;
 @EventBusSubscriber(modid = AppEng.MOD_ID)
 public class AE2DataGenerators {
 
+    // Registry entries are gathered before the generator exists, but the advancements already add translations
+    private static final LocalizationProvider LOCALIZATION = new LocalizationProvider();
+
     @SubscribeEvent
-    public static void onGatherData(GatherDataEvent.Client event) {
-        var generator = event.getGenerator();
-        var registries = RegistryPatchGenerator.createLookup(event.getLookupProvider(), createDatapackEntriesBuilder())
-                .thenApply(RegistrySetBuilder.PatchedRegistries::full);
-
-        var localization = new LocalizationProvider(generator);
-        var pack = generator.getVanillaPack(true);
-
+    public static void onGatherRegistryEntries(GatherDataRegistryEntriesEvent event) {
         // Worldgen et al
-        pack.addProvider(output -> new DatapackBuiltinEntriesProvider(output, event.getLookupProvider(),
-                createDatapackEntriesBuilder(), Set.of(AppEng.MOD_ID)));
-
-        // Loot
-        pack.addProvider(packOutput -> new AE2LootTableProvider(packOutput, registries));
-
-        // Tags
-        var blockTagsProvider = pack
-                .addProvider(packOutput -> new BlockTagsProvider(packOutput, registries));
-        pack.addProvider(
-                packOutput -> new ItemTagsProvider(packOutput, registries, blockTagsProvider.contentsGetter()));
-        pack.addProvider(packOutput -> new FluidTagsProvider(packOutput, registries));
-        pack.addProvider(packOutput -> new BiomeTagsProvider(packOutput, registries));
-        pack.addProvider(packOutput -> new PoiTypeTagsProvider(packOutput, registries));
-        pack.addProvider(packOutput -> new VillagerTradeTagsProvider(packOutput, registries));
-        pack.addProvider(packOutput -> new DataComponentTypeTagProvider(packOutput, registries,
-                localization));
-
-        // Models
-        pack.addProvider(AE2ModelProvider.create(
-                AppEng.MOD_ID,
-                BlockModelProvider::new,
-                DecorationModelProvider::new,
-                ItemModelProvider::new,
-                PartModelProvider::new));
-
-        // Misc
-        pack.addProvider(packOutput -> new AdvancementProvider(packOutput, registries, List.of(
-                new AdvancementGenerator(localization))));
-        pack.addProvider(AE2ParticleDescriptionProvider::new);
-
-        // Recipes
-        pack.addProvider(bindRegistries(AE2RecipeProvider.Runner::new, registries));
-
-        // DataMaps
-        pack.addProvider(bindRegistries(RaidHeroGiftsProvider::new, registries));
-
-        // Must run last
-        pack.addProvider(packOutput -> localization);
-    }
-
-    private static RegistrySetBuilder createDatapackEntriesBuilder() {
-        return new RegistrySetBuilder()
-                .add(Registries.DIMENSION_TYPE, InitDimensionTypes::init)
+        event.add(Registries.DIMENSION_TYPE, InitDimensionTypes::init)
                 .add(Registries.STRUCTURE, InitStructures::initDatagenStructures)
                 .add(Registries.STRUCTURE_SET, InitStructures::initDatagenStructureSets)
                 .add(Registries.BIOME, InitBiomes::init)
                 .add(Registries.DAMAGE_TYPE, AEDamageTypes::init)
                 .add(Registries.TRADE_SET, InitVillager::bootstrapTradeSets)
                 .add(Registries.VILLAGER_TRADE, InitVillager::bootstrapTrades);
+
+        // Loot, advancements and recipes
+        event.add(Registries.LOOT_TABLE, AE2LootTableProvider.create())
+                .advancement(output -> new AdvancementGenerator(output, LOCALIZATION))
+                .add(AE2RecipeProvider.create());
     }
 
-    private static <T extends DataProvider> DataProvider.Factory<T> bindRegistries(
-            BiFunction<PackOutput, CompletableFuture<HolderLookup.Provider>, T> factory,
-            CompletableFuture<HolderLookup.Provider> factories) {
-        return packOutput -> factory.apply(packOutput, factories);
+    @SubscribeEvent
+    public static void onGatherData(GatherDataEvent.Client event) {
+        var generator = event.getGenerator();
+        LOCALIZATION.setPackOutput(generator.getPackOutput());
+
+        // Tags
+        event.createBlockAndItemTags(BlockTagsProvider::new, ItemTagsProvider::new);
+        event.createProvider(FluidTagsProvider::new);
+        event.createProvider(BiomeTagsProvider::new);
+        event.createProvider(PoiTypeTagsProvider::new);
+        event.createProvider(VillagerTradeTagsProvider::new);
+        event.createProvider((packOutput, registries) -> new DataComponentTypeTagProvider(packOutput, registries,
+                LOCALIZATION));
+
+        // Models
+        event.addProvider(AE2ModelProvider.create(
+                AppEng.MOD_ID,
+                BlockModelProvider::new,
+                DecorationModelProvider::new,
+                ItemModelProvider::new,
+                PartModelProvider::new).create(generator.getPackOutput()));
+
+        // Misc
+        event.createProvider(AE2ParticleDescriptionProvider::new);
+
+        // DataMaps
+        event.createProvider(RaidHeroGiftsProvider::new);
+
+        // Must run last
+        event.addProvider(LOCALIZATION);
     }
 }

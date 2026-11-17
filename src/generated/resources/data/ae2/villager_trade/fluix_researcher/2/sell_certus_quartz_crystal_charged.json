@@ -2,11 +2,11 @@
   "gives": {
     "id": "minecraft:emerald"
   },
-  "max_uses": 10.0,
+  "max_uses": 10,
   "reputation_discount": 0.05,
   "wants": {
-    "count": 3.0,
+    "count": 3,
     "id": "ae2:charged_certus_quartz_crystal"
   },
-  "xp": 15.0
+  "xp": 15
 }

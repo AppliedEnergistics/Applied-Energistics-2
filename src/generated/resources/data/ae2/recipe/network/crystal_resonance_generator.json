@@ -1,6 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "key": {
     "c": "#c:ingots/copper",
     "f": "ae2:fluix_block",

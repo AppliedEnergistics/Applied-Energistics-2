@@ -25,13 +25,13 @@ record CuriosItemLocator(int curioSlot, @Nullable BlockHitResult hitResult) impl
 
     public void writeToPacket(FriendlyByteBuf buf) {
         buf.writeInt(curioSlot);
-        buf.writeOptional(Optional.ofNullable(hitResult), FriendlyByteBuf::writeBlockHitResult);
+        buf.writeOptional(Optional.ofNullable(hitResult), BlockHitResult.STREAM_CODEC);
     }
 
     public static CuriosItemLocator readFromPacket(FriendlyByteBuf buf) {
         return new CuriosItemLocator(
                 buf.readInt(),
-                buf.readOptional(FriendlyByteBuf::readBlockHitResult).orElse(null));
+                buf.readOptional(BlockHitResult.STREAM_CODEC).orElse(null));
     }
 
     @Override

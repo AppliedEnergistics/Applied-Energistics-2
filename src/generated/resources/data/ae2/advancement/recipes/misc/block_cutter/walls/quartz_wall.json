@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "ae2:block_cutter/walls/quartz_wall"
+        "recipes": "ae2:block_cutter/walls/quartz_wall"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

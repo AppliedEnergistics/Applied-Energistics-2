@@ -18,11 +18,12 @@ console.info("Guidebook Dir: " + guidebookDir);
 for (let mdFile of globSync(`${guidebookDir}/**/*.md`)) {
     const mdContent = fs.readFileSync(mdFile, {encoding: 'utf-8'});
     let tree = fromMarkdown(mdContent, {
-        extensions: [mdxjs(), frontmatter(['yaml']), gfmTable],
-        mdastExtensions: [mdxFromMarkdown(), frontmatterFromMarkdown(['yaml']), gfmTableFromMarkdown]
+        extensions: [mdxjs(), frontmatter(['yaml']), gfmTable()],
+        mdastExtensions: [mdxFromMarkdown(), frontmatterFromMarkdown(['yaml']), gfmTableFromMarkdown()]
     });
 
     let markdownStr = toMarkdown(tree, {
+        listItemIndent: 'tab',
         extensions: [mdxToMarkdown(), frontmatterToMarkdown(['yaml']), gfmTableToMarkdown()]
     });
     fs.writeFileSync(mdFile, markdownStr, {encoding: 'utf-8'});

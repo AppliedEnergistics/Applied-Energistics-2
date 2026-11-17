@@ -18,12 +18,13 @@
 
 package appeng.datagen.providers.recipes;
 
-import net.minecraft.core.HolderLookup;
+import net.minecraft.advancements.Advancement;
 import net.minecraft.data.recipes.RecipeCategory;
-import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.SimpleCookingRecipeBuilder;
+import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.world.item.crafting.CookingBookCategory;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.Recipe;
 
 import appeng.core.ConventionTags;
 import appeng.core.definitions.AEBlocks;
@@ -34,8 +35,8 @@ public class SmeltingRecipes extends AE2RecipeProvider {
     // This is from the default recipe serializer for smelting
     private static final int DEFAULT_SMELTING_TIME = 200;
 
-    public SmeltingRecipes(HolderLookup.Provider registries, RecipeOutput output) {
-        super(registries, output);
+    public SmeltingRecipes(BootstrapContext<Recipe<?>> recipeOutput, BootstrapContext<Advancement> advancementOutput) {
+        super(recipeOutput, advancementOutput);
     }
 
     @Override

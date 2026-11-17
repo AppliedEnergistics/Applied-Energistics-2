@@ -16,11 +16,12 @@ import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.item.ModelRenderProperties;
 import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.geometry.BakedQuad;
+import net.minecraft.client.resources.model.geometry.ItemQuads;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemDisplayContext;
 
 public record ItemBaseModelWrapper(
-        List<BakedQuad> quads,
+        ItemQuads quads,
         Supplier<Vector3fc[]> extents,
         ModelRenderProperties renderProperties,
         Matrix4fc transformation) {
@@ -41,12 +42,12 @@ public record ItemBaseModelWrapper(
         var modelRenderProperties = ModelRenderProperties.fromResolvedModel(modelBaker, baseModel, baseModelTextures);
         var extents = Suppliers.memoize(() -> computeExtents(baseModelQuads));
 
-        return new ItemBaseModelWrapper(baseModelQuads, extents, modelRenderProperties, transform);
+        return new ItemBaseModelWrapper(ItemQuads.split(baseModelQuads), extents, modelRenderProperties, transform);
     }
 
     public void applyToLayer(ItemStackRenderState.LayerRenderState layer, ItemDisplayContext context) {
         layer.setExtents(extents);
         renderProperties.applyToLayer(layer, context);
-        layer.prepareQuadList().addAll(quads);
+        layer.setQuads(quads);
     }
 }

@@ -55,9 +55,9 @@ public final class PendingCraftingJobs {
                 // and a wireless terminal is in the player inv
                 var minecraft = Minecraft.getInstance();
                 if (AEConfig.instance().isNotifyForFinishedCraftingJobs()
-                        && !(minecraft.screen instanceof MEStorageScreen<?>)
+                        && !(minecraft.gui.screen() instanceof MEStorageScreen<?>)
                         && minecraft.player != null && hasNotificationEnablingItem(minecraft.player)) {
-                    minecraft.getToastManager().addToast(new FinishedJobToast(what, requestedAmount));
+                    minecraft.gui.toastManager().addToast(new FinishedJobToast(what, requestedAmount));
                 }
             }
         }

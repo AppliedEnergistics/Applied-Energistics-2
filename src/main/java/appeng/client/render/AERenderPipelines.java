@@ -1,14 +1,16 @@
 package appeng.client.render;
 
-import com.mojang.blaze3d.pipeline.BlendFunction;
-import com.mojang.blaze3d.pipeline.ColorTargetState;
-import com.mojang.blaze3d.pipeline.DepthStencilState;
-import com.mojang.blaze3d.pipeline.RenderPipeline;
-import com.mojang.blaze3d.platform.CompareOp;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.VertexFormat;
+import com.mojang.renderpearl.api.pipeline.BlendFunction;
+import com.mojang.renderpearl.api.pipeline.ColorTargetState;
+import com.mojang.renderpearl.api.pipeline.CompareOp;
+import com.mojang.renderpearl.api.pipeline.DepthStencilState;
+import com.mojang.renderpearl.api.pipeline.PrimitiveTopology;
+import com.mojang.renderpearl.api.pipeline.RenderPipeline;
 
+import net.minecraft.client.renderer.BindGroupLayouts;
 import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.renderer.oit.OitPipelineSet;
 
 import appeng.core.AppEng;
 
@@ -18,42 +20,60 @@ public final class AERenderPipelines {
     }
 
     /**
-     * Similar to {@link RenderPipelines#LINES}, but with inverted depth test.
+     * Similar to {@link RenderPipelines#LINES_TRANSLUCENT}, but with inverted depth test.
      */
-    public static final RenderPipeline LINES_BEHIND_BLOCK = RenderPipelines.LINES.toBuilder()
+    public static final RenderPipeline LINES_BEHIND_BLOCK = RenderPipelines.LINES_TRANSLUCENT.toBuilder()
             .withLocation(AppEng.makeId("pipeline/lines_behind_block"))
-            .withDepthStencilState(new DepthStencilState(CompareOp.GREATER_THAN, false))
+            .withDepthStencilState(new DepthStencilState(CompareOp.LESS_THAN, false))
             .build();
 
     public static final RenderPipeline SPATIAL_SKYBOX = RenderPipeline
-            .builder(RenderPipelines.MATRICES_PROJECTION_SNIPPET, RenderPipelines.GLOBALS_SNIPPET)
+            .builder(RenderPipelines.GLOBALS_SNIPPET)
+            .withBindGroupLayout(BindGroupLayouts.DYNAMIC_TRANSFORMS)
+            .withBindGroupLayout(BindGroupLayouts.PROJECTION)
             .withLocation(AppEng.makeId("pipeline/spatial_skybox"))
             .withVertexShader("core/position_color")
             .withFragmentShader("core/position_color")
             .withColorTargetState(ColorTargetState.DEFAULT)
-            .withDepthStencilState(new DepthStencilState(CompareOp.LESS_THAN_OR_EQUAL, false))
-            .withVertexFormat(DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS)
+            .withDepthStencilState(new DepthStencilState(CompareOp.GREATER_THAN_OR_EQUAL, false))
+            .withVertexBinding(0, DefaultVertexFormat.POSITION_COLOR)
+            .withPrimitiveTopology(PrimitiveTopology.QUADS)
             .build();
 
     public static final RenderPipeline SPATIAL_SKYBOX_SPARKLES = RenderPipeline
-            .builder(RenderPipelines.MATRICES_PROJECTION_SNIPPET, RenderPipelines.GLOBALS_SNIPPET)
+            .builder(RenderPipelines.GLOBALS_SNIPPET)
+            .withBindGroupLayout(BindGroupLayouts.DYNAMIC_TRANSFORMS)
+            .withBindGroupLayout(BindGroupLayouts.PROJECTION)
             .withLocation(AppEng.makeId("pipeline/spatial_skybox_sparkles"))
             .withVertexShader("core/position_color")
             .withFragmentShader("core/position_color")
             .withColorTargetState(new ColorTargetState(BlendFunction.ADDITIVE))
-            .withDepthStencilState(new DepthStencilState(CompareOp.LESS_THAN_OR_EQUAL, false))
-            .withVertexFormat(DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS)
+            .withDepthStencilState(new DepthStencilState(CompareOp.GREATER_THAN_OR_EQUAL, false))
+            .withVertexBinding(0, DefaultVertexFormat.POSITION_COLOR)
+            .withPrimitiveTopology(PrimitiveTopology.QUADS)
             .build();
 
     public static final RenderPipeline AREA_OVERLAY_FACE = RenderPipeline
-            .builder(RenderPipelines.MATRICES_PROJECTION_SNIPPET, RenderPipelines.GLOBALS_SNIPPET)
+            .builder(RenderPipelines.GLOBALS_SNIPPET)
+            .withBindGroupLayout(BindGroupLayouts.DYNAMIC_TRANSFORMS)
+            .withBindGroupLayout(BindGroupLayouts.PROJECTION)
             .withLocation(AppEng.makeId("pipeline/area_overlay_face"))
             .withVertexShader("core/position_color")
             .withFragmentShader("core/position_color")
             .withColorTargetState(new ColorTargetState(BlendFunction.TRANSLUCENT))
-            .withDepthStencilState(new DepthStencilState(CompareOp.LESS_THAN_OR_EQUAL, false))
+            .withDepthStencilState(new DepthStencilState(CompareOp.GREATER_THAN_OR_EQUAL, false))
             .withCull(false)
-            .withVertexFormat(DefaultVertexFormat.POSITION_COLOR_NORMAL, VertexFormat.Mode.QUADS)
+            .withVertexBinding(0, DefaultVertexFormat.POSITION_COLOR_NORMAL)
+            .withPrimitiveTopology(PrimitiveTopology.QUADS)
+            .build();
+
+    /**
+     * Pipelines used for {@link #AREA_OVERLAY_FACE} when improved transparency (OIT) is enabled.
+     */
+    public static final OitPipelineSet OIT_AREA_OVERLAY_FACE = OitPipelineSet
+            .builder(AppEng.makeId("area_overlay_face"),
+                    RenderPipeline.builder(RenderPipelines.OIT_DEBUG_FILLED_SNIPPET)
+                            .withVertexBinding(0, DefaultVertexFormat.POSITION_COLOR_NORMAL))
             .build();
 
     public static final RenderPipeline AREA_OVERLAY_LINE = RenderPipeline.builder(RenderPipelines.LINES_SNIPPET)
@@ -62,19 +82,44 @@ public final class AERenderPipelines {
             .withColorTargetState(new ColorTargetState(BlendFunction.ADDITIVE))
             .build();
 
+    /**
+     * Pipelines used for {@link #AREA_OVERLAY_LINE} when improved transparency (OIT) is enabled. The lines are blended
+     * additively, so they do not contribute to the transmittance.
+     */
+    public static final OitPipelineSet OIT_AREA_OVERLAY_LINE = OitPipelineSet
+            .builder(AppEng.makeId("area_overlay_line"), RenderPipeline.builder(RenderPipelines.OIT_LINES_SNIPPET)
+                    .withShaderDefine("OIT_ADDITIVE"))
+            .build();
+
     public static final RenderPipeline AREA_OVERLAY_LINE_OCCLUDED = RenderPipeline
             .builder(RenderPipelines.LINES_SNIPPET)
             .withLocation(AppEng.makeId("pipeline/area_overlay_line_occluded"))
-            .withDepthStencilState(new DepthStencilState(CompareOp.GREATER_THAN, false))
+            .withColorTargetState(new ColorTargetState(BlendFunction.TRANSLUCENT))
+            .withDepthStencilState(new DepthStencilState(CompareOp.LESS_THAN, false))
             .build();
 
-    public static final RenderPipeline STORAGE_CELL_LEDS = RenderPipeline
-            .builder(RenderPipelines.MATRICES_PROJECTION_SNIPPET, RenderPipelines.GLOBALS_SNIPPET)
+    /**
+     * Pipelines used for {@link #AREA_OVERLAY_LINE_OCCLUDED} and {@link #LINES_BEHIND_BLOCK} when improved transparency
+     * (OIT) is enabled. Like the non-OIT pipelines, this only renders the parts of the lines that are hidden behind
+     * other geometry.
+     */
+    public static final OitPipelineSet OIT_LINES_OCCLUDED = OitPipelineSet
+            .builder(AppEng.makeId("lines_occluded"),
+                    RenderPipeline.builder(RenderPipelines.OIT_LINES_SNIPPET))
+            .withDepthBoundsModifier(AERenderPipelines::invertDepthTest)
+            .withTransmittanceModifier(AERenderPipelines::invertDepthTest)
+            .withAccumulateModifier(AERenderPipelines::invertDepthTest)
+            .build();
+
+    /**
+     * Same as {@link RenderPipelines#EYES}, which shader packs treat as emissive, but without blending since the LEDs
+     * are opaque, and with the depth bias of {@link RenderPipelines#CRUMBLING} to stop the LEDs from z-fighting with
+     * the cell model right behind them.
+     */
+    public static final RenderPipeline STORAGE_CELL_LEDS = RenderPipelines.EYES.toBuilder()
             .withLocation(AppEng.makeId("pipeline/storage_cell_leds"))
-            .withVertexShader("core/position_color")
-            .withFragmentShader("core/position_color")
-            .withVertexFormat(DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS)
-            .withDepthStencilState(DepthStencilState.DEFAULT)
+            .withColorTargetState(ColorTargetState.DEFAULT)
+            .withDepthStencilState(new DepthStencilState(CompareOp.GREATER_THAN_OR_EQUAL, false, 1.0F, 10.0F))
             .build();
 
     public static final RenderPipeline LIGHTNING_FX = RenderPipeline
@@ -83,5 +128,17 @@ public final class AERenderPipelines {
             .withColorTargetState(new ColorTargetState(BlendFunction.TRANSLUCENT))
             .withCull(false)
             .build();
+
+    /**
+     * Pipelines used for {@link #LIGHTNING_FX} when improved transparency (OIT) is enabled.
+     */
+    public static final OitPipelineSet OIT_LIGHTNING_FX = OitPipelineSet
+            .builder(AppEng.makeId("lightning_fx"), RenderPipeline.builder(RenderPipelines.OIT_PARTICLE_SNIPPET)
+                    .withCull(false))
+            .build();
+
+    private static void invertDepthTest(RenderPipeline.Builder builder) {
+        builder.withDepthStencilState(new DepthStencilState(CompareOp.LESS_THAN, false));
+    }
 
 }

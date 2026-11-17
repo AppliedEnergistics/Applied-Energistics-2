@@ -18,7 +18,7 @@
 
 package appeng.init;
 
-import net.minecraft.advancements.CriterionTrigger;
+import net.minecraft.advancements.triggers.CriterionTrigger;
 import net.minecraft.core.Registry;
 
 import appeng.core.AppEng;

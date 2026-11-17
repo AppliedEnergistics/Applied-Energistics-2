@@ -9,6 +9,7 @@ import java.util.function.Function;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -22,6 +23,7 @@ import net.minecraft.world.level.block.HopperBlock;
 import net.minecraft.world.level.block.LeverBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.entity.BlockEntityTypes;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.AttachFace;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
@@ -114,6 +116,17 @@ public interface PlotBuilder {
         addBuildAction(new PartCustomizer<>(bb(bb), side, part, partCustomizer));
     }
 
+    /**
+     * Places a part using an item stack that can be customized, i.e. to add enchantments. The stack's components are
+     * imported into the part like when placing the item in the world.
+     */
+    default void part(String bb,
+            Direction side,
+            ItemDefinition<? extends PartItem<?>> part,
+            BiConsumer<HolderLookup.Provider, ItemStack> stackCustomizer) {
+        addBuildAction(new PlacePart(bb(bb), part.asItem(), side, stackCustomizer));
+    }
+
     default <T extends IPart> void facade(String bb,
             Direction side,
             ItemLike item) {
@@ -199,7 +212,7 @@ public interface PlotBuilder {
 
     default void chest(String bb, ItemStack... stacks) {
         block(bb, Blocks.CHEST);
-        customizeBlockEntity(bb, BlockEntityType.CHEST, chest -> {
+        customizeBlockEntity(bb, BlockEntityTypes.CHEST, chest -> {
             for (int i = 0; i < stacks.length; i++) {
                 chest.setItem(i, stacks[i]);
             }
@@ -214,7 +227,7 @@ public interface PlotBuilder {
 
     default void filledHopper(String bb, Direction direction, ItemStack stack) {
         blockState(bb, Blocks.HOPPER.defaultBlockState().setValue(HopperBlock.FACING, direction));
-        customizeBlockEntity(bb, BlockEntityType.HOPPER, hopper -> {
+        customizeBlockEntity(bb, BlockEntityTypes.HOPPER, hopper -> {
             for (int i = 0; i < hopper.getContainerSize(); i++) {
                 hopper.setItem(i, stack.copy());
             }
@@ -235,7 +248,7 @@ public interface PlotBuilder {
 
     default void hopper(String bb, Direction direction, ItemStack... stacks) {
         blockState(bb, Blocks.HOPPER.defaultBlockState().setValue(HopperBlock.FACING, direction));
-        customizeBlockEntity(bb, BlockEntityType.HOPPER, hopper -> {
+        customizeBlockEntity(bb, BlockEntityTypes.HOPPER, hopper -> {
             for (int i = 0; i < stacks.length; i++) {
                 hopper.setItem(i, stacks[i]);
             }

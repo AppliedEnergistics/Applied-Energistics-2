@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "ae2:network/blocks/inscribers"
+        "recipes": "ae2:network/blocks/inscribers"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

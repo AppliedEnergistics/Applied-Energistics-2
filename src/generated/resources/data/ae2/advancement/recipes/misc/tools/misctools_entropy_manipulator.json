@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "ae2:tools/misctools_entropy_manipulator"
+        "recipes": "ae2:tools/misctools_entropy_manipulator"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

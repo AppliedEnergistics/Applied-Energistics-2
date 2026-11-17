@@ -32,8 +32,8 @@ public final class BlockEntityRenderHelper {
      * the given face as if it was a 2D canvas, where x+ is facing right and y+ is facing up.
      */
     public static void rotateToFace(PoseStack stack, BlockOrientation orientation) {
-        stack.mulPose(orientation.getQuaternion());
-        stack.mulPose(ROTATE_TO_FRONT);
+        stack.rotate(orientation.getQuaternion());
+        stack.rotate(ROTATE_TO_FRONT);
     }
 
     /**

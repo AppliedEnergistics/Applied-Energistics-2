@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "ae2:tools/paintballs_orange"
+        "recipes": "ae2:tools/paintballs_orange"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

@@ -1,6 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "key": {
     "a": "ae2:wireless_receiver",
     "b": "ae2:crafting_terminal",

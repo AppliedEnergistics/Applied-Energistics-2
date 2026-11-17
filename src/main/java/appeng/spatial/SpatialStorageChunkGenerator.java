@@ -20,13 +20,17 @@ package appeng.spatial;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.BlockPos.MutableBlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.RegistryOps;
@@ -43,6 +47,7 @@ import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.Heightmap.Types;
 import net.minecraft.world.level.levelgen.RandomState;
 import net.minecraft.world.level.levelgen.blending.Blender;
+import net.minecraft.world.level.levelgen.densityfunction.SamplerContext;
 
 import appeng.core.definitions.AEBlocks;
 
@@ -101,13 +106,6 @@ public class SpatialStorageChunkGenerator extends ChunkGenerator {
         return MIN_Y;
     }
 
-    @Override
-    public void buildSurface(WorldGenRegion worldGenRegion, StructureManager structureManager, RandomState randomState,
-            ChunkAccess chunk) {
-        this.fillChunk(chunk);
-        chunk.tryMarkSaved();
-    }
-
     private void fillChunk(ChunkAccess chunk) {
         MutableBlockPos mutPos = new MutableBlockPos();
         for (int cx = 0; cx < 16; cx++) {
@@ -130,8 +128,11 @@ public class SpatialStorageChunkGenerator extends ChunkGenerator {
     }
 
     @Override
-    public CompletableFuture<ChunkAccess> fillFromNoise(Blender blender, RandomState randomState,
-            StructureManager structureManager, ChunkAccess chunk) {
+    public CompletableFuture<ChunkAccess> buildTerrain(ChunkAccess chunk, Blender blender, RandomState randomState,
+            StructureManager structureManager, BiomeManager biomeManager, @Nullable WorldGenRegion carverBiomeRegion,
+            Set<Holder<Biome>> possibleBiomes) {
+        this.fillChunk(chunk);
+        chunk.tryMarkSaved();
         return CompletableFuture.completedFuture(chunk);
     }
 
@@ -147,12 +148,8 @@ public class SpatialStorageChunkGenerator extends ChunkGenerator {
     }
 
     @Override
-    public void addDebugScreenInfo(List<String> list, RandomState randomState, BlockPos blockPos) {
-    }
-
-    @Override
-    public void applyCarvers(WorldGenRegion level, long seed, RandomState random, BiomeManager biomeManager,
-            StructureManager structureManager, ChunkAccess chunk) {
+    public void addDebugScreenInfo(List<String> list, RandomState randomState, BlockPos blockPos,
+            SamplerContext samplerContext) {
     }
 
     @Override

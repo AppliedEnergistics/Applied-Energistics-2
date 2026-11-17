@@ -1,6 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "key": {
     "a": "#ae2:all_nether_quartz",
     "b": "#c:dusts/fluix",

@@ -25,7 +25,7 @@ public class BuddingCertusQuartzBlock extends AEBaseBlock {
     }
 
     public PushReaction getPistonPushReaction(BlockState state) {
-        return PushReaction.DESTROY;
+        return PushReaction.POPPED;
     }
 
     public void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource randomSource) {

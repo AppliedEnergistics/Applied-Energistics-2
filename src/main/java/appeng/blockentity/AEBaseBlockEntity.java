@@ -52,6 +52,7 @@ import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.Prediction;
 import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.Clearable;
 import net.minecraft.world.InteractionResult;
@@ -471,7 +472,7 @@ public class AEBaseBlockEntity extends BlockEntity
             clearContent();
 
             for (var item : drops) {
-                player.getInventory().placeItemBackInInventory(item);
+                player.getInventory().placeItemBackInInventory(item, Prediction.SERVER_ONLY);
             }
         }
 

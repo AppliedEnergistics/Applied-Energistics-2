@@ -23,7 +23,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "ae2:network/blocks/spatial_anchor"
+        "recipes": "ae2:network/blocks/spatial_anchor"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

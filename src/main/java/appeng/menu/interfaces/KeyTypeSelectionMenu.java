@@ -6,8 +6,11 @@ import java.util.Map;
 
 import org.jetbrains.annotations.ApiStatus;
 
-import net.minecraft.network.FriendlyByteBuf;
+import io.netty.buffer.ByteBuf;
+
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 
 import appeng.api.stacks.AEKeyType;
@@ -43,21 +46,22 @@ public interface KeyTypeSelectionMenu {
     }
 
     record SyncedKeyTypes(Map<AEKeyType, Boolean> keyTypes) implements PacketWritable {
+        private static final StreamCodec<ByteBuf, Map<AEKeyType, Boolean>> KEY_TYPES_CODEC = ByteBufCodecs.map(
+                LinkedHashMap::new,
+                ByteBufCodecs.VAR_INT.map(AEKeyType::fromRawId, keyType -> (int) keyType.getRawId()),
+                ByteBufCodecs.BOOL);
+
         public SyncedKeyTypes() {
             this(new LinkedHashMap<>());
         }
 
         public SyncedKeyTypes(RegistryFriendlyByteBuf buf) {
-            this(buf.<AEKeyType, Boolean, Map<AEKeyType, Boolean>>readMap(LinkedHashMap::new,
-                    b -> AEKeyType.fromRawId(b.readVarInt()), FriendlyByteBuf::readBoolean));
+            this(KEY_TYPES_CODEC.decode(buf));
         }
 
         @Override
         public void writeToPacket(RegistryFriendlyByteBuf buf) {
-            buf.writeMap(
-                    keyTypes,
-                    (b, keyType) -> b.writeVarInt(keyType.getRawId()),
-                    FriendlyByteBuf::writeBoolean);
+            KEY_TYPES_CODEC.encode(buf, keyTypes);
         }
 
         public List<AEKeyType> enabledSet() {

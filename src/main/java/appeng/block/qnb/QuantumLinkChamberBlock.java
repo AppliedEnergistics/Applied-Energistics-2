@@ -27,6 +27,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -56,7 +57,7 @@ public class QuantumLinkChamberBlock extends QuantumBaseBlock {
     public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource random) {
         final QuantumBridgeBlockEntity bridge = this.getBlockEntity(level, pos);
         if (bridge != null && bridge.hasQES() && AEConfig.instance().isEnableEffects()) {
-            EnergyParticleData.add(level, pos.getCenter(), random);
+            EnergyParticleData.add(level, Vec3.atCenterOf(pos), random);
         }
     }
 

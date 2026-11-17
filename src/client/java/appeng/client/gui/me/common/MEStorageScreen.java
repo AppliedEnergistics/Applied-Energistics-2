@@ -29,7 +29,6 @@ import com.google.common.collect.Sets;
 import com.mojang.blaze3d.platform.InputConstants;
 
 import org.jetbrains.annotations.Nullable;
-import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -271,7 +270,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
 
         long serial = entry.getSerial();
 
-        if (InputConstants.isKeyDown(Minecraft.getInstance().getWindow(), GLFW.GLFW_KEY_SPACE)) {
+        if (InputConstants.isKeyDown(InputConstants.KEY_SPACE)) {
             // Move everything from the same group of slots (i.e. player inventory excluding hotbar)
             menu.handleInteraction(serial, InventoryAction.MOVE_REGION);
         } else {
@@ -507,7 +506,8 @@ public class MEStorageScreen<C extends MEStorageMenu>
     @Override
     public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
         // Right-clicking on the search field should clear it
-        if (this.searchField.isMouseOver(event.x(), event.y()) && event.button() == 1) {
+        if (this.searchField.isMouseOver(event.x(), event.y())
+                && event.button() == InputConstants.MOUSE_BUTTON_RIGHT) {
             this.searchField.setValue("");
             setSearchText("");
             // Don't return immediately to also grab focus.
@@ -752,7 +752,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
 
     @Override
     public boolean keyPressed(KeyEvent event) {
-        if (this.searchField.isFocused() && event.key() == GLFW.GLFW_KEY_ENTER) {
+        if (this.searchField.isFocused() && event.key() == InputConstants.KEY_RETURN) {
             this.searchField.setFocused(false);
             this.setFocused(null);
             return true;

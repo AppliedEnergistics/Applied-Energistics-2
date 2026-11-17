@@ -29,6 +29,8 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import org.jetbrains.annotations.Nullable;
 
+import io.netty.buffer.ByteBuf;
+
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.FriendlyByteBuf;
@@ -265,6 +267,9 @@ public class EntropyRecipe extends MechanicsRecipe<RecipeInput> {
 
     public record FluidOutput(Fluid fluid, boolean keepProperties, Map<String, String> properties) {
 
+        private static final StreamCodec<ByteBuf, Map<String, String>> PROPERTIES_STREAM_CODEC = ByteBufCodecs.map(
+                Maps::newHashMapWithExpectedSize, ByteBufCodecs.STRING_UTF8, ByteBufCodecs.STRING_UTF8);
+
         public static Codec<FluidOutput> CODEC = RecordCodecBuilder.create(builder -> builder.group(
                 BuiltInRegistries.FLUID.byNameCodec().fieldOf("id").forGetter(FluidOutput::fluid),
                 Codec.BOOL.optionalFieldOf("", false).forGetter(FluidOutput::keepProperties),
@@ -300,13 +305,13 @@ public class EntropyRecipe extends MechanicsRecipe<RecipeInput> {
         public static void toNetwork(FriendlyByteBuf buffer, FluidOutput output) {
             buffer.writeById(BuiltInRegistries.FLUID::getId, output.fluid);
             buffer.writeBoolean(output.keepProperties);
-            buffer.writeMap(output.properties, FriendlyByteBuf::writeUtf, (fbb, value) -> fbb.writeUtf(value));
+            PROPERTIES_STREAM_CODEC.encode(buffer, output.properties);
         }
 
         public static FluidOutput fromNetwork(FriendlyByteBuf buffer) {
             var fluid = buffer.readById(BuiltInRegistries.FLUID::byId);
             var keepProperties = buffer.readBoolean();
-            var properties = buffer.readMap(FriendlyByteBuf::readUtf, fbb -> fbb.readUtf());
+            var properties = PROPERTIES_STREAM_CODEC.decode(buffer);
             return new FluidOutput(fluid, keepProperties, properties);
         }
     }

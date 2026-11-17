@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "ae2:network/parts/toggle_bus_alt"
+        "recipes": "ae2:network/parts/toggle_bus_alt"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

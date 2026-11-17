@@ -23,7 +23,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "ae2:tools/portable_item_cell_64k"
+        "recipes": "ae2:tools/portable_item_cell_64k"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

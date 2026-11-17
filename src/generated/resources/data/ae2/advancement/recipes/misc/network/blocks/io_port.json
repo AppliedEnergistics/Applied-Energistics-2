@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "ae2:network/blocks/io_port"
+        "recipes": "ae2:network/blocks/io_port"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

@@ -18,13 +18,12 @@
 
 package appeng.datagen.providers.recipes;
 
-import net.minecraft.core.HolderGetter;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.core.registries.Registries;
+import net.minecraft.advancements.Advancement;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.world.item.Item;
+import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.ItemLike;
 
 import appeng.core.AppEng;
@@ -35,11 +34,9 @@ import appeng.recipes.handlers.InscriberProcessType;
 import appeng.recipes.handlers.InscriberRecipeBuilder;
 
 public class InscriberRecipes extends AE2RecipeProvider {
-    private final HolderGetter<Item> items;
 
-    public InscriberRecipes(HolderLookup.Provider registries, RecipeOutput output) {
-        super(registries, output);
-        this.items = registries.lookupOrThrow(Registries.ITEM);
+    public InscriberRecipes(BootstrapContext<Recipe<?>> recipeOutput, BootstrapContext<Advancement> advancementOutput) {
+        super(recipeOutput, advancementOutput);
     }
 
     @Override

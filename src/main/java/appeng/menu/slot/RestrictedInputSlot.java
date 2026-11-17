@@ -18,6 +18,7 @@
 
 package appeng.menu.slot;
 
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
@@ -134,7 +135,7 @@ public class RestrictedInputSlot extends AppEngSlot {
             case VIEW_CELL:
                 return AEItems.VIEW_CELL.is(stack);
             case FUEL:
-                return stack.getBurnTime(null, getLevel().fuelValues()) > 0;
+                return stack.has(DataComponents.COOKING_FUEL);
             case POWERED_TOOL:
                 return Platform.isChargeable(stack);
             case QE_SINGULARITY:

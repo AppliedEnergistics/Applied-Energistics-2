@@ -20,14 +20,16 @@ package appeng.datagen.providers.recipes;
 
 import static appeng.datagen.providers.recipes.RecipeCriteria.criterionName;
 
-import net.minecraft.core.HolderLookup;
+import net.minecraft.advancements.Advancement;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.SimpleCookingRecipeBuilder;
 import net.minecraft.data.recipes.SingleItemRecipeBuilder;
+import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.CookingBookCategory;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.Recipe;
 
 import appeng.core.ConventionTags;
 import appeng.core.definitions.AEBlocks;
@@ -37,8 +39,9 @@ import appeng.core.definitions.BlockDefinition;
 import appeng.core.definitions.ItemDefinition;
 
 public class DecorationBlockRecipes extends AE2RecipeProvider {
-    public DecorationBlockRecipes(HolderLookup.Provider registries, RecipeOutput output) {
-        super(registries, output);
+    public DecorationBlockRecipes(BootstrapContext<Recipe<?>> recipeOutput,
+            BootstrapContext<Advancement> advancementOutput) {
+        super(recipeOutput, advancementOutput);
     }
 
     @Override

@@ -1,6 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "key": {
     "a": "#c:glass_blocks/cheap",
     "b": "ae2:drive",

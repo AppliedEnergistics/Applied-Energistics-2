@@ -1,11 +1,11 @@
 
 package appeng.datagen.providers.recipes;
 
-import net.minecraft.core.HolderGetter;
-import net.minecraft.core.HolderLookup;
+import net.minecraft.advancements.Advancement;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.ItemTags;
@@ -28,11 +28,8 @@ import appeng.items.tools.powered.PortableCellItem;
 
 public class CraftingRecipes extends AE2RecipeProvider {
 
-    private final HolderGetter<Item> items;
-
-    public CraftingRecipes(HolderLookup.Provider registries, RecipeOutput output) {
-        super(registries, output);
-        this.items = registries.lookupOrThrow(Registries.ITEM);
+    public CraftingRecipes(BootstrapContext<Recipe<?>> recipeOutput, BootstrapContext<Advancement> advancementOutput) {
+        super(recipeOutput, advancementOutput);
     }
 
     @Override

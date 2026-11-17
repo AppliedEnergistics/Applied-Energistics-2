@@ -7,7 +7,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.decoration.ItemFrame;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 
@@ -22,7 +22,7 @@ public record PlaceItemFrameAction(BlockPos pos, Direction facing,
     public void spawnEntities(ServerLevel level, BlockPos origin, List<Entity> entities) {
         var actualPos = pos.offset(origin);
 
-        var itemFrame = new ItemFrame(EntityType.ITEM_FRAME, level, actualPos, facing);
+        var itemFrame = new ItemFrame(EntityTypes.ITEM_FRAME, level, actualPos, facing);
         if (!level.addFreshEntity(itemFrame)) {
             return;
         }

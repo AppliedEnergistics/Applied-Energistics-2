@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "ae2:tools/nether_quartz_cutting_knife"
+        "recipes": "ae2:tools/nether_quartz_cutting_knife"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

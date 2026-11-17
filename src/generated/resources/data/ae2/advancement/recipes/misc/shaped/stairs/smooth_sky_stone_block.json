@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "ae2:shaped/stairs/smooth_sky_stone_block"
+        "recipes": "ae2:shaped/stairs/smooth_sky_stone_block"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

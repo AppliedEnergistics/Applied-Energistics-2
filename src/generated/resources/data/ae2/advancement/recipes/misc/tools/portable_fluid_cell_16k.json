@@ -23,7 +23,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "ae2:tools/portable_fluid_cell_16k"
+        "recipes": "ae2:tools/portable_fluid_cell_16k"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
