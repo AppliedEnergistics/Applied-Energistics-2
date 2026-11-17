@@ -141,7 +141,10 @@ public final class EncodingHelper {
 
                 ItemStack bestIngredient = bestNetworkIngredient.orElse(ItemStack.EMPTY);
                 if (bestIngredient.isEmpty()) {
-                    bestIngredient = findFallbackIngredient(ingredient, genericIngredients, visiblePredicate);
+                    bestIngredient = findIngredientInViewerStacks(ingredient, genericIngredients, visiblePredicate);
+                }
+                if (bestIngredient.isEmpty()) {
+                    bestIngredient = findIngredientInRecipeItems(ingredient, visiblePredicate);
                 }
 
                 encodedInputs.set(slot, bestIngredient);
@@ -181,15 +184,12 @@ public final class EncodingHelper {
     }
 
     /**
-     * Finds the stack to encode for a recipe ingredient that has no match in the network inventory. In order of
-     * preference:
-     * <ol>
-     * <li>A stack shown by the recipe viewer that matches the ingredient. Unlike the ingredient's items, these retain
-     * data components. Visible stacks are preferred to avoid encoding hidden entries.</li>
-     * <li>The default instance of one of the ingredient's items, again preferring visible ones.</li>
-     * </ol>
+     * Finds a stack shown by the recipe viewer that matches the ingredient. Unlike the ingredient's items, these retain
+     * data components.
+     *
+     * @return The stack, or {@link ItemStack#EMPTY} if the viewer shows no matching stack.
      */
-    private static ItemStack findFallbackIngredient(Ingredient ingredient,
+    private static ItemStack findIngredientInViewerStacks(Ingredient ingredient,
             List<List<GenericStack>> viewerIngredients,
             Predicate<ItemStack> visiblePredicate) {
         // Slot order of recipe viewers does not necessarily match the 3x3 matrix, so we match by ingredient.
@@ -209,11 +209,17 @@ public final class EncodingHelper {
                 }
             }
         }
-        if (!firstViewerMatch.isEmpty()) {
-            return firstViewerMatch;
-        }
+        return firstViewerMatch;
+    }
 
-        // Same as above: return the first visible item immediately, remember the first item as a fallback.
+    /**
+     * Finds the default instance of one of the ingredient's items, preferring visible ones.
+     *
+     * @return The stack, or {@link ItemStack#EMPTY} if the ingredient has no items.
+     */
+    private static ItemStack findIngredientInRecipeItems(Ingredient ingredient,
+            Predicate<ItemStack> visiblePredicate) {
+        // Return the first visible item immediately, remember the first item as a fallback.
         ItemStack firstItem = ItemStack.EMPTY;
         for (var holder : (Iterable<Holder<Item>>) ingredient.items()::iterator) {
             var stack = holder.value().getDefaultInstance();
