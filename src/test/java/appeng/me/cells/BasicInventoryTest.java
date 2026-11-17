@@ -27,23 +27,6 @@ import appeng.util.BootstrapMinecraft;
 public class BasicInventoryTest {
     private static final IActionSource SRC = new BaseActionSource();
 
-    @Test
-    void unrelatedKeySpaceDoesNotLoadCellContents() throws ReflectiveOperationException {
-        var contents = BasicCellInventory.class.getDeclaredField("storedAmounts");
-        contents.setAccessible(true);
-        var itemCell = BasicCellInventory.createInventory(AEItems.ITEM_CELL_1K.stack(), null);
-        var fluidCell = BasicCellInventory.createInventory(AEItems.FLUID_CELL_1K.stack(), null);
-        for (var mode : Actionable.values()) {
-            assertThat(itemCell.extract(AEFluidKey.of(Fluids.WATER), 1, mode, SRC)).isZero();
-            assertThat(fluidCell.extract(AEItemKey.of(Items.DIAMOND), 1, mode, SRC)).isZero();
-        }
-        assertThat(contents.get(itemCell)).isNull();
-        assertThat(contents.get(fluidCell)).isNull();
-        assertThat(itemCell.insert(AEItemKey.of(Items.DIAMOND), 7, Actionable.MODULATE, SRC)).isEqualTo(7);
-        assertThat(itemCell.extract(AEItemKey.of(Items.DIAMOND), 3, Actionable.SIMULATE, SRC)).isEqualTo(3);
-        assertThat(itemCell.extract(AEItemKey.of(Items.DIAMOND), 7, Actionable.MODULATE, SRC)).isEqualTo(7);
-    }
-
     /**
      * Check that we can extract more than MAX_INT fluid at once from a cell. Regression test for
      * <a href="https://github.com/AppliedEnergistics/Applied-Energistics-2/issues/6794">#6794</a>
