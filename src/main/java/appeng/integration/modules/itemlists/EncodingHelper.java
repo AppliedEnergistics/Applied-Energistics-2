@@ -131,8 +131,16 @@ public final class EncodingHelper {
                     continue; // Skip empty slots
                 }
 
-                var bestIngredient = findBestIngredientForRecipe(ingredient, prioritizedNetworkInv,
-                        genericIngredients, visiblePredicate);
+                // Due to how some crafting recipes work, the ingredient can match more than just one item in the
+                // network inventory. We'll find all network inventory entries that it matches and sort them
+                // according to their suitability for encoding a pattern
+                var bestNetworkIngredient = prioritizedNetworkInv.entrySet().stream()
+                        .filter(ni -> ni.getKey() instanceof AEItemKey itemKey && itemKey.matches(ingredient))
+                        .max(Comparator.comparingInt(Map.Entry::getValue))
+                        .map(entry -> entry.getKey() instanceof AEItemKey itemKey ? itemKey.toStack() : null);
+
+                var bestIngredient = bestNetworkIngredient.orElseGet(
+                        () -> findFallbackIngredient(ingredient, genericIngredients, visiblePredicate));
 
                 encodedInputs.set(slot, bestIngredient);
             }
@@ -171,34 +179,17 @@ public final class EncodingHelper {
     }
 
     /**
-     * Finds the stack to encode for a recipe ingredient. In order of preference:
+     * Finds the stack to encode for a recipe ingredient that has no match in the network inventory. In order of
+     * preference:
      * <ol>
-     * <li>The highest priority network inventory entry matching the ingredient.</li>
      * <li>A stack shown by the recipe viewer that matches the ingredient. Unlike the ingredient's items, these retain
      * data components. Visible stacks are preferred to avoid encoding hidden entries.</li>
      * <li>The default instance of one of the ingredient's items, again preferring visible ones.</li>
      * </ol>
      */
-    private static ItemStack findBestIngredientForRecipe(Ingredient ingredient,
-            Map<AEKey, Integer> prioritizedNetworkInv,
+    private static ItemStack findFallbackIngredient(Ingredient ingredient,
             List<List<GenericStack>> viewerIngredients,
             Predicate<ItemStack> visiblePredicate) {
-        // Due to how some crafting recipes work, the ingredient can match more than just one item in the
-        // network inventory. We'll find all network inventory entries that it matches and pick the one that is
-        // most suitable for encoding a pattern.
-        AEItemKey bestNetworkKey = null;
-        int bestPriority = Integer.MIN_VALUE;
-        for (var entry : prioritizedNetworkInv.entrySet()) {
-            if (entry.getKey() instanceof AEItemKey itemKey && itemKey.matches(ingredient)
-                    && (bestNetworkKey == null || entry.getValue() > bestPriority)) {
-                bestNetworkKey = itemKey;
-                bestPriority = entry.getValue();
-            }
-        }
-        if (bestNetworkKey != null) {
-            return bestNetworkKey.toStack();
-        }
-
         // Slot order of recipe viewers does not necessarily match the 3x3 matrix, so we match by ingredient.
         ItemStack firstViewerMatch = ItemStack.EMPTY;
         for (var slotIngredients : viewerIngredients) {
