@@ -184,6 +184,7 @@ public abstract class AppEngBase implements AppEng {
         NeoForge.EVENT_BUS.addListener(SkyStoneBreakSpeed::handleBreakFaster);
         NeoForge.EVENT_BUS.addListener(TransformLogic::onServerStarted);
         NeoForge.EVENT_BUS.addListener(TransformLogic::onReloadServerResources);
+        NeoForge.EVENT_BUS.addListener(TransformLogic::onClientRecipesUpdated);
         NeoForge.EVENT_BUS.addListener(ServerCompassService::onLevelUnload);
 
         HotkeyActions.init();

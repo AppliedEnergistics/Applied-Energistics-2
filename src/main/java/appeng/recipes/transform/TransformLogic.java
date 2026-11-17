@@ -189,7 +189,6 @@ public final class TransformLogic {
         clearCache();
     }
 
-    @SubscribeEvent
     public static void onClientRecipesUpdated(RecipesUpdatedEvent e) {
         clearCache();
     }
