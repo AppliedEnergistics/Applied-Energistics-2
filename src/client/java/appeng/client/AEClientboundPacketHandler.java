@@ -234,8 +234,8 @@ public class AEClientboundPacketHandler {
         EnergyParticleData data = new EnergyParticleData(true, packet.d());
         for (int zz = 0; zz < 8; zz++) {
             // Distribute the spawn point around the item's position
-            double x = packet.z() + player.level().getRandom().nextFloat() * 0.5 - 0.25;
-            double y = packet.z() + player.level().getRandom().nextFloat() * 0.5 - 0.25;
+            double x = packet.x() + player.level().getRandom().nextFloat() * 0.5 - 0.25;
+            double y = packet.y() + player.level().getRandom().nextFloat() * 0.5 - 0.25;
             double z = packet.z() + player.level().getRandom().nextFloat() * 0.5 - 0.25;
             double speedX = 0.1f * packet.d().getStepX();
             double speedY = 0.1f * packet.d().getStepY();
