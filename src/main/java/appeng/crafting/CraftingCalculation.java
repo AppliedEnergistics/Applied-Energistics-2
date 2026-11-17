@@ -278,6 +278,10 @@ public class CraftingCalculation {
      * @return true if this needs more simulation
      */
     public boolean grantSimulationTime(int micros) {
+        if (this.craftingService != null) {
+            this.craftingService.flushDeferredCraftingProviderUpdates();
+        }
+
         synchronized (this.monitor) {
             if (this.done) {
                 return false;

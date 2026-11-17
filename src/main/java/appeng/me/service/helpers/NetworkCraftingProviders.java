@@ -77,13 +77,12 @@ public class NetworkCraftingProviders {
     }
 
     public void removeProvider(IGridNode node) {
-        var provider = node.getService(ICraftingProvider.class);
-        if (provider != null) {
-            var state = craftingProviders.remove(node);
-            if (state != null) {
-                state.unmount(this);
-                setLastModifiedOnTick();
-            }
+        // The node may already have dropped its crafting service when a deferred removal runs. The
+        // registration is keyed by the node, so drop that entry even if the service is gone.
+        var state = craftingProviders.remove(node);
+        if (state != null) {
+            state.unmount(this);
+            setLastModifiedOnTick();
         }
     }
 
