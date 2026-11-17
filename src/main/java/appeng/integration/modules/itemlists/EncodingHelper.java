@@ -123,6 +123,14 @@ public final class EncodingHelper {
             // ingredients based on the recipe ingredients, which allows for fuzzy-matching.
             var ingredients3x3 = CraftingRecipeUtil.ensure3by3CraftingMatrix(recipe.value());
 
+            // Slot order of recipe viewers does not necessarily match the 3x3 matrix, so we match by ingredient.
+            var viewerCandidates = genericIngredients.stream()
+                    .flatMap(List::stream)
+                    .map(GenericStack::what)
+                    .filter(AEItemKey.class::isInstance)
+                    .map(key -> ((AEItemKey) key).toStack())
+                    .toList();
+
             // Find a good match for every ingredient
             for (int slot = 0; slot < ingredients3x3.size(); slot++) {
                 var ingredient = ingredients3x3.get(slot).orElse(null);
@@ -138,17 +146,24 @@ public final class EncodingHelper {
                         .max(Comparator.comparingInt(Map.Entry::getValue))
                         .map(entry -> entry.getKey() instanceof AEItemKey itemKey ? itemKey.toStack() : null);
 
-                // To avoid encoding hidden entries, we'll cycle through the ingredient and try to find a visible
-                // stack, otherwise we'll use the first entry.
-                var bestIngredient = bestNetworkIngredient.orElse(
-                        ingredient.items()
-                                .map(Holder::value)
-                                .map(Item::getDefaultInstance)
-                                .filter(visiblePredicate).findFirst()
-                                .orElse(ingredient.items()
-                                        .map(Holder::value)
-                                        .map(Item::getDefaultInstance).findFirst()
-                                        .orElse(ItemStack.EMPTY)));
+                // If the network has no match, prefer the stacks shown by the recipe viewer. Unlike the
+                // ingredient's items, they retain data components (i.e. for component-matching ingredients).
+                // To avoid encoding hidden entries, we'll prefer visible stacks.
+                var bestIngredient = bestNetworkIngredient.orElseGet(() -> {
+                    var viewerStacks = viewerCandidates.stream()
+                            .filter(stack -> AEItemKey.of(stack) != null && AEItemKey.of(stack).matches(ingredient))
+                            .toList();
+                    return viewerStacks.stream().filter(visiblePredicate).findFirst()
+                            .or(() -> viewerStacks.stream().findFirst())
+                            .orElseGet(() -> ingredient.items()
+                                    .map(Holder::value)
+                                    .map(Item::getDefaultInstance)
+                                    .filter(visiblePredicate).findFirst()
+                                    .orElseGet(() -> ingredient.items()
+                                            .map(Holder::value)
+                                            .map(Item::getDefaultInstance).findFirst()
+                                            .orElse(ItemStack.EMPTY)));
+                });
 
                 encodedInputs.set(slot, bestIngredient);
             }
