@@ -193,6 +193,8 @@ public final class EncodingHelper {
             List<List<GenericStack>> viewerIngredients,
             Predicate<ItemStack> visiblePredicate) {
         // Slot order of recipe viewers does not necessarily match the 3x3 matrix, so we match by ingredient.
+        // We return the first visible match right away. A hidden match is only remembered as a fallback in case no
+        // visible match exists, so we don't return early on it.
         ItemStack firstViewerMatch = ItemStack.EMPTY;
         for (var slotIngredients : viewerIngredients) {
             for (var genericStack : slotIngredients) {
@@ -211,6 +213,7 @@ public final class EncodingHelper {
             return firstViewerMatch;
         }
 
+        // Same as above: return the first visible item immediately, remember the first item as a fallback.
         ItemStack firstItem = ItemStack.EMPTY;
         for (var holder : (Iterable<Holder<Item>>) ingredient.items()::iterator) {
             var stack = holder.value().getDefaultInstance();
