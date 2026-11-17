@@ -42,7 +42,6 @@ public class ChannelModeCommand implements ISubCommand {
         AELog.info("%s is changing channel mode to %s", ctx.getSource(), mode);
 
         AEConfig.instance().setChannelModel(mode);
-        AEConfig.instance().save();
 
         var gridCount = 0;
         for (Grid grid : TickHandler.instance().getGridList()) {
