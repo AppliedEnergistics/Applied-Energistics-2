@@ -13,9 +13,7 @@ import com.google.common.math.LongMath;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.core.Holder;
 import net.minecraft.core.NonNullList;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
@@ -225,8 +223,8 @@ public final class EncodingHelper {
             Predicate<ItemStack> visiblePredicate) {
         // Return the first visible item immediately, remember the first item as a fallback if none are visible.
         ItemStack firstItem = ItemStack.EMPTY;
-        for (var holder : (Iterable<Holder<Item>>) ingredient.items()::iterator) {
-            var stack = holder.value().getDefaultInstance();
+        for (var iterator = ingredient.items().iterator(); iterator.hasNext();) {
+            var stack = iterator.next().value().getDefaultInstance();
             if (visiblePredicate.test(stack)) {
                 return stack;
             }
