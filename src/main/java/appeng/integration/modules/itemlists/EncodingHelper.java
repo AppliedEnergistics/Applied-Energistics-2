@@ -13,10 +13,9 @@ import com.google.common.math.LongMath;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.core.Holder;
 import net.minecraft.core.NonNullList;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -133,24 +132,23 @@ public final class EncodingHelper {
                 // Due to how some crafting recipes work, the ingredient can match more than just one item in the
                 // network inventory. We'll find all network inventory entries that it matches and sort them
                 // according to their suitability for encoding a pattern
-                var bestNetworkIngredient = prioritizedNetworkInv.entrySet().stream()
+                var bestInput = prioritizedNetworkInv.entrySet().stream()
                         .filter(ni -> ni.getKey() instanceof AEItemKey itemKey && itemKey.matches(ingredient))
                         .max(Comparator.comparingInt(Map.Entry::getValue))
-                        .map(entry -> entry.getKey() instanceof AEItemKey itemKey ? itemKey.toStack() : null);
+                        .map(entry -> entry.getKey() instanceof AEItemKey itemKey ? itemKey.toStack() : null)
+                        .orElse(ItemStack.EMPTY);
 
-                // To avoid encoding hidden entries, we'll cycle through the ingredient and try to find a visible
-                // stack, otherwise we'll use the first entry.
-                var bestIngredient = bestNetworkIngredient.orElse(
-                        ingredient.items()
-                                .map(Holder::value)
-                                .map(Item::getDefaultInstance)
-                                .filter(visiblePredicate).findFirst()
-                                .orElse(ingredient.items()
-                                        .map(Holder::value)
-                                        .map(Item::getDefaultInstance).findFirst()
-                                        .orElse(ItemStack.EMPTY)));
+                // Fall back to finding it in the stacks actually shown by the recipe viewer (JEI, et al)
+                if (bestInput.isEmpty()) {
+                    bestInput = findIngredientInViewerStacks(ingredient, genericIngredients, visiblePredicate);
+                }
+                // And if that fails, fall back to the items exposed by the recipe ingredient itself,
+                // which will lose components, however.
+                if (bestInput.isEmpty()) {
+                    bestInput = findIngredientInRecipeItems(ingredient, visiblePredicate);
+                }
 
-                encodedInputs.set(slot, bestIngredient);
+                encodedInputs.set(slot, bestInput);
             }
         } else {
             for (int slot = 0; slot < genericIngredients.size(); slot++) {
@@ -184,6 +182,57 @@ public final class EncodingHelper {
             ClientPacketDistributor.sendToServer(message);
         }
 
+    }
+
+    /**
+     * Finds a stack shown by the recipe viewer that matches the ingredient. Unlike the ingredient's items, these retain
+     * data components.
+     *
+     * @return The stack, or {@link ItemStack#EMPTY} if the viewer shows no matching stack.
+     */
+    private static ItemStack findIngredientInViewerStacks(Ingredient ingredient,
+            List<List<GenericStack>> viewerIngredients,
+            Predicate<ItemStack> visiblePredicate) {
+        // Slot order of recipe viewers does not necessarily match the 3x3 matrix, so we match every item to the
+        // ingredient.
+        // We return the first visible match right away. A hidden match is only remembered as a fallback in case no
+        // visible match exists, so we don't return early on it.
+        ItemStack firstViewerMatch = ItemStack.EMPTY;
+        for (var slotIngredients : viewerIngredients) {
+            for (var genericStack : slotIngredients) {
+                if (genericStack.what() instanceof AEItemKey itemKey && itemKey.matches(ingredient)) {
+                    var stack = itemKey.toStack();
+                    if (visiblePredicate.test(stack)) {
+                        return stack;
+                    }
+                    if (firstViewerMatch.isEmpty()) {
+                        firstViewerMatch = stack;
+                    }
+                }
+            }
+        }
+        return firstViewerMatch;
+    }
+
+    /**
+     * Finds the default instance of one of the ingredient's items, preferring visible ones.
+     *
+     * @return The stack, or {@link ItemStack#EMPTY} if the ingredient has no items.
+     */
+    private static ItemStack findIngredientInRecipeItems(Ingredient ingredient,
+            Predicate<ItemStack> visiblePredicate) {
+        // Return the first visible item immediately, remember the first item as a fallback if none are visible.
+        ItemStack firstItem = ItemStack.EMPTY;
+        for (var iterator = ingredient.items().iterator(); iterator.hasNext();) {
+            var stack = iterator.next().value().getDefaultInstance();
+            if (visiblePredicate.test(stack)) {
+                return stack;
+            }
+            if (firstItem.isEmpty()) {
+                firstItem = stack;
+            }
+        }
+        return firstItem;
     }
 
     // Given a set of possible ingredients, find the one that has the highest priority
