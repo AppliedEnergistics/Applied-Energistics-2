@@ -17,6 +17,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -123,14 +124,6 @@ public final class EncodingHelper {
             // ingredients based on the recipe ingredients, which allows for fuzzy-matching.
             var ingredients3x3 = CraftingRecipeUtil.ensure3by3CraftingMatrix(recipe.value());
 
-            // Slot order of recipe viewers does not necessarily match the 3x3 matrix, so we match by ingredient.
-            var viewerCandidates = genericIngredients.stream()
-                    .flatMap(List::stream)
-                    .map(GenericStack::what)
-                    .filter(AEItemKey.class::isInstance)
-                    .map(key -> ((AEItemKey) key).toStack())
-                    .toList();
-
             // Find a good match for every ingredient
             for (int slot = 0; slot < ingredients3x3.size(); slot++) {
                 var ingredient = ingredients3x3.get(slot).orElse(null);
@@ -138,32 +131,8 @@ public final class EncodingHelper {
                     continue; // Skip empty slots
                 }
 
-                // Due to how some crafting recipes work, the ingredient can match more than just one item in the
-                // network inventory. We'll find all network inventory entries that it matches and sort them
-                // according to their suitability for encoding a pattern
-                var bestNetworkIngredient = prioritizedNetworkInv.entrySet().stream()
-                        .filter(ni -> ni.getKey() instanceof AEItemKey itemKey && itemKey.matches(ingredient))
-                        .max(Comparator.comparingInt(Map.Entry::getValue))
-                        .map(entry -> entry.getKey() instanceof AEItemKey itemKey ? itemKey.toStack() : null);
-
-                // If the network has no match, prefer the stacks shown by the recipe viewer. Unlike the
-                // ingredient's items, they retain data components (i.e. for component-matching ingredients).
-                // To avoid encoding hidden entries, we'll prefer visible stacks.
-                var bestIngredient = bestNetworkIngredient.orElseGet(() -> {
-                    var viewerStacks = viewerCandidates.stream()
-                            .filter(stack -> AEItemKey.of(stack) != null && AEItemKey.of(stack).matches(ingredient))
-                            .toList();
-                    return viewerStacks.stream().filter(visiblePredicate).findFirst()
-                            .or(() -> viewerStacks.stream().findFirst())
-                            .orElseGet(() -> ingredient.items()
-                                    .map(Holder::value)
-                                    .map(Item::getDefaultInstance)
-                                    .filter(visiblePredicate).findFirst()
-                                    .orElseGet(() -> ingredient.items()
-                                            .map(Holder::value)
-                                            .map(Item::getDefaultInstance).findFirst()
-                                            .orElse(ItemStack.EMPTY)));
-                });
+                var bestIngredient = findBestIngredientForRecipe(ingredient, prioritizedNetworkInv,
+                        genericIngredients, visiblePredicate);
 
                 encodedInputs.set(slot, bestIngredient);
             }
@@ -199,6 +168,67 @@ public final class EncodingHelper {
             ClientPacketDistributor.sendToServer(message);
         }
 
+    }
+
+    /**
+     * Finds the stack to encode for a recipe ingredient. In order of preference:
+     * <ol>
+     * <li>The highest priority network inventory entry matching the ingredient.</li>
+     * <li>A stack shown by the recipe viewer that matches the ingredient. Unlike the ingredient's items, these retain
+     * data components. Visible stacks are preferred to avoid encoding hidden entries.</li>
+     * <li>The default instance of one of the ingredient's items, again preferring visible ones.</li>
+     * </ol>
+     */
+    private static ItemStack findBestIngredientForRecipe(Ingredient ingredient,
+            Map<AEKey, Integer> prioritizedNetworkInv,
+            List<List<GenericStack>> viewerIngredients,
+            Predicate<ItemStack> visiblePredicate) {
+        // Due to how some crafting recipes work, the ingredient can match more than just one item in the
+        // network inventory. We'll find all network inventory entries that it matches and pick the one that is
+        // most suitable for encoding a pattern.
+        AEItemKey bestNetworkKey = null;
+        int bestPriority = Integer.MIN_VALUE;
+        for (var entry : prioritizedNetworkInv.entrySet()) {
+            if (entry.getKey() instanceof AEItemKey itemKey && itemKey.matches(ingredient)
+                    && (bestNetworkKey == null || entry.getValue() > bestPriority)) {
+                bestNetworkKey = itemKey;
+                bestPriority = entry.getValue();
+            }
+        }
+        if (bestNetworkKey != null) {
+            return bestNetworkKey.toStack();
+        }
+
+        // Slot order of recipe viewers does not necessarily match the 3x3 matrix, so we match by ingredient.
+        ItemStack firstViewerMatch = ItemStack.EMPTY;
+        for (var slotIngredients : viewerIngredients) {
+            for (var genericStack : slotIngredients) {
+                if (genericStack.what() instanceof AEItemKey itemKey && itemKey.matches(ingredient)) {
+                    var stack = itemKey.toStack();
+                    if (visiblePredicate.test(stack)) {
+                        return stack;
+                    }
+                    if (firstViewerMatch.isEmpty()) {
+                        firstViewerMatch = stack;
+                    }
+                }
+            }
+        }
+        if (!firstViewerMatch.isEmpty()) {
+            return firstViewerMatch;
+        }
+
+        ItemStack firstItem = ItemStack.EMPTY;
+        for (var holder : (Iterable<Holder<Item>>) ingredient.items()::iterator) {
+            var stack = holder.value().getDefaultInstance();
+            if (visiblePredicate.test(stack)) {
+                return stack;
+            }
+            if (firstItem.isEmpty()) {
+                firstItem = stack;
+            }
+        }
+        return firstItem;
     }
 
     // Given a set of possible ingredients, find the one that has the highest priority
