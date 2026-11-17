@@ -328,7 +328,7 @@ public final class AEConfig {
     public void setChannelModel(ChannelMode mode) {
         if (mode != common.channels.get()) {
             common.channels.set(mode);
-            client.spec.save();
+            common.spec.save();
         }
     }
 
@@ -409,11 +409,6 @@ public final class AEConfig {
 
     public int getTerminalMargin() {
         return client.terminalMargin.get();
-    }
-
-    public void save() {
-        common.spec.save();
-        client.spec.save();
     }
 
     private static class ClientConfig {
