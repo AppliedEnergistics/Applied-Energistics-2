@@ -72,7 +72,8 @@ public class TestCraftingJob {
             var grid = helper.getGrid(BlockPos.ZERO);
             var result = grid.getCraftingService().submitJob(plan, null, null, true,
                     new BaseActionSource());
-            helper.check(result.successful(), "failed to submit job: " + result.errorCode() + " " + result.errorDetail());
+            helper.check(result.successful(),
+                    "failed to submit job: " + result.errorCode() + " " + result.errorDetail());
             submitted = true;
         }
     }
