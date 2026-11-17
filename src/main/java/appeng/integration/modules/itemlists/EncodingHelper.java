@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Predicate;
 
 import com.google.common.math.LongMath;
@@ -134,15 +135,17 @@ public final class EncodingHelper {
                 // Due to how some crafting recipes work, the ingredient can match more than just one item in the
                 // network inventory. We'll find all network inventory entries that it matches and sort them
                 // according to their suitability for encoding a pattern
-                var bestNetworkIngredient = prioritizedNetworkInv.entrySet().stream()
+                Optional<ItemStack> bestIngredient = prioritizedNetworkInv.entrySet().stream()
                         .filter(ni -> ni.getKey() instanceof AEItemKey itemKey && itemKey.matches(ingredient))
                         .max(Comparator.comparingInt(Map.Entry::getValue))
                         .map(entry -> entry.getKey() instanceof AEItemKey itemKey ? itemKey.toStack() : null);
 
-                var bestIngredient = bestNetworkIngredient.orElseGet(
-                        () -> findFallbackIngredient(ingredient, genericIngredients, visiblePredicate));
+                if (bestIngredient.isEmpty()) {
+                    bestIngredient = Optional
+                            .of(findFallbackIngredient(ingredient, genericIngredients, visiblePredicate));
+                }
 
-                encodedInputs.set(slot, bestIngredient);
+                encodedInputs.set(slot, bestIngredient.get());
             }
         } else {
             for (int slot = 0; slot < genericIngredients.size(); slot++) {
