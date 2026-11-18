@@ -34,6 +34,7 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -60,6 +61,8 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.FuzzyMode;
@@ -118,8 +121,8 @@ public class ColorApplicatorItem extends AEBasePoweredItem
     }
 
     @Override
-    public double getChargeRate(ItemStack stack) {
-        return 80d + 80d * Upgrades.getEnergyCardMultiplier(getUpgrades(stack));
+    public double getChargeRate(DataComponentGetter item) {
+        return 80d + 80d * Upgrades.getEnergyCardMultiplier(getUpgradesReadOnly(item));
     }
 
     @Override
@@ -268,8 +271,14 @@ public class ColorApplicatorItem extends AEBasePoweredItem
         }
 
         var mode = simulate ? Actionable.SIMULATE : Actionable.MODULATE;
-        var success = inv.extract(key, 1, mode, new BaseActionSource()) >= 1
-                && this.extractAEPower(applicator, POWER_PER_USE, mode) >= POWER_PER_USE;
+        boolean success;
+        try (var tr = Transaction.openRoot()) {
+            success = inv.extract(key, 1, mode, new BaseActionSource()) >= 1
+                    && this.extractAEPower(ItemAccess.forStack(applicator), POWER_PER_USE, tr) >= POWER_PER_USE;
+            if (!simulate) {
+                tr.commit();
+            }
+        }
         // Clear the color once we run out
         if (success
                 && !simulate
@@ -476,13 +485,21 @@ public class ColorApplicatorItem extends AEBasePoweredItem
     }
 
     @Override
-    public IUpgradeInventory getUpgrades(ItemStack is) {
-        return UpgradeInventories.forItem(is, 2, this::onUpgradesChanged);
+    public int getMaxUpgrades(DataComponentGetter item) {
+        return 2;
     }
 
-    private void onUpgradesChanged(ItemStack stack, IUpgradeInventory upgrades) {
+    @Override
+    public IUpgradeInventory getUpgrades(ItemAccess access) {
+        return UpgradeInventories.forItem(access, this::onUpgradesChanged);
+    }
+
+    private void onUpgradesChanged(ItemAccess access, IUpgradeInventory upgrades) {
         // Item is crafted with a normal cell, base energy card contains a dense cell (x8)
-        setAEMaxPowerMultiplier(stack, 1 + Upgrades.getEnergyCardMultiplier(upgrades) * 8);
+        try (var tr = Transaction.openRoot()) {
+            setAEMaxPowerMultiplier(access, 1 + Upgrades.getEnergyCardMultiplier(upgrades) * 8, tr);
+            tr.commit();
+        }
     }
 
     @Override
@@ -529,12 +546,16 @@ public class ColorApplicatorItem extends AEBasePoweredItem
         dyeStorage.insert(AEItemKey.of(Items.SNOWBALL), 128, Actionable.MODULATE, new BaseActionSource());
 
         // Upgrade energy storage
-        var upgrades = item.getUpgrades(applicator);
+        var access = ItemAccess.forStack(applicator);
+        var upgrades = item.getUpgrades(access);
         upgrades.addItems(AEItems.ENERGY_CARD.stack());
         upgrades.addItems(AEItems.ENERGY_CARD.stack());
 
         // Fill it up with power
-        item.injectAEPower(applicator, item.getAEMaxPower(applicator), Actionable.MODULATE);
+        try (var tr = Transaction.openRoot()) {
+            item.injectAEPower(access, item.getAEMaxPower(applicator), tr);
+            tr.commit();
+        }
         return applicator;
     }
 

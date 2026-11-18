@@ -48,6 +48,8 @@ import net.minecraft.world.level.block.state.properties.ChestType;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.fml.ModList;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 
 import appeng.api.config.AccessRestriction;
 import appeng.api.config.Actionable;
@@ -644,7 +646,10 @@ public final class TestPlots {
 
     private static ItemStack createMatterCannon(Item... ammo) {
         var cannon = AEItems.MATTER_CANNON.stack();
-        ((MatterCannonItem) cannon.getItem()).injectAEPower(cannon, Double.MAX_VALUE, Actionable.MODULATE);
+        try (var tr = Transaction.openRoot()) {
+            ((MatterCannonItem) cannon.getItem()).injectAEPower(ItemAccess.forStack(cannon), Double.MAX_VALUE, tr);
+            tr.commit();
+        }
         var cannonInv = BasicCellInventory.createInventory(cannon, null);
         for (var item : ammo) {
             var key = AEItemKey.of(item);

@@ -10,8 +10,10 @@ import java.util.List;
 import java.util.Map;
 
 import net.minecraft.world.level.ItemLike;
+import net.neoforged.fml.ModList;
 
 import appeng.api.features.HotkeyAction;
+import appeng.api.integrations.curios.CuriosHotkeyAction;
 import appeng.core.AppEng;
 import appeng.core.definitions.AEItems;
 import appeng.core.definitions.ItemDefinition;
@@ -56,7 +58,9 @@ public class HotkeyActions {
      */
     public static void register(ItemLike item, InventoryHotkeyAction.Opener opener, String id) {
         register(new InventoryHotkeyAction(item, opener), id);
-        register(new CuriosHotkeyAction(item, opener), id);
+        if (ModList.get().isLoaded("curios")) {
+            register(new CuriosHotkeyAction(item, opener), id);
+        }
     }
 
     /**
