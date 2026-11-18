@@ -108,12 +108,27 @@ public final class MenuLocators {
         return new InventoryItemLocator(inventorySlot, null);
     }
 
+    /**
+     * Legacy factory that addresses a curios slot by its index across all slot types. Prefer
+     * {@link #forCurioSlot(String, int)}, since the flat index depends on the order Curios iterates slot types in.
+     */
     public static ItemMenuHostLocator forCurioSlot(int curioSlot) {
-        return new CuriosItemLocator(curioSlot, null);
+        return forCurioSlot("", curioSlot);
     }
 
+    /**
+     * Legacy factory, see {@link #forCurioSlot(int)}.
+     */
     public static ItemMenuHostLocator forCurioSlot(int curioSlot, UseOnContext context) {
-        return new CuriosItemLocator(curioSlot, getHitResult(context));
+        return forCurioSlot("", curioSlot, context);
+    }
+
+    public static ItemMenuHostLocator forCurioSlot(String slotType, int curioSlot) {
+        return new CuriosItemLocator(slotType, curioSlot, null);
+    }
+
+    public static ItemMenuHostLocator forCurioSlot(String slotType, int curioSlot, UseOnContext context) {
+        return new CuriosItemLocator(slotType, curioSlot, getHitResult(context));
     }
 
     private static int getPlayerInventorySlotFromHand(Player player, InteractionHand hand) {
