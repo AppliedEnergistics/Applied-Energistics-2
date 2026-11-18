@@ -42,7 +42,6 @@ import net.minecraft.world.level.ExplosionDamageCalculator;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerExplosion;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -187,7 +186,8 @@ public final class TinyTNTPrimedEntity extends PrimedTnt implements IEntityWithC
                             strength -= (resistance + 0.3F) * 0.11f;
 
                             if (strength > 0.01 && !state.isAir()) {
-                                level().setBlock(point, Blocks.AIR.defaultBlockState(), 3);
+                                // The callback needs the original block entity for loot and mod-specific
+                                // explosion handling, and is responsible for removing the block itself.
                                 state.onExplosionHit((ServerLevel) this.level(), point, ex, (stack, dropPoint) -> {
                                     Block.popResource(this.level(), dropPoint, stack);
                                 });

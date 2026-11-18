@@ -32,6 +32,7 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
@@ -190,6 +191,11 @@ public class ManagedGridNode implements IManagedGridNode {
     public void serialize(ValueOutput output) {
         if (this.node != null) {
             this.node.saveToNBT(this.tagName, output);
+        } else if (this.initData != null && this.initData.data != null) {
+            // The node is only created on the first tick, but the host may be saved before that happens.
+            // Preserve the data that was read earlier, otherwise it would be lost.
+            this.initData.data.read(this.tagName, CompoundTag.CODEC)
+                    .ifPresent(tag -> output.store(this.tagName, CompoundTag.CODEC, tag));
         }
     }
 

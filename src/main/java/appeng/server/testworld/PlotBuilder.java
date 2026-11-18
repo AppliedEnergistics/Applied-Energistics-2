@@ -9,6 +9,7 @@ import java.util.function.Function;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -113,6 +114,17 @@ public interface PlotBuilder {
             Consumer<T> partCustomizer) {
         addBuildAction(new PlacePart(bb(bb), part.get(), side));
         addBuildAction(new PartCustomizer<>(bb(bb), side, part, partCustomizer));
+    }
+
+    /**
+     * Places a part using an item stack that can be customized, i.e. to add enchantments. The stack's components are
+     * imported into the part like when placing the item in the world.
+     */
+    default void part(String bb,
+            Direction side,
+            ItemDefinition<? extends PartItem<?>> part,
+            BiConsumer<HolderLookup.Provider, ItemStack> stackCustomizer) {
+        addBuildAction(new PlacePart(bb(bb), part.asItem(), side, stackCustomizer));
     }
 
     default <T extends IPart> void facade(String bb,

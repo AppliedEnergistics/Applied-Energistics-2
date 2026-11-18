@@ -409,6 +409,11 @@ public class BasicCellInventory implements StorageCell {
 
     @Override
     public long extract(AEKey what, long amount, Actionable mode, IActionSource source) {
+        // Storage preference checks also probe cells from unrelated key spaces.
+        // Avoid loading and searching their inventories for keys they cannot contain.
+        if (!keyType.contains(what)) {
+            return 0;
+        }
         var currentAmount = getCellItems().getLong(what);
         if (currentAmount > 0) {
             if (amount >= currentAmount) {

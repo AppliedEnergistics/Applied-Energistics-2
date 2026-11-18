@@ -1,5 +1,6 @@
 package appeng.datagen.providers.localization;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
@@ -9,8 +10,8 @@ import com.google.common.base.Preconditions;
 import com.google.gson.JsonObject;
 
 import net.minecraft.data.CachedOutput;
-import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
+import net.minecraft.data.PackOutput;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 
@@ -29,14 +30,14 @@ import appeng.init.InitVillager;
 import appeng.integration.modules.igtooltip.TooltipIds;
 
 public class LocalizationProvider implements IAE2DataProvider {
-    private final Map<String, String> localizations = new HashMap<>();
+    private final Map<String, String> localizations = Collections.synchronizedMap(new HashMap<>());
 
-    private final DataGenerator generator;
+    private PackOutput packOutput;
 
     private boolean wasSaved = false;
 
-    public LocalizationProvider(DataGenerator generator) {
-        this.generator = generator;
+    public void setPackOutput(PackOutput packOutput) {
+        this.packOutput = packOutput;
     }
 
     @Override
@@ -99,7 +100,8 @@ public class LocalizationProvider implements IAE2DataProvider {
     public void add(String key, String text) {
         Preconditions.checkState(!wasSaved, "Cannot add more translations after they were already saved");
         var previous = localizations.put(key, text);
-        if (previous != null) {
+        // Registry bootstraps run more than once, so they add the same translations repeatedly
+        if (previous != null && !previous.equals(text)) {
             throw new IllegalStateException("Localization key " + key + " is already translated to: " + previous);
         }
     }
@@ -154,7 +156,7 @@ public class LocalizationProvider implements IAE2DataProvider {
     private CompletableFuture<?> save(CachedOutput cache, Map<String, String> localizations) {
         wasSaved = true;
 
-        var path = this.generator.getPackOutput().getOutputFolder().resolve("assets/ae2/lang/en_us.json");
+        var path = this.packOutput.getOutputFolder().resolve("assets/ae2/lang/en_us.json");
 
         // Dump the translation in ascending order
         var sorted = new TreeMap<>(localizations);

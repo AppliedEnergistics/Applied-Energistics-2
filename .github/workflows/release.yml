@@ -10,15 +10,12 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       ARTIFACT_PATH: ${{ steps.prepare_artifact_metadata.outputs.ARTIFACT_PATH }}
-      ARTIFACT_NAME: ${{ steps.prepare_artifact_metadata.outputs.ARTIFACT_NAME }}
       JAVADOC_PATH: ${{ steps.prepare_artifact_metadata.outputs.JAVADOC_PATH }}
-      JAVADOC_NAME: ${{ steps.prepare_artifact_metadata.outputs.JAVADOC_NAME }}
       API_PATH: ${{ steps.prepare_artifact_metadata.outputs.API_PATH }}
-      API_NAME: ${{ steps.prepare_artifact_metadata.outputs.API_NAME }}
       VERSION: ${{ steps.prepare_artifact_metadata.outputs.VERSION }}
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 50
       - run: git fetch origin --tags
@@ -33,17 +30,14 @@ jobs:
         id: prepare_artifact_metadata
         run: |
           echo ARTIFACT_PATH=./build/libs/appliedenergistics2-${VERSION}.jar >> $GITHUB_OUTPUT
-          echo ARTIFACT_NAME=appliedenergistics2-${VERSION}.jar >> $GITHUB_OUTPUT
           echo JAVADOC_PATH=./build/libs/appliedenergistics2-${VERSION}-javadoc.jar >> $GITHUB_OUTPUT
-          echo JAVADOC_NAME=appliedenergistics2-${VERSION}-javadoc.jar >> $GITHUB_OUTPUT
           echo API_PATH=./build/libs/appliedenergistics2-${VERSION}-api.jar >> $GITHUB_OUTPUT
-          echo API_NAME=appliedenergistics2-${VERSION}-api.jar >> $GITHUB_OUTPUT
           echo VERSION=${VERSION} >> $GITHUB_OUTPUT
       - name: Archive build results
         # It is important to  archive .gradle as well since gradle stores the incremental build state there
         run: tar -I zstd -cf build.tar.zst build/libs build/repo
       - name: Upload build and gradle folders
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: build-artifacts
           path: build.tar.zst
@@ -56,38 +50,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Download build artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: build-artifacts
       - name: Unpack build artifact
         run: tar axf build.tar.zst
-      - name: Upload Release Artifact
-        uses: actions/upload-release-asset@v1.0.1
+      - name: Upload Release Artifacts
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ github.event.release.upload_url }}
-          asset_path: ${{ needs.build.outputs.ARTIFACT_PATH }}
-          asset_name: ${{ needs.build.outputs.ARTIFACT_NAME }}
-          asset_content_type: application/zip
-      - name: Upload Javadocs Artifact
-        uses: actions/upload-release-asset@v1.0.1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ github.event.release.upload_url }}
-          asset_path: ${{ needs.build.outputs.JAVADOC_PATH }}
-          asset_name: ${{ needs.build.outputs.JAVADOC_NAME }}
-          asset_content_type: application/zip
-      - name: Upload API
-        uses: actions/upload-release-asset@v1.0.1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ github.event.release.upload_url }}
-          asset_path: ${{ needs.build.outputs.API_PATH }}
-          asset_name: ${{ needs.build.outputs.API_NAME }}
-          asset_content_type: application/zip
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          TAG: ${{ github.event.release.tag_name }}
+          ARTIFACT_PATH: ${{ needs.build.outputs.ARTIFACT_PATH }}
+          JAVADOC_PATH: ${{ needs.build.outputs.JAVADOC_PATH }}
+          API_PATH: ${{ needs.build.outputs.API_PATH }}
+        run: gh release upload "$TAG" "$ARTIFACT_PATH" "$JAVADOC_PATH" "$API_PATH"
 
   deploy-github-packages:
     name: Deploy to Github Packages
@@ -97,7 +73,7 @@ jobs:
       packages: write
     steps:
       - name: Download build artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: build-artifacts
       - name: Unpack build artifact
@@ -118,7 +94,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Download build artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: build-artifacts
       - name: Unpack build artifact
@@ -138,7 +114,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Download build artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: build-artifacts
       - name: Unpack build artifact
@@ -146,7 +122,7 @@ jobs:
       - name: Validate artifacts exist
         run: test -d ./build
       - name: Upload to Curseforge
-        uses: Kira-NT/mc-publish@52307b03863581dec6b652b83e597aec02ebb075
+        uses: Kira-NT/mc-publish@c23376546a97f5ba7984e94445da359459b14419 # v3.3.2
         with:
           name: AE2 ${{ needs.build.outputs.VERSION }} [NEOFORGE]
           version: ${{ needs.build.outputs.VERSION }}
@@ -171,7 +147,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Download build artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: build-artifacts
       - name: Unpack build artifact
@@ -179,7 +155,7 @@ jobs:
       - name: Validate artifacts exist
         run: test -d ./build
       - name: Upload to Modrinth
-        uses: Kira-NT/mc-publish@52307b03863581dec6b652b83e597aec02ebb075
+        uses: Kira-NT/mc-publish@c23376546a97f5ba7984e94445da359459b14419 # v3.3.2
         with:
           name: AE2 ${{ needs.build.outputs.VERSION }} [NEOFORGE]
           version: ${{ needs.build.outputs.VERSION }}

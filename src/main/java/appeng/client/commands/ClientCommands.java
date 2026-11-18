@@ -28,7 +28,6 @@ public final class ClientCommands {
             var src = context.getSource();
             var toggle = !AEConfig.instance().isShowDebugGuiOverlays();
             AEConfig.instance().setShowDebugGuiOverlays(toggle);
-            AEConfig.instance().save();
             src.sendSystemMessage(Component.literal("GUI Overlays: " + toggle));
             return 0;
         }));

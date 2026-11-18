@@ -19,6 +19,7 @@
 package appeng.server.services.compass;
 
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
@@ -40,6 +41,7 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.LevelChunkSection;
 import net.minecraft.world.level.chunk.status.ChunkStatus;
+import net.neoforged.neoforge.event.level.LevelEvent;
 
 import appeng.blockentity.misc.MysteriousCubeBlockEntity;
 import appeng.core.definitions.AEBlocks;
@@ -53,24 +55,39 @@ public final class ServerCompassService {
     private static final int MAX_RANGE = 174;
     private static final int CHUNK_SIZE = 16;
 
-    private record Query(ServerLevel level, ChunkPos chunk) {
+    // We use this basic cache to prevent client-side spamming, although the client can request arbitrary
+    // chunk positions and range, if malicious. Caches are per level and removed when the level unloads.
+    // This map is concurrent since invalidation can happen from worldgen threads.
+    private static final Map<ServerLevel, LoadingCache<ChunkPos, Optional<BlockPos>>> CLOSEST_METEORITE_CACHE = new ConcurrentHashMap<>();
+
+    private static LoadingCache<ChunkPos, Optional<BlockPos>> createCache(ServerLevel level) {
+        return CacheBuilder.newBuilder()
+                .maximumSize(100)
+                .expireAfterWrite(5, TimeUnit.SECONDS)
+                .build(CacheLoader.from(chunkPos -> Optional.ofNullable(findClosestMeteoritePos(level, chunkPos))));
     }
 
-    // We use this basic cache to prevent client-side spamming, although the client can request arbitrary
-    // chunk positions and range, if malicious.
-    private static final LoadingCache<Query, Optional<BlockPos>> CLOSEST_METEORITE_CACHE = CacheBuilder.newBuilder()
-            .maximumSize(100)
-            .weakKeys()
-            .expireAfterWrite(5, TimeUnit.SECONDS)
-            .build(new CacheLoader<>() {
-                @Override
-                public Optional<BlockPos> load(ServerCompassService.Query query) {
-                    return Optional.ofNullable(findClosestMeteoritePos(query.level, query.chunk));
-                }
-            });
-
     public static Optional<BlockPos> getClosestMeteorite(ServerLevel level, ChunkPos chunkPos) {
-        return CLOSEST_METEORITE_CACHE.getUnchecked(new Query(level, chunkPos));
+        return CLOSEST_METEORITE_CACHE.computeIfAbsent(level, ServerCompassService::createCache)
+                .getUnchecked(chunkPos);
+    }
+
+    /**
+     * A change in one chunk can affect the result of searches originating in any chunk within range, so we invalidate
+     * all cached searches for the level.
+     */
+    private static void invalidateCache(ServerLevel level) {
+        // Do not create a cache here, since this may be called from worldgen threads
+        var cache = CLOSEST_METEORITE_CACHE.get(level);
+        if (cache != null) {
+            cache.invalidateAll();
+        }
+    }
+
+    public static void onLevelUnload(LevelEvent.Unload event) {
+        if (event.getLevel() instanceof ServerLevel level) {
+            CLOSEST_METEORITE_CACHE.remove(level);
+        }
     }
 
     @Nullable
@@ -178,7 +195,7 @@ public final class ServerCompassService {
         for (var i = 0; i < level.getSectionsCount(); i++) {
             updateArea(compassRegion, chunk, i);
         }
-        CLOSEST_METEORITE_CACHE.invalidate(new Query(level, chunk.getPos()));
+        invalidateCache(level);
     }
 
     /**
@@ -188,7 +205,7 @@ public final class ServerCompassService {
         ChunkAccess chunk = level.getChunk(pos);
         var compassRegion = CompassRegion.get(level, chunk.getPos());
         updateArea(compassRegion, chunk, level.getSectionIndex(pos.getY()));
-        CLOSEST_METEORITE_CACHE.invalidate(new Query(level, chunk.getPos()));
+        invalidateCache(level);
     }
 
     public static void rebuild(ServerLevel level, ChunkPos center, CommandSourceStack source) {
@@ -239,7 +256,7 @@ public final class ServerCompassService {
         }
 
         source.sendSystemMessage(Component.literal("Found " + hits + " hits"));
-        CLOSEST_METEORITE_CACHE.invalidateAll();
+        invalidateCache(level);
     }
 
     private static boolean[] indexChunk(ChunkAccess chunk) {
