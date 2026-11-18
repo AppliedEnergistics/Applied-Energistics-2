@@ -209,11 +209,16 @@ public class AECraftingPattern implements IPatternDetails, IMolecularAssemblerSu
 
         var indexMap = placement.slotsToIngredientIndex();
 
-        if (ingredientIndex < 0 || ingredientIndex > indexMap.size()) {
+        if (ingredientIndex < 0 || ingredientIndex >= indexMap.size()) {
             return Optional.empty();
         }
 
-        return Optional.of(placement.ingredients().get(indexMap.getInt(ingredientIndex)));
+        int placementIndex = indexMap.getInt(ingredientIndex);
+        if (placementIndex < 0) {
+            return Optional.empty();
+        }
+
+        return Optional.of(placement.ingredients().get(placementIndex));
     }
 
     private Optional<Ingredient> getShapelessRecipeIngredient(int slot) {
@@ -232,11 +237,17 @@ public class AECraftingPattern implements IPatternDetails, IMolecularAssemblerSu
             return Optional.empty();
         }
 
-        if (ingredientIndex < placement.slotsToIngredientIndex().getInt(ingredientIndex)) {
-            return Optional.of(placement.ingredients().get(placement.slotsToIngredientIndex().getInt(ingredientIndex)));
+        var indexMap = placement.slotsToIngredientIndex();
+        if (ingredientIndex >= indexMap.size()) {
+            return Optional.empty();
         }
 
-        return Optional.empty();
+        int placementIndex = indexMap.getInt(ingredientIndex);
+        if (placementIndex < 0) {
+            return Optional.empty();
+        }
+
+        return Optional.of(placement.ingredients().get(placementIndex));
     }
 
     /**
