@@ -14,28 +14,27 @@ import appeng.integration.modules.curios.CuriosIntegration;
 /**
  * Implements {@link ItemMenuHostLocator} for items equipped in curios slots.
  */
-record CuriosItemLocator(int curioSlot, @Nullable BlockHitResult hitResult) implements ItemMenuHostLocator {
+record CuriosItemLocator(String slotType, int curioSlot,
+        @Nullable BlockHitResult hitResult) implements ItemMenuHostLocator {
     public ItemStack locateItem(Player player) {
-        var cap = player.getCapability(CuriosIntegration.ITEM_HANDLER);
-        if (cap == null || curioSlot >= cap.size()) {
-            return ItemStack.EMPTY;
-        }
-        return cap.getResource(curioSlot).toStack();
+        return CuriosIntegration.getStack(player, slotType, curioSlot);
     }
 
     public void writeToPacket(FriendlyByteBuf buf) {
+        buf.writeUtf(slotType);
         buf.writeInt(curioSlot);
         buf.writeOptional(Optional.ofNullable(hitResult), BlockHitResult.STREAM_CODEC);
     }
 
     public static CuriosItemLocator readFromPacket(FriendlyByteBuf buf) {
         return new CuriosItemLocator(
+                buf.readUtf(),
                 buf.readInt(),
                 buf.readOptional(BlockHitResult.STREAM_CODEC).orElse(null));
     }
 
     @Override
     public String toString() {
-        return "curios slot " + curioSlot;
+        return "curios slot " + slotType + "#" + curioSlot;
     }
 }

@@ -111,6 +111,8 @@ dependencies {
             break
     }
 
+    // Only referenced from appeng.integration.modules.curios.CuriosAccess, which is never loaded without Curios
+    compileOnly "top.theillusivec4.curios:curios-neoforge:${project.curios_version}:api"
     if (project.runtime_curio == "true") {
         localRuntimeOnly("top.theillusivec4.curios:curios-neoforge:${project.curios_version}")
     }

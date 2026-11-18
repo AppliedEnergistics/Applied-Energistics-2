@@ -19,16 +19,13 @@ public record CuriosHotkeyAction(Predicate<ItemStack> locatable,
 
     @Override
     public boolean run(Player player) {
-        var cap = player.getCapability(CuriosIntegration.ITEM_HANDLER);
-        if (cap == null)
-            return false;
-        for (int i = 0; i < cap.size(); i++) {
-            if (locatable.test(cap.getResource(i).toStack())) {
-                if (opener.open(player, MenuLocators.forCurioSlot(i))) {
-                    return true;
-                }
+        var opened = new boolean[1];
+        CuriosIntegration.forEachStack(player, (slotType, index, stack) -> {
+            if (!opened[0] && locatable.test(stack)
+                    && opener.open(player, MenuLocators.forCurioSlot(slotType, index))) {
+                opened[0] = true;
             }
-        }
-        return false;
+        });
+        return opened[0];
     }
 }
