@@ -199,15 +199,17 @@ public class ChargerBlockEntity extends AENetworkedPoweredBlockEntity implements
 
         // charge from the network!
         if (this.getInternalCurrentPower() < POWER_THRESHOLD) {
+            double before = this.getInternalCurrentPower();
             getMainNode().ifPresent(grid -> {
-                double toExtract = Math.min(800.0, this.getInternalMaxPower() - this.getInternalCurrentPower());
+                double toExtract = Math.min(800.0, this.getInternalMaxPower() - before);
                 final double extracted = grid.getEnergyService().extractAEPower(toExtract, Actionable.MODULATE,
                         PowerMultiplier.ONE);
 
                 this.injectExternalPower(PowerUnit.AE, extracted, Actionable.MODULATE);
             });
 
-            changed = true;
+            // Only update clients if the stored power actually changed
+            changed |= this.getInternalCurrentPower() != before;
         }
 
         if (changed || this.working != wasWorking) {
