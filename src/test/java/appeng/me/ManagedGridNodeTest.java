@@ -54,8 +54,8 @@ class ManagedGridNodeTest extends AbstractGridNodeTest {
     }
 
     /**
-     * Minecraft may save a block entity between loading its data and creating its grid node (i.e. when promoting
-     * proto-chunks). The data read earlier must not get lost in that case (PR #8782).
+     * A block entity may be saved after its data was loaded but before its grid node was created (on the first tick).
+     * The data read earlier must not get lost in that case (PR #8782).
      */
     @Test
     void testDataSurvivesSaveBeforeNodeCreation() {
