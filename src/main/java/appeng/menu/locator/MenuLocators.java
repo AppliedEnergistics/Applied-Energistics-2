@@ -108,12 +108,12 @@ public final class MenuLocators {
         return new InventoryItemLocator(inventorySlot, null);
     }
 
-    public static ItemMenuHostLocator forCurioSlot(int curioSlot) {
-        return new CuriosItemLocator(curioSlot, null);
+    public static ItemMenuHostLocator forCurioSlot(String slotType, int curioSlot) {
+        return new CuriosItemLocator(slotType, curioSlot, null);
     }
 
-    public static ItemMenuHostLocator forCurioSlot(int curioSlot, UseOnContext context) {
-        return new CuriosItemLocator(curioSlot, getHitResult(context));
+    public static ItemMenuHostLocator forCurioSlot(String slotType, int curioSlot, UseOnContext context) {
+        return new CuriosItemLocator(slotType, curioSlot, getHitResult(context));
     }
 
     private static int getPlayerInventorySlotFromHand(Player player, InteractionHand hand) {
