@@ -53,6 +53,34 @@ class ManagedGridNodeTest extends AbstractGridNodeTest {
                 .isCloseTo(20, TOLERANCE);
     }
 
+    /**
+     * Minecraft may save a block entity between loading its data and creating its grid node (i.e. when promoting
+     * proto-chunks). The data read earlier must not get lost in that case (PR #8782).
+     */
+    @Test
+    void testDataSurvivesSaveBeforeNodeCreation() {
+        var precursorNode = createAndInitNode();
+        ((GridNode) precursorNode.getNode()).setOwningPlayerId(42);
+        var output = TagValueOutput.createWithoutContext(ProblemReporter.DISCARDING);
+        precursorNode.serialize(output);
+        var savedNode = output.buildResult();
+        precursorNode.destroy();
+
+        // Load, then save again before the node exists
+        var mgn1 = new ManagedGridNode(owner, listener);
+        mgn1.deserialize(TagValueInput.create(ProblemReporter.DISCARDING, RegistryAccess.EMPTY, savedNode));
+        var intermediateOutput = TagValueOutput.createWithoutContext(ProblemReporter.DISCARDING);
+        mgn1.serialize(intermediateOutput);
+        var intermediate = intermediateOutput.buildResult();
+
+        // Load the intermediate save into a fresh node
+        var mgn2 = new ManagedGridNode(owner, listener);
+        mgn2.deserialize(TagValueInput.create(ProblemReporter.DISCARDING, RegistryAccess.EMPTY, intermediate));
+        mgn2.create(level, BlockPos.ZERO);
+
+        assertThat(mgn2.getNode().getOwningPlayerId()).isEqualTo(42);
+    }
+
     @NotNull
     private ManagedGridNode createAndInitNode() {
         var mgn = new ManagedGridNode(owner, listener);
