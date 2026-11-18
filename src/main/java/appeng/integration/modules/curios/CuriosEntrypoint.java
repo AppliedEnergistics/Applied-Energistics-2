@@ -3,10 +3,12 @@ package appeng.integration.modules.curios;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.neoforge.common.NeoForge;
 
 import top.theillusivec4.curios.api.CuriosCapability;
 
 import appeng.core.AppEng;
+import appeng.util.SearchInventoryEvent;
 
 /**
  * Conditional mod entrypoint that is only constructed (and loaded) if Curios is present. This is the only place that
@@ -15,7 +17,13 @@ import appeng.core.AppEng;
 @Mod(value = AppEng.MOD_ID, depends = "curios")
 public class CuriosEntrypoint {
     public CuriosEntrypoint() {
-        CuriosIntegration.setAccess(new Impl());
+        var impl = new Impl();
+        CuriosIntegration.setAccess(impl);
+
+        // Make AE2 consider stacks in curios slots when searching the player's inventory. Since this entrypoint only
+        // exists if Curios is present, the listener can be registered here directly.
+        NeoForge.EVENT_BUS.addListener((SearchInventoryEvent event) -> impl.forEachStack(event.getEntity(),
+                (slotType, index, stack) -> event.getStacks().add(stack)));
     }
 
     /**

@@ -8,8 +8,6 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 
-import appeng.integration.modules.curios.CuriosIntegration;
-
 /**
  * Event fired when AE2 is looking for ItemStacks in a player inventory. By default, AE2 only looks at the 36 usual
  * slots of the player inventory, use this event to make AE2 consider more stacks. AE2 will check after the event if
@@ -30,10 +28,6 @@ public class SearchInventoryEvent extends PlayerEvent {
     static {
         NeoForge.EVENT_BUS.addListener((SearchInventoryEvent event) -> {
             event.getStacks().addAll(event.getEntity().getInventory().getNonEquipmentItems());
-        });
-        NeoForge.EVENT_BUS.addListener((SearchInventoryEvent event) -> {
-            CuriosIntegration.forEachStack(event.getEntity(),
-                    (slotType, index, stack) -> event.getStacks().add(stack));
         });
     }
 
