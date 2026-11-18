@@ -6,6 +6,7 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.common.NeoForge;
 
 import top.theillusivec4.curios.api.CuriosCapability;
+import top.theillusivec4.curios.api.type.capability.ICuriosItemHandler;
 
 import appeng.core.AppEng;
 import appeng.util.SearchInventoryEvent;
@@ -37,6 +38,9 @@ public class CuriosEntrypoint {
             if (inventory == null) {
                 return ItemStack.EMPTY;
             }
+            if (slotType.isEmpty()) {
+                return getStackByFlatIndex(inventory, index);
+            }
             return inventory.getStacksHandler(slotType).map(handler -> {
                 var stacks = handler.getStacks();
                 if (index < 0 || index >= stacks.getSlots()) {
@@ -45,6 +49,24 @@ public class CuriosEntrypoint {
                 // This is the live stack, not a copy.
                 return stacks.getStackInSlot(index);
             }).orElse(ItemStack.EMPTY);
+        }
+
+        /**
+         * Legacy addressing used by locators created without a slot type: the index counts across all slot types, in
+         * the order Curios iterates them.
+         */
+        private static ItemStack getStackByFlatIndex(ICuriosItemHandler inventory, int index) {
+            if (index < 0) {
+                return ItemStack.EMPTY;
+            }
+            for (var handler : inventory.getCurios().values()) {
+                var stacks = handler.getStacks();
+                if (index < stacks.getSlots()) {
+                    return stacks.getStackInSlot(index);
+                }
+                index -= stacks.getSlots();
+            }
+            return ItemStack.EMPTY;
         }
 
         @Override

@@ -13,6 +13,10 @@ import appeng.integration.modules.curios.CuriosIntegration;
 
 /**
  * Implements {@link ItemMenuHostLocator} for items equipped in curios slots.
+ *
+ * @param slotType  The Curios slot type identifier. If empty, {@code curioSlot} is instead an index across all slot
+ *                  types (legacy behavior, see {@link MenuLocators#forCurioSlot(int)}).
+ * @param curioSlot The index within the slot type.
  */
 record CuriosItemLocator(String slotType, int curioSlot,
         @Nullable BlockHitResult hitResult) implements ItemMenuHostLocator {
