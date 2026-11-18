@@ -2,18 +2,28 @@ package appeng.integration.modules.curios;
 
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.fml.ModList;
 
 /**
- * Optional integration with Curios. Curios is not a runtime requirement, so all access to its API is funneled through
- * this class, which only touches {@link CuriosAccess} (the only class that references Curios types) if Curios is
- * loaded.
+ * Optional integration with Curios. Curios is not a runtime requirement; the real implementation is installed by
+ * {@link CuriosEntrypoint}, a conditional mod entrypoint that only runs if Curios is loaded. Without it, a no-op
+ * implementation is used.
  * <p>
  * Stacks are accessed through the Curios API rather than its {@code ResourceHandler} capability, since the latter can
  * only hand out copies, while AE2 needs the live stack so it can be modified in-place.
  */
 public final class CuriosIntegration {
-    private static Boolean loaded;
+    private static final CuriosAccess NOOP = new CuriosAccess() {
+        @Override
+        public ItemStack getStack(Player player, String slotType, int index) {
+            return ItemStack.EMPTY;
+        }
+
+        @Override
+        public void forEachStack(Player player, StackVisitor visitor) {
+        }
+    };
+
+    private static volatile CuriosAccess access = NOOP;
 
     private CuriosIntegration() {
     }
@@ -23,26 +33,21 @@ public final class CuriosIntegration {
         void visit(String slotType, int index, ItemStack stack);
     }
 
-    public static boolean isLoaded() {
-        if (loaded == null) {
-            loaded = ModList.get() != null && ModList.get().isLoaded("curios");
-        }
-        return loaded;
+    static void setAccess(CuriosAccess access) {
+        CuriosIntegration.access = access;
     }
 
     /**
      * @return The live stack in the given curios slot, or {@link ItemStack#EMPTY}.
      */
     public static ItemStack getStack(Player player, String slotType, int index) {
-        return isLoaded() ? CuriosAccess.getStack(player, slotType, index) : ItemStack.EMPTY;
+        return access.getStack(player, slotType, index);
     }
 
     /**
      * Visits the live stacks of all curios slots of the player.
      */
     public static void forEachStack(Player player, StackVisitor visitor) {
-        if (isLoaded()) {
-            CuriosAccess.forEachStack(player, visitor);
-        }
+        access.forEachStack(player, visitor);
     }
 }

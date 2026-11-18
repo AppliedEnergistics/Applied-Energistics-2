@@ -3,42 +3,18 @@ package appeng.integration.modules.curios;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
-import top.theillusivec4.curios.api.CuriosCapability;
-
 /**
- * Directly touches the Curios API. <strong>Must only be referenced from {@link CuriosIntegration}, and only after
- * checking that Curios is loaded</strong>, otherwise class loading will fail.
+ * Abstracts access to Curios. The real implementation lives in {@link CuriosEntrypoint}, which is only loaded when
+ * Curios is present.
  */
-final class CuriosAccess {
-    private CuriosAccess() {
-    }
+interface CuriosAccess {
+    /**
+     * @return The live stack in the given curios slot, or {@link ItemStack#EMPTY}.
+     */
+    ItemStack getStack(Player player, String slotType, int index);
 
-    static ItemStack getStack(Player player, String slotType, int index) {
-        var inventory = player.getCapability(CuriosCapability.INVENTORY);
-        if (inventory == null) {
-            return ItemStack.EMPTY;
-        }
-        return inventory.getStacksHandler(slotType).map(handler -> {
-            var stacks = handler.getStacks();
-            if (index < 0 || index >= stacks.getSlots()) {
-                return ItemStack.EMPTY;
-            }
-            // This is the live stack, not a copy.
-            return stacks.getStackInSlot(index);
-        }).orElse(ItemStack.EMPTY);
-    }
-
-    static void forEachStack(Player player, CuriosIntegration.StackVisitor visitor) {
-        var inventory = player.getCapability(CuriosCapability.INVENTORY);
-        if (inventory == null) {
-            return;
-        }
-        for (var entry : inventory.getCurios().entrySet()) {
-            var stacks = entry.getValue().getStacks();
-            for (int i = 0; i < stacks.getSlots(); i++) {
-                // Live stack, not a copy
-                visitor.visit(entry.getKey(), i, stacks.getStackInSlot(i));
-            }
-        }
-    }
+    /**
+     * Visits the live stacks of all curios slots of the player.
+     */
+    void forEachStack(Player player, CuriosIntegration.StackVisitor visitor);
 }
