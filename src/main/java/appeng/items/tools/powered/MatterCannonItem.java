@@ -180,7 +180,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IBasicCellIte
         var rayFrom = dir.getA();
         var rayTo = dir.getB();
         var direction = rayTo.subtract(rayFrom);
-        direction.normalize();
+        direction = direction.normalize();
 
         var x = rayFrom.x;
         var y = rayFrom.y;
@@ -248,7 +248,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IBasicCellIte
         AppEng.instance().sendToAllNearExcept(null, d0, d1, d2, 256, level,
                 new MatterCannonPacket(d0, d1, d2, (float) direction.x, (float) direction.y, (float) direction.z,
                         (byte) (pos.getType() == Type.MISS ? 32
-                                : pos.getLocation().distanceToSqr(vec) + 1)));
+                                : Math.min(127, pos.getLocation().distanceTo(vec) + 1))));
 
         if (pos.getType() != Type.MISS) {
             if (pos instanceof EntityHitResult entityResult) {
@@ -338,7 +338,7 @@ public class MatterCannonItem extends AEBasePoweredItem implements IBasicCellIte
             AppEng.instance().sendToAllNearExcept(null, d0, d1, d2, 256, level,
                     new MatterCannonPacket(d0, d1, d2, (float) direction.x, (float) direction.y,
                             (float) direction.z, (byte) (pos.getType() == Type.MISS ? 32
-                                    : pos.getLocation().distanceToSqr(vec) + 1)));
+                                    : Math.min(127, pos.getLocation().distanceTo(vec) + 1))));
 
             if (pos.getType() != Type.MISS) {
                 var dmgSrc = level.damageSources().source(AEDamageTypes.MATTER_CANNON, p);
