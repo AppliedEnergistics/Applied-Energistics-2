@@ -78,6 +78,7 @@ import appeng.client.Point;
 import appeng.client.gui.layout.SlotGridLayout;
 import appeng.client.gui.style.BackgroundGenerator;
 import appeng.client.gui.style.Blitter;
+import appeng.client.gui.style.PaletteColor;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.style.SlotPosition;
 import appeng.client.gui.style.Text;
@@ -878,7 +879,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
 
         // Draw a red background for slots that are in an invalid state
         if (!s.isValid()) {
-            guiGraphics.fill(s.x, s.y, 16 + s.x, 16 + s.y, 0x66ff6666);
+            guiGraphics.fill(s.x, s.y, 16 + s.x, 16 + s.y, style.getColor(PaletteColor.SLOT_INVALID_OVERLAY).toARGB());
         }
 
         super.extractSlot(guiGraphics, s, mouseX, mouseY);
@@ -1032,11 +1033,13 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
 
         // Same as the Vanilla method, just with dynamic width and height
         // Added a custom slot highlight effect - RID
-        guiGraphics.horizontalLine(x, x + w, y - 1, 0xFFdaffff);
-        guiGraphics.horizontalLine(x - 1, x + w, y + h, 0xFFdaffff);
-        guiGraphics.verticalLine(x - 1, y - 2, y + h, 0xFFdaffff);
-        guiGraphics.verticalLine(x + w, y - 2, y + h, 0xFFdaffff);
-        guiGraphics.fillGradient(x, y, x + w, y + h, 0x669cd3ff, 0x669cd3ff);
+        var borderColor = style.getColor(PaletteColor.SLOT_HIGHLIGHT_BORDER).toARGB();
+        var fillColor = style.getColor(PaletteColor.SLOT_HIGHLIGHT_FILL).toARGB();
+        guiGraphics.horizontalLine(x, x + w, y - 1, borderColor);
+        guiGraphics.horizontalLine(x - 1, x + w, y + h, borderColor);
+        guiGraphics.verticalLine(x - 1, y - 2, y + h, borderColor);
+        guiGraphics.verticalLine(x + w, y - 2, y + h, borderColor);
+        guiGraphics.fillGradient(x, y, x + w, y + h, fillColor, fillColor);
     }
 
     public final void switchToScreen(AEBaseScreen<?> screen) {

@@ -11,6 +11,7 @@ import appeng.api.config.ActionItems;
 import appeng.client.Point;
 import appeng.client.gui.WidgetContainer;
 import appeng.client.gui.style.Blitter;
+import appeng.client.gui.style.PaletteColor;
 import appeng.client.gui.widgets.ActionButton;
 import appeng.client.gui.widgets.ToggleButton;
 import appeng.core.localization.ButtonToolTips;
@@ -98,7 +99,8 @@ public class CraftingEncodingPanel extends EncodingModePanel {
     private void drawSlotGreenBG(Rect2i bounds, GuiGraphicsExtractor guiGraphics, Slot slot) {
         int x = bounds.getX() + slot.x;
         int y = bounds.getY() + slot.y;
-        guiGraphics.fill(x, y, x + 16, y + 16, 0xff7ac25f);
+        guiGraphics.fill(x, y, x + 16, y + 16,
+                screen.getStyle().getColor(PaletteColor.FLUID_SUBSTITUTION_SLOT_BACKGROUND).toARGB());
     }
 
     @Override

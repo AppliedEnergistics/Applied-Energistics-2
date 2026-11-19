@@ -27,6 +27,7 @@ import appeng.api.stacks.AEKey;
 import appeng.api.stacks.AmountFormat;
 import appeng.client.api.AEKeyRendering;
 import appeng.client.gui.AEBaseScreen;
+import appeng.client.gui.style.PaletteColor;
 import appeng.core.localization.GuiText;
 import appeng.menu.me.crafting.CraftingPlanSummaryEntry;
 
@@ -85,7 +86,9 @@ public class CraftConfirmTableRenderer extends AbstractTableRenderer<CraftingPla
 
     @Override
     protected int getEntryOverlayColor(CraftingPlanSummaryEntry entry) {
-        return entry.getMissingAmount() > 0 ? 0x1AFF0000 : 0;
+        return entry.getMissingAmount() > 0
+                ? screen.getStyle().getColor(PaletteColor.CRAFT_CONFIRM_MISSING_OVERLAY).toARGB()
+                : 0;
     }
 
 }

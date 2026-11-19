@@ -15,9 +15,9 @@
   "text": {
     "dialog_title": {
       "text": {
-        "translate": "gui.ae2.SkyChest",
-        "color": "#575e54"
+        "translate": "gui.ae2.SkyChest"
       },
+      "color": "SKY_CHEST_TEXT",
       "position": {
         "left": 8,
         "top": 6
@@ -25,9 +25,9 @@
     },
     "player_inventory_title": {
       "text": {
-        "translate": "container.inventory",
-        "color": "#575e54"
+        "translate": "container.inventory"
       },
+      "color": "SKY_CHEST_TEXT",
       "position": {
         "left": 8,
         "bottom": 95

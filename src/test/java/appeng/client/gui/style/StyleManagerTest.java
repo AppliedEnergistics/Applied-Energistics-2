@@ -31,6 +31,7 @@ import org.mockito.quality.Strictness;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 
 import appeng.client.gui.MockResourceManager;
+import appeng.core.AppEng;
 import appeng.menu.SlotSemantics;
 
 @MockitoSettings(strictness = Strictness.LENIENT)
@@ -53,5 +54,88 @@ class StyleManagerTest {
                 SlotSemantics.PLAYER_HOTBAR.id(),
                 SlotSemantics.CONFIG.id(),
                 SlotSemantics.STORAGE_CELL.id());
+    }
+
+    @Test
+    void testDarkPaletteOverridesLightPalette() {
+        StyleManager.getReloadListener().onResourceManagerReload(MockResourceManager.create());
+
+        ScreenStyle style = StyleManager.loadStyleDoc("/screens/cell_workbench.json");
+
+        assertThat(style.getColor(PaletteColor.DEFAULT_TEXT_COLOR, false).toARGB()).isEqualTo(0xff413f54);
+        assertThat(style.getColor(PaletteColor.DEFAULT_TEXT_COLOR, true).toARGB()).isEqualTo(0xfff2f2f2);
+    }
+
+    /**
+     * The colors that were previously hardcoded must keep their previous values in the light theme.
+     */
+    @Test
+    void testLightPaletteMatchesBuiltInDefaults() {
+        StyleManager.getReloadListener().onResourceManagerReload(MockResourceManager.create());
+
+        ScreenStyle style = StyleManager.getCommonPalette();
+
+        for (var color : PaletteColor.values()) {
+            if (color.getDefaultColor() != null) {
+                assertThat(style.getColor(color, false)).as(color.name()).isEqualTo(color.getDefaultColor());
+            }
+        }
+    }
+
+    /**
+     * Resource packs that override the palette with an older version, which lacks colors added later, must not break
+     * screens.
+     */
+    @Test
+    void testPaletteWithoutNewerColorsIsValid() {
+        var style = ScreenStyle.GSON.fromJson("""
+                {
+                  "palette": {
+                    "DEFAULT_TEXT_COLOR": "#413f54",
+                    "MUTED_TEXT_COLOR": "#878fa5",
+                    "SELECTION_COLOR": "#ace9ff",
+                    "TEXTFIELD_PLACEHOLDER": "#dedfe3",
+                    "TEXTFIELD_ERROR": "#FF1900",
+                    "TEXTFIELD_TEXT": "#f2f2f2",
+                    "ERROR": "#CE2401"
+                  }
+                }
+                """, ScreenStyle.class);
+        style.validate();
+
+        for (var color : PaletteColor.values()) {
+            assertThat(style.getColor(color, false)).as(color.name()).isNotNull();
+            assertThat(style.getColor(color, true)).as(color.name()).isNotNull();
+        }
+        assertThat(style.getColor(PaletteColor.BUTTON_TEXT, true))
+                .isEqualTo(PaletteColor.BUTTON_TEXT.getDefaultColor());
+    }
+
+    /**
+     * Ensure that every UI texture has a dark variant, so new textures are not forgotten.
+     */
+    @Test
+    void testAllGuiTexturesHaveDarkVariant() {
+        var resourceManager = MockResourceManager.create();
+
+        var lightTextures = resourceManager.listResources("textures/guis",
+                id -> id.getNamespace().equals(AppEng.MOD_ID) && id.getPath().endsWith(".png")).keySet();
+        assertThat(lightTextures).isNotEmpty();
+        for (var texture : lightTextures) {
+            var darkTexture = texture.withPath(path -> "textures/dark/" + path.substring("textures/".length()));
+            assertThat(resourceManager.getResource(darkTexture)).as(darkTexture.toString()).isPresent();
+        }
+
+        var lightSprites = resourceManager.listResources("textures/gui/sprites",
+                id -> id.getNamespace().equals(AppEng.MOD_ID) && id.getPath().endsWith(".png")
+                        && !id.getPath().startsWith("textures/gui/sprites/dark/")
+                        && !id.getPath().startsWith("textures/gui/sprites/guide/"))
+                .keySet();
+        assertThat(lightSprites).isNotEmpty();
+        for (var sprite : lightSprites) {
+            var darkSprite = sprite.withPath(path -> "textures/gui/sprites/dark/"
+                    + path.substring("textures/gui/sprites/".length()));
+            assertThat(resourceManager.getResource(darkSprite)).as(darkSprite.toString()).isPresent();
+        }
     }
 }

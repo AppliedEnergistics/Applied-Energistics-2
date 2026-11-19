@@ -36,6 +36,7 @@ import net.minecraft.network.chat.Component;
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 
 import appeng.client.Point;
+import appeng.client.gui.style.PaletteColor;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.style.WidgetStyle;
 import appeng.client.gui.widgets.AE2Button;
@@ -397,7 +398,7 @@ public class WidgetContainer {
                 0, 0, 0, 0);
         searchField.setBordered(false);
         searchField.setMaxLength(25);
-        searchField.setTextColor(0xFFFFFFFF);
+        searchField.setTextColor(PaletteColor.SEARCH_FIELD_TEXT);
         searchField.setVisible(true);
         add(id, searchField);
         return searchField;

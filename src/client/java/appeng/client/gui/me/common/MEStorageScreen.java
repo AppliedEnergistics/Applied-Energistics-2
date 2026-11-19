@@ -71,6 +71,7 @@ import appeng.client.api.AEKeyRendering;
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.AESubScreen;
 import appeng.client.gui.style.Blitter;
+import appeng.client.gui.style.PaletteColor;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.style.TerminalStyle;
 import appeng.client.gui.widgets.AETextField;
@@ -478,7 +479,8 @@ public class MEStorageScreen<C extends MEStorageMenu>
                     lastSlot.getX() + 17 - (firstSlot.getX() - 1),
                     lastSlot.getY() + 17 - (firstSlot.getY() - 1));
 
-            renderContext.fillRect(rect, new ConstantColor(0x3f000000));
+            renderContext.fillRect(rect,
+                    new ConstantColor(getStyle().getColor(PaletteColor.DISCONNECTED_OVERLAY).toARGB()));
 
             // Draw the disconnect status on top of the grid
             var statusDescription = linkStatus.statusDescription();

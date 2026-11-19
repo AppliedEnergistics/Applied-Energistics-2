@@ -17,7 +17,6 @@ import appeng.client.Point;
 import appeng.client.gui.ICompositeWidget;
 import appeng.client.gui.Tooltip;
 import appeng.client.gui.style.Blitter;
-import appeng.client.gui.style.Color;
 import appeng.client.gui.style.PaletteColor;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.core.localization.ButtonToolTips;
@@ -34,8 +33,7 @@ public class CPUSelectionList implements ICompositeWidget {
     private final Blitter buttonBg;
     private final Blitter buttonBgSelected;
     private final CraftingStatusMenu menu;
-    private final Color textColor;
-    private final int selectedColor;
+    private final ScreenStyle style;
     private final Scrollbar scrollbar;
 
     // Relative to the origin of the current screen (not window)
@@ -47,8 +45,7 @@ public class CPUSelectionList implements ICompositeWidget {
         this.background = style.getImage("cpuList");
         this.buttonBg = style.getImage("cpuListButton");
         this.buttonBgSelected = style.getImage("cpuListButtonSelected");
-        this.textColor = style.getColor(PaletteColor.DEFAULT_TEXT_COLOR);
-        this.selectedColor = style.getColor(PaletteColor.SELECTION_COLOR).toARGB();
+        this.style = style;
         this.scrollbar.setCaptureMouseWheel(false);
     }
 
@@ -201,7 +198,7 @@ public class CPUSelectionList implements ICompositeWidget {
             pose.pushMatrix();
             pose.translate(x + 3, y + 2);
             pose.scale(0.666f);
-            guiGraphics.text(font, name, 0, 0, textColor.toARGB(), false);
+            guiGraphics.text(font, name, 0, 0, getTextColor(), false);
             pose.popMatrix();
 
             var infoBar = new InfoBar();
@@ -211,7 +208,7 @@ public class CPUSelectionList implements ICompositeWidget {
                 // Show what was initially requested
                 infoBar.add(Icon.S_CRAFT, 1f, x + 2, y + 9);
                 var craftAmt = currentJob.what().formatAmount(currentJob.amount(), AmountFormat.SLOT);
-                infoBar.add(craftAmt, textColor.toARGB(), 0.666f, x + 14, y + 13);
+                infoBar.add(craftAmt, getTextColor(), 0.666f, x + 14, y + 13);
                 infoBar.add(currentJob.what(), 0.666f, x + 55, y + 9);
                 if (cpu.isSuspended())
                     infoBar.add(Icon.S_SUSPENDED, 0.7f, x + 58, y + 1);
@@ -225,19 +222,21 @@ public class CPUSelectionList implements ICompositeWidget {
                         y + buttonBg.getSrcHeight() - 2,
                         x + progress,
                         y + buttonBg.getSrcHeight() - 1,
-                        menu.getSelectedCpuSerial() == cpu.serial() ? 0xFF7da9d2 : (selectedColor));
+                        menu.getSelectedCpuSerial() == cpu.serial()
+                                ? style.getColor(PaletteColor.SELECTED_CPU_PROGRESS).toARGB()
+                                : style.getColor(PaletteColor.SELECTION_COLOR).toARGB());
                 guiGraphics.pose().popMatrix();
 
             } else {
                 infoBar.add(Icon.S_STORAGE, 1f, x + 27, y + 9);
 
                 String storageAmount = formatStorage(cpu);
-                infoBar.add(storageAmount, textColor.toARGB(), 0.666f, x + 39, y + 13);
+                infoBar.add(storageAmount, getTextColor(), 0.666f, x + 39, y + 13);
 
                 if (cpu.coProcessors() > 0) {
                     infoBar.add(Icon.S_PROCESSOR, 1f, x + 2, y + 9);
                     String coProcessorCount = String.valueOf(cpu.coProcessors());
-                    infoBar.add(coProcessorCount, textColor.toARGB(), 0.666f, x + 14, y + 13);
+                    infoBar.add(coProcessorCount, getTextColor(), 0.666f, x + 14, y + 13);
                 }
 
                 switch (cpu.mode()) {
@@ -250,6 +249,10 @@ public class CPUSelectionList implements ICompositeWidget {
 
             y += buttonBg.getSrcHeight() + 1;
         }
+    }
+
+    private int getTextColor() {
+        return style.getColor(PaletteColor.DEFAULT_TEXT_COLOR).toARGB();
     }
 
     private String formatStorage(CraftingStatusMenu.CraftingCpuListEntry cpu) {

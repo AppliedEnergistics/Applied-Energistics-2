@@ -65,6 +65,7 @@ import appeng.api.storage.ILinkStatus;
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.style.PaletteColor;
 import appeng.client.gui.style.ScreenStyle;
+import appeng.client.gui.style.Theme;
 import appeng.client.gui.widgets.AETextField;
 import appeng.client.gui.widgets.Scrollbar;
 import appeng.client.gui.widgets.ServerSettingToggleButton;
@@ -216,7 +217,7 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
                                     slot.y,
                                     slot.x + 16,
                                     slot.y + 16,
-                                    0x7fff0000);
+                                    style.getColor(PaletteColor.INVALID_PATTERN_OVERLAY).toARGB());
                         }
                     }
                 } else if (row instanceof GroupHeaderRow(PatternContainerGroup group)) {
@@ -265,7 +266,8 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
                     COLUMNS * 18,
                     visibleRows * ROW_HEIGHT);
 
-            renderContext.fillRect(rect, new ConstantColor(0x3f000000));
+            renderContext.fillRect(rect,
+                    new ConstantColor(style.getColor(PaletteColor.DISCONNECTED_OVERLAY).toARGB()));
 
             // Draw the disconnect status on top of the grid
             var statusDescription = linkStatus.statusDescription();
@@ -633,7 +635,7 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
      * A version of blit that lets us pass a source rectangle
      */
     private void blit(GuiGraphicsExtractor guiGraphics, int offsetX, int offsetY, Rect2i srcRect) {
-        var texture = AppEng.makeId("textures/guis/patternaccessterminal.png");
+        var texture = Theme.resolveTexture(AppEng.makeId("textures/guis/patternaccessterminal.png"));
         guiGraphics.blit(
                 RenderPipelines.GUI_TEXTURED,
                 texture,

@@ -65,6 +65,12 @@ public class AETextField extends EditBox implements IResizableWidget, ITooltip {
     private Component placeholder;
 
     /**
+     * If set, the text color is taken from this palette color when the text field is drawn.
+     */
+    @Nullable
+    private PaletteColor textColor;
+
+    /**
      * Uses the values to instantiate a padded version of a text field. Pays attention to the '_' caret.
      *
      * @param fontRenderer renderer for the strings
@@ -81,7 +87,23 @@ public class AETextField extends EditBox implements IResizableWidget, ITooltip {
 
         this.style = style;
         this.fontPad = fontRenderer.width("_");
-        setTextColor(ARGB.opaque(style.getColor(PaletteColor.TEXTFIELD_TEXT).toARGB()));
+        setTextColor(PaletteColor.TEXTFIELD_TEXT);
+    }
+
+    /**
+     * Uses a color from the palette as the text color, which follows the active UI theme.
+     */
+    public void setTextColor(PaletteColor textColor) {
+        this.textColor = textColor;
+    }
+
+    /**
+     * Uses a fixed text color, regardless of the active UI theme.
+     */
+    @Override
+    public void setTextColor(int textColor) {
+        this.textColor = null;
+        super.setTextColor(textColor);
     }
 
     // Extend the clickable area by the padding so we don't have a mouse deadzone that is still visually within
@@ -157,6 +179,9 @@ public class AETextField extends EditBox implements IResizableWidget, ITooltip {
                     .dest(bounds.right - 1, bounds.top)
                     .blit(guiGraphics);
 
+            if (textColor != null) {
+                super.setTextColor(ARGB.opaque(style.getColor(textColor).toARGB()));
+            }
             super.extractWidgetRenderState(guiGraphics, mouseX, mouseY, partial);
 
             // Render a placeholder value if the text field isn't focused and is empty

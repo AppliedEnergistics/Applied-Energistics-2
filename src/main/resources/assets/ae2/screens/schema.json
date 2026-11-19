@@ -29,6 +29,37 @@
         }
       }
     },
+    "palette": {
+      "$comment": "See PaletteColor enum",
+      "type": "object",
+      "properties": {
+        "DEFAULT_TEXT_COLOR": { "$ref": "#/definitions/color" },
+        "MUTED_TEXT_COLOR": { "$ref": "#/definitions/color" },
+        "SELECTION_COLOR": { "$ref": "#/definitions/color" },
+        "TEXTFIELD_PLACEHOLDER": { "$ref": "#/definitions/color" },
+        "TEXTFIELD_SELECTION": { "$ref": "#/definitions/color" },
+        "TEXTFIELD_ERROR": { "$ref": "#/definitions/color" },
+        "TEXTFIELD_TEXT": { "$ref": "#/definitions/color" },
+        "ERROR": { "$ref": "#/definitions/color" },
+        "SEARCH_FIELD_TEXT": { "$ref": "#/definitions/color" },
+        "BUTTON_TEXT": { "$ref": "#/definitions/color" },
+        "BUTTON_TEXT_HOVER": { "$ref": "#/definitions/color" },
+        "BUTTON_TEXT_DISABLED": { "$ref": "#/definitions/color" },
+        "SLOT_HIGHLIGHT_BORDER": { "$ref": "#/definitions/color" },
+        "SLOT_HIGHLIGHT_FILL": { "$ref": "#/definitions/color" },
+        "SLOT_INVALID_OVERLAY": { "$ref": "#/definitions/color" },
+        "INVALID_PATTERN_OVERLAY": { "$ref": "#/definitions/color" },
+        "FLUID_SUBSTITUTION_SLOT_BACKGROUND": { "$ref": "#/definitions/color" },
+        "DISCONNECTED_OVERLAY": { "$ref": "#/definitions/color" },
+        "MISSING_CHANNEL_BACKGROUND": { "$ref": "#/definitions/color" },
+        "CRAFT_CONFIRM_MISSING_OVERLAY": { "$ref": "#/definitions/color" },
+        "SELECTED_CPU_PROGRESS": { "$ref": "#/definitions/color" },
+        "PATTERN_PROVIDER_UNLOCKED_TEXT": { "$ref": "#/definitions/color" },
+        "PATTERN_PROVIDER_LOCKED_TEXT": { "$ref": "#/definitions/color" },
+        "SKY_CHEST_TEXT": { "$ref": "#/definitions/color" },
+        "NUMBER_ENTRY_UNIT_TEXT": { "$ref": "#/definitions/color" }
+      }
+    },
     "color": {
       "$comment": "Definition of a color using a fake HTML notation",
       "type": "string",
@@ -287,35 +318,12 @@
       }
     },
     "palette": {
-      "$comment": "See PaletteColor enum",
-      "type": "object",
-      "description": "Defines colors used through the UI screen",
-      "properties": {
-        "DEFAULT_TEXT_COLOR": {
-          "$ref": "#/definitions/color"
-        },
-        "MUTED_TEXT_COLOR": {
-          "$ref": "#/definitions/color"
-        },
-        "SELECTION_COLOR": {
-          "$ref": "#/definitions/color"
-        },
-        "TEXTFIELD_PLACEHOLDER": {
-          "$ref": "#/definitions/color"
-        },
-        "TEXTFIELD_SELECTION": {
-          "$ref": "#/definitions/color"
-        },
-        "TEXTFIELD_ERROR": {
-          "$ref": "#/definitions/color"
-        },
-        "TEXTFIELD_TEXT": {
-          "$ref": "#/definitions/color"
-        },
-        "ERROR": {
-          "$ref": "#/definitions/color"
-        }
-      }
+      "$ref": "#/definitions/palette",
+      "description": "Defines colors used through the UI screen"
+    },
+    "darkPalette": {
+      "$ref": "#/definitions/palette",
+      "description": "Overrides colors from the palette while the dark UI theme is active"
     },
     "background": {
       "$ref": "#/definitions/blitter"
@@ -397,7 +405,8 @@
               "DEFAULT_TEXT_COLOR",
               "MUTED_TEXT_COLOR",
               "SELECTION_COLOR",
-              "ERROR"
+              "ERROR",
+              "SKY_CHEST_TEXT"
             ],
             "default": "DEFAULT_TEXT_COLOR"
           },

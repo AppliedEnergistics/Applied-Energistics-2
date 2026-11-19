@@ -92,6 +92,11 @@ public class ScreenStyle {
     private final Map<PaletteColor, Color> palette = new EnumMap<>(PaletteColor.class);
 
     /**
+     * Overrides for colors in {@link #palette} that are used when the dark UI theme is active.
+     */
+    private final Map<PaletteColor, Color> darkPalette = new EnumMap<>(PaletteColor.class);
+
+    /**
      * Additional images that are screen-specific.
      */
     private final Map<String, Blitter> images = new HashMap<>();
@@ -115,8 +120,30 @@ public class ScreenStyle {
 
     private final Map<String, TooltipArea> tooltips = new HashMap<>();
 
+    /**
+     * Gets a color from the palette for the currently active UI theme (see {@link Theme}). Since the theme can change
+     * at any time, do not store the result.
+     */
     public Color getColor(PaletteColor color) {
-        return palette.get(color);
+        return getColor(color, Theme.isDark());
+    }
+
+    /**
+     * Gets a color from the palette of the light or dark UI theme. The dark theme falls back to the light theme for
+     * colors that it does not define.
+     */
+    public Color getColor(PaletteColor color, boolean dark) {
+        Color result = null;
+        if (dark) {
+            result = darkPalette.get(color);
+        }
+        if (result == null) {
+            result = palette.get(color);
+        }
+        if (result == null) {
+            result = color.getDefaultColor();
+        }
+        return result;
     }
 
     public Map<String, SlotPosition> getSlots() {
@@ -168,7 +195,7 @@ public class ScreenStyle {
 
     public void validate() {
         for (PaletteColor value : PaletteColor.values()) {
-            if (!palette.containsKey(value)) {
+            if (!palette.containsKey(value) && value.getDefaultColor() == null) {
                 throw new RuntimeException("Palette is missing color " + value);
             }
         }
