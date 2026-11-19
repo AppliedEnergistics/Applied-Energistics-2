@@ -28,6 +28,7 @@ import org.mockito.Captor;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 
 import appeng.client.gui.MockResourceManager;
@@ -119,23 +120,33 @@ class StyleManagerTest {
         var resourceManager = MockResourceManager.create();
 
         var lightTextures = resourceManager.listResources("textures/guis",
-                id -> id.getNamespace().equals(AppEng.MOD_ID) && id.getPath().endsWith(".png")).keySet();
+                id -> id.getNamespace().equals(AppEng.MOD_ID) && isLightTexture(id)).keySet();
         assertThat(lightTextures).isNotEmpty();
         for (var texture : lightTextures) {
-            var darkTexture = texture.withPath(path -> "textures/dark/" + path.substring("textures/".length()));
+            var darkTexture = Theme.getDarkTexture(texture);
             assertThat(resourceManager.getResource(darkTexture)).as(darkTexture.toString()).isPresent();
         }
 
         var lightSprites = resourceManager.listResources("textures/gui/sprites",
-                id -> id.getNamespace().equals(AppEng.MOD_ID) && id.getPath().endsWith(".png")
-                        && !id.getPath().startsWith("textures/gui/sprites/dark/")
+                id -> id.getNamespace().equals(AppEng.MOD_ID) && isLightTexture(id)
                         && !id.getPath().startsWith("textures/gui/sprites/guide/"))
                 .keySet();
         assertThat(lightSprites).isNotEmpty();
         for (var sprite : lightSprites) {
-            var darkSprite = sprite.withPath(path -> "textures/gui/sprites/dark/"
-                    + path.substring("textures/gui/sprites/".length()));
+            var darkSprite = Theme.getDarkTexture(sprite);
             assertThat(resourceManager.getResource(darkSprite)).as(darkSprite.toString()).isPresent();
         }
+    }
+
+    private static boolean isLightTexture(Identifier id) {
+        return id.getPath().endsWith(".png") && !id.getPath().endsWith(Theme.DARK_MODE_SUFFIX + ".png");
+    }
+
+    @Test
+    void testDarkTextureNames() {
+        assertThat(Theme.getDarkTexture(AppEng.makeId("textures/guis/terminal.png")))
+                .isEqualTo(AppEng.makeId("textures/guis/terminal_darkmode.png"));
+        assertThat(Theme.getDarkTexture(AppEng.makeId("textures/guis/no_extension")))
+                .isEqualTo(AppEng.makeId("textures/guis/no_extension_darkmode"));
     }
 }

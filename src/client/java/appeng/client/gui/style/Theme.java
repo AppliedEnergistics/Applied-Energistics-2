@@ -37,9 +37,9 @@ import appeng.core.AEConfig;
  * <p>
  * In dark mode, textures and GUI sprites are redirected to their dark variant if one exists:
  * <ul>
- * <li>Texture <code>ns:textures/path.png</code> is replaced by <code>ns:textures/dark/path.png</code>.</li>
- * <li>GUI sprite <code>ns:path</code> is replaced by <code>ns:dark/path</code> (file
- * <code>ns:textures/gui/sprites/dark/path.png</code>).</li>
+ * <li>Texture <code>ns:textures/path.png</code> is replaced by <code>ns:textures/path_darkmode.png</code>.</li>
+ * <li>GUI sprite <code>ns:path</code> is replaced by <code>ns:path_darkmode</code> (file
+ * <code>ns:textures/gui/sprites/path_darkmode.png</code>).</li>
  * </ul>
  * If no dark variant exists, the light variant is used. If a resource pack overrides the light variant of a texture,
  * but not its dark variant, the light variant from the resource pack wins.
@@ -47,8 +47,10 @@ import appeng.core.AEConfig;
  * Colors are switched by {@link ScreenStyle#getColor(PaletteColor)}.
  */
 public final class Theme {
-    private static final String TEXTURES_PREFIX = "textures/";
-    private static final String DARK_FOLDER = "dark/";
+    /**
+     * Suffix appended to the basename of textures and sprites to get their dark mode variant.
+     */
+    public static final String DARK_MODE_SUFFIX = "_darkmode";
 
     /**
      * Cache of texture id to the texture id that should be used in dark mode.
@@ -90,7 +92,7 @@ public final class Theme {
 
         // Sprite lookups are cheap hash map lookups, so we do not cache them. This also avoids having to
         // synchronize the cache with the reload of the GUI atlas.
-        var darkSprite = getDarkVariant(sprite);
+        var darkSprite = sprite.withSuffix(DARK_MODE_SUFFIX);
         var atlas = Minecraft.getInstance().getAtlasManager().getAtlasOrThrow(AtlasIds.GUI);
         if (atlas.getSprite(darkSprite).contents().name().equals(darkSprite)) {
             return darkSprite;
@@ -99,12 +101,7 @@ public final class Theme {
     }
 
     private static Identifier findDarkTexture(Identifier texture) {
-        if (!texture.getPath().startsWith(TEXTURES_PREFIX)) {
-            return texture;
-        }
-
-        var darkTexture = texture.withPath(path -> TEXTURES_PREFIX + DARK_FOLDER
-                + path.substring(TEXTURES_PREFIX.length()));
+        var darkTexture = getDarkTexture(texture);
 
         var resourceManager = Minecraft.getInstance().getResourceManager();
         var darkResource = resourceManager.getResource(darkTexture).orElse(null);
@@ -137,9 +134,14 @@ public final class Theme {
     }
 
     /**
-     * Turns <code>ns:path</code> into <code>ns:dark/path</code>.
+     * Turns <code>ns:path/name.png</code> into <code>ns:path/name_darkmode.png</code>.
      */
-    private static Identifier getDarkVariant(Identifier id) {
-        return id.withPrefix(DARK_FOLDER);
+    public static Identifier getDarkTexture(Identifier texture) {
+        var path = texture.getPath();
+        var extensionStart = path.lastIndexOf('.');
+        if (extensionStart <= path.lastIndexOf('/')) {
+            return texture.withSuffix(DARK_MODE_SUFFIX);
+        }
+        return texture.withPath(path.substring(0, extensionStart) + DARK_MODE_SUFFIX + path.substring(extensionStart));
     }
 }
