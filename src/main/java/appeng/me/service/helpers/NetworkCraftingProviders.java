@@ -196,14 +196,17 @@ public class NetworkCraftingProviders {
             }
             for (var pattern : patterns) {
                 // output -> pattern (for simulation)
-                var primaryOutput = pattern.getPrimaryOutput();
+                var outputs = pattern.getOutputs();
+                for (var output : outputs) {
+                    methods.craftableItemsList.add(output.what(), 1);
 
-                methods.craftableItemsList.add(primaryOutput.what(), 1);
+                    methods.craftableItemsList.add(output.what(), 1);
 
-                var patternsForKey = methods.craftableItems.computeIfAbsent(primaryOutput.what(),
-                        k -> new PatternsForKey());
-                patternsForKey.patterns.add(new PatternInfo(pattern, this));
-                patternsForKey.needsSorting = true;
+                    var patternsForKey = methods.craftableItems.computeIfAbsent(output.what(),
+                            k -> new PatternsForKey());
+                    patternsForKey.patterns.add(new PatternInfo(pattern, this));
+                    patternsForKey.needsSorting = true;
+                }
 
                 // pattern -> method (for execution)
                 methods.craftingMethods.computeIfAbsent(pattern, d -> new CraftingProviderList()).add(provider);
@@ -215,15 +218,17 @@ public class NetworkCraftingProviders {
                 methods.emitableItems.compute(emitable, (key, cnt) -> cnt == 1 ? null : cnt - 1);
             }
             for (var pattern : patterns) {
-                var primaryOutput = pattern.getPrimaryOutput();
+                var outputs = pattern.getOutputs();
 
-                methods.craftableItemsList.remove(primaryOutput.what(), 1);
+                for (var output : outputs) {
+                    methods.craftableItemsList.remove(output.what(), 1);
 
-                methods.craftableItems.computeIfPresent(primaryOutput.what(), (key, patternsForKey) -> {
-                    patternsForKey.patterns.remove(new PatternInfo(pattern, this));
-                    patternsForKey.needsSorting = true;
-                    return patternsForKey.patterns.isEmpty() ? null : patternsForKey;
-                });
+                    methods.craftableItems.computeIfPresent(output.what(), (key, patternsForKey) -> {
+                        patternsForKey.patterns.remove(new PatternInfo(pattern, this));
+                        patternsForKey.needsSorting = true;
+                        return patternsForKey.patterns.isEmpty() ? null : patternsForKey;
+                    });
+                }
 
                 methods.craftingMethods.computeIfPresent(pattern, (pat, list) -> {
                     list.remove(provider);
