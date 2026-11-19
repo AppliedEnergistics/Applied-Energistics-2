@@ -207,6 +207,10 @@ public final class AEConfig {
         return common.formationPlaneEntityLimit.get();
     }
 
+    public double getPlaneVolumeMultiplier() {
+        return common.planeVolumeMultiplier.get();
+    }
+
     public boolean isEnableEffects() {
         return client.enableEffects.getAsBoolean();
     }
@@ -518,6 +522,7 @@ public final class AEConfig {
 
         // Misc
         public final IntValue formationPlaneEntityLimit;
+        public final DoubleValue planeVolumeMultiplier;
         public final IntValue craftingCalculationTimePerTick;
         public final BooleanValue debugTools;
         public final BooleanValue matterCannonBlockDamage;
@@ -598,6 +603,9 @@ public final class AEConfig {
 
             builder.push("automation");
             formationPlaneEntityLimit = define(builder, "formationPlaneEntityLimit", 128);
+            planeVolumeMultiplier = define(builder, "planeVolumeMultiplier", 1.0, 0.0, 1.0,
+                    "Scales the volume of Formation Plane placement and Annihilation Plane pickup sounds. "
+                            + "1.0 is the default, unscaled volume, 0.0 fully mutes them.");
             builder.pop();
 
             builder.push("craftingCPU");

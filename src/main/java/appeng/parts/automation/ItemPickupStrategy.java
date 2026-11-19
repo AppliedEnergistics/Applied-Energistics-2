@@ -25,6 +25,7 @@ import net.minecraft.world.item.enchantment.ItemEnchantments;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.AABB;
 
 import appeng.api.behaviors.PickupSink;
@@ -141,7 +142,7 @@ public class ItemPickupStrategy implements PickupStrategy {
         energySource.extractAEPower(requiredPower, Actionable.MODULATE, PowerMultiplier.CONFIG);
 
         AppEng.instance().sendToAllNearExcept(null, pos.getX(), pos.getY(), pos.getZ(), 64, level,
-                new BlockTransitionEffectPacket(pos, blockState, side, BlockTransitionEffectPacket.SoundMode.NONE));
+                new BlockTransitionEffectPacket(pos, blockState, side, BlockTransitionEffectPacket.SoundMode.BLOCK));
     }
 
     /**
@@ -304,11 +305,15 @@ public class ItemPickupStrategy implements PickupStrategy {
     }
 
     private boolean breakBlockAndStoreExtraItems(PickupSink sink, ServerLevel level, BlockPos pos) {
-        // Kill the block, but signal no drops
-        if (!level.destroyBlock(pos, false)) {
+        // Avoid level.destroyBlock's own particles/sound; we send a scaled BlockTransitionEffectPacket instead.
+        // Re-read the state here since it may be stale after the loot/energy/storage checks above.
+        var currentBlockState = level.getBlockState(pos);
+        if (!level.removeBlock(pos, false)) {
             // The block was no longer there
             return false;
         }
+        // Preserve the game event that destroyBlock would otherwise have fired, e.g. for sculk sensors.
+        level.gameEvent(GameEvent.BLOCK_DESTROY, pos, GameEvent.Context.of(null, currentBlockState));
 
         // This handles items that do not spawn via loot-tables but rather normal block breaking i.e. our cable-buses do
         // this (bad practice, really)
