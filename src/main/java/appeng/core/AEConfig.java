@@ -385,6 +385,18 @@ public final class AEConfig {
         }
     }
 
+    public boolean isDarkMode() {
+        // Screens may be drawn before the client config has been loaded (i.e. in unit tests)
+        return client.spec.isLoaded() && client.darkMode.getAsBoolean();
+    }
+
+    public void setDarkMode(boolean enabled) {
+        if (enabled != client.darkMode.getAsBoolean()) {
+            client.darkMode.set(enabled);
+            client.spec.save();
+        }
+    }
+
     public boolean isClearGridOnClose() {
         return client.clearGridOnClose.get();
     }
@@ -427,6 +439,7 @@ public final class AEConfig {
         public final BooleanValue debugGuiOverlays;
         public final BooleanValue showPlacementPreview;
         public final BooleanValue notifyForFinishedCraftingJobs;
+        public final BooleanValue darkMode;
 
         // Terminal Settings
         public final EnumValue<TerminalStyle> terminalStyle;
@@ -471,6 +484,8 @@ public final class AEConfig {
                     "Show a preview of part and facade placement");
             this.notifyForFinishedCraftingJobs = define(builder, "notifyForFinishedCraftingJobs", true,
                     "Show toast when long-running crafting jobs finish.");
+            this.darkMode = define(builder, "darkMode", false,
+                    "Use the dark theme for AE2 user interfaces.");
             builder.pop();
 
             var terminals = builder.push("terminals");

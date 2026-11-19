@@ -5,9 +5,9 @@
     "common/player_inventory.json",
     "common/toolbox.json"
   ],
-  "background": {
-    "texture": "guis/energy_level_emitter.png",
-    "srcRect": [0, 0, 176, 186]
+  "generatedBackground": {
+    "width": 176,
+    "height": 186
   },
   "text": {
     "dialog_title": {

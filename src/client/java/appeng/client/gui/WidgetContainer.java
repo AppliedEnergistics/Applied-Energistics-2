@@ -36,6 +36,7 @@ import net.minecraft.network.chat.Component;
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 
 import appeng.client.Point;
+import appeng.client.gui.style.PaletteColor;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.style.WidgetStyle;
 import appeng.client.gui.widgets.AE2Button;
@@ -44,6 +45,7 @@ import appeng.client.gui.widgets.AETextField;
 import appeng.client.gui.widgets.BackgroundPanel;
 import appeng.client.gui.widgets.IResizableWidget;
 import appeng.client.gui.widgets.NumberEntryWidget;
+import appeng.client.gui.widgets.PanelBlitter;
 import appeng.client.gui.widgets.Scrollbar;
 import appeng.client.gui.widgets.TabButton;
 import appeng.core.localization.GuiText;
@@ -150,14 +152,13 @@ public class WidgetContainer {
     }
 
     /**
-     * Adds a panel to the screen, which takes its background from the style's "images" section, and it's position from
-     * the widget section.
+     * Adds a panel to the screen, which extends the window of the screen. Its position and size are taken from the
+     * widget section.
      *
-     * @param id The id used to look up the background image and bounds in the style.
+     * @param id The id used to look up the bounds in the style.
      */
     public void addBackgroundPanel(String id) {
-        var background = style.getImage(id).copy();
-        add(id, new BackgroundPanel(background));
+        add(id, new BackgroundPanel());
     }
 
     void populateScreen(Consumer<AbstractWidget> addWidget, Rect2i bounds, AEBaseScreen<?> screen) {
@@ -220,6 +221,17 @@ public class WidgetContainer {
         for (var widget : compositeWidgets.values()) {
             if (widget.isVisible()) {
                 widget.updateBeforeRender();
+            }
+        }
+    }
+
+    /**
+     * @see ICompositeWidget#addBackgroundPanels(PanelBlitter)
+     */
+    public void addBackgroundPanels(PanelBlitter panels) {
+        for (var widget : compositeWidgets.values()) {
+            if (widget.isVisible()) {
+                widget.addBackgroundPanels(panels);
             }
         }
     }
@@ -397,7 +409,7 @@ public class WidgetContainer {
                 0, 0, 0, 0);
         searchField.setBordered(false);
         searchField.setMaxLength(25);
-        searchField.setTextColor(0xFFFFFFFF);
+        searchField.setTextColor(PaletteColor.SEARCH_FIELD_TEXT);
         searchField.setVisible(true);
         add(id, searchField);
         return searchField;

@@ -1,23 +1,48 @@
 {
   "$schema": "schema.json",
   "includes": ["common/palette.json", "common/player_inventory.json"],
-  "background": {
-    "texture": "guis/skychest.png",
-    "srcRect": [0, 0, 176, 187]
+  "generatedBackground": {
+    "width": 176,
+    "height": 187,
+    "shape": [[0, 0, 176, 185]],
+    "sprite": "ae2:sky_stone_window",
+    "innerSprite": "ae2:sky_stone_window"
   },
   "slots": {
     "STORAGE": {
       "left": 8,
       "top": 18,
-      "grid": "BREAK_AFTER_9COLS"
+      "grid": "BREAK_AFTER_9COLS",
+      "background": {
+        "sprite": "ae2:sky_stone_slot",
+        "border": false
+      }
+    },
+    "PLAYER_INVENTORY": {
+      "left": 8,
+      "bottom": 84,
+      "grid": "BREAK_AFTER_9COLS",
+      "background": {
+        "sprite": "ae2:sky_stone_slot",
+        "border": false
+      }
+    },
+    "PLAYER_HOTBAR": {
+      "left": 8,
+      "bottom": 26,
+      "grid": "HORIZONTAL",
+      "background": {
+        "sprite": "ae2:sky_stone_slot",
+        "border": false
+      }
     }
   },
   "text": {
     "dialog_title": {
       "text": {
-        "translate": "gui.ae2.SkyChest",
-        "color": "#575e54"
+        "translate": "gui.ae2.SkyChest"
       },
+      "color": "SKY_CHEST_TEXT",
       "position": {
         "left": 8,
         "top": 6
@@ -25,9 +50,9 @@
     },
     "player_inventory_title": {
       "text": {
-        "translate": "container.inventory",
-        "color": "#575e54"
+        "translate": "container.inventory"
       },
+      "color": "SKY_CHEST_TEXT",
       "position": {
         "left": 8,
         "bottom": 95

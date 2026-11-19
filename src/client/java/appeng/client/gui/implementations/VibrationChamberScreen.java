@@ -20,20 +20,24 @@ package appeng.client.gui.implementations;
 
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 
-import appeng.client.gui.style.Blitter;
 import appeng.client.gui.style.ScreenStyle;
+import appeng.client.gui.style.SpriteRenderer;
 import appeng.client.gui.widgets.CommonButtons;
 import appeng.client.gui.widgets.ProgressBar;
 import appeng.client.gui.widgets.ProgressBar.Direction;
+import appeng.core.AppEng;
 import appeng.menu.implementations.VibrationChamberMenu;
 import appeng.util.Platform;
 
 public class VibrationChamberScreen extends UpgradeableScreen<VibrationChamberMenu> {
 
     // Burn indicator similar to the "flame" in a vanilla furnace
-    private static final Blitter BURN_PROGRESS = Blitter.texture("guis/vibchamber.png").src(176, 0, 14, 13);
+    private static final Identifier BURN_PROGRESS = AppEng.makeId("vibration_chamber_burn");
+    private static final int BURN_PROGRESS_WIDTH = 14;
+    private static final int BURN_PROGRESS_HEIGHT = 13;
 
     // "Progress-bar" that indicates the energy generation rate
     private final ProgressBar generationRateBar;
@@ -42,8 +46,7 @@ public class VibrationChamberScreen extends UpgradeableScreen<VibrationChamberMe
             Component title, ScreenStyle style) {
         super(menu, playerInventory, title, style);
 
-        this.generationRateBar = new ProgressBar(this.menu, style.getImage("generationRateBar"),
-                Direction.VERTICAL);
+        this.generationRateBar = new ProgressBar(this.menu, Direction.VERTICAL);
         widgets.add("generationRateBar", this.generationRateBar);
 
         addToLeftToolbar(CommonButtons.togglePowerUnit());
@@ -64,15 +67,12 @@ public class VibrationChamberScreen extends UpgradeableScreen<VibrationChamberMe
             int mouseY) {
         // Show the flame "burning down" as we burn through an item of fuel
         if (this.menu.getRemainingBurnTime() > 0) {
-            int f = this.menu.getRemainingBurnTime() * BURN_PROGRESS.getSrcHeight() / 100;
-            BURN_PROGRESS.copy()
-                    .src(
-                            BURN_PROGRESS.getSrcX(),
-                            BURN_PROGRESS.getSrcY() + BURN_PROGRESS.getSrcHeight() - f,
-                            BURN_PROGRESS.getSrcWidth(),
-                            f)
-                    .dest(80, 20 + BURN_PROGRESS.getSrcHeight() - f)
-                    .blit(guiGraphics);
+            int f = this.menu.getRemainingBurnTime() * BURN_PROGRESS_HEIGHT / 100;
+            // Aligned with the empty flame in the background (ae2:background/vibration_chamber_burn_empty)
+            SpriteRenderer.of(guiGraphics).blitRegion(BURN_PROGRESS,
+                    0, BURN_PROGRESS_HEIGHT - f, BURN_PROGRESS_WIDTH, f,
+                    80, 21 + BURN_PROGRESS_HEIGHT - f, BURN_PROGRESS_WIDTH, f,
+                    false, -1);
         }
     }
 

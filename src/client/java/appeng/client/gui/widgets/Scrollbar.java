@@ -22,6 +22,8 @@ import java.time.Duration;
 
 import com.mojang.blaze3d.platform.InputConstants;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.Rect2i;
@@ -32,15 +34,16 @@ import net.minecraft.util.Mth;
 import appeng.client.Point;
 import appeng.client.gui.ICompositeWidget;
 import appeng.client.gui.style.Blitter;
+import appeng.client.gui.style.SpriteRenderer;
 import appeng.core.AppEng;
 
 /**
  * Implements a vertical scrollbar using Vanilla's scrollbar handle texture from the creative tab.
  * <p>
- * It is expected that the background of the UI contains a pre-baked scrollbar track border, and that the exact
- * rectangle of that track is set on this object via {@link #displayX}, {@link #displayY} and {@link #setHeight(int)}.
- * While the width of the track can also be set, the drawn handle will use vanilla's sprite width (see
- * {@link Style#handleWidth()}.
+ * Depending on the style, the scrollbar either draws its own track, or it is expected that the background of the UI
+ * contains a pre-baked scrollbar track border. The rectangle of the scrollbar is set on this object via
+ * {@link #displayX}, {@link #displayY} and {@link #setHeight(int)}. While the width of the track can also be set, the
+ * drawn handle will use vanilla's sprite width (see {@link Style#handleWidth()}.
  */
 public class Scrollbar implements IScrollSource, ICompositeWidget {
 
@@ -99,9 +102,21 @@ public class Scrollbar implements IScrollSource, ICompositeWidget {
     }
 
     /**
+     * Draws the track of the scrollbar, if its style has one.
+     */
+    @Override
+    public void drawBackgroundLayer(GuiGraphicsExtractor guiGraphics, Rect2i bounds, Point mouse) {
+        var trackSprite = style.trackSprite();
+        if (trackSprite != null) {
+            var x = bounds.getX() + displayX + (style.handleWidth() - style.trackWidth()) / 2;
+            var y = bounds.getY() + displayY - 1;
+            SpriteRenderer.of(guiGraphics).blitSprite(trackSprite, x, y, style.trackWidth(), height + 2, -1);
+        }
+    }
+
+    /**
      * Draws the handle of the scrollbar.
      * <p>
-     * The GUI is assumed to already contain a prebaked scrollbar track in its background.
      */
     @Override
     public void drawForegroundLayer(GuiGraphicsExtractor guiGraphics, Rect2i bounds, Point mouse) {
@@ -302,19 +317,30 @@ public class Scrollbar implements IScrollSource, ICompositeWidget {
 
     public static final Style BIG = Style.create(
             AppEng.makeId("big_scroller"),
-            AppEng.makeId("big_scroller_disabled"));
+            AppEng.makeId("big_scroller_disabled"))
+            .withTrack(AppEng.makeId("inset"), 6);
 
     public static final Style SMALL = Style.create(
             AppEng.makeId("small_scroller"),
             AppEng.makeId("small_scroller_disabled"));
 
+    /**
+     * @param trackSprite If not null, the scrollbar draws this sprite as its track behind the handle, centered
+     *                    horizontally on the handle and extending 1 pixel above and below the scrollbar area.
+     */
     public record Style(
             Identifier enabledSprite,
-            Identifier disabledSprite) {
+            Identifier disabledSprite,
+            @Nullable Identifier trackSprite,
+            int trackWidth) {
         public static Style create(
                 Identifier enabledSprite,
                 Identifier disabledSprite) {
-            return new Style(enabledSprite, disabledSprite);
+            return new Style(enabledSprite, disabledSprite, null, 0);
+        }
+
+        public Style withTrack(Identifier trackSprite, int trackWidth) {
+            return new Style(enabledSprite, disabledSprite, trackSprite, trackWidth);
         }
 
         public int handleWidth() {

@@ -13,6 +13,7 @@ import appeng.util.Icon;
 
 public class TerminalSettingsScreen<C extends MEStorageMenu> extends AESubScreen<C, MEStorageScreen<C>> {
 
+    private final AECheckbox darkModeCheckbox;
     private final AECheckbox pinAutoCraftedItemsCheckbox;
     private final AECheckbox notifyForFinishedCraftingJobsCheckbox;
     private final AECheckbox clearGridOnCloseCheckbox;
@@ -41,6 +42,8 @@ public class TerminalSettingsScreen<C extends MEStorageMenu> extends AESubScreen
             hasExternalSearch = false;
         }
 
+        darkModeCheckbox = widgets.addCheckbox("darkModeCheckbox",
+                GuiText.TerminalSettingsDarkMode.text(), this::save);
         pinAutoCraftedItemsCheckbox = widgets.addCheckbox("pinAutoCraftedItemsCheckbox",
                 GuiText.TerminalSettingsPinAutoCraftedItems.text(), this::save);
         notifyForFinishedCraftingJobsCheckbox = widgets.addCheckbox("notifyForFinishedCraftingJobsCheckbox",
@@ -96,6 +99,7 @@ public class TerminalSettingsScreen<C extends MEStorageMenu> extends AESubScreen
     }
 
     private void updateState() {
+        darkModeCheckbox.setSelected(config.isDarkMode());
         pinAutoCraftedItemsCheckbox.setSelected(config.isPinAutoCraftedItems());
         notifyForFinishedCraftingJobsCheckbox.setSelected(config.isNotifyForFinishedCraftingJobs());
         clearGridOnCloseCheckbox.setSelected(config.isClearGridOnClose());
@@ -120,6 +124,7 @@ public class TerminalSettingsScreen<C extends MEStorageMenu> extends AESubScreen
         config.setAutoFocusSearch(autoFocusCheckbox.isSelected());
         config.setSyncWithExternalSearch(syncWithExternalCheckbox.isSelected());
         config.setClearExternalSearchOnOpen(clearExternalCheckbox.isSelected());
+        config.setDarkMode(darkModeCheckbox.isSelected());
         config.setPinAutoCraftedItems(pinAutoCraftedItemsCheckbox.isSelected());
         config.setNotifyForFinishedCraftingJobs(notifyForFinishedCraftingJobsCheckbox.isSelected());
         config.setClearGridOnClose(clearGridOnCloseCheckbox.isSelected());

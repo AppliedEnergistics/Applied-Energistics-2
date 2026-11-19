@@ -6,8 +6,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.Style;
-import net.minecraft.util.ARGB;
 
 import appeng.api.config.LockCraftingMode;
 import appeng.api.stacks.AmountFormat;
@@ -15,6 +13,7 @@ import appeng.client.Point;
 import appeng.client.gui.ICompositeWidget;
 import appeng.client.gui.Tooltip;
 import appeng.client.gui.style.Blitter;
+import appeng.client.gui.style.PaletteColor;
 import appeng.core.localization.GuiText;
 import appeng.core.localization.InGameTooltip;
 import appeng.util.Icon;
@@ -60,18 +59,20 @@ public class PatternProviderLockReason implements ICompositeWidget {
 
         Icon icon;
         Component lockStatusText;
+        PaletteColor lockStatusColor;
         if (menu.getCraftingLockedReason() == LockCraftingMode.NONE) {
             icon = Icon.UNLOCKED;
-            lockStatusText = GuiText.CraftingLockIsUnlocked.text()
-                    .setStyle(Style.EMPTY.withColor(ARGB.color(125, 169, 210)));
+            lockStatusText = GuiText.CraftingLockIsUnlocked.text();
+            lockStatusColor = PaletteColor.PATTERN_PROVIDER_UNLOCKED_TEXT;
         } else {
             icon = Icon.LOCKED;
-            lockStatusText = GuiText.CraftingLockIsLocked.text()
-                    .setStyle(Style.EMPTY.withColor(ARGB.color(193, 66, 75)));
+            lockStatusText = GuiText.CraftingLockIsLocked.text();
+            lockStatusColor = PaletteColor.PATTERN_PROVIDER_LOCKED_TEXT;
         }
 
         Blitter.icon(icon).dest(x, y).blit(guiGraphics);
-        guiGraphics.text(Minecraft.getInstance().font, lockStatusText, x + 15, y + 5, -1, false);
+        guiGraphics.text(Minecraft.getInstance().font, lockStatusText, x + 15, y + 5,
+                screen.getStyle().getColor(lockStatusColor).toARGB(), false);
     }
 
     @Nullable

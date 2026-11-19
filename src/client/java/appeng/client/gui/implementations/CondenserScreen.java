@@ -42,7 +42,7 @@ public class CondenserScreen extends AEBaseScreen<CondenserMenu> {
 
         this.mode = new ServerSettingToggleButton<>(Settings.CONDENSER_OUTPUT, this.menu.getOutput());
         widgets.add("mode", this.mode);
-        widgets.add("progressBar", new ProgressBar(this.menu, style.getImage("progressBar"),
+        widgets.add("progressBar", new ProgressBar(this.menu,
                 Direction.VERTICAL, GuiText.StoredEnergy.text()));
     }
 

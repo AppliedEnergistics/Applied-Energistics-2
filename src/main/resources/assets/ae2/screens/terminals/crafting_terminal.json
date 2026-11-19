@@ -6,11 +6,24 @@
     "CRAFTING_GRID": {
       "left": 26,
       "bottom": 158,
-      "grid": "BREAK_AFTER_3COLS"
+      "grid": "BREAK_AFTER_3COLS",
+      "background": {
+        "visible": false
+      }
     },
     "CRAFTING_RESULT": {
       "left": 134,
-      "bottom": 140
+      "bottom": 140,
+      "background": {
+        "visible": false
+      }
+    }
+  },
+  "sprites": {
+    "craftingGrid": {
+      "sprite": "ae2:background/crafting_terminal_grid",
+      "left": 7,
+      "bottom": 166
     }
   },
   "text": {
@@ -34,26 +47,7 @@
     }
   },
   "terminalStyle": {
-    "header": {
-      "texture": "guis/crafting.png",
-      "srcRect": [0, 0, 195, 17]
-    },
-    "firstRow": {
-      "texture": "guis/crafting.png",
-      "srcRect": [0, 17, 195, 18]
-    },
-    "row": {
-      "texture": "guis/crafting.png",
-      "srcRect": [0, 35, 195, 18]
-    },
-    "lastRow": {
-      "texture": "guis/crafting.png",
-      "srcRect": [0, 53, 195, 18]
-    },
-    "bottom": {
-      "texture": "guis/crafting.png",
-      "srcRect": [0, 71, 195, 180]
-    }
+    "bottomHeight": 180
   },
   "widgets": {
     "clearCraftingGrid": {

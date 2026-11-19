@@ -5,9 +5,21 @@
     "common/player_inventory.json",
     "common/toolbox.json"
   ],
-  "background": {
-    "texture": "guis/inscriber.png",
-    "srcRect": [0, 0, 176, 178]
+  "generatedBackground": {
+    "width": 176,
+    "height": 178
+  },
+  "sprites": {
+    "plates": {
+      "sprite": "ae2:background/inscriber_plates",
+      "left": 36,
+      "top": 20
+    },
+    "progressBar": {
+      "sprite": "ae2:progress_bar_track",
+      "left": 135,
+      "top": 39
+    }
   },
   "slots": {
     "INSCRIBER_PLATE_TOP": {
@@ -24,7 +36,10 @@
     },
     "MACHINE_OUTPUT": {
       "left": 113,
-      "top": 40
+      "top": 40,
+      "background": {
+        "sprite": "ae2:slot_large"
+      }
     }
   },
   "text": {
@@ -36,12 +51,6 @@
         "left": 8,
         "top": 6
       }
-    }
-  },
-  "images": {
-    "progressBar": {
-      "texture": "guis/inscriber.png",
-      "srcRect": [176, 0, 6, 18]
     }
   },
   "widgets": {

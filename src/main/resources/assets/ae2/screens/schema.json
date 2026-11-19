@@ -29,6 +29,37 @@
         }
       }
     },
+    "palette": {
+      "$comment": "See PaletteColor enum",
+      "type": "object",
+      "properties": {
+        "DEFAULT_TEXT_COLOR": { "$ref": "#/definitions/color" },
+        "MUTED_TEXT_COLOR": { "$ref": "#/definitions/color" },
+        "SELECTION_COLOR": { "$ref": "#/definitions/color" },
+        "TEXTFIELD_PLACEHOLDER": { "$ref": "#/definitions/color" },
+        "TEXTFIELD_SELECTION": { "$ref": "#/definitions/color" },
+        "TEXTFIELD_ERROR": { "$ref": "#/definitions/color" },
+        "TEXTFIELD_TEXT": { "$ref": "#/definitions/color" },
+        "ERROR": { "$ref": "#/definitions/color" },
+        "SEARCH_FIELD_TEXT": { "$ref": "#/definitions/color" },
+        "BUTTON_TEXT": { "$ref": "#/definitions/color" },
+        "BUTTON_TEXT_HOVER": { "$ref": "#/definitions/color" },
+        "BUTTON_TEXT_DISABLED": { "$ref": "#/definitions/color" },
+        "SLOT_HIGHLIGHT_BORDER": { "$ref": "#/definitions/color" },
+        "SLOT_HIGHLIGHT_FILL": { "$ref": "#/definitions/color" },
+        "SLOT_INVALID_OVERLAY": { "$ref": "#/definitions/color" },
+        "INVALID_PATTERN_OVERLAY": { "$ref": "#/definitions/color" },
+        "FLUID_SUBSTITUTION_SLOT_BACKGROUND": { "$ref": "#/definitions/color" },
+        "DISCONNECTED_OVERLAY": { "$ref": "#/definitions/color" },
+        "MISSING_CHANNEL_BACKGROUND": { "$ref": "#/definitions/color" },
+        "CRAFT_CONFIRM_MISSING_OVERLAY": { "$ref": "#/definitions/color" },
+        "SELECTED_CPU_PROGRESS": { "$ref": "#/definitions/color" },
+        "PATTERN_PROVIDER_UNLOCKED_TEXT": { "$ref": "#/definitions/color" },
+        "PATTERN_PROVIDER_LOCKED_TEXT": { "$ref": "#/definitions/color" },
+        "SKY_CHEST_TEXT": { "$ref": "#/definitions/color" },
+        "NUMBER_ENTRY_UNIT_TEXT": { "$ref": "#/definitions/color" }
+      }
+    },
     "color": {
       "$comment": "Definition of a color using a fake HTML notation",
       "type": "string",
@@ -273,9 +304,72 @@
         },
         "height": {
           "type": "integer"
+        },
+        "shape": {
+          "description": "Rectangles whose union defines the shape of the window. Defaults to a single rectangle covering the screen.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/rect"
+          }
+        },
+        "sprite": {
+          "description": "The nine-slice GUI sprite used to draw the window.",
+          "type": "string",
+          "default": "ae2:window"
+        },
+        "innerSprite": {
+          "description": "The nine-slice GUI sprite whose corners are used to draw the inner corners of the window.",
+          "type": "string",
+          "default": "ae2:window_inner"
         }
       },
       "required": ["width", "height"]
+    },
+    "sprite": {
+      "allOf": [
+        {
+          "type": "object",
+          "properties": {
+            "sprite": {
+              "description": "The GUI sprite to draw.",
+              "type": "string"
+            },
+            "width": {
+              "description": "Defaults to the natural width of the sprite.",
+              "type": "integer"
+            },
+            "height": {
+              "description": "Defaults to the natural height of the sprite.",
+              "type": "integer"
+            }
+          },
+          "required": ["sprite"]
+        },
+        {
+          "$ref": "#/definitions/position"
+        }
+      ]
+    },
+    "slotBackground": {
+      "type": "object",
+      "properties": {
+        "sprite": {
+          "description": "The GUI sprite drawn behind each slot. It is centered on the 16x16 item area of the slot.",
+          "type": "string",
+          "default": "ae2:slot"
+        },
+        "visible": {
+          "description": "Whether the slot backgrounds are drawn at all.",
+          "type": "boolean",
+          "default": true
+        },
+        "border": {
+          "description": "Whether a border is drawn around groups of touching slot backgrounds.",
+          "type": "boolean",
+          "default": true
+        }
+      },
+      "additionalProperties": false
     }
   },
   "properties": {
@@ -287,35 +381,12 @@
       }
     },
     "palette": {
-      "$comment": "See PaletteColor enum",
-      "type": "object",
-      "description": "Defines colors used through the UI screen",
-      "properties": {
-        "DEFAULT_TEXT_COLOR": {
-          "$ref": "#/definitions/color"
-        },
-        "MUTED_TEXT_COLOR": {
-          "$ref": "#/definitions/color"
-        },
-        "SELECTION_COLOR": {
-          "$ref": "#/definitions/color"
-        },
-        "TEXTFIELD_PLACEHOLDER": {
-          "$ref": "#/definitions/color"
-        },
-        "TEXTFIELD_SELECTION": {
-          "$ref": "#/definitions/color"
-        },
-        "TEXTFIELD_ERROR": {
-          "$ref": "#/definitions/color"
-        },
-        "TEXTFIELD_TEXT": {
-          "$ref": "#/definitions/color"
-        },
-        "ERROR": {
-          "$ref": "#/definitions/color"
-        }
-      }
+      "$ref": "#/definitions/palette",
+      "description": "Defines colors used through the UI screen"
+    },
+    "darkPalette": {
+      "$ref": "#/definitions/palette",
+      "description": "Overrides colors from the palette while the dark UI theme is active"
     },
     "background": {
       "$ref": "#/definitions/blitter"
@@ -341,6 +412,9 @@
                   "HORIZONTAL",
                   "VERTICAL"
                 ]
+              },
+              "background": {
+                "$ref": "#/definitions/slotBackground"
               }
             }
           },
@@ -397,7 +471,8 @@
               "DEFAULT_TEXT_COLOR",
               "MUTED_TEXT_COLOR",
               "SELECTION_COLOR",
-              "ERROR"
+              "ERROR",
+              "SKY_CHEST_TEXT"
             ],
             "default": "DEFAULT_TEXT_COLOR"
           },
@@ -454,6 +529,13 @@
         ]
       }
     },
+    "sprites": {
+      "description": "GUI sprites drawn on top of the window background, i.e. decorations and insets",
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/definitions/sprite"
+      }
+    },
     "images": {
       "description": "Additional screen-specific images",
       "additionalProperties": {
@@ -469,25 +551,29 @@
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "header": {
-          "description": "The top of the terminal background right up to the first row of content.",
-          "$ref": "#/definitions/blitter"
+        "screenWidth": {
+          "description": "The width of the screen, including the scrollbar next to the network inventory grid.",
+          "type": "integer",
+          "default": 195
         },
-        "firstRow": {
-          "description": "The area to draw for the first row in the terminal. Usually this includes the top of the scrollbar.",
-          "$ref": "#/definitions/blitter"
+        "bottomWidth": {
+          "description": "The width of the window below the network inventory grid.",
+          "type": "integer",
+          "default": 176
         },
-        "row": {
-          "description": "The area to repeat for every row in the terminal. Should be 16px for the item + 2px for the border in size.",
-          "$ref": "#/definitions/blitter"
+        "headerHeight": {
+          "description": "The height of the area above the first row of the network inventory grid.",
+          "type": "integer",
+          "default": 17
         },
-        "lastRow": {
-          "description": "The area to draw for the last row in the terminal. Usually this includes the top of the scrollbar.",
-          "$ref": "#/definitions/blitter"
+        "gridBottomMargin": {
+          "description": "How far the upper (wider) part of the window extends below the network inventory grid.",
+          "type": "integer",
+          "default": 9
         },
-        "bottom": {
-          "description": "The area to draw at the bottom of the terminal (i.e. includes the player inventory).",
-          "$ref": "#/definitions/blitter"
+        "bottomHeight": {
+          "description": "The height of the area below the network inventory grid (i.e. includes the player inventory).",
+          "type": "integer"
         },
         "maxRows": {
           "description": "If specified, limits the terminal to at most this many rows rather than using up available space.",

@@ -29,6 +29,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.Rect2i;
 
 import appeng.client.Point;
+import appeng.client.gui.widgets.PanelBlitter;
 
 public interface ICompositeWidget {
 
@@ -93,6 +94,15 @@ public interface ICompositeWidget {
      * Perform layout directly before any rendering methods are called.
      */
     default void updateBeforeRender() {
+    }
+
+    /**
+     * Allows the widget to add rectangles to the window shape of the screen. Rectangles that touch or overlap the
+     * screen window or other panels are merged into one contiguous window.
+     *
+     * @param panels The panel blitter to add rectangles to. Coordinates are relative to the screen origin.
+     */
+    default void addBackgroundPanels(PanelBlitter panels) {
     }
 
     /**

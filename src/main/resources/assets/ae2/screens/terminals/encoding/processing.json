@@ -5,12 +5,18 @@
     "PROCESSING_INPUTS": {
       "left": 24,
       "bottom": 158,
-      "grid": "BREAK_AFTER_3COLS"
+      "grid": "BREAK_AFTER_3COLS",
+      "background": {
+        "visible": false
+      }
     },
     "PROCESSING_OUTPUTS": {
       "left": 109,
       "bottom": 158,
-      "grid": "VERTICAL"
+      "grid": "VERTICAL",
+      "background": {
+        "visible": false
+      }
     }
   },
   "tooltips": {

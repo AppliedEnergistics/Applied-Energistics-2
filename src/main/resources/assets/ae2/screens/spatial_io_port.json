@@ -1,9 +1,16 @@
 {
   "$schema": "schema.json",
   "includes": ["common/common.json", "common/player_inventory.json"],
-  "background": {
-    "texture": "guis/spatialio.png",
-    "srcRect": [0, 0, 176, 199]
+  "generatedBackground": {
+    "width": 176,
+    "height": 199
+  },
+  "sprites": {
+    "input": {
+      "sprite": "ae2:background/spatial_io_input",
+      "left": 49,
+      "top": 45
+    }
   },
   "slots": {
     "MACHINE_INPUT": {
@@ -12,7 +19,10 @@
     },
     "MACHINE_OUTPUT": {
       "left": 113,
-      "top": 48
+      "top": 48,
+      "background": {
+        "sprite": "ae2:slot_large"
+      }
     }
   },
   "text": {

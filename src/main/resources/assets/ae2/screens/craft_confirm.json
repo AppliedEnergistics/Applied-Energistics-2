@@ -1,9 +1,26 @@
 {
   "$schema": "schema.json",
   "includes": ["common/common.json"],
-  "background": {
-    "texture": "guis/craftingreport.png",
-    "srcRect": [0, 0, 238, 206]
+  "generatedBackground": {
+    "width": 238,
+    "height": 206,
+    "shape": [[0, 0, 219, 206], [0, 0, 238, 141]]
+  },
+  "sprites": {
+    "table": {
+      "sprite": "ae2:inset",
+      "left": 8,
+      "top": 18,
+      "width": 205,
+      "height": 116
+    },
+    "tableGrid": {
+      "sprite": "ae2:table_grid",
+      "left": 9,
+      "top": 19,
+      "width": 203,
+      "height": 114
+    }
   },
   "text": {
     "dialog_title": {

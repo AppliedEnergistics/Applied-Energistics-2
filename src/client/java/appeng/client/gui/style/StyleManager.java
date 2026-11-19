@@ -74,6 +74,14 @@ public final class StyleManager {
         return style;
     }
 
+    /**
+     * Returns a style that only contains the common color palette. Use this for widgets that are not tied to the style
+     * of a specific screen.
+     */
+    public static ScreenStyle getCommonPalette() {
+        return loadStyleDoc("/screens/common/palette.json");
+    }
+
     private static JsonObject loadMergedJsonTree(String path, Set<String> loadedFiles, Set<String> resourcePacks)
             throws IOException {
         Preconditions.checkArgument(path.startsWith("/"), "Path needs to start with slash");
@@ -134,7 +142,9 @@ public final class StyleManager {
         mergeObjectKeys("slots", layers, result);
         mergeObjectKeys("text", layers, result);
         mergeObjectKeys("palette", layers, result);
+        mergeObjectKeys("darkPalette", layers, result);
         mergeObjectKeys("images", layers, result);
+        mergeObjectKeys("sprites", layers, result);
         mergeObjectKeys("terminalStyle", layers, result);
         mergeObjectKeys("widgets", layers, result);
 
@@ -201,6 +211,7 @@ public final class StyleManager {
     private static void setResourceManager(ResourceManager resourceManager) {
         StyleManager.resourceManager = resourceManager;
         StyleManager.styleCache.clear();
+        Theme.clearCaches();
     }
 
     private static class ReloadListener implements ResourceManagerReloadListener {
