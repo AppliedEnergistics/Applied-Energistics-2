@@ -10,15 +10,17 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 
 import appeng.api.stacks.AmountFormat;
 import appeng.client.Point;
 import appeng.client.gui.ICompositeWidget;
 import appeng.client.gui.Tooltip;
-import appeng.client.gui.style.Blitter;
 import appeng.client.gui.style.PaletteColor;
 import appeng.client.gui.style.ScreenStyle;
+import appeng.client.gui.style.SpriteRenderer;
+import appeng.core.AppEng;
 import appeng.core.localization.ButtonToolTips;
 import appeng.core.localization.GuiText;
 import appeng.core.localization.Tooltips;
@@ -29,9 +31,13 @@ public class CPUSelectionList implements ICompositeWidget {
 
     private static final int ROWS = 6;
 
-    private final Blitter background;
-    private final Blitter buttonBg;
-    private final Blitter buttonBgSelected;
+    private static final Identifier BUTTON_SPRITE = AppEng.makeId("cpu_list_button");
+    private static final Identifier BUTTON_SELECTED_SPRITE = AppEng.makeId("cpu_list_button_selected");
+    private static final Identifier LIST_SPRITE = AppEng.makeId("inset");
+    private static final Identifier LIST_GRID_SPRITE = AppEng.makeId("table_grid");
+    private static final int BUTTON_WIDTH = 67;
+    private static final int BUTTON_HEIGHT = 22;
+
     private final CraftingStatusMenu menu;
     private final ScreenStyle style;
     private final Scrollbar scrollbar;
@@ -42,9 +48,6 @@ public class CPUSelectionList implements ICompositeWidget {
     public CPUSelectionList(CraftingStatusMenu menu, Scrollbar scrollbar, ScreenStyle style) {
         this.menu = menu;
         this.scrollbar = scrollbar;
-        this.background = style.getImage("cpuList");
-        this.buttonBg = style.getImage("cpuListButton");
-        this.buttonBgSelected = style.getImage("cpuListButtonSelected");
         this.style = style;
         this.scrollbar.setCaptureMouseWheel(false);
     }
@@ -62,6 +65,11 @@ public class CPUSelectionList implements ICompositeWidget {
     @Override
     public Rect2i getBounds() {
         return bounds;
+    }
+
+    @Override
+    public void addBackgroundPanels(PanelBlitter panels) {
+        panels.addBounds(bounds);
     }
 
     @Override
@@ -138,13 +146,13 @@ public class CPUSelectionList implements ICompositeWidget {
         var relX = mousePos.getX() - bounds.getX();
         var relY = mousePos.getY() - bounds.getY();
         relX -= 8;
-        if (relX < 0 || relX >= buttonBg.getSrcWidth()) {
+        if (relX < 0 || relX >= BUTTON_WIDTH) {
             return null;
         }
 
         relY -= 19;
-        var buttonIdx = scrollbar.getCurrentScroll() + relY / (buttonBg.getSrcHeight() + 1);
-        if (relY % (buttonBg.getSrcHeight() + 1) == buttonBg.getSrcHeight()) {
+        var buttonIdx = scrollbar.getCurrentScroll() + relY / (BUTTON_HEIGHT + 1);
+        if (relY % (BUTTON_HEIGHT + 1) == BUTTON_HEIGHT) {
             // Clicked right between two buttons
             return null;
         }
@@ -171,11 +179,9 @@ public class CPUSelectionList implements ICompositeWidget {
     public void drawBackgroundLayer(GuiGraphicsExtractor guiGraphics, Rect2i bounds, Point mouse) {
         var x = bounds.getX() + this.bounds.getX();
         var y = bounds.getY() + this.bounds.getY();
-        background.dest(
-                x,
-                y,
-                this.bounds.getWidth(),
-                this.bounds.getHeight()).blit(guiGraphics);
+        var renderer = SpriteRenderer.of(guiGraphics);
+        renderer.blitSprite(LIST_SPRITE, x + 7, y + 18, BUTTON_WIDTH + 2, this.bounds.getHeight() - 25, -1);
+        renderer.blitSprite(LIST_GRID_SPRITE, x + 8, y + 19, BUTTON_WIDTH, this.bounds.getHeight() - 27, -1);
 
         // Move to first button
         x += 8;
@@ -189,9 +195,9 @@ public class CPUSelectionList implements ICompositeWidget {
                 Mth.clamp(scrollbar.getCurrentScroll() + ROWS, 0, menu.cpuList.cpus().size()));
         for (var cpu : cpus) {
             if (cpu.serial() == menu.getSelectedCpuSerial()) {
-                buttonBgSelected.dest(x, y).blit(guiGraphics);
+                renderer.blitSprite(BUTTON_SELECTED_SPRITE, x, y, -1);
             } else {
-                buttonBg.dest(x, y).blit(guiGraphics);
+                renderer.blitSprite(BUTTON_SPRITE, x, y, -1);
             }
 
             var name = getCpuName(cpu);
@@ -214,14 +220,14 @@ public class CPUSelectionList implements ICompositeWidget {
                     infoBar.add(Icon.S_SUSPENDED, 0.7f, x + 58, y + 1);
 
                 // Draw a bar at the bottom of the button to indicate job progress
-                var progress = (int) (cpu.progress() * (buttonBg.getSrcWidth() - 1));
+                var progress = (int) (cpu.progress() * (BUTTON_WIDTH - 1));
                 guiGraphics.pose().pushMatrix();
                 guiGraphics.pose().translate(1, -1);
                 guiGraphics.fill(
                         x,
-                        y + buttonBg.getSrcHeight() - 2,
+                        y + BUTTON_HEIGHT - 2,
                         x + progress,
-                        y + buttonBg.getSrcHeight() - 1,
+                        y + BUTTON_HEIGHT - 1,
                         menu.getSelectedCpuSerial() == cpu.serial()
                                 ? style.getColor(PaletteColor.SELECTED_CPU_PROGRESS).toARGB()
                                 : style.getColor(PaletteColor.SELECTION_COLOR).toARGB());
@@ -245,9 +251,9 @@ public class CPUSelectionList implements ICompositeWidget {
                 }
             }
 
-            infoBar.render(guiGraphics, x + 2, y + buttonBg.getSrcHeight() - 12);
+            infoBar.render(guiGraphics, x + 2, y + BUTTON_HEIGHT - 12);
 
-            y += buttonBg.getSrcHeight() + 1;
+            y += BUTTON_HEIGHT + 1;
         }
     }
 

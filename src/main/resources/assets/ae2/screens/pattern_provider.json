@@ -1,9 +1,9 @@
 {
   "$schema": "schema.json",
   "includes": ["common/common.json", "common/player_inventory.json"],
-  "background": {
-    "texture": "guis/pattern_provider.png",
-    "srcRect": [0, 0, 176, 215]
+  "generatedBackground": {
+    "width": 176,
+    "height": 215
   },
   "slots": {
     "ENCODED_PATTERN": {

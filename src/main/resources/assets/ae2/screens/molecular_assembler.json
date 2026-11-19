@@ -5,15 +5,30 @@
     "common/player_inventory.json",
     "common/toolbox.json"
   ],
-  "background": {
-    "texture": "guis/molecular_assembler.png",
-    "srcRect": [0, 0, 176, 199]
+  "generatedBackground": {
+    "width": 176,
+    "height": 199
+  },
+  "sprites": {
+    "grid": {
+      "sprite": "ae2:background/molecular_assembler_grid",
+      "left": 26,
+      "top": 28
+    },
+    "progressBar": {
+      "sprite": "ae2:progress_bar_track",
+      "left": 148,
+      "top": 48
+    }
   },
   "slots": {
     "MACHINE_CRAFTING_GRID": {
       "left": 29,
       "top": 31,
-      "grid": "BREAK_AFTER_3COLS"
+      "grid": "BREAK_AFTER_3COLS",
+      "background": {
+        "visible": false
+      }
     },
     "ENCODED_PATTERN": {
       "left": 126,
@@ -21,7 +36,10 @@
     },
     "MACHINE_OUTPUT": {
       "left": 126,
-      "top": 49
+      "top": 49,
+      "background": {
+        "sprite": "ae2:slot_large"
+      }
     }
   },
   "text": {
@@ -33,12 +51,6 @@
         "left": 8,
         "top": 6
       }
-    }
-  },
-  "images": {
-    "progressBar": {
-      "texture": "guis/molecular_assembler.png",
-      "srcRect": [176, 0, 6, 18]
     }
   },
   "widgets": {

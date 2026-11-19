@@ -5,9 +5,21 @@
     "common/player_inventory.json",
     "common/toolbox.json"
   ],
-  "background": {
-    "texture": "guis/vibchamber.png",
-    "srcRect": [0, 0, 176, 168]
+  "generatedBackground": {
+    "width": 176,
+    "height": 168
+  },
+  "sprites": {
+    "burnProgress": {
+      "sprite": "ae2:background/vibration_chamber_burn_empty",
+      "left": 80,
+      "top": 21
+    },
+    "generationRateBar": {
+      "sprite": "ae2:progress_bar_track",
+      "left": 99,
+      "top": 36
+    }
   },
   "slots": {
     "MACHINE_INPUT": {
@@ -24,12 +36,6 @@
         "left": 8,
         "top": 6
       }
-    }
-  },
-  "images": {
-    "generationRateBar": {
-      "texture": "guis/vibchamber.png",
-      "srcRect": [176, 14, 6, 18]
     }
   },
   "widgets": {

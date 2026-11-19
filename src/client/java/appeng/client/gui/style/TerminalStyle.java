@@ -19,36 +19,45 @@
 package appeng.client.gui.style;
 
 import appeng.client.Point;
+import appeng.client.gui.widgets.PanelBlitter;
 
 /**
  * Describes the appearance of terminal screens.
+ * <p>
+ * The window of a terminal consists of an upper part containing the header and the grid of network inventory slots, and
+ * a lower part (i.e. the player inventory). The upper part spans the full width of the screen to make room for the
+ * scrollbar, while the lower part can be narrower.
  */
 public class TerminalStyle {
+    /**
+     * The height of each row of the network inventory grid.
+     */
+    public static final int ROW_HEIGHT = 18;
 
     /**
-     * The top of the terminal background right up to the first row of content.
+     * The width of the screen, including the scrollbar next to the network inventory grid.
      */
-    private Blitter header;
+    private int screenWidth = 195;
 
     /**
-     * The area to draw for the first row in the terminal. Usually this includes the top of the scrollbar.
+     * The width of the window below the network inventory grid.
      */
-    private Blitter firstRow;
+    private int bottomWidth = 176;
 
     /**
-     * The area to repeat for every row in the terminal. Should be 16px for the item + 2px for the border in size.
+     * The height of the area above the first row of the network inventory grid.
      */
-    private Blitter row;
+    private int headerHeight = 17;
 
     /**
-     * The area to draw for the last row in the terminal. Usually this includes the top of the scrollbar.
+     * How far the upper part of the window extends below the network inventory grid.
      */
-    private Blitter lastRow;
+    private int gridBottomMargin = 9;
 
     /**
-     * The area to draw at the bottom of the terminal (i.e. includes the player inventory)
+     * The height of the area below the network inventory grid (i.e. includes the player inventory).
      */
-    private Blitter bottom;
+    private int bottomHeight;
 
     /**
      * Currently only 9 is supported here.
@@ -65,44 +74,12 @@ public class TerminalStyle {
      */
     private boolean showTooltipsWithItemInHand;
 
-    public Blitter getHeader() {
-        return header;
+    public int getHeaderHeight() {
+        return headerHeight;
     }
 
-    public void setHeader(Blitter header) {
-        this.header = header;
-    }
-
-    public Blitter getFirstRow() {
-        return firstRow;
-    }
-
-    public void setFirstRow(Blitter firstRow) {
-        this.firstRow = firstRow;
-    }
-
-    public Blitter getRow() {
-        return row;
-    }
-
-    public void setRow(Blitter row) {
-        this.row = row;
-    }
-
-    public Blitter getLastRow() {
-        return lastRow;
-    }
-
-    public void setLastRow(Blitter lastRow) {
-        this.lastRow = lastRow;
-    }
-
-    public Blitter getBottom() {
-        return bottom;
-    }
-
-    public void setBottom(Blitter bottom) {
-        this.bottom = bottom;
+    public int getBottomHeight() {
+        return bottomHeight;
     }
 
     public int getSlotsPerRow() {
@@ -122,17 +99,11 @@ public class TerminalStyle {
     }
 
     public int getScreenWidth() {
-        // Calculate a bounding box for the screen
-        int screenWidth = header.getSrcWidth();
-        screenWidth = Math.max(screenWidth, firstRow.getSrcWidth());
-        screenWidth = Math.max(screenWidth, row.getSrcWidth());
-        screenWidth = Math.max(screenWidth, lastRow.getSrcWidth());
-        screenWidth = Math.max(screenWidth, bottom.getSrcWidth());
         return screenWidth;
     }
 
     public int getPossibleRows(int availableHeight) {
-        return (availableHeight - header.getSrcHeight() - bottom.getSrcHeight()) / row.getSrcHeight();
+        return (availableHeight - headerHeight - bottomHeight) / ROW_HEIGHT;
     }
 
     /**
@@ -140,12 +111,7 @@ public class TerminalStyle {
      */
     public Point getSlotPos(int row, int col) {
         int x = 7 + col * 18;
-
-        int y = header.getSrcHeight();
-        if (row > 0) {
-            y += firstRow.getSrcHeight();
-            y += (row - 1) * this.row.getSrcHeight();
-        }
+        int y = headerHeight + row * ROW_HEIGHT;
 
         // +1 is the margin between the bounding box of the slot and the real minecraft slot. this is due to the border
         return new Point(x, y).move(1, 1);
@@ -155,12 +121,16 @@ public class TerminalStyle {
      * Calculates the height of the screen given a number of rows to display.
      */
     public int getScreenHeight(int rows) {
-        int result = header.getSrcHeight();
-        result += firstRow.getSrcHeight();
-        result += Math.max(0, rows - 2) * row.getSrcHeight();
-        result += lastRow.getSrcHeight();
-        result += bottom.getSrcHeight();
-        return result;
+        return headerHeight + Math.max(2, rows) * ROW_HEIGHT + bottomHeight;
+    }
+
+    /**
+     * Adds the window shape for the given number of rows.
+     */
+    public void addToPanel(PanelBlitter panel, int rows) {
+        var gridBottom = headerHeight + Math.max(2, rows) * ROW_HEIGHT;
+        panel.addBounds(0, 0, screenWidth, gridBottom + gridBottomMargin);
+        panel.addBounds(0, 0, bottomWidth, getScreenHeight(rows));
     }
 
     public boolean isSupportsAutoCrafting() {
@@ -180,20 +150,8 @@ public class TerminalStyle {
     }
 
     public void validate() {
-        if (header == null) {
-            throw new RuntimeException("terminalStyle.header is missing");
-        }
-        if (firstRow == null) {
-            throw new RuntimeException("terminalStyle.firstRow is missing");
-        }
-        if (row == null) {
-            throw new RuntimeException("terminalStyle.row is missing");
-        }
-        if (lastRow == null) {
-            throw new RuntimeException("terminalStyle.lastRow is missing");
-        }
-        if (bottom == null) {
-            throw new RuntimeException("terminalStyle.bottom is missing");
+        if (bottomHeight <= 0) {
+            throw new RuntimeException("terminalStyle.bottomHeight is missing");
         }
     }
 }

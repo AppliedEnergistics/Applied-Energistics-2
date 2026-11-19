@@ -22,41 +22,53 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.renderer.Rect2i;
+import net.minecraft.data.AtlasIds;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 
-import appeng.client.gui.style.Blitter;
+import appeng.client.gui.style.SpriteRenderer;
+import appeng.core.AppEng;
 import appeng.core.localization.GuiText;
 import appeng.menu.interfaces.IProgressProvider;
 
 public class ProgressBar extends AbstractWidget implements ITooltip {
 
+    /**
+     * The default sprite for a filled progress bar. Its empty track is part of the screen background (see
+     * {@code ae2:progress_bar_track}).
+     */
+    public static final Identifier DEFAULT_SPRITE = AppEng.makeId("progress_bar");
+
     private final IProgressProvider source;
-    private final Blitter blitter;
+    private final Identifier sprite;
     private final Direction layout;
-    private final Rect2i sourceRect;
     private final Component titleName;
     private Component fullMsg;
 
-    public ProgressBar(IProgressProvider source, Blitter blitter, Direction dir) {
-        this(source, blitter, dir, null);
+    public ProgressBar(IProgressProvider source, Direction dir) {
+        this(source, DEFAULT_SPRITE, dir, null);
     }
 
-    public ProgressBar(IProgressProvider source, Blitter blitter,
-            Direction dir, Component title) {
-        super(0, 0, blitter.getSrcWidth(), blitter.getSrcHeight(), Component.empty());
+    public ProgressBar(IProgressProvider source, Direction dir, Component title) {
+        this(source, DEFAULT_SPRITE, dir, title);
+    }
+
+    public ProgressBar(IProgressProvider source, Identifier sprite, Direction dir, @Nullable Component title) {
+        super(0, 0, 0, 0, Component.empty());
+        var spriteContents = Minecraft.getInstance().getAtlasManager().getAtlasOrThrow(AtlasIds.GUI)
+                .getSprite(sprite).contents();
+        this.setSize(spriteContents.width(), spriteContents.height());
         this.source = source;
-        this.blitter = blitter.copy();
+        this.sprite = sprite;
         this.layout = dir;
         this.titleName = title;
-        this.sourceRect = new Rect2i(
-                blitter.getSrcX(),
-                blitter.getSrcY(),
-                blitter.getSrcWidth(),
-                blitter.getSrcHeight());
     }
 
     @Override
@@ -69,10 +81,10 @@ public class ProgressBar extends AbstractWidget implements ITooltip {
                 current = max;
             }
 
-            int srcX = sourceRect.getX();
-            int srcY = sourceRect.getY();
-            int srcW = sourceRect.getWidth();
-            int srcH = sourceRect.getHeight();
+            int srcX = 0;
+            int srcY = 0;
+            int srcW = this.width;
+            int srcH = this.height;
             int destX = getX();
             int destY = getY();
 
@@ -87,7 +99,8 @@ public class ProgressBar extends AbstractWidget implements ITooltip {
                 srcW -= diff;
             }
 
-            blitter.src(srcX, srcY, srcW, srcH).dest(destX, destY).blit(guiGraphics);
+            SpriteRenderer.of(guiGraphics).blitRegion(sprite, srcX, srcY, srcW, srcH, destX, destY, srcW, srcH, false,
+                    -1);
         }
     }
 

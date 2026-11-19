@@ -1,9 +1,21 @@
 {
   "$schema": "schema.json",
   "includes": ["common/common.json", "common/player_inventory.json"],
-  "background": {
-    "texture": "guis/condenser.png",
-    "srcRect": [0, 0, 176, 199]
+  "generatedBackground": {
+    "width": 176,
+    "height": 199
+  },
+  "sprites": {
+    "input": {
+      "sprite": "ae2:background/condenser_input",
+      "left": 48,
+      "top": 49
+    },
+    "progressBar": {
+      "sprite": "ae2:progress_bar_track",
+      "left": 120,
+      "top": 25
+    }
   },
   "slots": {
     "MACHINE_INPUT": {
@@ -16,7 +28,10 @@
     },
     "MACHINE_OUTPUT": {
       "left": 105,
-      "top": 52
+      "top": 52,
+      "background": {
+        "sprite": "ae2:slot_large"
+      }
     }
   },
   "text": {
@@ -28,12 +43,6 @@
         "left": 8,
         "top": 6
       }
-    }
-  },
-  "images": {
-    "progressBar": {
-      "texture": "guis/condenser.png",
-      "srcRect": [176, 0, 6, 18]
     }
   },
   "widgets": {

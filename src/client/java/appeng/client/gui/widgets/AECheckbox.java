@@ -7,25 +7,25 @@ import net.minecraft.client.gui.narration.NarratedElementType;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.input.InputWithModifiers;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.ARGB;
 
-import appeng.client.gui.style.Blitter;
 import appeng.client.gui.style.PaletteColor;
 import appeng.client.gui.style.ScreenStyle;
+import appeng.client.gui.style.SpriteRenderer;
+import appeng.core.AppEng;
 
 public class AECheckbox extends AbstractButton {
     public static final int SIZE = 14;
 
-    private static final Blitter BLITTER = Blitter.texture("guis/checkbox.png", 64, 64);
-
-    private static final Blitter UNCHECKED = BLITTER.copy().src(0, 28, 22, 12);
-    private static final Blitter UNCHECKED_FOCUS = BLITTER.copy().src(22, 28, 22, 12);
-    private static final Blitter CHECKED = BLITTER.copy().src(0, 40, 22, 12);
-    private static final Blitter CHECKED_FOCUS = BLITTER.copy().src(22, 40, 22, 12);
-    private static final Blitter RADIO_UNCHECKED = BLITTER.copy().src(2 * SIZE, 0, SIZE, SIZE);
-    private static final Blitter RADIO_UNCHECKED_FOCUS = BLITTER.copy().src(3 * SIZE, 0, SIZE, SIZE);
-    private static final Blitter RADIO_CHECKED = BLITTER.copy().src(2 * SIZE, SIZE, SIZE, SIZE);
-    private static final Blitter RADIO_CHECKED_FOCUS = BLITTER.copy().src(3 * SIZE, SIZE, SIZE, SIZE);
-
+    private static final Identifier UNCHECKED = AppEng.makeId("checkbox/unchecked");
+    private static final Identifier UNCHECKED_FOCUS = AppEng.makeId("checkbox/unchecked_focus");
+    private static final Identifier CHECKED = AppEng.makeId("checkbox/checked");
+    private static final Identifier CHECKED_FOCUS = AppEng.makeId("checkbox/checked_focus");
+    private static final Identifier RADIO_UNCHECKED = AppEng.makeId("checkbox/radio_unchecked");
+    private static final Identifier RADIO_UNCHECKED_FOCUS = AppEng.makeId("checkbox/radio_unchecked_focus");
+    private static final Identifier RADIO_CHECKED = AppEng.makeId("checkbox/radio_checked");
+    private static final Identifier RADIO_CHECKED_FOCUS = AppEng.makeId("checkbox/radio_checked_focus");
     private final ScreenStyle style;
     private boolean selected;
     private Runnable changeListener;
@@ -81,7 +81,7 @@ public class AECheckbox extends AbstractButton {
 
     @Override
     public void extractContents(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
-        Blitter icon;
+        Identifier icon;
         if (isRadio()) {
             if (isMouseOver(mouseX, mouseY)) {
                 icon = isSelected() ? RADIO_CHECKED_FOCUS : RADIO_UNCHECKED_FOCUS;
@@ -106,7 +106,7 @@ public class AECheckbox extends AbstractButton {
         var textColor = isActive() ? PaletteColor.DEFAULT_TEXT_COLOR : PaletteColor.MUTED_TEXT_COLOR;
         var opacity = isActive() ? 1 : 0.5f;
 
-        icon.dest(getX(), getY()).opacity(opacity).blit(guiGraphics);
+        SpriteRenderer.of(guiGraphics).blitSprite(icon, getX(), getY(), ARGB.white(opacity));
         var lines = font.split(getMessage(), width - 22);
         // try to vertically center if it's just one line
         var lineY = getY() + (lines.size() <= 1 ? 4 : 1);

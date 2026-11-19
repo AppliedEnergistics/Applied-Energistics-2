@@ -40,11 +40,10 @@ import org.slf4j.LoggerFactory;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.CharacterEvent;
 import net.minecraft.client.input.MouseButtonEvent;
-import net.minecraft.client.renderer.Rect2i;
-import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.ContainerInput;
 import net.minecraft.world.inventory.Slot;
@@ -65,8 +64,9 @@ import appeng.api.storage.ILinkStatus;
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.style.PaletteColor;
 import appeng.client.gui.style.ScreenStyle;
-import appeng.client.gui.style.Theme;
+import appeng.client.gui.style.SpriteRenderer;
 import appeng.client.gui.widgets.AETextField;
+import appeng.client.gui.widgets.PanelBlitter;
 import appeng.client.gui.widgets.Scrollbar;
 import appeng.client.gui.widgets.ServerSettingToggleButton;
 import appeng.client.gui.widgets.SettingToggleButton;
@@ -111,23 +111,25 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
      */
     private static final int SLOT_SIZE = ROW_HEIGHT;
 
-    // Bounding boxes of key areas in the UI texture.
-    // The upper part of the UI, anything above the scrollable area (incl. its top border)
-    private static final Rect2i HEADER_BBOX = new Rect2i(0, 0, GUI_WIDTH, GUI_HEADER_HEIGHT);
-    // Background for a text row in the scroll-box.
-    // Spans across the whole texture including the right and left borders including the scrollbar.
-    // Covers separate textures for the top, middle and bottoms rows for more customization.
-    private static final Rect2i ROW_TEXT_TOP_BBOX = new Rect2i(0, 17, GUI_WIDTH, ROW_HEIGHT);
-    private static final Rect2i ROW_TEXT_MIDDLE_BBOX = new Rect2i(0, 53, GUI_WIDTH, ROW_HEIGHT);
-    private static final Rect2i ROW_TEXT_BOTTOM_BBOX = new Rect2i(0, 89, GUI_WIDTH, ROW_HEIGHT);
-    // Background for a inventory row in the scroll-box.
-    // Spans across the whole texture including the right and left borders including the scrollbar.
-    // Covers separate textures for the top, middle and bottoms rows for more customization.
-    private static final Rect2i ROW_INVENTORY_TOP_BBOX = new Rect2i(0, 35, GUI_WIDTH, ROW_HEIGHT);
-    private static final Rect2i ROW_INVENTORY_MIDDLE_BBOX = new Rect2i(0, 71, GUI_WIDTH, ROW_HEIGHT);
-    private static final Rect2i ROW_INVENTORY_BOTTOM_BBOX = new Rect2i(0, 107, GUI_WIDTH, ROW_HEIGHT);
-    // This is the lower part of the UI, anything below the scrollable area (incl. its bottom border)
-    private static final Rect2i FOOTER_BBOX = new Rect2i(0, 125, GUI_WIDTH, GUI_FOOTER_HEIGHT);
+    /**
+     * The width of the window below the scrollable area.
+     */
+    private static final int GUI_FOOTER_WIDTH = 176;
+
+    /**
+     * How far the upper part of the window (which includes the scrollbar) extends below the scrollable area.
+     */
+    private static final int GUI_SCROLL_AREA_BOTTOM_MARGIN = 9;
+
+    /**
+     * The inset frame drawn around the scrollable area.
+     */
+    private static final Identifier SCROLL_AREA_SPRITE = AppEng.makeId("inset");
+
+    /**
+     * The background of a pattern slot in the scrollable area, including the 1px gap surrounding it.
+     */
+    private static final Identifier SLOT_SPRITE = AppEng.makeId("pattern_access_slot");
 
     private static final Comparator<PatternContainerGroup> GROUP_COMPARATOR = Comparator
             .comparing(group -> group.name().getString().toLowerCase(Locale.ROOT));
@@ -374,59 +376,39 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
     }
 
     @Override
-    public void drawBG(GuiGraphicsExtractor guiGraphics, int offsetX, int offsetY, int mouseX,
-            int mouseY, float partialTicks) {
-        // Draw the top of the dialog
-        blit(guiGraphics, offsetX, offsetY, HEADER_BBOX);
-
-        final int scrollLevel = scrollbar.getCurrentScroll();
-
-        int currentY = offsetY + GUI_HEADER_HEIGHT;
-
-        // Draw the footer now so slots will draw on top of it
-        blit(guiGraphics, offsetX, currentY + this.visibleRows * ROW_HEIGHT, FOOTER_BBOX);
-
-        for (int i = 0; i < this.visibleRows; ++i) {
-            // Draw the dialog background for this row
-            // Skip 1 pixel for the first row in order to not over-draw on the top scrollbox border,
-            // and do the same but for the bottom border on the last row
-            boolean firstLine = i == 0;
-            boolean lastLine = i == this.visibleRows - 1;
-
-            // Draw the background for the slots in an inventory row
-            Rect2i bbox = selectRowBackgroundBox(false, firstLine, lastLine);
-            blit(guiGraphics, offsetX, currentY, bbox);
-            if (scrollLevel + i < this.rows.size()) {
-                var row = this.rows.get(scrollLevel + i);
-                if (row instanceof SlotsRow slotsRow) {
-                    bbox = selectRowBackgroundBox(true, firstLine, lastLine);
-                    bbox.setWidth(GUI_PADDING_X + SLOT_SIZE * slotsRow.slots - 1);
-                    blit(guiGraphics, offsetX, currentY, bbox);
-                }
-            }
-
-            currentY += ROW_HEIGHT;
-        }
-
-        guiGraphics.nextStratum();
+    protected void addBackgroundPanels(PanelBlitter panels) {
+        var scrollAreaBottom = GUI_HEADER_HEIGHT + this.visibleRows * ROW_HEIGHT;
+        panels.addBounds(0, 0, GUI_WIDTH, scrollAreaBottom + GUI_SCROLL_AREA_BOTTOM_MARGIN);
+        panels.addBounds(0, 0, GUI_FOOTER_WIDTH, scrollAreaBottom + GUI_FOOTER_HEIGHT);
     }
 
-    private Rect2i selectRowBackgroundBox(boolean isInvLine, boolean firstLine, boolean lastLine) {
-        if (isInvLine) {
-            if (firstLine) {
-                return ROW_INVENTORY_TOP_BBOX;
-            } else if (lastLine) {
-                return ROW_INVENTORY_BOTTOM_BBOX;
-            } else {
-                return ROW_INVENTORY_MIDDLE_BBOX;
+    @Override
+    public void drawBG(GuiGraphicsExtractor guiGraphics, int offsetX, int offsetY, int mouseX,
+            int mouseY, float partialTicks) {
+        super.drawBG(guiGraphics, offsetX, offsetY, mouseX, mouseY, partialTicks);
+
+        var renderer = SpriteRenderer.of(guiGraphics);
+
+        // The frame of the scrollable area
+        var areaX = offsetX + GUI_PADDING_X - 1;
+        var areaY = offsetY + GUI_HEADER_HEIGHT;
+        var areaHeight = this.visibleRows * ROW_HEIGHT;
+        renderer.blitSprite(SCROLL_AREA_SPRITE, areaX, areaY, COLUMNS * SLOT_SIZE, areaHeight, -1);
+
+        // The slot backgrounds of the visible inventory rows. Their surrounding gap is clipped to the inside
+        // of the frame.
+        guiGraphics.enableScissor(areaX + 1, areaY + 1, areaX + COLUMNS * SLOT_SIZE - 1, areaY + areaHeight - 1);
+        final int scrollLevel = scrollbar.getCurrentScroll();
+        for (int i = 0; i < this.visibleRows && scrollLevel + i < this.rows.size(); ++i) {
+            if (this.rows.get(scrollLevel + i) instanceof SlotsRow slotsRow) {
+                for (int col = 0; col < slotsRow.slots; col++) {
+                    renderer.blitSprite(SLOT_SPRITE, areaX + col * SLOT_SIZE, areaY + i * ROW_HEIGHT, -1);
+                }
             }
-        } else if (firstLine) {
-            return ROW_TEXT_TOP_BBOX;
-        } else if (lastLine) {
-            return ROW_TEXT_BOTTOM_BBOX;
-        } else {
-            return ROW_TEXT_MIDDLE_BBOX;
         }
+        guiGraphics.disableScissor();
+
+        guiGraphics.nextStratum();
     }
 
     @Override
@@ -629,24 +611,6 @@ public class PatternAccessTermScreen<C extends PatternAccessTermMenu> extends AE
      */
     private int getMaxRows() {
         return this.groups.size() + this.byId.size();
-    }
-
-    /**
-     * A version of blit that lets us pass a source rectangle
-     */
-    private void blit(GuiGraphicsExtractor guiGraphics, int offsetX, int offsetY, Rect2i srcRect) {
-        var texture = Theme.resolveTexture(AppEng.makeId("textures/guis/patternaccessterminal.png"));
-        guiGraphics.blit(
-                RenderPipelines.GUI_TEXTURED,
-                texture,
-                offsetX,
-                offsetY,
-                srcRect.getX(),
-                srcRect.getY(),
-                srcRect.getWidth(),
-                srcRect.getHeight(),
-                256,
-                256);
     }
 
     protected int getVisibleRows() {

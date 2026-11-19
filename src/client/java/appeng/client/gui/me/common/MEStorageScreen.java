@@ -73,11 +73,15 @@ import appeng.client.gui.AESubScreen;
 import appeng.client.gui.style.Blitter;
 import appeng.client.gui.style.PaletteColor;
 import appeng.client.gui.style.ScreenStyle;
+import appeng.client.gui.style.SlotBackground;
+import appeng.client.gui.style.SlotBackgroundRenderer;
+import appeng.client.gui.style.SpriteRenderer;
 import appeng.client.gui.style.TerminalStyle;
 import appeng.client.gui.widgets.AETextField;
 import appeng.client.gui.widgets.ActionButton;
 import appeng.client.gui.widgets.ISortSource;
 import appeng.client.gui.widgets.KeyTypeSelectionButton;
+import appeng.client.gui.widgets.PanelBlitter;
 import appeng.client.gui.widgets.Scrollbar;
 import appeng.client.gui.widgets.SettingToggleButton;
 import appeng.client.gui.widgets.TabButton;
@@ -112,6 +116,11 @@ public class MEStorageScreen<C extends MEStorageMenu>
     private static final String TEXT_ID_ENTRIES_SHOWN = "entriesShown";
 
     private static final int MIN_ROWS = 2;
+
+    /**
+     * The slot background used for the row of pinned keys.
+     */
+    private static final SlotBackground PINNED_SLOT_BACKGROUND = SlotBackground.of(AppEng.makeId("pinned_slot"));
 
     private static String rememberedSearch = "";
     private final TerminalStyle style;
@@ -324,7 +333,7 @@ public class MEStorageScreen<C extends MEStorageMenu>
     }
 
     private void updateScrollbar() {
-        scrollbar.setHeight(this.rows * style.getRow().getSrcHeight() - 2);
+        scrollbar.setHeight(this.rows * TerminalStyle.ROW_HEIGHT - 2);
         int totalRows = (this.repo.size() + getSlotsPerRow() - 1) / getSlotsPerRow();
         if (repo.hasPinnedRow()) {
             totalRows++;
@@ -580,41 +589,28 @@ public class MEStorageScreen<C extends MEStorageMenu>
     }
 
     @Override
+    protected void addBackgroundPanels(PanelBlitter panels) {
+        style.addToPanel(panels, this.rows);
+    }
+
+    @Override
     public void drawBG(GuiGraphicsExtractor guiGraphics, int offsetX, int offsetY, int mouseX,
             int mouseY, float partialTicks) {
+        super.drawBG(guiGraphics, offsetX, offsetY, mouseX, mouseY, partialTicks);
 
-        guiGraphics.nextStratum();
-
-        style.getHeader()
-                .dest(offsetX, offsetY)
-                .blit(guiGraphics);
-
-        int y = offsetY;
-        style.getHeader().dest(offsetX, y).blit(guiGraphics);
-        y += style.getHeader().getSrcHeight();
-
-        // To draw the first/last row, we need to at least draw 2
+        // Draw the backgrounds of the network inventory slots. To draw the first/last row, we need to at least draw 2.
+        var renderer = SpriteRenderer.of(guiGraphics);
+        var slotBackgrounds = new SlotBackgroundRenderer();
         int rowsToDraw = Math.max(2, this.rows);
-        for (int x = 0; x < rowsToDraw; x++) {
-            Blitter row = style.getRow();
-            if (x == 0) {
-                row = style.getFirstRow();
-            } else if (x + 1 == rowsToDraw) {
-                row = style.getLastRow();
+        for (int row = 0; row < rowsToDraw; row++) {
+            // Mark the pinned row
+            var background = row == 0 && repo.hasPinnedRow() ? PINNED_SLOT_BACKGROUND : SlotBackground.DEFAULT;
+            for (int col = 0; col < style.getSlotsPerRow(); col++) {
+                var pos = style.getSlotPos(row, col);
+                slotBackgrounds.add(renderer, background, pos.getX(), pos.getY(), 1);
             }
-            row.dest(offsetX, y).blit(guiGraphics);
-            y += style.getRow().getSrcHeight();
         }
-
-        style.getBottom().dest(offsetX, y).blit(guiGraphics);
-
-        // Draw the overlay for the pinned row
-        if (repo.hasPinnedRow()) {
-            Blitter.texture("guis/terminal.png")
-                    .src(0, 204, 162, 18)
-                    .dest(offsetX + 7, offsetY + style.getHeader().getSrcHeight())
-                    .blit(guiGraphics);
-        }
+        slotBackgrounds.render(renderer, offsetX, offsetY);
 
         if (this.searchField != null) {
             this.searchField.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);

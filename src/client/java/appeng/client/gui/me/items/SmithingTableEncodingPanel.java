@@ -5,6 +5,7 @@ import java.util.List;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
@@ -14,9 +15,10 @@ import net.minecraft.world.item.crafting.SmithingRecipeInput;
 import appeng.api.config.ActionItems;
 import appeng.client.Point;
 import appeng.client.gui.WidgetContainer;
-import appeng.client.gui.style.Blitter;
+import appeng.client.gui.style.SpriteRenderer;
 import appeng.client.gui.widgets.ActionButton;
 import appeng.client.gui.widgets.ToggleButton;
+import appeng.core.AppEng;
 import appeng.core.localization.ButtonToolTips;
 import appeng.core.localization.GuiText;
 import appeng.crafting.RecipeAccess;
@@ -24,7 +26,7 @@ import appeng.menu.SlotSemantics;
 import appeng.util.Icon;
 
 public class SmithingTableEncodingPanel extends EncodingModePanel {
-    private static final Blitter BG = Blitter.texture("guis/pattern_modes.png").src(128, 70, 124, 66);
+    private static final Identifier BG = AppEng.makeId("background/pattern_mode_smithing_table");
 
     private final ActionButton clearBtn;
     private final ToggleButton substitutionsBtn;
@@ -73,7 +75,7 @@ public class SmithingTableEncodingPanel extends EncodingModePanel {
 
     @Override
     public void drawBackgroundLayer(GuiGraphicsExtractor guiGraphics, Rect2i bounds, Point mouse) {
-        BG.dest(bounds.getX() + 8, bounds.getY() + bounds.getHeight() - 165).blit(guiGraphics);
+        SpriteRenderer.of(guiGraphics).blitSprite(BG, bounds.getX() + 8, bounds.getY() + bounds.getHeight() - 165, -1);
     }
 
     @Override

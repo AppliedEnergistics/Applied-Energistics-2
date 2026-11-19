@@ -35,13 +35,15 @@ import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 
 import appeng.client.Point;
-import appeng.client.gui.style.Blitter;
 import appeng.client.gui.style.PaletteColor;
 import appeng.client.gui.style.ScreenStyle;
+import appeng.client.gui.style.SpriteRenderer;
+import appeng.core.AppEng;
 
 /**
  * A modified version of the Minecraft text field. You can initialize it over the full element span. The mouse click
@@ -50,7 +52,10 @@ import appeng.client.gui.style.ScreenStyle;
  * The rendering does pay attention to the size of the '_' caret.
  */
 public class AETextField extends EditBox implements IResizableWidget, ITooltip {
-    private static final Blitter BLITTER = Blitter.texture("guis/text_field.png", 128, 128);
+    private static final Identifier SPRITE = AppEng.makeId("text_field");
+    private static final Identifier SPRITE_DISABLED = AppEng.makeId("text_field_disabled");
+    private static final Identifier SPRITE_FOCUSED = AppEng.makeId("text_field_focused");
+    private static final int HEIGHT = 12;
 
     private static final int PADDING = 2;
 
@@ -159,25 +164,17 @@ public class AETextField extends EditBox implements IResizableWidget, ITooltip {
     @Override
     public void extractWidgetRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partial) {
         if (this.isVisible()) {
-            var yOffset = 0;
+            var sprite = SPRITE;
             if (!this.isEditable()) {
-                yOffset = 12;
+                sprite = SPRITE_DISABLED;
             } else if (isFocused()) {
-                yOffset = 24;
+                sprite = SPRITE_FOCUSED;
             }
 
             var bounds = getVisualBounds();
-
-            BLITTER.src(0, yOffset, 1, 12)
-                    .dest(bounds.left, bounds.top)
-                    .blit(guiGraphics);
-            var backgroundWidth = Math.min(126, bounds.right - bounds.left - 2);
-            BLITTER.src(1, yOffset, backgroundWidth, 12)
-                    .dest(bounds.left + 1, bounds.top)
-                    .blit(guiGraphics);
-            BLITTER.src(127, yOffset, 1, 12)
-                    .dest(bounds.right - 1, bounds.top)
-                    .blit(guiGraphics);
+            SpriteRenderer.of(guiGraphics).blitSprite(sprite, bounds.left, bounds.top, bounds.right - bounds.left,
+                    HEIGHT,
+                    -1);
 
             if (textColor != null) {
                 super.setTextColor(ARGB.opaque(style.getColor(textColor).toARGB()));

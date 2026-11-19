@@ -42,7 +42,7 @@ public class InscriberScreen extends UpgradeableScreen<InscriberMenu> {
             ScreenStyle style) {
         super(menu, playerInventory, title, style);
 
-        this.pb = new ProgressBar(this.menu, style.getImage("progressBar"), Direction.VERTICAL);
+        this.pb = new ProgressBar(this.menu, Direction.VERTICAL);
         widgets.add("progressBar", this.pb);
 
         this.separateSidesBtn = new ServerSettingToggleButton<>(Settings.INSCRIBER_SEPARATE_SIDES, YesNo.NO);

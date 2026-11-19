@@ -21,6 +21,7 @@ package appeng.client.gui.style;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -140,6 +141,48 @@ class StyleManagerTest {
 
     private static boolean isLightTexture(Identifier id) {
         return id.getPath().endsWith(".png") && !id.getPath().endsWith(Theme.DARK_MODE_SUFFIX + ".png");
+    }
+
+    /**
+     * Ensure that all GUI sprites referenced by screen styles exist.
+     */
+    @Test
+    void testAllStylesReferenceExistingSprites() {
+        var resourceManager = MockResourceManager.create();
+        StyleManager.getReloadListener().onResourceManagerReload(resourceManager);
+
+        var styles = resourceManager.listResources("screens",
+                id -> id.getNamespace().equals(AppEng.MOD_ID) && id.getPath().endsWith(".json")
+                        && !id.getPath().endsWith("schema.json")
+                        && !id.getPath().startsWith("screens/common/")
+                        && !id.getPath().startsWith("screens/terminals/encoding/"))
+                .keySet();
+        assertThat(styles).isNotEmpty();
+
+        for (var styleId : styles) {
+            var style = StyleManager.loadStyleDoc("/" + styleId.getPath());
+
+            var sprites = new ArrayList<Identifier>();
+            for (var sprite : style.getSprites().values()) {
+                sprites.add(sprite.getSprite());
+            }
+            for (var slot : style.getSlots().values()) {
+                sprites.add(slot.getBackground().getSprite());
+            }
+            var generatedBackground = style.getGeneratedBackground();
+            if (generatedBackground != null) {
+                sprites.add(generatedBackground.getSprite());
+                sprites.add(generatedBackground.getInnerSprite());
+            }
+
+            for (var sprite : sprites) {
+                if (sprite == null) {
+                    continue;
+                }
+                var texture = sprite.withPath(path -> "textures/gui/sprites/" + path + ".png");
+                assertThat(resourceManager.getResource(texture)).as(styleId + " references " + sprite).isPresent();
+            }
+        }
     }
 
     @Test

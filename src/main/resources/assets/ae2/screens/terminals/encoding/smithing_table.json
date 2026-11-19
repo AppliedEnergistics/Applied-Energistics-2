@@ -4,19 +4,31 @@
   "slots": {
     "SMITHING_TABLE_TEMPLATE": {
       "left": 15,
-      "bottom": 140
+      "bottom": 140,
+      "background": {
+        "visible": false
+      }
     },
     "SMITHING_TABLE_BASE": {
       "left": 33,
-      "bottom": 140
+      "bottom": 140,
+      "background": {
+        "visible": false
+      }
     },
     "SMITHING_TABLE_ADDITION": {
       "left": 51,
-      "bottom": 140
+      "bottom": 140,
+      "background": {
+        "visible": false
+      }
     },
     "SMITHING_TABLE_RESULT": {
       "left": 109,
-      "bottom": 140
+      "bottom": 140,
+      "background": {
+        "visible": false
+      }
     }
   },
   "widgets": {

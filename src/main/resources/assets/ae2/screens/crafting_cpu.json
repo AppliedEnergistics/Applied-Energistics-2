@@ -1,9 +1,26 @@
 {
   "$schema": "schema.json",
   "includes": ["common/common.json"],
-  "background": {
-    "texture": "guis/craftingcpu.png",
-    "srcRect": [0, 0, 238, 185]
+  "generatedBackground": {
+    "width": 238,
+    "height": 185,
+    "shape": [[0, 0, 219, 185], [0, 0, 238, 164]]
+  },
+  "sprites": {
+    "table": {
+      "sprite": "ae2:inset",
+      "left": 8,
+      "top": 18,
+      "width": 205,
+      "height": 139
+    },
+    "tableGrid": {
+      "sprite": "ae2:table_grid",
+      "left": 9,
+      "top": 19,
+      "width": 203,
+      "height": 137
+    }
   },
   "text": {
     "dialog_title": {

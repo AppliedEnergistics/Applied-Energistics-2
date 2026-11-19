@@ -5,11 +5,17 @@
     "CRAFTING_GRID": {
       "left": 15,
       "bottom": 158,
-      "grid": "BREAK_AFTER_3COLS"
+      "grid": "BREAK_AFTER_3COLS",
+      "background": {
+        "visible": false
+      }
     },
     "CRAFTING_RESULT": {
       "left": 106,
-      "bottom": 140
+      "bottom": 140,
+      "background": {
+        "visible": false
+      }
     }
   },
   "widgets": {

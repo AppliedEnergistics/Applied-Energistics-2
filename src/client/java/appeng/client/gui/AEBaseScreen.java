@@ -76,16 +76,18 @@ import appeng.api.stacks.GenericStack;
 import appeng.client.AppEngClient;
 import appeng.client.Point;
 import appeng.client.gui.layout.SlotGridLayout;
-import appeng.client.gui.style.BackgroundGenerator;
 import appeng.client.gui.style.Blitter;
 import appeng.client.gui.style.PaletteColor;
 import appeng.client.gui.style.ScreenStyle;
+import appeng.client.gui.style.SlotBackgroundRenderer;
 import appeng.client.gui.style.SlotPosition;
+import appeng.client.gui.style.SpriteRenderer;
 import appeng.client.gui.style.Text;
 import appeng.client.gui.style.TextAlignment;
 import appeng.client.gui.widgets.ITickingWidget;
 import appeng.client.gui.widgets.ITooltip;
 import appeng.client.gui.widgets.OpenGuideButton;
+import appeng.client.gui.widgets.PanelBlitter;
 import appeng.client.gui.widgets.VerticalButtonBar;
 import appeng.core.AEConfig;
 import appeng.core.AELog;
@@ -107,7 +109,6 @@ import appeng.menu.slot.FakeSlot;
 import appeng.menu.slot.IOptionalSlot;
 import appeng.menu.slot.ResizableSlot;
 import appeng.util.ConfigMenuInventory;
-import appeng.util.Icon;
 
 public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContainerScreen<T> {
     private static final Logger LOG = LoggerFactory.getLogger(AEBaseScreen.class);
@@ -506,11 +507,7 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
 
         widgets.drawBackgroundLayer(graphics, getBounds(true), new Point(mouseX - leftPos, mouseY - topPos));
 
-        for (Slot slot : this.getInventorySlots()) {
-            if (slot instanceof IOptionalSlot) {
-                drawOptionalSlotBackground(graphics, (IOptionalSlot) slot, false);
-            }
-        }
+        drawSlotBackgrounds(SpriteRenderer.of(graphics), leftPos, topPos);
 
         // TODO 26.1 - Mithi83 - double-check the order of rendering in here
         super.extractContents(graphics, mouseX, mouseY, a);
@@ -518,19 +515,41 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
         graphics.nextStratum();
     }
 
-    private void drawOptionalSlotBackground(GuiGraphicsExtractor guiGraphics, IOptionalSlot slot, boolean alwaysDraw) {
-        // If a slot is optional and doesn't currently render, we still need to provide a background for it
-        if (alwaysDraw || slot.isRenderDisabled()) {
-            // If the slot is disabled, shade the background overlay
-            float alpha = slot.isSlotEnabled() ? 1.0f : 0.2f;
+    /**
+     * Draws the backgrounds of all slots that are positioned by the screen style.
+     */
+    protected void drawSlotBackgrounds(SpriteRenderer renderer, int offsetX, int offsetY) {
+        var backgrounds = new SlotBackgroundRenderer();
 
-            Point pos = slot.getBackgroundPos();
+        for (var entry : style.getSlots().entrySet()) {
+            var slotStyle = entry.getValue();
+            var background = slotStyle.getBackground();
+            if (slotStyle.isHidden() || !background.isVisible()) {
+                continue;
+            }
 
-            Blitter.icon(Icon.SLOT_BACKGROUND)
-                    .dest(leftPos + pos.getX(), topPos + pos.getY())
-                    .color(1, 1, 1, alpha)
-                    .blit(guiGraphics);
+            var semantic = SlotSemantics.get(entry.getKey());
+            if (semantic == null || hiddenSlots.contains(semantic)) {
+                continue;
+            }
+
+            for (var slot : menu.getSlots(semantic)) {
+                float opacity;
+                if (slot instanceof IOptionalSlot optionalSlot && optionalSlot.isRenderDisabled()) {
+                    // Optional slots that are currently not usable still show a background, which is shaded if
+                    // they are disabled.
+                    opacity = optionalSlot.isSlotEnabled() ? 1.0f : 0.2f;
+                } else if (slot.isActive()) {
+                    opacity = 1.0f;
+                } else {
+                    continue;
+                }
+
+                backgrounds.add(renderer, background, slot.x, slot.y, opacity);
+            }
         }
+
+        backgrounds.render(renderer, offsetX, offsetY);
     }
 
     // Convert global mouse x,y to relative Point
@@ -823,21 +842,40 @@ public abstract class AEBaseScreen<T extends AEBaseMenu> extends AbstractContain
 
         guiGraphics.nextStratum();
 
-        var generatedBackground = style.getGeneratedBackground();
-        if (generatedBackground != null) {
-            BackgroundGenerator.draw(
-                    generatedBackground.getWidth(),
-                    generatedBackground.getHeight(),
-                    guiGraphics,
-                    offsetX,
-                    offsetY);
-        }
+        var renderer = SpriteRenderer.of(guiGraphics);
 
+        var panels = new PanelBlitter();
+        addBackgroundPanels(panels);
+        widgets.addBackgroundPanels(panels);
+        panels.render(renderer, offsetX, offsetY, -1);
+
+        // Legacy support for static background images
         var background = style.getBackground();
         if (background != null) {
             background.dest(offsetX, offsetY).blit(guiGraphics);
         }
 
+        drawBackgroundSprites(renderer, offsetX, offsetY);
+    }
+
+    /**
+     * Adds the shape of this screen's window to the given panel blitter. Coordinates are relative to the screen origin.
+     */
+    protected void addBackgroundPanels(PanelBlitter panels) {
+        var generatedBackground = style.getGeneratedBackground();
+        if (generatedBackground != null) {
+            generatedBackground.addToPanel(panels);
+        }
+    }
+
+    /**
+     * Draws the sprites defined in the screen style on top of the window.
+     */
+    protected final void drawBackgroundSprites(SpriteRenderer renderer, int offsetX, int offsetY) {
+        var bounds = new Rect2i(offsetX, offsetY, imageWidth, imageHeight);
+        for (var sprite : style.getSprites().values()) {
+            sprite.draw(renderer, bounds);
+        }
     }
 
     public void drawItem(GuiGraphicsExtractor guiGraphics, int x, int y, ItemStack is) {

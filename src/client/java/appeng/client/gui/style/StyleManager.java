@@ -144,6 +144,7 @@ public final class StyleManager {
         mergeObjectKeys("palette", layers, result);
         mergeObjectKeys("darkPalette", layers, result);
         mergeObjectKeys("images", layers, result);
+        mergeObjectKeys("sprites", layers, result);
         mergeObjectKeys("terminalStyle", layers, result);
         mergeObjectKeys("widgets", layers, result);
 
