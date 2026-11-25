@@ -189,7 +189,7 @@ public class SpatialStorageHelper {
         }
 
         for (BlockPos pos : cDst.getUpdates()) {
-            cSrc.getLevel().updateNeighborsAt(pos, Blocks.AIR);
+            cDst.getLevel().updateNeighborsAt(pos, Blocks.AIR);
         }
 
         for (BlockPos pos : cSrc.getUpdates()) {
