@@ -137,7 +137,7 @@ public final class Blitter {
 
     public static Blitter guiSprite(Identifier resourceLocation) {
         var sprites = Minecraft.getInstance().getAtlasManager().getAtlasOrThrow(AtlasIds.GUI);
-        var sprite = sprites.getSprite(resourceLocation);
+        var sprite = sprites.getSprite(Theme.resolveGuiSprite(resourceLocation));
         return sprite(sprite);
     }
 
@@ -324,7 +324,8 @@ public final class Blitter {
         }
 
         var pipeline = blending ? RenderPipelines.GUI_TEXTURED : GUI_TEXTURED_OPAQUE;
-        var texture = Minecraft.getInstance().getTextureManager().getTexture(this.texture);
+        // Resolve the texture when drawing to allow the UI theme to be switched at any time
+        var texture = Minecraft.getInstance().getTextureManager().getTexture(Theme.resolveTexture(this.texture));
         guiGraphics.submitGuiElementRenderState(new BlitRenderState(
                 pipeline,
                 TextureSetup.singleTexture(texture.getTextureView(), texture.getSampler()),

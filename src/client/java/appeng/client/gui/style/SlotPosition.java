@@ -33,6 +33,13 @@ public class SlotPosition extends Position {
     private boolean hidden = false;
 
     @Nullable
+    private SlotBackground background;
+
+    public SlotBackground getBackground() {
+        return background != null ? background : SlotBackground.DEFAULT;
+    }
+
+    @Nullable
     public SlotGridLayout getGrid() {
         return grid;
     }

@@ -1,9 +1,9 @@
 {
   "$schema": "schema.json",
   "includes": ["common/common.json", "common/player_inventory.json"],
-  "background": {
-    "texture": "guis/me_chest.png",
-    "srcRect": [0, 0, 176, 168]
+  "generatedBackground": {
+    "width": 176,
+    "height": 168
   },
   "slots": {
     "STORAGE": {

@@ -1,9 +1,9 @@
 {
   "$schema": "schema.json",
   "includes": ["common/common.json", "common/player_inventory.json"],
-  "background": {
-    "texture": "guis/wireless_access_point.png",
-    "srcRect": [0, 0, 176, 168]
+  "generatedBackground": {
+    "width": 176,
+    "height": 168
   },
   "slots": {
     "STORAGE": {
@@ -16,19 +16,25 @@
     },
     "MACHINE_OUTPUT": {
       "right": -3,
-      "top": 64
+      "top": 64,
+      "background": {
+        "sprite": "ae2:slot_large"
+      }
     }
   },
-  "images": {
-    "linkPanel": {
-      "texture": "guis/wireless_access_point.png",
-      "srcRect": [203, 0, 31, 92]
+  "sprites": {
+    "link": {
+      "sprite": "ae2:background/wireless_link",
+      "right": 0,
+      "top": 3
     }
   },
   "widgets": {
     "linkPanel": {
       "right": 2,
-      "top": 0
+      "top": 0,
+      "width": 31,
+      "height": 92
     }
   },
   "text": {

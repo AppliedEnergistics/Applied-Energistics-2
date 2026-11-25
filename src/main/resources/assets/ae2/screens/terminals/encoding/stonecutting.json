@@ -4,7 +4,10 @@
   "slots": {
     "STONECUTTING_INPUT": {
       "left": 15,
-      "bottom": 140
+      "bottom": 140,
+      "background": {
+        "visible": false
+      }
     }
   },
   "widgets": {

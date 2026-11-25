@@ -111,7 +111,8 @@ public class NetworkStatusScreen extends AEBaseScreen<NetworkStatusMenu> {
             int itemY = cellY + 1;
 
             if (entry.isMissingChannel()) {
-                guiGraphics.fill(cellX, cellY, cellX + CELL_WIDTH, cellY + CELL_HEIGHT, 0xffff5555);
+                guiGraphics.fill(cellX, cellY, cellX + CELL_WIDTH, cellY + CELL_HEIGHT,
+                        style.getColor(PaletteColor.MISSING_CHANNEL_BACKGROUND).toARGB());
             }
 
             drawMachineCount(guiGraphics, itemX, cellY, entry.getCount());

@@ -35,25 +35,5 @@
         "translate": "gui.ae2.CraftingCPUs"
       }
     }
-  },
-  "images": {
-    "cpuList": {
-      "texture": "guis/cpu_selector.png",
-      "textureWidth": 256,
-      "textureHeight": 256,
-      "srcRect": [0, 0, 94, 164]
-    },
-    "cpuListButton": {
-      "texture": "guis/cpu_selector.png",
-      "textureWidth": 256,
-      "textureHeight": 256,
-      "srcRect": [100, 0, 67, 22]
-    },
-    "cpuListButtonSelected": {
-      "texture": "guis/cpu_selector.png",
-      "textureWidth": 256,
-      "textureHeight": 256,
-      "srcRect": [100, 22, 67, 22]
-    }
   }
 }

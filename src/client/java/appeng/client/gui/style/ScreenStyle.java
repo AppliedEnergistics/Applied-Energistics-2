@@ -18,10 +18,10 @@
 
 package appeng.client.gui.style;
 
-import java.awt.event.ComponentAdapter;
 import java.lang.reflect.Type;
 import java.util.EnumMap;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import com.google.gson.Gson;
@@ -30,6 +30,7 @@ import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
+import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import com.mojang.serialization.JsonOps;
@@ -40,6 +41,7 @@ import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.network.chat.Style;
+import net.minecraft.resources.Identifier;
 
 /**
  * A screen style document defines various visual aspects of AE2 screens.
@@ -53,6 +55,7 @@ public class ScreenStyle {
             .registerTypeAdapter(Blitter.class, BlitterDeserializer.INSTANCE)
             .registerTypeAdapter(Rect2i.class, Rectangle2dDeserializer.INSTANCE)
             .registerTypeAdapter(Color.class, ColorDeserializer.INSTANCE)
+            .registerTypeAdapter(Identifier.class, new IdentifierAdapter())
             .create();
 
     private static class ComponentAdapter implements JsonDeserializer<Component>, JsonSerializer<Component> {
@@ -92,9 +95,19 @@ public class ScreenStyle {
     private final Map<PaletteColor, Color> palette = new EnumMap<>(PaletteColor.class);
 
     /**
+     * Overrides for colors in {@link #palette} that are used when the dark UI theme is active.
+     */
+    private final Map<PaletteColor, Color> darkPalette = new EnumMap<>(PaletteColor.class);
+
+    /**
      * Additional images that are screen-specific.
      */
     private final Map<String, Blitter> images = new HashMap<>();
+
+    /**
+     * GUI sprites that are drawn as part of the screen background, in the order in which they are defined.
+     */
+    private final Map<String, SpriteStyle> sprites = new LinkedHashMap<>();
 
     /**
      * The screen background, which is optional. If defined, it is also used to size the dialog.
@@ -115,8 +128,30 @@ public class ScreenStyle {
 
     private final Map<String, TooltipArea> tooltips = new HashMap<>();
 
+    /**
+     * Gets a color from the palette for the currently active UI theme (see {@link Theme}). Since the theme can change
+     * at any time, do not store the result.
+     */
     public Color getColor(PaletteColor color) {
-        return palette.get(color);
+        return getColor(color, Theme.isDark());
+    }
+
+    /**
+     * Gets a color from the palette of the light or dark UI theme. The dark theme falls back to the light theme for
+     * colors that it does not define.
+     */
+    public Color getColor(PaletteColor color, boolean dark) {
+        Color result = null;
+        if (dark) {
+            result = darkPalette.get(color);
+        }
+        if (result == null) {
+            result = palette.get(color);
+        }
+        if (result == null) {
+            result = color.getDefaultColor();
+        }
+        return result;
     }
 
     public Map<String, SlotPosition> getSlots() {
@@ -161,6 +196,18 @@ public class ScreenStyle {
         return blitter;
     }
 
+    public Map<String, SpriteStyle> getSprites() {
+        return sprites;
+    }
+
+    public SpriteStyle getSprite(String id) {
+        var sprite = sprites.get(id);
+        if (sprite == null) {
+            throw new IllegalStateException("Screen is missing required sprite: " + id);
+        }
+        return sprite;
+    }
+
     @Nullable
     public TerminalStyle getTerminalStyle() {
         return terminalStyle;
@@ -168,13 +215,30 @@ public class ScreenStyle {
 
     public void validate() {
         for (PaletteColor value : PaletteColor.values()) {
-            if (!palette.containsKey(value)) {
+            if (!palette.containsKey(value) && value.getDefaultColor() == null) {
                 throw new RuntimeException("Palette is missing color " + value);
             }
         }
 
         if (terminalStyle != null) {
             terminalStyle.validate();
+        }
+    }
+
+    private static class IdentifierAdapter implements JsonSerializer<Identifier>, JsonDeserializer<Identifier> {
+        @Override
+        public Identifier deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
+                throws JsonParseException {
+            var id = Identifier.tryParse(json.getAsString());
+            if (id == null) {
+                throw new JsonParseException("Invalid identifier: " + json);
+            }
+            return id;
+        }
+
+        @Override
+        public JsonElement serialize(Identifier src, Type typeOfSrc, JsonSerializationContext context) {
+            return new JsonPrimitive(src.toString());
         }
     }
 

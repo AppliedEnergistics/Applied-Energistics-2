@@ -1,9 +1,9 @@
 {
   "$schema": "schema.json",
   "includes": ["common/common.json"],
-  "background": {
-    "texture": "guis/craft_amt.png",
-    "srcRect": [0, 0, 176, 107]
+  "generatedBackground": {
+    "width": 176,
+    "height": 107
   },
   "slots": {
     "MACHINE_OUTPUT": {

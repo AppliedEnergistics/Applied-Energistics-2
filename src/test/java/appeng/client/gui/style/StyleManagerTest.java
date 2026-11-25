@@ -21,6 +21,7 @@ package appeng.client.gui.style;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -28,9 +29,11 @@ import org.mockito.Captor;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 
 import appeng.client.gui.MockResourceManager;
+import appeng.core.AppEng;
 import appeng.menu.SlotSemantics;
 
 @MockitoSettings(strictness = Strictness.LENIENT)
@@ -53,5 +56,140 @@ class StyleManagerTest {
                 SlotSemantics.PLAYER_HOTBAR.id(),
                 SlotSemantics.CONFIG.id(),
                 SlotSemantics.STORAGE_CELL.id());
+    }
+
+    @Test
+    void testDarkPaletteOverridesLightPalette() {
+        StyleManager.getReloadListener().onResourceManagerReload(MockResourceManager.create());
+
+        ScreenStyle style = StyleManager.loadStyleDoc("/screens/cell_workbench.json");
+
+        assertThat(style.getColor(PaletteColor.DEFAULT_TEXT_COLOR, false).toARGB()).isEqualTo(0xff413f54);
+        assertThat(style.getColor(PaletteColor.DEFAULT_TEXT_COLOR, true).toARGB()).isEqualTo(0xfff2f2f2);
+    }
+
+    /**
+     * The colors that were previously hardcoded must keep their previous values in the light theme.
+     */
+    @Test
+    void testLightPaletteMatchesBuiltInDefaults() {
+        StyleManager.getReloadListener().onResourceManagerReload(MockResourceManager.create());
+
+        ScreenStyle style = StyleManager.getCommonPalette();
+
+        for (var color : PaletteColor.values()) {
+            if (color.getDefaultColor() != null) {
+                assertThat(style.getColor(color, false)).as(color.name()).isEqualTo(color.getDefaultColor());
+            }
+        }
+    }
+
+    /**
+     * Resource packs that override the palette with an older version, which lacks colors added later, must not break
+     * screens.
+     */
+    @Test
+    void testPaletteWithoutNewerColorsIsValid() {
+        var style = ScreenStyle.GSON.fromJson("""
+                {
+                  "palette": {
+                    "DEFAULT_TEXT_COLOR": "#413f54",
+                    "MUTED_TEXT_COLOR": "#878fa5",
+                    "SELECTION_COLOR": "#ace9ff",
+                    "TEXTFIELD_PLACEHOLDER": "#dedfe3",
+                    "TEXTFIELD_ERROR": "#FF1900",
+                    "TEXTFIELD_TEXT": "#f2f2f2",
+                    "ERROR": "#CE2401"
+                  }
+                }
+                """, ScreenStyle.class);
+        style.validate();
+
+        for (var color : PaletteColor.values()) {
+            assertThat(style.getColor(color, false)).as(color.name()).isNotNull();
+            assertThat(style.getColor(color, true)).as(color.name()).isNotNull();
+        }
+        assertThat(style.getColor(PaletteColor.BUTTON_TEXT, true))
+                .isEqualTo(PaletteColor.BUTTON_TEXT.getDefaultColor());
+    }
+
+    /**
+     * Ensure that every UI texture has a dark variant, so new textures are not forgotten.
+     */
+    @Test
+    void testAllGuiTexturesHaveDarkVariant() {
+        var resourceManager = MockResourceManager.create();
+
+        var lightTextures = resourceManager.listResources("textures/guis",
+                id -> id.getNamespace().equals(AppEng.MOD_ID) && isLightTexture(id)).keySet();
+        assertThat(lightTextures).isNotEmpty();
+        for (var texture : lightTextures) {
+            var darkTexture = Theme.getDarkTexture(texture);
+            assertThat(resourceManager.getResource(darkTexture)).as(darkTexture.toString()).isPresent();
+        }
+
+        var lightSprites = resourceManager.listResources("textures/gui/sprites",
+                id -> id.getNamespace().equals(AppEng.MOD_ID) && isLightTexture(id)
+                        && !id.getPath().startsWith("textures/gui/sprites/guide/"))
+                .keySet();
+        assertThat(lightSprites).isNotEmpty();
+        for (var sprite : lightSprites) {
+            var darkSprite = Theme.getDarkTexture(sprite);
+            assertThat(resourceManager.getResource(darkSprite)).as(darkSprite.toString()).isPresent();
+        }
+    }
+
+    private static boolean isLightTexture(Identifier id) {
+        return id.getPath().endsWith(".png") && !id.getPath().endsWith(Theme.DARK_MODE_SUFFIX + ".png");
+    }
+
+    /**
+     * Ensure that all GUI sprites referenced by screen styles exist.
+     */
+    @Test
+    void testAllStylesReferenceExistingSprites() {
+        var resourceManager = MockResourceManager.create();
+        StyleManager.getReloadListener().onResourceManagerReload(resourceManager);
+
+        var styles = resourceManager.listResources("screens",
+                id -> id.getNamespace().equals(AppEng.MOD_ID) && id.getPath().endsWith(".json")
+                        && !id.getPath().endsWith("schema.json")
+                        && !id.getPath().startsWith("screens/common/")
+                        && !id.getPath().startsWith("screens/terminals/encoding/"))
+                .keySet();
+        assertThat(styles).isNotEmpty();
+
+        for (var styleId : styles) {
+            var style = StyleManager.loadStyleDoc("/" + styleId.getPath());
+
+            var sprites = new ArrayList<Identifier>();
+            for (var sprite : style.getSprites().values()) {
+                sprites.add(sprite.getSprite());
+            }
+            for (var slot : style.getSlots().values()) {
+                sprites.add(slot.getBackground().getSprite());
+            }
+            var generatedBackground = style.getGeneratedBackground();
+            if (generatedBackground != null) {
+                sprites.add(generatedBackground.getSprite());
+                sprites.add(generatedBackground.getInnerSprite());
+            }
+
+            for (var sprite : sprites) {
+                if (sprite == null) {
+                    continue;
+                }
+                var texture = sprite.withPath(path -> "textures/gui/sprites/" + path + ".png");
+                assertThat(resourceManager.getResource(texture)).as(styleId + " references " + sprite).isPresent();
+            }
+        }
+    }
+
+    @Test
+    void testDarkTextureNames() {
+        assertThat(Theme.getDarkTexture(AppEng.makeId("textures/guis/terminal.png")))
+                .isEqualTo(AppEng.makeId("textures/guis/terminal_darkmode.png"));
+        assertThat(Theme.getDarkTexture(AppEng.makeId("textures/guis/no_extension")))
+                .isEqualTo(AppEng.makeId("textures/guis/no_extension_darkmode"));
     }
 }

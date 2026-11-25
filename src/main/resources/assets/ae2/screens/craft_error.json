@@ -1,9 +1,9 @@
 {
   "$schema": "schema.json",
   "includes": ["common/common.json"],
-  "background": {
-    "texture": "guis/craft_error.png",
-    "srcRect": [0, 0, 219, 87]
+  "generatedBackground": {
+    "width": 219,
+    "height": 87
   },
   "text": {
     "dialog_title": {

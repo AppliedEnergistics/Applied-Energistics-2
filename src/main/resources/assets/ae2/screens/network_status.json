@@ -1,9 +1,18 @@
 {
   "$schema": "schema.json",
   "includes": ["common/common.json"],
-  "background": {
-    "texture": "guis/networkstatus.png",
-    "srcRect": [0, 0, 195, 157]
+  "generatedBackground": {
+    "width": 195,
+    "height": 157
+  },
+  "sprites": {
+    "list": {
+      "sprite": "ae2:inset",
+      "left": 8,
+      "top": 38,
+      "width": 162,
+      "height": 80
+    }
   },
   "text": {
     "dialog_title": {

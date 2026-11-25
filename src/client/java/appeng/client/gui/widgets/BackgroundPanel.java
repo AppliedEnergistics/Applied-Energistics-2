@@ -1,25 +1,19 @@
 package appeng.client.gui.widgets;
 
-import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.Rect2i;
 
 import appeng.client.Point;
 import appeng.client.gui.ICompositeWidget;
-import appeng.client.gui.style.Blitter;
 
 /**
- * Renders a simple panel with a background an no interactivity.
+ * A panel that extends the window of a screen. Its size is taken from the widget style. The background of the panel is
+ * drawn as part of the screen's window (see {@link PanelBlitter}).
  */
 public class BackgroundPanel implements ICompositeWidget {
-    private final Blitter background;
-
-    // Relative to current screen origin (not window)
     private int x;
     private int y;
-
-    public BackgroundPanel(Blitter background) {
-        this.background = background;
-    }
+    private int width;
+    private int height;
 
     @Override
     public void setPosition(Point position) {
@@ -29,16 +23,17 @@ public class BackgroundPanel implements ICompositeWidget {
 
     @Override
     public void setSize(int width, int height) {
-        // Size of panels is implied by the background
+        this.width = width;
+        this.height = height;
     }
 
     @Override
     public Rect2i getBounds() {
-        return new Rect2i(x, y, background.getSrcWidth(), background.getSrcHeight());
+        return new Rect2i(x, y, width, height);
     }
 
     @Override
-    public void drawBackgroundLayer(GuiGraphicsExtractor guiGraphics, Rect2i bounds, Point mouse) {
-        background.dest(bounds.getX() + x, bounds.getY() + y).blit(guiGraphics);
+    public void addBackgroundPanels(PanelBlitter panels) {
+        panels.addBounds(getBounds());
     }
 }

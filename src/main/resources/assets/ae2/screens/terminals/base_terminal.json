@@ -6,27 +6,8 @@
     "../common/terminal_toolbox.json"
   ],
   "terminalStyle": {
-    "slotsPerRow": 9,
-    "header": {
-      "texture": "guis/terminal.png",
-      "srcRect": [0, 0, 195, 17]
-    },
-    "firstRow": {
-      "texture": "guis/terminal.png",
-      "srcRect": [0, 17, 195, 18]
-    },
-    "row": {
-      "texture": "guis/terminal.png",
-      "srcRect": [0, 35, 195, 18]
-    },
-    "lastRow": {
-      "texture": "guis/terminal.png",
-      "srcRect": [0, 53, 195, 18]
-    },
-    "bottom": {
-      "texture": "guis/terminal.png",
-      "srcRect": [0, 71, 195, 99]
-    }
+    "bottomHeight": 99,
+    "slotsPerRow": 9
   },
   "text": {
     "entriesShown": {

@@ -12,6 +12,10 @@ import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
 import net.minecraft.util.Util;
 
+import appeng.client.gui.style.PaletteColor;
+import appeng.client.gui.style.ScreenStyle;
+import appeng.client.gui.style.StyleManager;
+import appeng.client.gui.style.Theme;
 import appeng.core.AppEng;
 
 public class AE2Button extends Button {
@@ -30,19 +34,26 @@ public class AE2Button extends Button {
     protected void extractContents(GuiGraphicsExtractor pGuiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
         Minecraft minecraft = Minecraft.getInstance();
         pGuiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED,
-                SPRITES.get(this.active, this.isHovered()),
+                Theme.resolveGuiSprite(SPRITES.get(this.active, this.isHovered())),
                 this.getX(),
                 this.getY(),
                 this.getWidth(),
                 this.getHeight(),
                 ARGB.white(alpha));
+        var palette = StyleManager.getCommonPalette();
         if (!this.active) {
-            this.renderButtonText(pGuiGraphics, minecraft.font, 2, 0x413f54 | Mth.ceil(this.alpha * 255.0F) << 24, -1);
+            this.renderButtonText(pGuiGraphics, minecraft.font, 2,
+                    getTextColor(palette, PaletteColor.BUTTON_TEXT_DISABLED), -1);
         } else if (this.isHovered()) {
-            this.renderButtonText(pGuiGraphics, minecraft.font, 2, 0x517497 | Mth.ceil(this.alpha * 255.0F) << 24, 0);
+            this.renderButtonText(pGuiGraphics, minecraft.font, 2,
+                    getTextColor(palette, PaletteColor.BUTTON_TEXT_HOVER), 0);
         } else {
-            this.renderButtonText(pGuiGraphics, minecraft.font, 2, 0xf2f2f2 | Mth.ceil(this.alpha * 255.0F) << 24, 1);
+            this.renderButtonText(pGuiGraphics, minecraft.font, 2, getTextColor(palette, PaletteColor.BUTTON_TEXT), 1);
         }
+    }
+
+    private int getTextColor(ScreenStyle palette, PaletteColor color) {
+        return palette.getColor(color).toARGB() & 0xFFFFFF | Mth.ceil(this.alpha * 255.0F) << 24;
     }
 
     public static void renderButtonText(GuiGraphicsExtractor pGuiGraphics, Font pFont, Component pText, int pMinX,

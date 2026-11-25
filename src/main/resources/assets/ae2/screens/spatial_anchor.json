@@ -1,9 +1,9 @@
 {
   "$schema": "schema.json",
   "includes": ["common/common.json"],
-  "background": {
-    "texture": "guis/spatialanchor.png",
-    "srcRect": [0, 0, 195, 100]
+  "generatedBackground": {
+    "width": 195,
+    "height": 100
   },
   "text": {
     "dialog_title": {
