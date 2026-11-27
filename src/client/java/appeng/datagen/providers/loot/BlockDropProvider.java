@@ -35,6 +35,7 @@ import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SlabBlock;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
@@ -93,7 +94,10 @@ public class BlockDropProvider extends BlockLootSubProvider {
     @Override
     public void generate() {
         for (var block : getKnownBlocks()) {
-            add(block, overrides.getOrDefault(block, this::defaultBuilder).apply(block));
+            if (block instanceof SlabBlock)
+                add(block, overrides.getOrDefault(block, this::createSlabItemTable).apply(block));
+            else
+                add(block, overrides.getOrDefault(block, this::defaultBuilder).apply(block));
         }
     }
 
