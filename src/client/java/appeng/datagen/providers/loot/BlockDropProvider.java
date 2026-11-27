@@ -73,8 +73,6 @@ public class BlockDropProvider extends BlockLootSubProvider {
                 .put(AEBlocks.LARGE_QUARTZ_BUD.block(), this::quartzBud)
                 // Quartz clusters drop themselves with silk touch, and some crystals without silk touch.
                 .put(AEBlocks.QUARTZ_CLUSTER.block(), this::quartzCluster)
-                //
-                .put(AEBlocks.FLUIX_SLAB.block(), this::createSlabItemTable)
                 .build();
     }
 
