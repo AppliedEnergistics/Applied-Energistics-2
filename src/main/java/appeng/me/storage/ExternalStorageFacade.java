@@ -87,6 +87,18 @@ public abstract class ExternalStorageFacade implements MEStorage {
 
     public abstract boolean containsAnyFuzzy(Set<AEKey> keys);
 
+    /**
+     * Same as {@link #getAvailableStacks(KeyCounter)}, but also adds keys that are present in the external inventory
+     * but not reported, because they failed the extractable-only check, to {@code unextractableKeys}.
+     *
+     * @return True if every key present in the external inventory was either reported or added to
+     *         {@code unextractableKeys}. The default implementation cannot guarantee this and returns false.
+     */
+    public boolean getAvailableStacks(KeyCounter out, @Nullable Set<AEKey> unextractableKeys) {
+        getAvailableStacks(out);
+        return false;
+    }
+
     public static ExternalStorageFacade ofFluidHandler(ResourceHandler<FluidResource> handler) {
         return new FluidHandlerFacade(handler);
     }
@@ -153,6 +165,11 @@ public abstract class ExternalStorageFacade implements MEStorage {
 
         @Override
         public void getAvailableStacks(KeyCounter out) {
+            getAvailableStacks(out, null);
+        }
+
+        @Override
+        public boolean getAvailableStacks(KeyCounter out, @Nullable Set<AEKey> unextractableKeys) {
             for (int i = 0; i < handler.size(); i++) {
                 // Skip resources that cannot be extracted if that filter was enabled
                 var stack = handler.getResource(i);
@@ -173,6 +190,12 @@ public abstract class ExternalStorageFacade implements MEStorage {
                             extracted = handler.extract(i, stack, 1, tx);
                         }
                         if (extracted == 0) {
+                            if (unextractableKeys != null) {
+                                var key = toKey(stack);
+                                if (key != null) {
+                                    unextractableKeys.add(key);
+                                }
+                            }
                             continue; // Skip unextractable slots
                         }
                     }
@@ -180,6 +203,7 @@ public abstract class ExternalStorageFacade implements MEStorage {
 
                 out.add(toKey(stack), amount);
             }
+            return true;
         }
 
         @Override
