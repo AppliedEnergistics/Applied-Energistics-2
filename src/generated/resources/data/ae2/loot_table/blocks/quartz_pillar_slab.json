@@ -2,12 +2,25 @@
   "type": "minecraft:block",
   "pools": [
     {
-      "condition": {
-        "type": "minecraft:survives_explosion"
-      },
       "entries": [
         {
           "type": "minecraft:item",
+          "modifier": [
+            {
+              "type": "minecraft:set_count",
+              "condition": {
+                "type": "minecraft:match_block",
+                "blocks": "ae2:quartz_pillar_slab",
+                "state": {
+                  "type": "double"
+                }
+              },
+              "count": 2
+            },
+            {
+              "type": "minecraft:explosion_decay"
+            }
+          ],
           "name": "ae2:quartz_pillar_slab"
         }
       ],
