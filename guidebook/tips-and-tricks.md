@@ -29,4 +29,3 @@ A load of random little recommendations
   for making sure machines don't get partial batches, but sometimes you want the ingredients to go to multiple places.
   You can achieve this using an <ItemLink id="interface" />, either as a ["pipe" subnet](example-setups/pipe-subnet.md) or using
   its ability to hold multiple different item stacks, fluids, chemicals, etc. all at once, to use it as a sort of intermediate chest/tank.
-* You can zoom and rotate guidebook scenes that have the zoom and annotation hide/show buttons
